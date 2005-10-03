@@ -1,0 +1,34 @@
+* Web Sites
+
+- Eine gute Einleitung ist:
+
+http://www.sims.berkeley.edu/~hearst/papers/acl99/acl99-tdm.html
+
+- Hier sieht man, was gerade geforscht wird -- ist aber recht "technisch":
+
+http://www.cs.cmu.edu/~dunja/WshKDD2000.html
+
+- Sehr gut, aber offenbar gerade down oder leider verschwunden ist:
+
+http://www.cs.utexas.edu/users/pebronia/text-mining/
+
+vielleicht taucht das ja wieder auf...
+
+* Journals
+
+Man sollte mal Inhaltsverzeichnisse von folgenden journals scannen:
+
+IBM Systems Journal
+Data Mining & Knowledge Discovery
+Data & Knowledge Engeneering
+Expert Systems with Applications
+Knowledge-Based Systems
+Decision Support Systems
+Computational Statistics and Data Analysis
+
+* Software
+
+- SAS miner
+- R Paket  "ttda" erhältlich von: http://wwwpeople.unil.ch/jean-pierre.mueller/
+
+
