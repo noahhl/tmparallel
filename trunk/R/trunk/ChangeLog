@@ -1,0 +1,15 @@
+2005-10-07  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/textmatrix.R (textmatrix): Removed the transpose of the original
+	textmatrix as k-means clustering provided by R (kmeans) now works on
+	this textmatrix. The result is a k-means text clustering with a
+	similarity measure based upon word frequences.
+
+2005-10-05  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/textmatrix.R: Adapted the preprocessing code from the R
+	package "lsa" written by Fridolin Wild to build a document text matrix.
+
+2005-10-02  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* Set up the R Text Mining Package infrastructure.
