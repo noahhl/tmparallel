@@ -3,12 +3,12 @@
 # S4 class definition
 # Text document
 setClass("textdocument", representation(author = "character",
-                                        date = "character",
+                                        timestamp = "character",
                                         description = "character",
                                         id = "integer",
                                         origin = "character",
-                                        text = "character",
-                                        title = "character"))
+                                        corpus = "character",
+                                        heading = "character"))
 
 # Accessor function
 if (!isGeneric("author")) {
@@ -20,13 +20,13 @@ if (!isGeneric("author")) {
 setMethod("author", "textdocument", function(object) object@author)
 
 # Accessor function
-if (!isGeneric("date")) {
-    if (is.function("date"))
-        fun <- date
-    else fun <- function(object) standardGeneric("date")
-    setGeneric("date", fun)
+if (!isGeneric("timestamp")) {
+    if (is.function("timestamp"))
+        fun <- timestamp
+    else fun <- function(object) standardGeneric("timestamp")
+    setGeneric("timestamp", fun)
 }
-setMethod("date", "textdocument", function(object) object@date)
+setMethod("timestamp", "textdocument", function(object) object@timestamp)
 
 # Accessor function
 if (!isGeneric("description")) {
@@ -56,19 +56,19 @@ if (!isGeneric("origin")) {
 setMethod("origin", "textdocument", function(object) object@origin)
 
 # Accessor function
-if (!isGeneric("text")) {
-    if (is.function("text"))
-        fun <- text
-    else fun <- function(object) standardGeneric("text")
-    setGeneric("text", fun)
+if (!isGeneric("corpus")) {
+    if (is.function("corpus"))
+        fun <- corpus
+    else fun <- function(object) standardGeneric("corpus")
+    setGeneric("corpus", fun)
 }
-setMethod("text", "textdocument", function(object) object@text)
+setMethod("corpus", "textdocument", function(object) object@corpus)
 
 # Accessor function
-if (!isGeneric("title")) {
-    if (is.function("title"))
-        fun <- title
-    else fun <- function(object) standardGeneric("title")
-    setGeneric("title", fun)
+if (!isGeneric("heading")) {
+    if (is.function("heading"))
+        fun <- heading
+    else fun <- function(object) standardGeneric("heading")
+    setGeneric("heading", fun)
 }
-setMethod("title", "textdocument", function(object) object@title)
+setMethod("heading", "textdocument", function(object) object@heading)

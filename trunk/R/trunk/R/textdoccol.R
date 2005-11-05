@@ -16,10 +16,13 @@ if (!isGeneric("docs")) {
 }
 setMethod("docs", "textdoccol", function(object) object@docs)
 
+setGeneric("textdoccol", function(docs) standardGeneric("textdoccol"))
 # Read in XML text documents
 # Reuters Corpus Volume 1 (RCV1)
-readXML <- function(file) {
-    tree <- xmlTreeParse(file)
+setMethod("textdoccol", "character", function(docs) {
+    require(XML)
+
+    tree <- xmlTreeParse(docs)
     root <- xmlRoot(tree)
 
     # TODO: At each loop node points to the current newsitem
@@ -28,18 +31,16 @@ readXML <- function(file) {
     # TODO: Implement lacking fields.
     # For this we need the full RCV1 XML set to know where to find those things
     author <- "Not yet implemented"
-    date <- xmlAttrs(node)[["date"]]
+    timestamp <- xmlAttrs(node)[["date"]]
     description <- "Not yet implemented"
     id <- as.integer(xmlAttrs(node)[["itemid"]])
     origin <- "Not yet implemented"
-    text <- xmlSApply(node[["text"]], xmlValue)
-    title <- xmlValue(node[["title"]])
+    corpus <- unlist(xmlApply(node[["text"]], xmlValue), use.names = FALSE)
 
-    doc <- new("textdocument", author = author, date = date, description = description,
-               id = id, origin = origin, text = text, title = title)
+    heading <- xmlValue(node[["title"]])
 
-    new("textdoccol", docs = list(doc), matrix = ())
-}
+    doc <- new("textdocument", author = author, timestamp = timestamp, description = description,
+               id = id, origin = origin, corpus = corpus, heading = heading)
 
-setGeneric("textdoccol", function(object) standardGeneric("textdoccol"))
-setMethod("textdoccol", "file", readXML)
+    new("textdoccol", docs = list(doc), tdm = matrix())
+})
