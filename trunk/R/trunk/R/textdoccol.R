@@ -16,31 +16,27 @@ if (!isGeneric("docs")) {
 }
 setMethod("docs", "textdoccol", function(object) object@docs)
 
-setGeneric("textdoccol", function(docs) standardGeneric("textdoccol"))
-# Read in XML text documents
-# Reuters Corpus Volume 1 (RCV1)
-setMethod("textdoccol", "character", function(docs) {
+setGeneric("textdoccol", function(object) standardGeneric("textdoccol"))
+# Read in text documents in XML Reuters Corpus Volume 1 (RCV1) format
+setMethod("textdoccol", "character", function(object) {
     require(XML)
 
-    tree <- xmlTreeParse(docs)
-    root <- xmlRoot(tree)
+    tree <- xmlTreeParse(object)
+    new("textdoccol", docs = xmlApply(xmlRoot(tree), parseNewsItem), tdm = matrix())
+})
 
-    # TODO: At each loop node points to the current newsitem
-    node <- root
-
-    # TODO: Implement lacking fields.
-    # For this we need the full RCV1 XML set to know where to find those things
+# TODO: Implement lacking fields.
+# For this we need the full RCV1 XML set to know where to find those things
+parseNewsItem <- function(node) {
     author <- "Not yet implemented"
     timestamp <- xmlAttrs(node)[["date"]]
     description <- "Not yet implemented"
     id <- as.integer(xmlAttrs(node)[["itemid"]])
     origin <- "Not yet implemented"
+    # TODO: Concatenate list elements (= XML paragraphs) to a single string
     corpus <- unlist(xmlApply(node[["text"]], xmlValue), use.names = FALSE)
-
     heading <- xmlValue(node[["title"]])
 
-    doc <- new("textdocument", author = author, timestamp = timestamp, description = description,
-               id = id, origin = origin, corpus = corpus, heading = heading)
-
-    new("textdoccol", docs = list(doc), tdm = matrix())
-})
+    new("textdocument", author = author, timestamp = timestamp, description = description,
+        id = id, origin = origin, corpus = corpus, heading = heading)
+}
