@@ -2,9 +2,8 @@
 
 # S4 class definition
 # Text document collection
-# TODO: Define proper S4 term-document matrix
 setClass("textdoccol", representation(docs = "list",
-                                      tdm = "matrix"))
+                                      tdm = "termdocmatrix"))
 
 # Accessor function
 if (!isGeneric("docs")) {
@@ -22,7 +21,7 @@ setMethod("textdoccol", "character", function(object) {
     require(XML)
 
     tree <- xmlTreeParse(object)
-    new("textdoccol", docs = xmlApply(xmlRoot(tree), parseNewsItem), tdm = matrix())
+    new("textdoccol", docs = xmlApply(xmlRoot(tree), parseNewsItem))
 })
 
 # TODO: Implement lacking fields.
@@ -40,3 +39,9 @@ parseNewsItem <- function(node) {
     new("textdocument", author = author, timestamp = timestamp, description = description,
         id = id, origin = origin, corpus = corpus, heading = heading)
 }
+
+# If necessary build the term-document matrix for a given text document collection
+setGeneric("buildTDM", function(object) standardGeneric("buildTDM"))
+setMethod("buildTDM", "textdoccol", function(object) {
+    termdocmatrix(docs(object))
+})
