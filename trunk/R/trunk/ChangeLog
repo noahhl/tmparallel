@@ -2,6 +2,7 @@
 
 	* R/textdoccol.R: Constructor of textdoccol allows import of CSV
 	files. See the questionnaire data/Umfrage.csv for such an example.
+	We are now able to import files in Reuters-21578 XML format.
 
 	* Changed class interfaces in various files. Weighting of the text
 	matrix is now possible.

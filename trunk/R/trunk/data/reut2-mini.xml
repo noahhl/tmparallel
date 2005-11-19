@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<LEWIS>
+<REUTERS TOPICS="NO" LEWISSPLIT="TRAIN" CGISPLIT="TRAINING-SET" OLDID="5545" NEWID="2">
+<DATE>26-FEB-1987 15:02:20.00</DATE>
+<TOPICS></TOPICS>
+<PLACES><D>usa</D></PLACES>
+<PEOPLE></PEOPLE>
+<ORGS></ORGS>
+<EXCHANGES></EXCHANGES>
+<COMPANIES></COMPANIES>
+<UNKNOWN> 
+F Y
+f0708reute
+d f BC-STANDARD-OIL-&lt;SRD>-TO   02-26 0082</UNKNOWN>
+<TEXT>
+<TITLE>STANDARD OIL &lt;SRD> TO FORM FINANCIAL UNIT</TITLE>
+<DATELINE>    CLEVELAND, Feb 26 - </DATELINE><BODY>Standard Oil Co and BP North America
+Inc said they plan to form a venture to manage the money market
+borrowing and investment activities of both companies.
+    BP North America is a subsidiary of British Petroleum Co
+Plc &lt;BP>, which also owns a 55 pct interest in Standard Oil.
+    The venture will be called BP/Standard Financial Trading
+and will be operated by Standard Oil under the oversight of a
+joint management committee.
+
+ Reuter
+</BODY></TEXT>
+</REUTERS>
+<REUTERS TOPICS="NO" LEWISSPLIT="TRAIN" CGISPLIT="TRAINING-SET" OLDID="5546" NEWID="3">
+<DATE>26-FEB-1987 15:03:27.51</DATE>
+<TOPICS></TOPICS>
+<PLACES><D>usa</D></PLACES>
+<PEOPLE></PEOPLE>
+<ORGS></ORGS>
+<EXCHANGES></EXCHANGES>
+<COMPANIES></COMPANIES>
+<UNKNOWN> 
+F A
+f0714reute
+d f BC-TEXAS-COMMERCE-BANCSH   02-26 0064</UNKNOWN>
+<TEXT>
+<TITLE>TEXAS COMMERCE BANCSHARES &lt;TCB> FILES PLAN</TITLE>
+<DATELINE>    HOUSTON, Feb 26 - </DATELINE><BODY>Texas Commerce Bancshares Inc's Texas
+Commerce Bank-Houston said it filed an application with the
+Comptroller of the Currency in an effort to create the largest
+banking network in Harris County.
+    The bank said the network would link 31 banks having
+13.5 billion dlrs in assets and 7.5 billion dlrs in deposits.
+       
+ Reuter
+</BODY></TEXT>
+</REUTERS>
+<REUTERS TOPICS="YES" LEWISSPLIT="TRAIN" CGISPLIT="TRAINING-SET" OLDID="5553" NEWID="10">
+<DATE>26-FEB-1987 15:18:06.67</DATE>
+<TOPICS><D>acq</D></TOPICS>
+<PLACES><D>usa</D></PLACES>
+<PEOPLE></PEOPLE>
+<ORGS></ORGS>
+<EXCHANGES></EXCHANGES>
+<COMPANIES></COMPANIES>
+<UNKNOWN> 
+   F
+   f0767 reute
+d f BC-COMPUTER-TERMINAL-SYS   02-26 0107</UNKNOWN>
+<TEXT> 
+<TITLE>COMPUTER TERMINAL SYSTEMS &lt;CPML> COMPLETES SALE</TITLE>
+<DATELINE>     COMMACK, N.Y., Feb 26 - </DATELINE><BODY>Computer Terminal Systems Inc said
+it has completed the sale of 200,000 shares of its common
+stock, and warrants to acquire an additional one mln shares, to
+&lt;Sedio N.V.> of Lugano, Switzerland for 50,000 dlrs.
+    The company said the warrants are exercisable for five
+years at a purchase price of .125 dlrs per share.
+    Computer Terminal said Sedio also has the right to buy
+additional shares and increase its total holdings up to 40 pct
+of the Computer Terminal's outstanding common stock under
+certain circumstances involving change of control at the
+company.
+    The company said if the conditions occur the warrants would
+be exercisable at a price equal to 75 pct of its common stock's
+market price at the time, not to exceed 1.50 dlrs per share.
+    Computer Terminal also said it sold the technolgy rights to
+its Dot Matrix impact technology, including any future
+improvements, to &lt;Woodco Inc> of Houston, Tex. for 200,000
+dlrs. But, it said it would continue to be the exclusive
+worldwide licensee of the technology for Woodco.
+    The company said the moves were part of its reorganization
+plan and would help pay current operation costs and ensure
+product delivery.
+    Computer Terminal makes computer generated labels, forms,
+tags and ticket printers and terminals.
+ Reuter
+ </BODY></TEXT>
+</REUTERS>
+<REUTERS TOPICS="YES" LEWISSPLIT="TRAIN" CGISPLIT="TRAINING-SET" OLDID="5554" NEWID="11">
+<DATE>26-FEB-1987 15:18:59.34</DATE>
+<TOPICS><D>earn</D></TOPICS>
+<PLACES><D>usa</D></PLACES>
+<PEOPLE></PEOPLE>
+<ORGS></ORGS>
+<EXCHANGES></EXCHANGES>
+<COMPANIES></COMPANIES>
+<UNKNOWN> 
+   F
+   f0772 reute
+r f BC-COBANCO-INC-&lt;CBCO>-YE   02-26 0058</UNKNOWN>
+<TEXT> 
+<TITLE>COBANCO INC &lt;CBCO> YEAR NET</TITLE>
+<DATELINE>    SANTA CRUZ, Calif., Feb 26 -
+    </DATELINE><BODY>Shr 34 cts vs 1.19 dlrs
+    Net 807,000 vs 2,858,000
+    Assets 510.2 mln vs 479.7 mln
+    Deposits 472.3 mln vs 440.3 mln
+    Loans 299.2 mln vs 327.2 mln
+    Note: 4th qtr not available. Year includes 1985
+extraordinary gain from tax carry forward of 132,000 dlrs, or
+five cts per shr.
+ Reuter
+ </BODY></TEXT>
+</REUTERS>
+<REUTERS TOPICS="YES" LEWISSPLIT="TRAIN" CGISPLIT="TRAINING-SET" OLDID="5587" NEWID="44">
+<DATE>26-FEB-1987 15:49:56.01</DATE>
+<TOPICS><D>acq</D><D>ship</D></TOPICS>
+<PLACES><D>usa</D></PLACES>
+<PEOPLE></PEOPLE>
+<ORGS></ORGS>
+<EXCHANGES></EXCHANGES>
+<COMPANIES></COMPANIES>
+<UNKNOWN> 
+   F
+   f0874 reute
+r f BC-MCLEAN'S-&lt;MII>-U.S.-L   02-26 0094</UNKNOWN>
+<TEXT> 
+<TITLE>MCLEAN'S &lt;MII> U.S. LINES SETS ASSET TRANSFER</TITLE>
+<DATELINE>    CRANFORD, N.J., Feb 26 - </DATELINE><BODY>McLean Industries Inc's United
+States Lines Inc subsidiary said it has agreed in principle to
+transfer its South American service by arranging for the
+transfer of certain charters and assets to &lt;Crowley Mariotime
+Corp>'s American Transport Lines Inc subsidiary.
+    U.S. Lines said negotiations on the contract are expected
+to be completed within the next week. Terms and conditions of
+the contract would be subject to approval of various regulatory
+bodies, including the U.S. Bankruptcy Court.
+ Reuter
+ </BODY></TEXT>
+</REUTERS>
+</LEWIS>

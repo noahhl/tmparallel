@@ -27,7 +27,7 @@ setMethod("textdoccol",
                    stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
 
               # Add a new type for each unique input source format
-              type <- match.arg(inputType,c("RCV1","CSV"))
+              type <- match.arg(inputType,c("RCV1","CSV","REUT21578"))
               switch(type,
                      # Read in text documents in XML Reuters Corpus Volume 1 (RCV1) format
                      "RCV1" = {
@@ -57,6 +57,18 @@ setMethod("textdoccol",
                                  description = description, id = id, origin = origin, heading = heading)
                          }
                          tdcl <- new("textdoccol", .Data = l)
+                     },
+                     # Read in text documents in Reuters-21578 XML (not SGML) format
+                     # Typically the first argument will be a directory where we can
+                     # find the files reut2-000.xml ... reut2-021.xml
+                     "REUT21578" = {
+                         require(XML)
+
+                         # TODO: Read in a whole directory of XML files
+                         # lapply(dir(object, full.names = TRUE), function)
+                         # object is for the moment still a single XML file
+                         tree <- xmlTreeParse(object)
+                         tdcl <- new("textdoccol", .Data = xmlApply(xmlRoot(tree), parseReuters, stripWhiteSpace, toLower))
                      }
                      )
 
@@ -65,7 +77,7 @@ setMethod("textdoccol",
               tdcl
           })
 
-# Parse a <newsitem></newsitem> element from a valid RCV1 XML file
+# Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file
 parseNewsItem <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
     author <- "Not yet implemented"
     timestamp <- xmlAttrs(node)[["date"]]
@@ -80,6 +92,36 @@ parseNewsItem <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
         corpus <- tolower(corpus)
 
     heading <- xmlValue(node[["title"]])
+
+    new("textdocument", .Data = corpus, author = author, timestamp = timestamp,
+        description = description, id = id, origin = origin, heading = heading)
+}
+
+# Parse a <REUTERS></REUTERS> element from a well-formed Reuters-21578 XML file
+parseReuters <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
+    author <- "Not yet implemented"
+    timestamp <- xmlValue(node[["DATE"]])
+    description <- "Not yet implemented"
+    id <- as.integer(xmlAttrs(node)[["NEWID"]])
+
+    origin <- "Not yet implemented"
+
+    # The <BODY></BODY> tag is unfortunately NOT obligatory!
+    if (!is.null(node[["TEXT"]][["BODY"]]))
+        corpus <- xmlValue(node[["TEXT"]][["BODY"]])
+    else
+        corpus <- ""
+
+    if (stripWhiteSpace)
+        corpus <- gsub("[[:space:]]+", " ", corpus)
+    if (toLower)
+        corpus <- tolower(corpus)
+
+    # The <TITLE></TITLE> tag is unfortunately NOT obligatory!
+    if (!is.null(node[["TEXT"]][["TITLE"]]))
+        heading <- xmlValue(node[["TEXT"]][["TITLE"]])
+    else
+        heading <- ""
 
     new("textdocument", .Data = corpus, author = author, timestamp = timestamp,
         description = description, id = id, origin = origin, heading = heading)
