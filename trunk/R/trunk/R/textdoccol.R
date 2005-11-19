@@ -20,22 +20,52 @@ setMethod("tdm", "textdoccol", function(object) object@tdm)
 # Constructors
 
 setGeneric("textdoccol", function(object, ...) standardGeneric("textdoccol"))
-# Read in text documents in XML Reuters Corpus Volume 1 (RCV1) format
 setMethod("textdoccol",
-          c("character", "logical", "logical",  "character", "logical", "character", "integer", "integer", "logical"),
-          function(object, stripWhiteSpace = FALSE, toLower = FALSE, weighting = "tf", stemming = FALSE,
-                   language = "german", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
-              require(XML)
+          c("character", "character", "logical", "logical",  "character",
+            "logical", "character", "integer", "integer", "logical"),
+          function(object, inputType = "RCV1", stripWhiteSpace = FALSE, toLower = FALSE, weighting = "tf",
+                   stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
 
-              tree <- xmlTreeParse(object)
-              tdcl <- new("textdoccol", .Data = xmlApply(xmlRoot(tree), parseNewsItem, stripWhiteSpace, toLower))
-              tdcl@tdm = termdocmatrix(tdcl, weighting, stemming, language, minWordLength, minDocFreq, stopwords)
+              # Add a new type for each unique input source format
+              type <- match.arg(inputType,c("RCV1","CSV"))
+              switch(type,
+                     # Read in text documents in XML Reuters Corpus Volume 1 (RCV1) format
+                     "RCV1" = {
+                         require(XML)
+
+                         tree <- xmlTreeParse(object)
+                         tdcl <- new("textdoccol", .Data = xmlApply(xmlRoot(tree), parseNewsItem, stripWhiteSpace, toLower))
+                     },
+                     # Text in CSV format (as e.g. exported from an Excel sheet)
+                     "CSV" = {
+                         m <- as.matrix(read.csv(object))
+                         l <- vector("list", dim(m)[1])
+                         for (i in 1:dim(m)[1]) {
+                             author <- "Not yet implemented"
+                             timestamp <- date()
+                             description <- "Not yet implemented"
+                             id <- i
+                             corpus <- as.character(m[i,2:dim(m)[2]])
+                             if (stripWhiteSpace)
+                                 corpus <- gsub("[[:space:]]+", " ", corpus)
+                             if (toLower)
+                                 corpus <- tolower(corpus)
+                             origin <- "Not yet implemented"
+                             heading <- "Not yet implemented"
+
+                             l[[i]] <- new("textdocument", .Data = corpus, author = author, timestamp = timestamp,
+                                 description = description, id = id, origin = origin, heading = heading)
+                         }
+                         tdcl <- new("textdoccol", .Data = l)
+                     }
+                     )
+
+              tdcl@tdm <- termdocmatrix(tdcl, weighting, stemming, language, minWordLength, minDocFreq, stopwords)
 
               tdcl
           })
 
-# TODO: Implement lacking fields.
-# For this we need the full RCV1 XML set to know where to find those things
+# Parse a <newsitem></newsitem> element from a valid RCV1 XML file
 parseNewsItem <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
     author <- "Not yet implemented"
     timestamp <- xmlAttrs(node)[["date"]]

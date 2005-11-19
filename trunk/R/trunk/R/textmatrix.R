@@ -38,7 +38,7 @@ weightMatrix <- function(m, weighting = "tf") {
 
 setGeneric("termdocmatrix", function(object, ...) standardGeneric("termdocmatrix"))
 setMethod("termdocmatrix", c("textdoccol", "character", "logical", "character", "integer", "integer", "logical"),
-          function(object, weighting = "tf", stemming = FALSE, language = "german",
+          function(object, weighting = "tf", stemming = FALSE, language = "english",
                    minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
               tvlist <- lapply(object, textvector, stemming, language, minWordLength, minDocFreq, stopwords)
               tm <- as.matrix(xtabs(Freq ~ ., data = do.call("rbind", tvlist)))
@@ -48,7 +48,7 @@ setMethod("termdocmatrix", c("textdoccol", "character", "logical", "character", 
               new("termdocmatrix", .Data = tm, weighting = weighting)
           })
 
-textvector <- function(doc, stemming = FALSE, language = "german", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
+textvector <- function(doc, stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
     txt <- gsub( "\\.|:|\\(|\\)|\\[|\\]|\\{|\\}|,|;|\\?|-|\\!|\"|\'|\`|\\^|\=|\’|\–|\„|\”|\/", " ", doc)
     txt <- gsub("[[:space:]]+", " ", txt)
     txt <- tolower(txt)
@@ -66,11 +66,20 @@ textvector <- function(doc, stemming = FALSE, language = "german", minWordLength
     # wordLength filtering?
     tab <- tab[nchar(names(tab), type="chars") >= minWordLength]
 
-    # stemming?
-    if (stemming) {
-        require(Rstem)
-        names(tab) <- wordStem(names(tab), language = language)
+    # Is the vector empty?
+    if (is.null(names(tab))) {
+        terms <- ""
+        Freq <- 0
+    }
+    else {
+        # stemming?
+        if (stemming) {
+            require(Rstem)
+            names(tab) <- wordStem(names(tab), language = language)
+        }
+        terms <- names(tab)
+        Freq <- tab
     }
 
-    data.frame(docs = id(doc), terms = names(tab), Freq = tab, row.names = NULL)
+    data.frame(docs = id(doc), terms, Freq, row.names = NULL)
 }
