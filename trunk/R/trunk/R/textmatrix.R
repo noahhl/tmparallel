@@ -3,26 +3,53 @@
 
 # S4 class definition
 # Term-document matrix
-setClass("termdocmatrix", representation(mat = "matrix"))
+setClass("termdocmatrix",
+         representation(weighting = "character"),
+         contains = c("matrix"))
 
-# Accessor function
-if (!isGeneric("mat")) {
-    if (is.function("mat"))
-        fun <- mat
+# Accessor functions as described in "S4 Classes in 15 pages, more or less"
+
+if (!isGeneric("weighting")) {
+    if (is.function("weighting"))
+        fun <- weighting
     else
-        fun <- function(object) standardGeneric("mat")
-    setGeneric("mat", fun)
+        fun <- function(object) standardGeneric("weighting")
+    setGeneric("weighting", fun)
 }
-setMethod("mat", "termdocmatrix", function(object) object@mat)
+setMethod("weighting", "termdocmatrix", function(object) object@weighting)
 
-setGeneric("termdocmatrix", function(object) standardGeneric("termdocmatrix"))
-setMethod("termdocmatrix", "list", function(object) {
-    new("termdocmatrix", mat = textmatrix(object))
-})
+# Input matrix has to be in term-frequency format
+weightMatrix <- function(m, weighting = "tf") {
+    type <- match.arg(weighting,c("tf","tf-idf","bin"))
+    switch(type,
+           "tf" = {
+               wm <- m
+           },
+           "tf-idf" = {
+               df <- colSums(((m > 0) * 1))
+               wm <- m * log2(nrow(m) / df)
+           },
+           "bin" = {
+               wm <- (m > 0) * 1
+           }
+           )
+    wm
+}
+
+setGeneric("termdocmatrix", function(object, ...) standardGeneric("termdocmatrix"))
+setMethod("termdocmatrix", c("textdoccol", "character", "logical", "character", "integer", "integer", "logical"),
+          function(object, weighting = "tf", stemming = FALSE, language = "german",
+                   minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
+              tvlist <- lapply(object, textvector, stemming, language, minWordLength, minDocFreq, stopwords)
+              tm <- as.matrix(xtabs(Freq ~ ., data = do.call("rbind", tvlist)))
+              class(tm) <- "matrix"
+              tm <- weightMatrix(tm, weighting)
+
+              new("termdocmatrix", .Data = tm, weighting = weighting)
+          })
 
 textvector <- function(doc, stemming = FALSE, language = "german", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
-    txt <- corpus(doc)
-    txt <- gsub( "\\.|:|\\(|\\)|\\[|\\]|\\{|\\}|,|;|\\?|-|\\!|\"|\'|\`|\\^|\/", " ", txt)
+    txt <- gsub( "\\.|:|\\(|\\)|\\[|\\]|\\{|\\}|,|;|\\?|-|\\!|\"|\'|\`|\\^|\=|\’|\–|\„|\”|\/", " ", doc)
     txt <- gsub("[[:space:]]+", " ", txt)
     txt <- tolower(txt)
     txt <- unlist(strsplit(txt, " ", fixed = TRUE))
@@ -37,7 +64,7 @@ textvector <- function(doc, stemming = FALSE, language = "german", minWordLength
     tab <- tab[tab >= minDocFreq]
 
     # wordLength filtering?
-    tab <- tab[nchar(names(tab)) > minWordLength]
+    tab <- tab[nchar(names(tab), type="chars") >= minWordLength]
 
     # stemming?
     if (stemming) {
@@ -46,11 +73,4 @@ textvector <- function(doc, stemming = FALSE, language = "german", minWordLength
     }
 
     data.frame(docs = id(doc), terms = names(tab), Freq = tab, row.names = NULL)
-}
-
-textmatrix <- function(docs, stemming = FALSE, language = "german", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
-    tvlist <- lapply(docs, textvector, stemming, language, minWordLength, minDocFreq, stopwords)
-    tm <- as.matrix(xtabs(Freq ~ ., data = do.call("rbind", tvlist)))
-    class(tm) <- "matrix"
-    tm
 }
