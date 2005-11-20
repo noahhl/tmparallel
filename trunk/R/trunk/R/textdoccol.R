@@ -30,13 +30,17 @@ setMethod("textdoccol",
               type <- match.arg(inputType,c("RCV1","CSV","REUT21578"))
               switch(type,
                      # Read in text documents in XML Reuters Corpus Volume 1 (RCV1) format
+                     # For the moment the first argument is still a single file
+                     # This will be changed to a directory as soon as we have the full RCV1 data set
                      "RCV1" = {
                          require(XML)
 
                          tree <- xmlTreeParse(object)
                          tdcl <- new("textdoccol", .Data = xmlApply(xmlRoot(tree), parseNewsItem, stripWhiteSpace, toLower))
                      },
-                     # Text in CSV format (as e.g. exported from an Excel sheet)
+                     # Text in a special CSV format (as e.g. exported from an Excel sheet)
+                     # For details on the file format see data/Umfrage.csv
+                     # The first argument has to be a single file
                      "CSV" = {
                          m <- as.matrix(read.csv(object))
                          l <- vector("list", dim(m)[1])
@@ -64,13 +68,16 @@ setMethod("textdoccol",
                      "REUT21578" = {
                          require(XML)
 
-                         # TODO: Read in a whole directory of XML files
-                         # lapply(dir(object, full.names = TRUE), function)
-                         # object is for the moment still a single XML file
-                         tree <- xmlTreeParse(object)
-                         tdcl <- new("textdoccol", .Data = xmlApply(xmlRoot(tree), parseReuters, stripWhiteSpace, toLower))
-                     }
-                     )
+                         tdl <- sapply(dir(object,
+                                           pattern = ".xml",
+                                           full.names = TRUE),
+                                       function(file) {
+                                           tree <- xmlTreeParse(file)
+                                           xmlApply(xmlRoot(tree), parseReuters, stripWhiteSpace, toLower)
+                                       })
+
+                         tdcl <- new("textdoccol", .Data = tdl)
+                     })
 
               tdcl@tdm <- termdocmatrix(tdcl, weighting, stemming, language, minWordLength, minDocFreq, stopwords)
 
