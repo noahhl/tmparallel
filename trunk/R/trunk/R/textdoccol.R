@@ -22,7 +22,7 @@ setMethod("tdm", "textdoccol", function(object) object@tdm)
 setGeneric("textdoccol", function(object, ...) standardGeneric("textdoccol"))
 setMethod("textdoccol",
           c("character", "character", "logical", "logical",  "character",
-            "logical", "character", "integer", "integer", "logical"),
+            "logical", "character", "integer", "integer", "character"),
           function(object, inputType = "RCV1", stripWhiteSpace = FALSE, toLower = FALSE, weighting = "tf",
                    stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
 
