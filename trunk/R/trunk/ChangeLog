@@ -1,3 +1,8 @@
+2005-12-06  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* Finished documentation and reordered directory structure. Now "R
+	CMD check textmin" works without errors.
+
 2005-12-04  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* src/: Various splits can now be easily created for the

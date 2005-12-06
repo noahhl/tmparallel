@@ -5,5 +5,6 @@ Date: 2005-10-02
 Author: Ingo Feinerer <h0125130@wu-wien.ac.at>
 Maintainer: Ingo Feinerer <h0125130@wu-wien.ac.at>
 Depends: methods, XML
+Suggests: Rstem
 Description: A framework for text mining applications within R.
 License: GPL version 2 or newer
