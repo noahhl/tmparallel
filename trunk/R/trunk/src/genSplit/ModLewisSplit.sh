@@ -1,6 +1,6 @@
 #!/bin/sh
 # Author: Ingo Feinerer
-# Generates the ModApte Split if applied to the Reuters21578 XML data set by removing unused items
+# Generates the ModLewis Split if applied to the Reuters21578 XML data set by removing unused items
 # The remaining items are both training and test elements
 if [ $# -eq 0 ]
 then
@@ -14,5 +14,5 @@ then
 fi
 for filename in $*
 do
-    ./genSplit $filename "/LEWIS/REUTERS[@TOPICS='NO'] | /LEWIS/REUTERS[@TOPICS='BYPASS'] | /LEWIS/REUTERS[@LEWISSPLIT='NOT-USED']" > $filename.ModApte.xml
+    ./genSplit $filename "/LEWIS/REUTERS[@TOPICS='BYPASS'] | /LEWIS/REUTERS[@LEWISSPLIT='NOT-USED']" > $filename.ModLewis.xml
 done
