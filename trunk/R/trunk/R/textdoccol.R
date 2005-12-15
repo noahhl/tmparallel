@@ -1,12 +1,5 @@
 # Author: Ingo Feinerer
 
-# S4 class definition
-# Text document collection
-setClass("textdoccol",
-         contains = c("list"))
-
-# Constructors
-
 setGeneric("textdoccol", function(object, ...) standardGeneric("textdoccol"))
 setMethod("textdoccol",
           c("character", "character", "logical", "logical"),

@@ -1,6 +1,7 @@
 # Author: Ingo Feinerer
+# S4 class and accessor definitions
+# Accessor functions are implemented as described in "S4 Classes in 15 pages, more or less"
 
-# S4 class definition
 # Text document
 setClass("textdocument",
          representation(author = "character",
@@ -10,8 +11,6 @@ setClass("textdocument",
                         origin = "character",
                         heading = "character"),
          contains = c("character"))
-
-# Accessor functions as described in "S4 Classes in 15 pages, more or less"
 
 if (!isGeneric("author")) {
     if (is.function("author"))
@@ -60,3 +59,23 @@ if (!isGeneric("heading")) {
     setGeneric("heading", fun)
 }
 setMethod("heading", "textdocument", function(object) object@heading)
+
+
+# Text document collection
+setClass("textdoccol",
+         contains = c("list"))
+
+
+# Term-document matrix
+setClass("termdocmatrix",
+         representation(weighting = "character"),
+         contains = c("matrix"))
+
+if (!isGeneric("weighting")) {
+    if (is.function("weighting"))
+        fun <- weighting
+    else
+        fun <- function(object) standardGeneric("weighting")
+    setGeneric("weighting", fun)
+}
+setMethod("weighting", "termdocmatrix", function(object) object@weighting)

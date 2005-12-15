@@ -2,7 +2,7 @@
 \docType{methods}
 \alias{termdocmatrix}
 \alias{termdocmatrix,textdoccol-method}
-\title{Text document collection}
+\title{Term-document matrix}
 \description{
   Constructs a term-document matrix.
 }

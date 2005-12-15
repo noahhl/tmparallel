@@ -1,23 +1,6 @@
 # Author: Ingo Feinerer
 # The preprocessing code was adapted from the R package "lsa" written by Fridolin Wild.
 
-# S4 class definition
-# Term-document matrix
-setClass("termdocmatrix",
-         representation(weighting = "character"),
-         contains = c("matrix"))
-
-# Accessor functions as described in "S4 Classes in 15 pages, more or less"
-
-if (!isGeneric("weighting")) {
-    if (is.function("weighting"))
-        fun <- weighting
-    else
-        fun <- function(object) standardGeneric("weighting")
-    setGeneric("weighting", fun)
-}
-setMethod("weighting", "termdocmatrix", function(object) object@weighting)
-
 # Input matrix has to be in term-frequency format
 weightMatrix <- function(m, weighting = "tf") {
     type <- match.arg(weighting,c("tf","tf-idf","bin"))
