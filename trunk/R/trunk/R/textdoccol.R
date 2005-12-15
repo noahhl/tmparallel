@@ -3,28 +3,14 @@
 # S4 class definition
 # Text document collection
 setClass("textdoccol",
-         representation(tdm = "termdocmatrix"),
          contains = c("list"))
-
-# Accessor functions as described in "S4 Classes in 15 pages, more or less"
-
-if (!isGeneric("tdm")) {
-    if (is.function("tdm"))
-        fun <- tdm
-    else
-        fun <- function(object) standardGeneric("tdm")
-    setGeneric("tdm", fun)
-}
-setMethod("tdm", "textdoccol", function(object) object@tdm)
 
 # Constructors
 
 setGeneric("textdoccol", function(object, ...) standardGeneric("textdoccol"))
 setMethod("textdoccol",
-          c("character", "character", "logical", "logical",  "character",
-            "logical", "character", "integer", "integer", "character"),
-          function(object, inputType = "RCV1", stripWhiteSpace = FALSE, toLower = FALSE, weighting = "tf",
-                   stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
+          c("character", "character", "logical", "logical"),
+          function(object, inputType = "RCV1", stripWhiteSpace = FALSE, toLower = FALSE) {
 
               # Add a new type for each unique input source format
               type <- match.arg(inputType,c("RCV1","CSV","REUT21578"))
@@ -33,8 +19,6 @@ setMethod("textdoccol",
                      # For the moment the first argument is still a single file
                      # This will be changed to a directory as soon as we have the full RCV1 data set
                      "RCV1" = {
-                         require(XML)
-
                          tree <- xmlTreeParse(object)
                          tdcl <- new("textdoccol", .Data = xmlApply(xmlRoot(tree), parseNewsItem, stripWhiteSpace, toLower))
                      },
@@ -66,8 +50,6 @@ setMethod("textdoccol",
                      # Typically the first argument will be a directory where we can
                      # find the files reut2-000.xml ... reut2-021.xml
                      "REUT21578" = {
-                         require(XML)
-
                          tdl <- sapply(dir(object,
                                            pattern = ".xml",
                                            full.names = TRUE),
@@ -78,9 +60,6 @@ setMethod("textdoccol",
 
                          tdcl <- new("textdoccol", .Data = tdl)
                      })
-
-              tdcl@tdm <- termdocmatrix(tdcl, weighting, stemming, language, minWordLength, minDocFreq, stopwords)
-
               tdcl
           })
 
