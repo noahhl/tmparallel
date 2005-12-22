@@ -1,3 +1,8 @@
+2005-12-22  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* inst/doc/clustering.Rnw: Wrote a small vignette to present the
+	clustering facilities of this package.
+
 2005-12-15  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/aobjects.R: Changed package document structure to avoid class

@@ -1,0 +1,42 @@
+\documentclass[a4paper]{article}
+\title{\texttt{textmin} Clustering}
+\author{Ingo Feinerer}
+\date{}
+\begin{document}
+\maketitle
+
+This document shows typical text clustering examples that can be
+performed with \texttt{textmin}.
+
+\section*{Initialization}
+<<>>=
+library(textmin)
+tdcl <- textdoccol("../../ext/data/reuters21578/", "REUT21578", TRUE, TRUE)
+tdm <- termdocmatrix(tdcl)
+@
+creates a text document collection and the term-document matrix for
+it.
+\section*{Hierarchical Clustering}
+<<>>=
+hcl <- hclust(dist(tdm))
+@
+performs a hierarchical clustering on the distance matrix of the original
+term-document matrix. The visualized result looks like:
+<<fig=TRUE>>=
+plot(hcl)
+@
+\section*{$k$-means Clustering}
+<<>>=
+kmeans(tdm, 2)
+@
+performs a $k$-means clustering with $2$ clusters on the term-document matrix.
+\section*{Spectral clustering}
+The following example shows a spectral clustering of the text
+document collection with String Kernels form the
+\texttt{kernlab} package.
+<<>>=
+library(kernlab)
+stringkern <- stringdot(type = "string")
+specc(tdcl, 2, kernel = stringkern)
+@
+\end{document}
