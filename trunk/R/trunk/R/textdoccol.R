@@ -62,7 +62,7 @@ parseNewsItem <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
     timestamp <- xmlAttrs(node)[["date"]]
     description <- "Not yet implemented"
     id <- as.integer(xmlAttrs(node)[["itemid"]])
-    origin <- "Not yet implemented"
+    origin <- "Reuters Corpus Volume 1 XML"
     corpus <- unlist(xmlApply(node[["text"]], xmlValue), use.names = FALSE)
 
     if (stripWhiteSpace)
@@ -78,12 +78,17 @@ parseNewsItem <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
 
 # Parse a <REUTERS></REUTERS> element from a well-formed Reuters-21578 XML file
 parseReuters <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
-    author <- "Not yet implemented"
+    # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
+    if (!is.null(node[["TEXT"]][["AUTHOR"]]))
+        author <- xmlValue(node[["TEXT"]][["AUTHOR"]])
+    else
+        author <- ""
+
     timestamp <- xmlValue(node[["DATE"]])
-    description <- "Not yet implemented"
+    description <- ""
     id <- as.integer(xmlAttrs(node)[["NEWID"]])
 
-    origin <- "Not yet implemented"
+    origin <- "Reuters-21578 XML"
 
     # The <BODY></BODY> tag is unfortunately NOT obligatory!
     if (!is.null(node[["TEXT"]][["BODY"]]))

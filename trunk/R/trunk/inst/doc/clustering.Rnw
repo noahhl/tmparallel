@@ -1,5 +1,6 @@
+%\VignetteIndexEntry{Clustering with textmin}
 \documentclass[a4paper]{article}
-\title{\texttt{textmin} Clustering}
+\title{Clustering with \texttt{textmin}}
 \author{Ingo Feinerer}
 \date{}
 \begin{document}
@@ -11,8 +12,8 @@ performed with \texttt{textmin}.
 \section*{Initialization}
 <<>>=
 library(textmin)
-tdcl <- textdoccol("../../ext/data/reuters21578/", "REUT21578", TRUE, TRUE)
-tdm <- termdocmatrix(tdcl)
+data(ReutNews)
+tdm <- termdocmatrix(ReutNews)
 @
 creates a text document collection and the term-document matrix for
 it.
@@ -37,6 +38,6 @@ document collection with String Kernels form the
 <<>>=
 library(kernlab)
 stringkern <- stringdot(type = "string")
-specc(tdcl, 2, kernel = stringkern)
+specc(ReutNews, 2, kernel = stringkern)
 @
 \end{document}
