@@ -3,41 +3,51 @@
 setGeneric("textdoccol", function(object, ...) standardGeneric("textdoccol"))
 setMethod("textdoccol",
           c("character", "character", "logical", "logical"),
-          function(object, inputType = "RCV1", stripWhiteSpace = FALSE, toLower = FALSE) {
-
+          function(object, inputType = "CSV", stripWhiteSpace = FALSE, toLower = FALSE) {
               # Add a new type for each unique input source format
-              type <- match.arg(inputType,c("RCV1","CSV","REUT21578"))
+              type <- match.arg(inputType,c("CSV","RCV1","REUT21578"))
               switch(type,
-                     # Read in text documents in XML Reuters Corpus Volume 1 (RCV1) format
-                     # For the moment the first argument is still a single file
-                     # This will be changed to a directory as soon as we have the full RCV1 data set
-                     "RCV1" = {
-                         tree <- xmlTreeParse(object)
-                         tdcl <- new("textdoccol", .Data = xmlApply(xmlRoot(tree), parseNewsItem, stripWhiteSpace, toLower))
-                     },
-                     # Text in a special CSV format (as e.g. exported from an Excel sheet)
-                     # For details on the file format see data/Umfrage.csv
-                     # The first argument has to be a single file
+                     # Text in a special CSV format
+                     # For details on the file format see the R documentation file
+                     # The first argument is a directory with .csv files
                      "CSV" = {
-                         m <- as.matrix(read.csv(object))
-                         l <- vector("list", dim(m)[1])
-                         for (i in 1:dim(m)[1]) {
-                             author <- "Not yet implemented"
-                             timestamp <- date()
-                             description <- "Not yet implemented"
-                             id <- i
-                             corpus <- as.character(m[i,2:dim(m)[2]])
-                             if (stripWhiteSpace)
-                                 corpus <- gsub("[[:space:]]+", " ", corpus)
-                             if (toLower)
-                                 corpus <- tolower(corpus)
-                             origin <- "Not yet implemented"
-                             heading <- "Not yet implemented"
+                         tdl <- sapply(dir(object,
+                                           pattern = ".csv",
+                                           full.names = TRUE),
+                                       function(file) {
+                                           m <- as.matrix(read.csv(file, header = FALSE))
+                                           l <- vector("list", dim(m)[1])
+                                           for (i in 1:dim(m)[1]) {
+                                               author <- ""
+                                               timestamp <- date()
+                                               description <- ""
+                                               id <- as.integer(m[i,1])
+                                               corpus <- as.character(m[i,2:dim(m)[2]])
+                                               if (stripWhiteSpace)
+                                                   corpus <- gsub("[[:space:]]+", " ", corpus)
+                                               if (toLower)
+                                                   corpus <- tolower(corpus)
+                                               origin <- "CSV"
+                                               heading <- ""
 
-                             l[[i]] <- new("textdocument", .Data = corpus, author = author, timestamp = timestamp,
-                                 description = description, id = id, origin = origin, heading = heading)
-                         }
-                         tdcl <- new("textdoccol", .Data = l)
+                                               l[[i]] <- new("textdocument", .Data = corpus, author = author, timestamp = timestamp,
+                                                             description = description, id = id, origin = origin, heading = heading)
+                                           }
+                                           l
+                                       })
+                         tdcl <- new("textdoccol", .Data = tdl)
+                     },
+                     # Read in text documents in XML Reuters Corpus Volume 1 (RCV1) format
+                     # The first argument is a directory with the RCV1 XML files
+                     "RCV1" = {
+                         tdl <- sapply(dir(object,
+                                           pattern = ".xml",
+                                           full.names = TRUE),
+                                       function(file) {
+                                           tree <- xmlTreeParse(file)
+                                           xmlApply(xmlRoot(tree), parseNewsItem, stripWhiteSpace, toLower)
+                                       })
+                         tdcl <- new("textdoccol", .Data = tdl)
                      },
                      # Read in text documents in Reuters-21578 XML (not SGML) format
                      # Typically the first argument will be a directory where we can
@@ -50,12 +60,12 @@ setMethod("textdoccol",
                                            tree <- xmlTreeParse(file)
                                            xmlApply(xmlRoot(tree), parseReuters, stripWhiteSpace, toLower)
                                        })
-
                          tdcl <- new("textdoccol", .Data = tdl)
                      })
               tdcl
           })
 
+# TODO: Implement lacking fields as soon I have access to the original RCV1
 # Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file
 parseNewsItem <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
     author <- "Not yet implemented"

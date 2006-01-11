@@ -1,5 +1,8 @@
 2006-01-11  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
+	* R/textdoccol.R: Restructured and extended file import
+	mechanism.
+
 	* inst/doc/clustering.Rnw: Adapted vignette for use with
 	ReutNews.rda
 
