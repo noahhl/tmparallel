@@ -2,7 +2,6 @@
  * Purpose: 	Generate a split for the Reuters21578 data set
  * Usage:	genSplit <xml-file> <xpath-expr>
  * Author: 	Ingo Feinerer
- * Origin:      xpath2.c libxml2 example from Aleksey Sanin and Daniel Veillard
  */
 #include <stdlib.h>
 #include <stdio.h>
@@ -14,15 +13,13 @@
 #include <libxml/xpath.h>
 #include <libxml/xpathInternals.h>
 
-#if defined(LIBXML_XPATH_ENABLED) && defined(LIBXML_SAX1_ENABLED) && \
-    defined(LIBXML_OUTPUT_ENABLED)
+#if defined(LIBXML_XPATH_ENABLED) && defined(LIBXML_SAX1_ENABLED) && defined(LIBXML_OUTPUT_ENABLED)
 
 static void usage(const char *name);
-static int evalXPathExpr(const char *filename, const xmlChar * xpathExpr);
-static void delete_xpath_nodes(xmlNodeSetPtr nodes);
+static int evalXPathExpr(const char *filename, const xmlChar *xpathExpr);
+static void deleteXPathNodes(xmlNodeSetPtr nodes);
 
-int 
-main(int argc, char **argv) {
+int main(int argc, char **argv) {
     /* Parse command line and process file */
     if (argc != 3) {
 	fprintf(stderr, "Error: wrong number of arguments.\n");
@@ -42,11 +39,7 @@ main(int argc, char **argv) {
 
     /* Shutdown libxml */
     xmlCleanupParser();
-    
-    /*
-     * this is to debug memory for regression tests
-     */
-    xmlMemoryDump();
+
     return 0;
 }
 
@@ -56,8 +49,7 @@ main(int argc, char **argv) {
  *
  * Prints usage information.
  */
-static void 
-usage(const char *name) {
+static void usage(const char *name) {
     assert(name);
     
     fprintf(stderr, "Usage: %s <xml-file> <xpath-expr>\n", name);
@@ -68,13 +60,13 @@ usage(const char *name) {
  * @filename:		the input XML filename.
  * @xpathExpr:		the xpath expression for evaluation.
  *
- * Parses input XML file, evaluates XPath expression and delete the nodes
- * then print the result.
+ * Parses input XML file, evaluates XPath expression and deletes the nodes,
+ * then prints the result.
  *
  * Returns 0 on success and a negative value otherwise.
  */
 static int 
-evalXPathExpr(const char* filename, const xmlChar* xpathExpr) {
+evalXPathExpr(const char *filename, const xmlChar *xpathExpr) {
     xmlDocPtr doc;
     xmlXPathContextPtr xpathCtx; 
     xmlXPathObjectPtr xpathObj; 
@@ -107,7 +99,7 @@ evalXPathExpr(const char* filename, const xmlChar* xpathExpr) {
     }
 
     /* Delete selected nodes */
-    delete_xpath_nodes(xpathObj->nodesetval);
+    deleteXPathNodes(xpathObj->nodesetval);
     
     /* Cleanup of XPath data */
     xmlXPathFreeObject(xpathObj);
@@ -116,7 +108,6 @@ evalXPathExpr(const char* filename, const xmlChar* xpathExpr) {
     /* dump the resulting document */
     xmlDocDump(stdout, doc);
 
-
     /* free the document */
     xmlFreeDoc(doc); 
     
@@ -124,11 +115,10 @@ evalXPathExpr(const char* filename, const xmlChar* xpathExpr) {
 }
 
 /**
- * delete_xpath_nodes:
+ * deleteXPathNodes:
  * @nodes:		the nodes set.
  */
-static void
-delete_xpath_nodes(xmlNodeSetPtr nodes) {
+static void deleteXPathNodes(xmlNodeSetPtr nodes) {
     int size;
     int i;
 

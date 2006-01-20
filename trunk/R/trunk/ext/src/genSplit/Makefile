@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = `xml2-config --cflags`
+CFLAGS = -DNDEBUG -O2 `xml2-config --cflags`
 LIBS = `xml2-config --libs`
 
 all: genSplit

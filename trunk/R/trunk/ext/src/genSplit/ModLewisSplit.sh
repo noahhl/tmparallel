@@ -14,5 +14,5 @@ then
 fi
 for filename in $*
 do
-    ./genSplit $filename "/LEWIS/REUTERS[@TOPICS='BYPASS'] | /LEWIS/REUTERS[@LEWISSPLIT='NOT-USED']" > $filename.ModLewis.xml
+    ./genSplit $filename "/LEWIS/REUTERS[@TOPICS='BYPASS'] | /LEWIS/REUTERS[@LEWISSPLIT='NOT-USED']" > ${filename%.*}.ModLewis.xml
 done
