@@ -11,9 +11,8 @@ setMethod("textdoccol",
                      # For details on the file format see the R documentation file
                      # The first argument is a directory with .csv files
                      "CSV" = {
-                         tdl <- sapply(dir(object,
-                                           pattern = ".csv",
-                                           full.names = TRUE),
+                         filelist <- dir(object, pattern = ".csv",full.names = TRUE)
+                         tdl <- sapply(filelist,
                                        function(file) {
                                            m <- as.matrix(read.csv(file, header = FALSE))
                                            l <- vector("list", dim(m)[1])
@@ -35,32 +34,39 @@ setMethod("textdoccol",
                                            }
                                            l
                                        })
-                         tdcl <- new("textdoccol", .Data = tdl)
+                         if (length(filelist) > 1)
+                             tdcl <- new("textdoccol", .Data = unlist(tdl, recursive = FALSE))
+                         else
+                             tdcl <- new("textdoccol", .Data = tdl)
                      },
                      # Read in text documents in XML Reuters Corpus Volume 1 (RCV1) format
                      # The first argument is a directory with the RCV1 XML files
                      "RCV1" = {
-                         tdl <- sapply(dir(object,
-                                           pattern = ".xml",
-                                           full.names = TRUE),
+                         filelist <- dir(object, pattern = ".xml",full.names = TRUE)
+                         tdl <- sapply(filelist,
                                        function(file) {
                                            tree <- xmlTreeParse(file)
                                            xmlApply(xmlRoot(tree), parseNewsItem, stripWhiteSpace, toLower)
                                        })
-                         tdcl <- new("textdoccol", .Data = tdl)
+                         if (length(filelist) > 1)
+                             tdcl <- new("textdoccol", .Data = unlist(tdl, recursive = FALSE))
+                         else
+                             tdcl <- new("textdoccol", .Data = tdl)
                      },
                      # Read in text documents in Reuters-21578 XML (not SGML) format
                      # Typically the first argument will be a directory where we can
                      # find the files reut2-000.xml ... reut2-021.xml
                      "REUT21578" = {
-                         tdl <- sapply(dir(object,
-                                           pattern = ".xml",
-                                           full.names = TRUE),
+                         filelist <- dir(object, pattern = ".xml",full.names = TRUE)
+                         tdl <- sapply(filelist,
                                        function(file) {
                                            tree <- xmlTreeParse(file)
                                            xmlApply(xmlRoot(tree), parseReuters, stripWhiteSpace, toLower)
                                        })
-                         tdcl <- new("textdoccol", .Data = tdl)
+                         if (length(filelist) > 1)
+                             tdcl <- new("textdoccol", .Data = unlist(tdl, recursive = FALSE))
+                         else
+                             tdcl <- new("textdoccol", .Data = tdl)
                      })
               tdcl
           })
