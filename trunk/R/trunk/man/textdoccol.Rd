@@ -35,6 +35,15 @@ stripWhiteSpace = FALSE, toLower = FALSE)
       for details.
 
       TODO: Insert link to the Reuters data set in XML format.
+      \item \code{RIS} Austrian Rechtsinformationssystem des Bundes HTML
+      format.
+
+      Each HTML file has to follow this name schema:
+      \code{\emph{Geschäftszahl}.html}. This ensures that we can
+      identify each document, as the body of the HTML file is not
+      further investigated.
+
+      Austrian RIS: \url{http://ris.bka.gv.at/}
     }
   }
   \item{stripWhiteSpace}{if set, replaces any white space in the texts with a

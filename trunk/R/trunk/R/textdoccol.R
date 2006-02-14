@@ -5,7 +5,7 @@ setMethod("textdoccol",
           c("character", "character", "logical", "logical"),
           function(object, inputType = "CSV", stripWhiteSpace = FALSE, toLower = FALSE) {
               # Add a new type for each unique input source format
-              type <- match.arg(inputType,c("CSV","RCV1","REUT21578"))
+              type <- match.arg(inputType,c("CSV", "RCV1", "REUT21578", "RIS"))
               switch(type,
                      # Text in a special CSV format
                      # For details on the file format see the R documentation file
@@ -42,7 +42,7 @@ setMethod("textdoccol",
                      # Read in text documents in XML Reuters Corpus Volume 1 (RCV1) format
                      # The first argument is a directory with the RCV1 XML files
                      "RCV1" = {
-                         filelist <- dir(object, pattern = ".xml",full.names = TRUE)
+                         filelist <- dir(object, pattern = ".xml", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
                                            tree <- xmlTreeParse(file)
@@ -57,7 +57,7 @@ setMethod("textdoccol",
                      # Typically the first argument will be a directory where we can
                      # find the files reut2-000.xml ... reut2-021.xml
                      "REUT21578" = {
-                         filelist <- dir(object, pattern = ".xml",full.names = TRUE)
+                         filelist <- dir(object, pattern = ".xml", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
                                            tree <- xmlTreeParse(file)
@@ -67,9 +67,48 @@ setMethod("textdoccol",
                              tdcl <- new("textdoccol", .Data = unlist(tdl, recursive = FALSE))
                          else
                              tdcl <- new("textdoccol", .Data = tdl)
+                     },
+                     # Read in HTML documents as used by http://ris.bka.gv.at/vwgh
+                     # The file name must be named according to the following schema:
+                     # Geschäftszahl.html, e.g. 2002130005.html
+                     "RIS" = {
+                         filelist <- dir(object, pattern = ".html", full.names = TRUE)
+                         tdl <- sapply(filelist,
+                                       function(file) {
+                                           l <- list()
+                                           l[[length(l) + 1]] <- parseHTML(file, stripWhiteSpace, toLower)
+                                           l
+                                       })
+                         tdcl <- new("textdoccol", .Data = tdl)
                      })
               tdcl
           })
+
+# Parse an HTML document
+parseHTML <- function(file, stripWhiteSpace = FALSE, toLower = FALSE) {
+    author <- ""
+    timestamp <- date()
+    description <- ""
+    id <- as.integer(gsub(".html", "", basename(file)))
+
+    tree <- htmlTreeParse(file)
+    htmlElem <- unlist(tree$children$html$children)
+    textElem <- htmlElem[which(regexpr("text.value", names(htmlElem)) > 0)]
+    names(textElem) <- NULL
+
+    corpus <- paste(textElem, collapse = " ")
+    origin <- ""
+
+    if (stripWhiteSpace)
+        corpus <- gsub("[[:space:]]+", " ", corpus)
+    if (toLower)
+        corpus <- tolower(corpus)
+
+    heading <- ""
+
+    new("textdocument", .Data = corpus, author = author, timestamp = timestamp,
+        description = description, id = id, origin = origin, heading = heading)
+}
 
 # TODO: Implement lacking fields as soon I have access to the original RCV1
 # Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file

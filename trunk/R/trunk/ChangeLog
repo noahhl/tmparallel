@@ -1,3 +1,7 @@
+2006-02-14  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/textdoccol.R: Added RIS HTML input format.
+
 2006-01-21  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/textdoccol.R: Removed bug that caused invalid text document
