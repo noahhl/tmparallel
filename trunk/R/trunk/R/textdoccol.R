@@ -11,7 +11,7 @@ setMethod("textdoccol",
                      # For details on the file format see the R documentation file
                      # The first argument is a directory with .csv files
                      "CSV" = {
-                         filelist <- dir(object, pattern = ".csv",full.names = TRUE)
+                         filelist <- dir(object, pattern = ".csv", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
                                            m <- as.matrix(read.csv(file, header = FALSE))
@@ -69,15 +69,17 @@ setMethod("textdoccol",
                              tdcl <- new("textdoccol", .Data = tdl)
                      },
                      # Read in HTML documents as used by http://ris.bka.gv.at/vwgh
-                     # The file name must be named according to the following schema:
-                     # Geschäftszahl.html, e.g. 2002130005.html
                      "RIS" = {
                          filelist <- dir(object, pattern = ".html", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
-                                           l <- list()
-                                           l[[length(l) + 1]] <- parseHTML(file, stripWhiteSpace, toLower)
-                                           l
+                                           # Ignore warnings from misformed HTML documents
+                                           suppressWarnings(RISDoc <- parseHTML(file, stripWhiteSpace, toLower))
+                                           if (!is.null(RISDoc)) {
+                                               l <- list()
+                                               l[[length(l) + 1]] <- RISDoc
+                                               l
+                                           }
                                        })
                          tdcl <- new("textdoccol", .Data = tdl)
                      })
@@ -89,14 +91,26 @@ parseHTML <- function(file, stripWhiteSpace = FALSE, toLower = FALSE) {
     author <- ""
     timestamp <- date()
     description <- ""
-    id <- as.integer(gsub(".html", "", basename(file)))
 
     tree <- htmlTreeParse(file)
     htmlElem <- unlist(tree$children$html$children)
+
+    if (is.null(htmlElem))
+        stop(paste("Empty document", file, "cannot be processed."))
+
     textElem <- htmlElem[which(regexpr("text.value", names(htmlElem)) > 0)]
     names(textElem) <- NULL
 
     corpus <- paste(textElem, collapse = " ")
+
+    year <- substring(corpus, regexpr("..../../", corpus), regexpr("..../../", corpus) + 3)
+    senat <- substring(corpus, regexpr("..../../", corpus) + 5, regexpr("..../../", corpus) + 6)
+    number <- substring(corpus, regexpr("..../../", corpus) + 8, regexpr("..../../", corpus) + 11)
+
+    id <- as.integer(paste(year, senat, number, sep = ""))
+
+    if (is.na(id))
+        stop(paste("Cannot extract 'Geschaeftszahl' out of malformed document", file))
     origin <- ""
 
     if (stripWhiteSpace)
