@@ -5,7 +5,7 @@
 # Text document
 setClass("textdocument",
          representation(author = "character",
-                        timestamp = "character",
+                        datetimestamp = "character",
                         description = "character",
                         id = "integer",
                         origin = "character",
@@ -15,18 +15,20 @@ setClass("textdocument",
 if (!isGeneric("author")) {
     if (is.function("author"))
         fun <- author
-    else fun <- function(object) standardGeneric("author")
+    else
+        fun <- function(object) standardGeneric("author")
     setGeneric("author", fun)
 }
 setMethod("author", "textdocument", function(object) object@author)
 
-if (!isGeneric("timestamp")) {
-    if (is.function("timestamp"))
+if (!isGeneric("datetimestamp")) {
+    if (is.function("datetimestamp"))
         fun <- timestamp
-    else fun <- function(object) standardGeneric("timestamp")
-    setGeneric("timestamp", fun)
+    else
+        fun <- function(object) standardGeneric("datetimestamp")
+    setGeneric("datetimestamp", fun)
 }
-setMethod("timestamp", "textdocument", function(object) object@timestamp)
+setMethod("datetimestamp", "textdocument", function(object) object@timestamp)
 
 if (!isGeneric("description")) {
     if (is.function("description"))

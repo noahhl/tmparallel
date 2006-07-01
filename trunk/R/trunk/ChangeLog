@@ -1,3 +1,8 @@
+2006-07-01  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/: Updated generic S4 methods to comply with signature changes
+	in newer versions of R (> 2.3)
+
 2006-03-12  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* ext/R/importRIS.R: Automatic RIS import is now possible.

@@ -1,8 +1,8 @@
 # Author: Ingo Feinerer
 
-setGeneric("textdoccol", function(object, ...) standardGeneric("textdoccol"))
+setGeneric("textdoccol", function(object, inputType = "CSV", stripWhiteSpace = FALSE, toLower = FALSE) standardGeneric("textdoccol"))
 setMethod("textdoccol",
-          c("character", "character", "logical", "logical"),
+          c("character"),
           function(object, inputType = "CSV", stripWhiteSpace = FALSE, toLower = FALSE) {
               # Add a new type for each unique input source format
               type <- match.arg(inputType,c("CSV", "RCV1", "REUT21578", "RIS"))
@@ -18,7 +18,7 @@ setMethod("textdoccol",
                                            l <- vector("list", dim(m)[1])
                                            for (i in 1:dim(m)[1]) {
                                                author <- ""
-                                               timestamp <- date()
+                                               datetimestamp <- date()
                                                description <- ""
                                                id <- as.integer(m[i,1])
                                                corpus <- as.character(m[i,2:dim(m)[2]])
@@ -29,7 +29,7 @@ setMethod("textdoccol",
                                                origin <- "CSV"
                                                heading <- ""
 
-                                               l[[i]] <- new("textdocument", .Data = corpus, author = author, timestamp = timestamp,
+                                               l[[i]] <- new("textdocument", .Data = corpus, author = author, datetimestamp = datetimestamp,
                                                              description = description, id = id, origin = origin, heading = heading)
                                            }
                                            l
@@ -86,10 +86,10 @@ setMethod("textdoccol",
               tdcl
           })
 
-# Parse an HTML document
+# Parse an Austrian RIS HTML document
 parseHTML <- function(file, stripWhiteSpace = FALSE, toLower = FALSE) {
     author <- ""
-    timestamp <- date()
+    datetimestamp <- date()
     description <- ""
 
     tree <- htmlTreeParse(file)
@@ -120,7 +120,7 @@ parseHTML <- function(file, stripWhiteSpace = FALSE, toLower = FALSE) {
 
     heading <- ""
 
-    new("textdocument", .Data = corpus, author = author, timestamp = timestamp,
+    new("textdocument", .Data = corpus, author = author, datetimestamp = datetimestamp,
         description = description, id = id, origin = origin, heading = heading)
 }
 
@@ -128,7 +128,7 @@ parseHTML <- function(file, stripWhiteSpace = FALSE, toLower = FALSE) {
 # Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file
 parseNewsItem <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
     author <- "Not yet implemented"
-    timestamp <- xmlAttrs(node)[["date"]]
+    datetimestamp <- xmlAttrs(node)[["date"]]
     description <- "Not yet implemented"
     id <- as.integer(xmlAttrs(node)[["itemid"]])
     origin <- "Reuters Corpus Volume 1 XML"
@@ -141,7 +141,7 @@ parseNewsItem <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
 
     heading <- xmlValue(node[["title"]])
 
-    new("textdocument", .Data = corpus, author = author, timestamp = timestamp,
+    new("textdocument", .Data = corpus, author = author, datetimestamp = datetimestamp,
         description = description, id = id, origin = origin, heading = heading)
 }
 
@@ -153,7 +153,7 @@ parseReuters <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
     else
         author <- ""
 
-    timestamp <- xmlValue(node[["DATE"]])
+    datetimestamp <- xmlValue(node[["DATE"]])
     description <- ""
     id <- as.integer(xmlAttrs(node)[["NEWID"]])
 
@@ -176,6 +176,6 @@ parseReuters <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
     else
         heading <- ""
 
-    new("textdocument", .Data = corpus, author = author, timestamp = timestamp,
+    new("textdocument", .Data = corpus, author = author, datetimestamp = datetimestamp,
         description = description, id = id, origin = origin, heading = heading)
 }
