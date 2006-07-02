@@ -2,13 +2,13 @@
 \docType{class}
 \alias{textdocument-class}
 \alias{author}
-\alias{timestamp}
+\alias{datetimestamp}
 \alias{description}
 \alias{id}
 \alias{origin}
 \alias{heading}
 \alias{author,textdocument-method}
-\alias{timestamp,textdocument-method}
+\alias{datetimestamp,textdocument-method}
 \alias{description,textdocument-method}
 \alias{id,textdocument-method}
 \alias{origin,textdocument-method}

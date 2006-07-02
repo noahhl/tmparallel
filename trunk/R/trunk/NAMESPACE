@@ -5,7 +5,7 @@ export("textdoccol", "termdocmatrix",
 
        # textdocument
        "author",
-       "timestamp",
+       "datetimestamp",
        "description",
        "id",
        "origin",

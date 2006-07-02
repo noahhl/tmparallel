@@ -12,8 +12,8 @@ performed with \texttt{textmin}.
 \section*{Initialization}
 <<>>=
 library(textmin)
-data(tiny)
-tdm <- termdocmatrix(tiny)
+data(crude)
+tdm <- termdocmatrix(crude)
 @
 creates a text document collection and the term-document matrix for
 it.
@@ -38,6 +38,6 @@ document collection with String Kernels form the
 <<>>=
 library(kernlab)
 stringkern <- stringdot(type = "string")
-specc(tiny, 2, kernel = stringkern)
+specc(crude, 2, kernel = stringkern)
 @
 \end{document}
