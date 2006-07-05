@@ -1,0 +1,16 @@
+import(methods)
+import(XML)
+export("textdoccol", "termdocmatrix",
+       # Accessor functions
+
+       # textdocument
+       "author",
+       "datetimestamp",
+       "description",
+       "id",
+       "origin",
+       "heading",
+
+       # termdocmatrix
+       "weighting")
+exportClasses("textdocument", "textdoccol", "termdocmatrix")
