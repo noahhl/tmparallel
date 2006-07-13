@@ -1,5 +1,7 @@
 # Author: Ingo Feinerer
-# The preprocessing code was adapted from the R package "lsa" written by Fridolin Wild.
+#
+# Copyright notice:
+# Parts of the preprocessing code were adapted from the "lsa" R package. Special thanks to Fridolin Wild.
 
 # Input matrix has to be in term-frequency format
 weightMatrix <- function(m, weighting = "tf") {

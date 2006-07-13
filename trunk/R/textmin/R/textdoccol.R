@@ -124,7 +124,6 @@ parseHTML <- function(file, stripWhiteSpace = FALSE, toLower = FALSE) {
         description = description, id = id, origin = origin, heading = heading)
 }
 
-# TODO: Implement lacking fields as soon I have access to the original RCV1
 # Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file
 parseNewsItem <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
     author <- "Not yet implemented"
