@@ -1,11 +1,11 @@
 # Author: Ingo Feinerer
 
-setGeneric("textdoccol", function(object, inputType = "CSV", stripWhiteSpace = FALSE, toLower = FALSE) standardGeneric("textdoccol"))
-setMethod("textdoccol",
+setGeneric("TextDocCol", function(object, inputType = "CSV", stripWhiteSpace = FALSE, toLower = FALSE) standardGeneric("TextDocCol"))
+setMethod("TextDocCol",
           c("character"),
           function(object, inputType = "CSV", stripWhiteSpace = FALSE, toLower = FALSE) {
               # Add a new type for each unique input source format
-              type <- match.arg(inputType,c("CSV", "RCV1", "REUT21578", "RIS"))
+              type <- match.arg(inputType,c("CSV", "RCV1_PLAIN", "REUT21578_PLAIN", "REUT21578_XML", "RIS"))
               switch(type,
                      # Text in a special CSV format
                      # For details on the file format see the R documentation file
@@ -29,44 +29,55 @@ setMethod("textdoccol",
                                                origin <- "CSV"
                                                heading <- ""
 
-                                               l[[i]] <- new("textdocument", .Data = corpus, author = author, datetimestamp = datetimestamp,
-                                                             description = description, id = id, origin = origin, heading = heading)
+                                               l[[i]] <- new("PlainTextDocument", .Data = corpus, Author = author, DateTimeStamp = datetimestamp,
+                                                             Description = description, ID = id, Origin = origin, Heading = heading)
                                            }
                                            l
                                        })
                          if (length(filelist) > 1)
-                             tdcl <- new("textdoccol", .Data = unlist(tdl, recursive = FALSE))
+                             tdcl <- new("TextDocCol", .Data = unlist(tdl, recursive = FALSE))
                          else
-                             tdcl <- new("textdoccol", .Data = tdl)
+                             tdcl <- new("TextDocCol", .Data = tdl)
                      },
                      # Read in text documents in XML Reuters Corpus Volume 1 (RCV1) format
                      # The first argument is a directory with the RCV1 XML files
-                     "RCV1" = {
+                     "RCV1_PLAIN" = {
                          filelist <- dir(object, pattern = ".xml", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
                                            tree <- xmlTreeParse(file)
-                                           xmlApply(xmlRoot(tree), parseNewsItem, stripWhiteSpace, toLower)
+                                           xmlApply(xmlRoot(tree), parseNewsItemPlain, stripWhiteSpace, toLower)
                                        })
                          if (length(filelist) > 1)
-                             tdcl <- new("textdoccol", .Data = unlist(tdl, recursive = FALSE))
+                             tdcl <- new("TextDocCol", .Data = unlist(tdl, recursive = FALSE))
                          else
-                             tdcl <- new("textdoccol", .Data = tdl)
+                             tdcl <- new("TextDocCol", .Data = tdl)
                      },
                      # Read in text documents in Reuters-21578 XML (not SGML) format
                      # Typically the first argument will be a directory where we can
                      # find the files reut2-000.xml ... reut2-021.xml
-                     "REUT21578" = {
+                     "REUT21578_PLAIN" = {
                          filelist <- dir(object, pattern = ".xml", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
                                            tree <- xmlTreeParse(file)
-                                           xmlApply(xmlRoot(tree), parseReuters, stripWhiteSpace, toLower)
+                                           xmlApply(xmlRoot(tree), parseReutersPlain, stripWhiteSpace, toLower)
                                        })
                          if (length(filelist) > 1)
-                             tdcl <- new("textdoccol", .Data = unlist(tdl, recursive = FALSE))
+                             tdcl <- new("TextDocCol", .Data = unlist(tdl, recursive = FALSE))
                          else
-                             tdcl <- new("textdoccol", .Data = tdl)
+                             tdcl <- new("TextDocCol", .Data = tdl)
+                     },
+                     "REUT21578_XML" = {
+                         filelist <- dir(object, pattern = ".xml", full.names = TRUE)
+                         tdl <- sapply(filelist,
+                                       function(file) {
+                                           parseReutersXML(file)
+                                       })
+                         if (length(filelist) > 1)
+                             tdcl <- new("TextDocCol", .Data = unlist(tdl, recursive = FALSE))
+                         else
+                             tdcl <- new("TextDocCol", .Data = tdl)
                      },
                      # Read in HTML documents as used by http://ris.bka.gv.at/vwgh
                      "RIS" = {
@@ -74,20 +85,20 @@ setMethod("textdoccol",
                          tdl <- sapply(filelist,
                                        function(file) {
                                            # Ignore warnings from misformed HTML documents
-                                           suppressWarnings(RISDoc <- parseHTML(file, stripWhiteSpace, toLower))
+                                           suppressWarnings(RISDoc <- parseHTMLPlain(file, stripWhiteSpace, toLower))
                                            if (!is.null(RISDoc)) {
                                                l <- list()
                                                l[[length(l) + 1]] <- RISDoc
                                                l
                                            }
                                        })
-                         tdcl <- new("textdoccol", .Data = tdl)
+                         tdcl <- new("TextDocCol", .Data = tdl)
                      })
               tdcl
           })
 
 # Parse an Austrian RIS HTML document
-parseHTML <- function(file, stripWhiteSpace = FALSE, toLower = FALSE) {
+parseHTMLPlain <- function(file, stripWhiteSpace = FALSE, toLower = FALSE) {
     author <- ""
     datetimestamp <- date()
     description <- ""
@@ -120,12 +131,12 @@ parseHTML <- function(file, stripWhiteSpace = FALSE, toLower = FALSE) {
 
     heading <- ""
 
-    new("textdocument", .Data = corpus, author = author, datetimestamp = datetimestamp,
-        description = description, id = id, origin = origin, heading = heading)
+    new("PlainTextDocument", .Data = corpus, Author = author, DateTimeStamp = datetimestamp,
+        Description = description, ID = id, Origin = origin, Heading = heading)
 }
 
 # Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file
-parseNewsItem <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
+parseNewsItemPlain <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
     author <- "Not yet implemented"
     datetimestamp <- xmlAttrs(node)[["date"]]
     description <- "Not yet implemented"
@@ -140,12 +151,12 @@ parseNewsItem <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
 
     heading <- xmlValue(node[["title"]])
 
-    new("textdocument", .Data = corpus, author = author, datetimestamp = datetimestamp,
-        description = description, id = id, origin = origin, heading = heading)
+    new("PlainTextDocument", .Data = corpus, Author = author, DateTimeStamp = datetimestamp,
+        Description = description, ID = id, Origin = origin, Heading = heading)
 }
 
 # Parse a <REUTERS></REUTERS> element from a well-formed Reuters-21578 XML file
-parseReuters <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
+parseReutersPlain <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
     # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
     if (!is.null(node[["TEXT"]][["AUTHOR"]]))
         author <- xmlValue(node[["TEXT"]][["AUTHOR"]])
@@ -175,6 +186,102 @@ parseReuters <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
     else
         heading <- ""
 
-    new("textdocument", .Data = corpus, author = author, datetimestamp = datetimestamp,
-        description = description, id = id, origin = origin, heading = heading)
+    # TODO: Check whether <TOPICS></TOPICS> tags are obligatory
+    topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
+
+    new("PlainTextDocument", .Data = corpus, Cached = 1, Author = author, DateTimeStamp = datetimestamp,
+        Description = description, ID = id, Origin = origin, Heading = heading, LocalMetaData = list(Topics = topics))
 }
+
+# Parse a <REUTERS></REUTERS> element from a well-formed Reuters-21578 XML file
+parseReutersXML<- function(file) {
+    new("XMLTextDocument", FileName = file, Cached = 0, Author = "REUTERS", DateTimeStamp = date(),
+        Description = "Reuters21578 file containing several news articles", ID = as.integer(0),
+        Origin = "Reuters-21578 XML", Heading = "Reuters21578 news articles")
+}
+
+setGeneric("loadFileIntoMem", function(object) standardGeneric("loadFileIntoMem"))
+setMethod("loadFileIntoMem",
+          c("XMLTextDocument"),
+          function(object) {
+              if (object@Cached == 0) {
+                  file <- object@FileName
+                  doc <- xmlTreeParse(file)
+                  class(doc) <- "list"
+                  object@.Data <- doc
+                  object@Cached <- 1
+                  return(object)
+              } else {
+                  return(object)
+              }
+          })
+
+setGeneric("transformTextDocCol", function(object, FUN, ...) standardGeneric("transformTextDocCol"))
+setMethod("transformTextDocCol",
+          c("TextDocCol"),
+          function(object, FUN, ...) {
+              lapply(object, FUN, ...)
+          })
+
+setGeneric("toPlainTextDocument", function(object, FUN, ...) standardGeneric("toPlainTextDocument"))
+setMethod("toPlainTextDocument",
+          c("PlainTextDocument"),
+          function(object, FUN, ...) {
+              return(object)
+          })
+setMethod("toPlainTextDocument",
+          c("XMLTextDocument"),
+          function(object, FUN, ...) {
+              if (object@Cached == 0)
+                  object <- loadFileIntoMem(object)
+
+              corpus <- object@.Data
+
+              # As XMLDocument is no native S4 class, restore valid information
+              class(corpus) <- "XMLDocument"
+              names(corpus) <- c("doc","dtd")
+
+              return(xmlApply(xmlRoot(corpus), FUN, ...))
+          })
+
+setGeneric("stemTextDocument", function(object) standardGeneric("stemTextDocument"))
+setMethod("stemTextDocument",
+          c("PlainTextDocument"),
+          function(object) {
+              require(Rstem)
+              splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
+              stemmedCorpus <- wordStem(splittedCorpus)
+              object@.Data <- paste(stemmedCorpus, collapse = " ")
+              return (object)
+          })
+
+setGeneric("removeStopWordsInTextDocument", function(object, stopwords) standardGeneric("removeStopWordsInTextDocument"))
+setMethod("removeStopWordsInTextDocument",
+          c("PlainTextDocument", "character"),
+          function(object, stopwords) {
+              require(Rstem)
+              splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
+              noStopwordsCorpus <- splittedCorpus[!splittedCorpus %in% stopwords]
+              object@.Data <- paste(noStopwordsCorpus, collapse = " ")
+              return (object)
+          })
+
+setGeneric("filterTextDocCol", function(object, FUN, ...) standardGeneric("filterTextDocCol"))
+setMethod("filterTextDocCol",
+          c("TextDocCol"),
+          function(object, FUN, ...) {
+              sapply(object, FUN, ...)
+          })
+
+setGeneric("filterREUT21578Topics", function(object, topics, ...) standardGeneric("filterREUT21578Topics"))
+setMethod("filterREUT21578Topics",
+          c("PlainTextDocument", "character"),
+          function(object, topics, ...) {
+              if (object@Cached == 0)
+                  object <- loadFileIntoMem(object)
+
+              if (any(object@LocalMetaData$Topics %in% topics))
+                  return(TRUE)
+              else
+                  return(FALSE)
+          })
