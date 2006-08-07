@@ -23,5 +23,8 @@ export("TextDocCol", "TermDocMatrix",
        "stemTextDocument",
        "removeStopWordsInTextDocument",
        "filterTextDocCol",
-       "filterREUT21578Topics")
+       "filterREUT21578Topics",
+       "parseReutersPlain",
+       "parseReutersXML",
+       "parseNewsItemPlain")
 exportClasses("TextDocument", "PlainTextDocument", "XMLTextDocument", "TextDocCol", "TextRepository", "TermDocMatrix")

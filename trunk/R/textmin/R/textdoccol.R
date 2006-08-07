@@ -5,7 +5,7 @@ setMethod("TextDocCol",
           c("character"),
           function(object, inputType = "CSV", stripWhiteSpace = FALSE, toLower = FALSE) {
               # Add a new type for each unique input source format
-              type <- match.arg(inputType,c("CSV", "RCV1_PLAIN", "REUT21578_PLAIN", "REUT21578_XML", "RIS"))
+              type <- match.arg(inputType,c("CSV", "RCV1", "REUT21578", "REUT21578_XML", "RIS"))
               switch(type,
                      # Text in a special CSV format
                      # For details on the file format see the R documentation file
@@ -41,7 +41,7 @@ setMethod("TextDocCol",
                      },
                      # Read in text documents in XML Reuters Corpus Volume 1 (RCV1) format
                      # The first argument is a directory with the RCV1 XML files
-                     "RCV1_PLAIN" = {
+                     "RCV1" = {
                          filelist <- dir(object, pattern = ".xml", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
@@ -56,7 +56,7 @@ setMethod("TextDocCol",
                      # Read in text documents in Reuters-21578 XML (not SGML) format
                      # Typically the first argument will be a directory where we can
                      # find the files reut2-000.xml ... reut2-021.xml
-                     "REUT21578_PLAIN" = {
+                     "REUT21578" = {
                          filelist <- dir(object, pattern = ".xml", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
@@ -74,10 +74,7 @@ setMethod("TextDocCol",
                                        function(file) {
                                            parseReutersXML(file)
                                        })
-                         if (length(filelist) > 1)
-                             tdcl <- new("TextDocCol", .Data = unlist(tdl, recursive = FALSE))
-                         else
-                             tdcl <- new("TextDocCol", .Data = tdl)
+                         tdcl <- new("TextDocCol", .Data = tdl)
                      },
                      # Read in HTML documents as used by http://ris.bka.gv.at/vwgh
                      "RIS" = {
@@ -85,7 +82,7 @@ setMethod("TextDocCol",
                          tdl <- sapply(filelist,
                                        function(file) {
                                            # Ignore warnings from misformed HTML documents
-                                           suppressWarnings(RISDoc <- parseHTMLPlain(file, stripWhiteSpace, toLower))
+                                           suppressWarnings(RISDoc <- parseRISPlain(file, stripWhiteSpace, toLower))
                                            if (!is.null(RISDoc)) {
                                                l <- list()
                                                l[[length(l) + 1]] <- RISDoc
@@ -98,7 +95,7 @@ setMethod("TextDocCol",
           })
 
 # Parse an Austrian RIS HTML document
-parseHTMLPlain <- function(file, stripWhiteSpace = FALSE, toLower = FALSE) {
+parseRISPlain <- function(file, stripWhiteSpace = FALSE, toLower = FALSE) {
     author <- ""
     datetimestamp <- date()
     description <- ""
@@ -186,7 +183,6 @@ parseReutersPlain <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
     else
         heading <- ""
 
-    # TODO: Check whether <TOPICS></TOPICS> tags are obligatory
     topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
 
     new("PlainTextDocument", .Data = corpus, Cached = 1, Author = author, DateTimeStamp = datetimestamp,

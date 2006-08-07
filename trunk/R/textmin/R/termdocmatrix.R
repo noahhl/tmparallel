@@ -66,5 +66,5 @@ textvector <- function(doc, stemming = FALSE, language = "english", minWordLengt
         Freq <- tab
     }
 
-    data.frame(docs = id(doc), terms, Freq, row.names = NULL)
+    data.frame(docs = ID(doc), terms, Freq, row.names = NULL)
 }
