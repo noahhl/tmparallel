@@ -1,16 +1,27 @@
 import(methods)
 import(XML)
-export("textdoccol", "termdocmatrix",
+export("TextDocCol", "TermDocMatrix",
        # Accessor functions
 
-       # textdocument
-       "author",
-       "datetimestamp",
-       "description",
-       "id",
-       "origin",
-       "heading",
+       # TextDocument
+       "Author",
+       "DateTimeStamp",
+       "Description",
+       "ID",
+       "Origin",
+       "Heading",
 
-       # termdocmatrix
-       "weighting")
-exportClasses("textdocument", "textdoccol", "termdocmatrix")
+       # TermDocMatrix
+       "Weighting",
+
+       # Manipulating functions
+
+       "loadFileIntoMem",
+
+       "transformTextDocCol",
+       "toPlainTextDocument",
+       "stemTextDocument",
+       "removeStopWordsInTextDocument",
+       "filterTextDocCol",
+       "filterREUT21578Topics")
+exportClasses("TextDocument", "PlainTextDocument", "XMLTextDocument", "TextDocCol", "TextRepository", "TermDocMatrix")

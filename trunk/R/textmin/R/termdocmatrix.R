@@ -21,8 +21,8 @@ weightMatrix <- function(m, weighting = "tf") {
     wm
 }
 
-setGeneric("termdocmatrix", function(object, weighting = "tf", stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) standardGeneric("termdocmatrix"))
-setMethod("termdocmatrix", c("textdoccol"),
+setGeneric("TermDocMatrix", function(object, weighting = "tf", stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) standardGeneric("TermDocMatrix"))
+setMethod("TermDocMatrix", c("TextDocCol"),
           function(object, weighting = "tf", stemming = FALSE, language = "english",
                    minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
               tvlist <- lapply(object, textvector, stemming, language, minWordLength, minDocFreq, stopwords)
@@ -30,7 +30,7 @@ setMethod("termdocmatrix", c("textdoccol"),
               class(tm) <- "matrix"
               tm <- weightMatrix(tm, weighting)
 
-              new("termdocmatrix", .Data = tm, weighting = weighting)
+              new("TermDocMatrix", .Data = tm, Weighting = weighting)
           })
 
 textvector <- function(doc, stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
