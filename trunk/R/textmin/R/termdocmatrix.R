@@ -68,3 +68,33 @@ textvector <- function(doc, stemming = FALSE, language = "english", minWordLengt
 
     data.frame(docs = ID(doc), terms, Freq, row.names = NULL)
 }
+
+setGeneric("filterHighFreqTerms", function(object, freq) standardGeneric("filterHighFreqTerms"))
+setMethod("filterHighFreqTerms",
+          c("TermDocMatrix", "numeric"),
+          function(object, freq) {
+              unique(rownames(which(t(object) >= freq, arr.ind = TRUE)))
+          })
+
+setGeneric("findAssocs", function(object, term, corlimit) standardGeneric("findAssocs"))
+setMethod("findAssocs",
+          c("TermDocMatrix", "character"),
+          function(object, term, corlimit) {
+              suppressWarnings(object.cor <- cor(object))
+              sort(round(object.cor[term, which(object.cor[term,] > corlimit)], 2), decreasing = TRUE)
+          })
+setMethod("findAssocs",
+          c("matrix", "character"),
+          function(object, term, corlimit) {
+              sort(round(object[term, which(object[term,] > corlimit)], 2), decreasing = TRUE)
+          })
+
+setGeneric("dissimilarity", function(x, y, method) standardGeneric("dissimilarity"))
+setMethod("dissimilarity",
+          c("TextDocument", "TextDocument", "character"),
+          function(x, y, method) {
+              tdm <- TermDocMatrix(as(list(x,y), "TextDocCol"))
+              dissim <- 1 - dist.tdm(tdm, method = method)
+              class(dissim) <- "dist"
+              return(dissim)
+          })

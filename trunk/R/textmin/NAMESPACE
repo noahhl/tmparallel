@@ -1,6 +1,6 @@
 import(methods)
 import(XML)
-export("TextDocCol", "TermDocMatrix",
+export("TextDocCol", "TextRepository", "TermDocMatrix",
        # Accessor functions
 
        # TextDocument
@@ -26,5 +26,17 @@ export("TextDocCol", "TermDocMatrix",
        "filterREUT21578Topics",
        "parseReutersPlain",
        "parseReutersXML",
-       "parseNewsItemPlain")
+       "parseNewsItemPlain",
+
+       "filterHighFreqTerms",
+       "findAssocs",
+
+       "attachData",
+       "attachMetaData",
+
+       "dist.tdm",
+       "cosinus",
+       "pearson",
+       "extjacc",
+       "dissimilarity")
 exportClasses("TextDocument", "PlainTextDocument", "XMLTextDocument", "TextDocCol", "TextRepository", "TermDocMatrix")

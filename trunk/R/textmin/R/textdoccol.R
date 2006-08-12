@@ -281,3 +281,21 @@ setMethod("filterREUT21578Topics",
               else
                   return(FALSE)
           })
+
+setGeneric("attachData", function(object, data) standardGeneric("attachData"))
+setMethod("attachData",
+          c("TextDocCol","TextDocument"),
+          function(object, data) {
+              data <- as(list(data), "TextDocCol")
+              object@.Data <- as(c(object@.Data, data), "TextDocCol")
+              return(object)
+          })
+
+setGeneric("attachMetaData", function(object, name, metadata) standardGeneric("attachMetaData"))
+setMethod("attachMetaData",
+          c("TextDocCol"),
+          function(object, name, metadata) {
+              object@GlobalMetaData <- c(object@GlobalMetaData, new = list(metadata))
+              names(object@GlobalMetaData)[length(names(object@GlobalMetaData))] <- name
+              return(object)
+          })
