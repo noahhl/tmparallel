@@ -251,8 +251,8 @@ setMethod("stemTextDocument",
               return (object)
           })
 
-setGeneric("removeStopWordsInTextDocument", function(object, stopwords) standardGeneric("removeStopWordsInTextDocument"))
-setMethod("removeStopWordsInTextDocument",
+setGeneric("removeStopWords", function(object, stopwords) standardGeneric("removeStopWords"))
+setMethod("removeStopWords",
           c("PlainTextDocument", "character"),
           function(object, stopwords) {
               require(Rstem)
@@ -282,6 +282,16 @@ setMethod("filterREUT21578Topics",
                   return(FALSE)
           })
 
+setGeneric("filterIDs", function(object, IDs) standardGeneric("filterIDs"))
+setMethod("filterIDs",
+          c("TextDocument", "numeric"),
+          function(object, IDs) {
+              if (object@ID %in% IDs)
+                  return(TRUE)
+              else
+                  return(FALSE)
+          })
+
 setGeneric("attachData", function(object, data) standardGeneric("attachData"))
 setMethod("attachData",
           c("TextDocCol","TextDocument"),
@@ -299,3 +309,39 @@ setMethod("attachMetaData",
               names(object@GlobalMetaData)[length(names(object@GlobalMetaData))] <- name
               return(object)
           })
+
+setGeneric("setSubscriptable", function(object, name) standardGeneric("setSubscriptable"))
+setMethod("setSubscriptable",
+          c("TextDocCol"),
+          function(object, name) {
+              if (!is.character(object@GlobalMetaData$subscriptable))
+                  object <- attachMetaData(object, "subscriptable", name)
+              else
+                  object@GlobalMetaData$subscriptable <- c(object@GlobalMetaData$subscriptable, name)
+              return(object)
+          })
+
+setMethod("[",
+          signature(x = "TextDocCol", i = "ANY", j = "ANY", drop = "ANY"),
+          function(x, i, j, ... , drop) {
+              if(missing(i))
+                  return(x)
+
+              object <- x
+              object@.Data <- x@.Data[i, ..., drop = FALSE]
+              for (m in names(object@GlobalMetaData)) {
+                  if (m %in% object@GlobalMetaData$subscriptable) {
+                      object@GlobalMetaData[[m]] <- object@GlobalMetaData[[m]][i, ..., drop = FALSE]
+                  }
+              }
+              return(object)
+          })
+
+setMethod("c",
+          signature(x = "TextDocCol"),
+          function(x, ..., recursive = TRUE){
+              args <- list(...)
+              if(length(args) == 0)
+                  return(x)
+              return(as(c(as(x, "list"), ...), "TextDocCol"))
+    })
