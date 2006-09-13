@@ -11,6 +11,12 @@ export("TextDocCol", "TextRepository", "TermDocMatrix",
        "Origin",
        "Heading",
 
+       # TextDocCol
+       "GlobalMetaData",
+
+       # TextRepository
+       "RepresentationMetaData",
+
        # TermDocMatrix
        "Weighting",
 
@@ -18,11 +24,11 @@ export("TextDocCol", "TextRepository", "TermDocMatrix",
 
        "loadFileIntoMem",
 
-       "transformTextDocCol",
+       "tm_transform",
        "toPlainTextDocument",
        "stemTextDocument",
        "removeStopWords",
-       "filterTextDocCol",
+       "tm_filter",
        "filterREUT21578Topics",
        "filterIDs",
        "parseReutersPlain",
@@ -37,6 +43,9 @@ export("TextDocCol", "TextRepository", "TermDocMatrix",
        "setSubscriptable",
        "[",
        "c",
+       "length",
+       "show",
+       "summary",
 
        "cosinus",
        "pearson",

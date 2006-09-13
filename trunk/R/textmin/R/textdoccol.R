@@ -212,8 +212,8 @@ setMethod("loadFileIntoMem",
               }
           })
 
-setGeneric("transformTextDocCol", function(object, FUN, ...) standardGeneric("transformTextDocCol"))
-setMethod("transformTextDocCol",
+setGeneric("tm_transform", function(object, FUN, ...) standardGeneric("tm_transform"))
+setMethod("tm_transform",
           c("TextDocCol"),
           function(object, FUN, ...) {
               lapply(object, FUN, ...)
@@ -262,8 +262,8 @@ setMethod("removeStopWords",
               return (object)
           })
 
-setGeneric("filterTextDocCol", function(object, FUN, ...) standardGeneric("filterTextDocCol"))
-setMethod("filterTextDocCol",
+setGeneric("tm_filter", function(object, FUN, ...) standardGeneric("tm_filter"))
+setMethod("tm_filter",
           c("TextDocCol"),
           function(object, FUN, ...) {
               sapply(object, FUN, ...)
@@ -344,4 +344,35 @@ setMethod("c",
               if(length(args) == 0)
                   return(x)
               return(as(c(as(x, "list"), ...), "TextDocCol"))
+    })
+
+setMethod("length",
+          signature(x = "TextDocCol"),
+          function(x){
+              return(length(as(x, "list")))
+    })
+
+setMethod("show",
+          signature(object = "TextDocCol"),
+          function(object){
+              cat("A text document collection with", length(object), "text document")
+              if (length(object) == 1)
+                  cat("\n")
+              else
+                  cat("s\n")
+    })
+
+setMethod("summary",
+          signature(object = "TextDocCol"),
+          function(object){
+              show(object)
+              if (length(GlobalMetaData(object)) > 0) {
+                  cat("\nThe global metadata consists of", length(GlobalMetaData(object)), "tag-value pair")
+                  if (length(GlobalMetaData(object)) == 1)
+                      cat(".\n")
+                  else
+                      cat("s.\n")
+                  cat("Available tags are:\n")
+                  cat(names(GlobalMetaData(object)), "\n")
+              }
     })

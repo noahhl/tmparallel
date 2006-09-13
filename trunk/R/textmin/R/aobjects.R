@@ -62,6 +62,14 @@ if (!isGeneric("Heading")) {
 }
 setMethod("Heading", "TextDocument", function(object) object@Heading)
 
+if (!isGeneric("LocalMetaData")) {
+    if (is.function("LocalMetaData"))
+        fun <- LocalMetaData
+    else fun <- function(object) standardGeneric("LocalMetaData")
+    setGeneric("LocalMetaData", fun)
+}
+setMethod("LocalMetaData", "TextDocument", function(object) object@LocalMetaData)
+
 # Inherited text documents
 # Plain text documents
 setClass("PlainTextDocument",
@@ -79,10 +87,26 @@ setClass("TextDocCol",
          representation(GlobalMetaData = "list"),
          contains = c("list"))
 
+if (!isGeneric("GlobalMetaData")) {
+    if (is.function("GlobalMetaData"))
+        fun <- GlobalMetaData
+    else fun <- function(object) standardGeneric("GlobalMetaData")
+    setGeneric("GlobalMetaData", fun)
+}
+setMethod("GlobalMetaData", "TextDocCol", function(object) object@GlobalMetaData)
+
 # Repository for text document collections
 setClass("TextRepository",
          representation(RepresentationMetaData = "list"),
          contains = c("list"))
+
+if (!isGeneric("RepresentationMetaData")) {
+    if (is.function("RepresentationMetaData"))
+        fun <- RepresentationMetaData
+    else fun <- function(object) standardGeneric("RepresentationMetaData")
+    setGeneric("RepresentationMetaData", fun)
+}
+setMethod("RepresentationMetaData", "TextRepository", function(object) object@RepresentationMetaData)
 
 # Term-document matrix
 setClass("TermDocMatrix",

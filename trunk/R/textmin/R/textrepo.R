@@ -9,7 +9,6 @@ setMethod("TextRepository",
               return(tr)
           })
 
-
 setMethod("attachData",
           c("TextRepository","TextDocCol"),
           function(object, data) {
@@ -24,3 +23,34 @@ setMethod("attachMetaData",
               names(object@RepresentationMetaData)[length(names(object@RepresentationMetaData))] <- name
               return(object)
           })
+
+setMethod("length",
+          signature(x = "TextRepository"),
+          function(x){
+              return(length(as(x, "list")))
+    })
+
+setMethod("show",
+          signature(object = "TextRepository"),
+          function(object){
+              cat("A text repository with", length(object), "text document collection")
+              if (length(object) == 1)
+                  cat("\n")
+              else
+                  cat("s\n")
+    })
+
+setMethod("summary",
+          signature(object = "TextRepository"),
+          function(object){
+              show(object)
+              if (length(RepresentationMetaData(object)) > 0) {
+                  cat("\nThe representation metadata consists of", length(RepresentationMetaData(object)), "tag-value pair")
+                  if (length(RepresentationMetaData(object)) == 1)
+                      cat(".\n")
+                  else
+                      cat("s.\n")
+                  cat("Available tags are:\n")
+                  cat(names(RepresentationMetaData(object)), "\n")
+              }
+    })
