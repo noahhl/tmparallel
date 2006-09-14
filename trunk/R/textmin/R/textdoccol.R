@@ -216,7 +216,7 @@ setGeneric("tm_transform", function(object, FUN, ...) standardGeneric("tm_transf
 setMethod("tm_transform",
           c("TextDocCol"),
           function(object, FUN, ...) {
-              lapply(object, FUN, ...)
+              lapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object))
           })
 
 setGeneric("toPlainTextDocument", function(object, FUN, ...) standardGeneric("toPlainTextDocument"))
@@ -240,7 +240,7 @@ setMethod("toPlainTextDocument",
               return(xmlApply(xmlRoot(corpus), FUN, ...))
           })
 
-setGeneric("stemTextDocument", function(object) standardGeneric("stemTextDocument"))
+setGeneric("stemTextDocument", function(object, ...) standardGeneric("stemTextDocument"))
 setMethod("stemTextDocument",
           c("PlainTextDocument"),
           function(object) {
@@ -251,7 +251,7 @@ setMethod("stemTextDocument",
               return (object)
           })
 
-setGeneric("removeStopWords", function(object, stopwords) standardGeneric("removeStopWords"))
+setGeneric("removeStopWords", function(object, stopwords, ...) standardGeneric("removeStopWords"))
 setMethod("removeStopWords",
           c("PlainTextDocument", "character"),
           function(object, stopwords) {
@@ -266,13 +266,13 @@ setGeneric("tm_filter", function(object, FUN, ...) standardGeneric("tm_filter"))
 setMethod("tm_filter",
           c("TextDocCol"),
           function(object, FUN, ...) {
-              sapply(object, FUN, ...)
+              sapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object))
           })
 
 setGeneric("filterREUT21578Topics", function(object, topics, ...) standardGeneric("filterREUT21578Topics"))
 setMethod("filterREUT21578Topics",
           c("PlainTextDocument", "character"),
-          function(object, topics, ...) {
+          function(object, topics) {
               if (object@Cached == 0)
                   object <- loadFileIntoMem(object)
 
@@ -282,7 +282,7 @@ setMethod("filterREUT21578Topics",
                   return(FALSE)
           })
 
-setGeneric("filterIDs", function(object, IDs) standardGeneric("filterIDs"))
+setGeneric("filterIDs", function(object, IDs, ...) standardGeneric("filterIDs"))
 setMethod("filterIDs",
           c("TextDocument", "numeric"),
           function(object, IDs) {
@@ -376,3 +376,12 @@ setMethod("summary",
                   cat(names(GlobalMetaData(object)), "\n")
               }
     })
+
+setGeneric("inspect", function(object) standardGeneric("inspect"))
+setMethod("inspect",
+          c("TextDocCol"),
+          function(object) {
+              summary(object)
+              cat("\n")
+              show(as(object, "list"))
+          })

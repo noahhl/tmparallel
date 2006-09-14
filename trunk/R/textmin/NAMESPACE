@@ -46,6 +46,7 @@ export("TextDocCol", "TextRepository", "TermDocMatrix",
        "length",
        "show",
        "summary",
+       "inspect",
 
        "cosinus",
        "pearson",
