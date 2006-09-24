@@ -333,9 +333,7 @@ setGeneric("tm_filter", function(object, FUN, ...) standardGeneric("tm_filter"))
 setMethod("tm_filter",
           c("TextDocCol"),
           function(object, FUN, ...) {
-              result <- as(sapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object)), "TextDocCol")
-              result@GlobalMetaData <- GlobalMetaData(object)
-              return(result)
+              sapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object))
           })
 
 setGeneric("filterREUT21578Topics", function(object, topics, ...) standardGeneric("filterREUT21578Topics"))
