@@ -3,15 +3,28 @@
 setGeneric("TextDocCol", function(object, inputType = "CSV", stripWhiteSpace = FALSE, toLower = FALSE) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           c("character"),
-          function(object, inputType = "CSV", stripWhiteSpace = FALSE, toLower = FALSE) {
+          function(object, inputType = "PLAIN", stripWhiteSpace = FALSE, toLower = FALSE) {
               # Add a new type for each unique input source format
-              type <- match.arg(inputType,c("CSV", "RCV1", "REUT21578", "REUT21578_XML", "RIS"))
+              type <- match.arg(inputType,c("PLAIN", "CSV", "RCV1", "REUT21578", "REUT21578_XML", "NEWSGROUP", "RIS"))
               switch(type,
+                     # Plain text
+                     "PLAIN" = {
+                         filelist <- dir(object, full.names = TRUE)
+                         filenameIDs <- list(FileNames = filelist, IDs = 1:length(filelist))
+                         tdl <- sapply(filelist,
+                                       function(file, FileNameIDs = filenameIDs) {
+                                           id <- FileNameIDs$IDs[grep(file, FileNameIDs$FileNames)]
+                                           origin <- dirname(file)
+                                           new("PlainTextDocument", FileName = file, Cached = 0, Author = "Unknown", DateTimeStamp = date(),
+                                               Description = "", ID = id, Origin = origin, Heading = "")
+                                       })
+                         tdcl <- new("TextDocCol", .Data = tdl)
+                     },
                      # Text in a special CSV format
                      # For details on the file format see the R documentation file
                      # The first argument is a directory with .csv files
                      "CSV" = {
-                         filelist <- dir(object, pattern = ".csv", full.names = TRUE)
+                         filelist <- dir(object, pattern = "\\.csv", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
                                            m <- as.matrix(read.csv(file, header = FALSE))
@@ -42,7 +55,7 @@ setMethod("TextDocCol",
                      # Read in text documents in XML Reuters Corpus Volume 1 (RCV1) format
                      # The first argument is a directory with the RCV1 XML files
                      "RCV1" = {
-                         filelist <- dir(object, pattern = ".xml", full.names = TRUE)
+                         filelist <- dir(object, pattern = "\\..xml", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
                                            tree <- xmlTreeParse(file)
@@ -57,7 +70,7 @@ setMethod("TextDocCol",
                      # Typically the first argument will be a directory where we can
                      # find the files reut2-000.xml ... reut2-021.xml
                      "REUT21578" = {
-                         filelist <- dir(object, pattern = ".xml", full.names = TRUE)
+                         filelist <- dir(object, pattern = "\\..xml", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
                                            tree <- xmlTreeParse(file)
@@ -69,16 +82,24 @@ setMethod("TextDocCol",
                              tdcl <- new("TextDocCol", .Data = tdl)
                      },
                      "REUT21578_XML" = {
-                         filelist <- dir(object, pattern = ".xml", full.names = TRUE)
+                         filelist <- dir(object, pattern = "\\..xml", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
                                            parseReutersXML(file)
                                        })
                          tdcl <- new("TextDocCol", .Data = tdl)
                      },
+                     "NEWSGROUP" = {
+                         filelist <- dir(object, full.names = TRUE)
+                         tdl <- sapply(filelist,
+                                       function(file) {
+                                           parseMail(file)
+                                       })
+                         new("TextDocCol", .Data = tdl)
+                     },
                      # Read in HTML documents as used by http://ris.bka.gv.at/vwgh
                      "RIS" = {
-                         filelist <- dir(object, pattern = ".html", full.names = TRUE)
+                         filelist <- dir(object, pattern = "\\..html", full.names = TRUE)
                          tdl <- sapply(filelist,
                                        function(file) {
                                            # Ignore warnings from misformed HTML documents
@@ -189,23 +210,61 @@ parseReutersPlain <- function(node, stripWhiteSpace = FALSE, toLower = FALSE) {
         Description = description, ID = id, Origin = origin, Heading = heading, LocalMetaData = list(Topics = topics))
 }
 
-# Parse a <REUTERS></REUTERS> element from a well-formed Reuters-21578 XML file
+# Set up metadata for a well-formed Reuters-21578 XML file
 parseReutersXML<- function(file) {
     new("XMLTextDocument", FileName = file, Cached = 0, Author = "REUTERS", DateTimeStamp = date(),
         Description = "Reuters21578 file containing several news articles", ID = as.integer(0),
         Origin = "Reuters-21578 XML", Heading = "Reuters21578 news articles")
 }
 
-setGeneric("loadFileIntoMem", function(object) standardGeneric("loadFileIntoMem"))
+parseMail <- function(file) {
+    mail <- readLines(file)
+    author <- gsub("From: ", "", grep("^From:", mail, value = TRUE))
+    datetimestamp <- gsub("Date: ", "", grep("^Date:", mail, value = TRUE))
+    id <- as.integer(file)
+    origin <- gsub("Path: ", "", grep("^Path:", mail, value = TRUE))
+    heading <- gsub("Subject: ", "", grep("^Subject:", mail, value = TRUE))
+    newsgroup <- gsub("Newsgroups: ", "", grep("^Newsgroups:", mail, value = TRUE))
+
+    new("NewsgroupDocument", FileName = file, Cached = 0, Author = author, DateTimeStamp = datetimestamp,
+        Description = "", ID = id, Origin = origin, Heading = heading, Newsgroup = newsgroup)
+}
+
+setGeneric("loadFileIntoMem", function(object, ...) standardGeneric("loadFileIntoMem"))
+setMethod("loadFileIntoMem",
+          c("PlainTextDocument"),
+          function(object, ...) {
+              if (Cached(object) == 0) {
+                  corpus <- readLines(FileName(object))
+                  Corpus(object) <- corpus
+                  Cached(object) <- 1
+                  return(object)
+              } else {
+                  return(object)
+              }
+          })
 setMethod("loadFileIntoMem",
           c("XMLTextDocument"),
-          function(object) {
-              if (object@Cached == 0) {
-                  file <- object@FileName
+          function(object, ...) {
+              if (Cached(object) == 0) {
+                  file <- FileName(object)
                   doc <- xmlTreeParse(file)
                   class(doc) <- "list"
-                  object@.Data <- doc
-                  object@Cached <- 1
+                  Corpus(object) <- doc
+                  Cached(object) <- 1
+                  return(object)
+              } else {
+                  return(object)
+              }
+          })
+setMethod("loadFileIntoMem",
+          c("NewsgroupDocument"),
+          function(object, ...) {
+              if (Cached(object) == 0) {
+                  mail <- readLines(FileName(object))
+                  Cached(object) <- 1
+                  index <- grep("^Lines:", mail)
+                  Corpus(object) <- mail[(index + 1):length(mail)]
                   return(object)
               } else {
                   return(object)
@@ -216,7 +275,9 @@ setGeneric("tm_transform", function(object, FUN, ...) standardGeneric("tm_transf
 setMethod("tm_transform",
           c("TextDocCol"),
           function(object, FUN, ...) {
-              lapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object))
+              result <- as(lapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object)), "TextDocCol")
+              result@GlobalMetaData <- GlobalMetaData(object)
+              return(result)
           })
 
 setGeneric("toPlainTextDocument", function(object, FUN, ...) standardGeneric("toPlainTextDocument"))
@@ -228,10 +289,10 @@ setMethod("toPlainTextDocument",
 setMethod("toPlainTextDocument",
           c("XMLTextDocument"),
           function(object, FUN, ...) {
-              if (object@Cached == 0)
+              if (Cached(object) == 0)
                   object <- loadFileIntoMem(object)
 
-              corpus <- object@.Data
+              corpus <- Corpus(object)
 
               # As XMLDocument is no native S4 class, restore valid information
               class(corpus) <- "XMLDocument"
@@ -244,39 +305,47 @@ setGeneric("stemTextDocument", function(object, ...) standardGeneric("stemTextDo
 setMethod("stemTextDocument",
           c("PlainTextDocument"),
           function(object) {
+              if (Cached(object) == 0)
+                  object <- loadFileIntoMem(object)
+
               require(Rstem)
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
               stemmedCorpus <- wordStem(splittedCorpus)
-              object@.Data <- paste(stemmedCorpus, collapse = " ")
-              return (object)
+              Corpus(object) <- paste(stemmedCorpus, collapse = " ")
+              return(object)
           })
 
 setGeneric("removeStopWords", function(object, stopwords, ...) standardGeneric("removeStopWords"))
 setMethod("removeStopWords",
           c("PlainTextDocument", "character"),
           function(object, stopwords) {
+              if (Cached(object) == 0)
+                  object <- loadFileIntoMem(object)
+
               require(Rstem)
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
               noStopwordsCorpus <- splittedCorpus[!splittedCorpus %in% stopwords]
-              object@.Data <- paste(noStopwordsCorpus, collapse = " ")
-              return (object)
+              Corpus(object) <- paste(noStopwordsCorpus, collapse = " ")
+              return(object)
           })
 
 setGeneric("tm_filter", function(object, FUN, ...) standardGeneric("tm_filter"))
 setMethod("tm_filter",
           c("TextDocCol"),
           function(object, FUN, ...) {
-              sapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object))
+              result <- as(sapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object)), "TextDocCol")
+              result@GlobalMetaData <- GlobalMetaData(object)
+              return(result)
           })
 
 setGeneric("filterREUT21578Topics", function(object, topics, ...) standardGeneric("filterREUT21578Topics"))
 setMethod("filterREUT21578Topics",
           c("PlainTextDocument", "character"),
           function(object, topics) {
-              if (object@Cached == 0)
+              if (Cached(object) == 0)
                   object <- loadFileIntoMem(object)
 
-              if (any(object@LocalMetaData$Topics %in% topics))
+              if (any(LocalMetaData(object)$Topics %in% topics))
                   return(TRUE)
               else
                   return(FALSE)
@@ -286,7 +355,7 @@ setGeneric("filterIDs", function(object, IDs, ...) standardGeneric("filterIDs"))
 setMethod("filterIDs",
           c("TextDocument", "numeric"),
           function(object, IDs) {
-              if (object@ID %in% IDs)
+              if (ID(object) %in% IDs)
                   return(TRUE)
               else
                   return(FALSE)
@@ -305,8 +374,8 @@ setGeneric("attachMetaData", function(object, name, metadata) standardGeneric("a
 setMethod("attachMetaData",
           c("TextDocCol"),
           function(object, name, metadata) {
-              object@GlobalMetaData <- c(object@GlobalMetaData, new = list(metadata))
-              names(object@GlobalMetaData)[length(names(object@GlobalMetaData))] <- name
+              object@GlobalMetaData <- c(GlobalMetaData(object), new = list(metadata))
+              names(object@GlobalMetaData)[length(names(GlobalMetaData(object)))] <- name
               return(object)
           })
 
@@ -314,10 +383,10 @@ setGeneric("setSubscriptable", function(object, name) standardGeneric("setSubscr
 setMethod("setSubscriptable",
           c("TextDocCol"),
           function(object, name) {
-              if (!is.character(object@GlobalMetaData$subscriptable))
+              if (!is.character(GlobalMetaData(object)$subscriptable))
                   object <- attachMetaData(object, "subscriptable", name)
               else
-                  object@GlobalMetaData$subscriptable <- c(object@GlobalMetaData$subscriptable, name)
+                  object@GlobalMetaData$subscriptable <- c(GlobalMetaData(object)$subscriptable, name)
               return(object)
           })
 
@@ -329,9 +398,9 @@ setMethod("[",
 
               object <- x
               object@.Data <- x@.Data[i, ..., drop = FALSE]
-              for (m in names(object@GlobalMetaData)) {
-                  if (m %in% object@GlobalMetaData$subscriptable) {
-                      object@GlobalMetaData[[m]] <- object@GlobalMetaData[[m]][i, ..., drop = FALSE]
+              for (m in names(GlobalMetaData(object))) {
+                  if (m %in% GlobalMetaData(object)$subscriptable) {
+                      object@GlobalMetaData[[m]] <- GlobalMetaData(object)[[m]][i, ..., drop = FALSE]
                   }
               }
               return(object)

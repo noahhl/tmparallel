@@ -1,15 +1,27 @@
 import(methods)
 import(XML)
 export("TextDocCol", "TextRepository", "TermDocMatrix",
-       # Accessor functions
+       # Assignment and accessor functions
 
        # TextDocument
+       "Corpus",
+       "Corpus<-",
        "Author",
+       "Author<-",
        "DateTimeStamp",
+       "DateTimeStamp<-",
        "Description",
+       "Description<-",
        "ID",
+       "ID<-",
        "Origin",
+       "Origin<-",
        "Heading",
+       "Heading<-",
+
+       "Cached",
+       "Cached<-",
+       "FileName",
 
        # TextDocCol
        "GlobalMetaData",
@@ -19,6 +31,7 @@ export("TextDocCol", "TextRepository", "TermDocMatrix",
 
        # TermDocMatrix
        "Weighting",
+       "Weighting<-",
 
        # Manipulating functions
 
@@ -52,4 +65,4 @@ export("TextDocCol", "TextRepository", "TermDocMatrix",
        "pearson",
        "extjacc",
        "dissimilarity")
-exportClasses("TextDocument", "PlainTextDocument", "XMLTextDocument", "TextDocCol", "TextRepository", "TermDocMatrix")
+exportClasses("TextDocument", "PlainTextDocument", "XMLTextDocument", "NewsgroupDocument", "TextDocCol", "TextRepository", "TermDocMatrix")
