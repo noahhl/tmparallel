@@ -1,13 +1,14 @@
 \name{crude}
 \docType{data}
 \alias{crude}
-\title{20 exemplary news articles from the Reuters-21578 XML data set with topic crude}
+\title{20 exemplary news articles from the Reuters-21578 XML data set of topic crude}
 \description{
   This data set holds 20 news articles with additional meta
-  information from the Reuters-21578 XML data set.
+  information from the Reuters-21578 XML data set. All documents belong
+  to the topic \code{crude}.
 }
-\usage{data(acq)}
-\format{A list with 20 text documents.}
+\usage{data(crude)}
+\format{A text document collection of 20 text documents.}
 \source{Reuters-21578 Text Categorization Collection Distribution 1.0
   (XML format)}
 \references{

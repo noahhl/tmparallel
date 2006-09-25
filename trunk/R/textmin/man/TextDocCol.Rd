@@ -1,19 +1,20 @@
-\name{textdoccol}
+\name{TextDocCol}
 \docType{methods}
-\alias{textdoccol}
-\alias{textdoccol,character-method}
+\alias{TextDocCol}
+\alias{TextDocCol,character-method}
 \title{Text document collection}
 \description{
   Constructs a text document collection from various sources.
 }
 \usage{
-\S4method{textdoccol}{character}(object, inputType = "CSV",
+\S4method{TextDocCol}{character}(object, inputType = "CSV",
 stripWhiteSpace = FALSE, toLower = FALSE)
 }
 \arguments{
   \item{object}{a directory containing the text documents.}
   \item{inputType}{determines the input format. Possible settings are
     \itemize{
+      \item \code{PLAIN} Plain texts. Default import.
       \item \code{CSV} Comma seperated values format
 
       This input format requires no special markup (like XML). Instead a
@@ -31,10 +32,15 @@ stripWhiteSpace = FALSE, toLower = FALSE)
       not freely available in the net).
       \item \code{REUT21578} Reuters 21578 XML format
 
+      A file format as used by the Reuters21578 XML format.
+      \item \code{REUT21578_XML} Reuters 21578 XML format
+
       A file format as used by the Reuters21578 XML format. See there
       for details.
 
       TODO: Insert link to the Reuters data set in XML format.
+      \item \code{NEWSGROUP} UCI KDD Newsgroup Dataset format.
+
       \item \code{RIS} Austrian Rechtsinformationssystem des Bundes HTML
       format.
 
@@ -52,7 +58,7 @@ stripWhiteSpace = FALSE, toLower = FALSE)
     lower ones.}
 }
 \value{
-  An S4 object of class \code{textdoccol} which extends the class
+  An S4 object of class \code{TextDocCol} which extends the class
   \code{list} containing a collection of text documents.
 }
 \author{Ingo Feinerer \email{h0125130@wu-wien.ac.at}}

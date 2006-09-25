@@ -217,7 +217,7 @@ if (!isGeneric("Weighting")) {
 }
 setMethod("Weighting", "TermDocMatrix", function(object) object@Weighting)
 setGeneric("Weighting<-", function(x, value) standardGeneric("Weighting<-"))
-setReplaceMethod("Weighting", "PlainTextDocument", function(x, value) {
+setReplaceMethod("Weighting", "TermDocMatrix", function(x, value) {
   x@Weighting <- value
   x
 })

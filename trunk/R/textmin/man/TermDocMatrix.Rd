@@ -1,13 +1,13 @@
-\name{termdocmatrix}
+\name{TermDocMatrix}
 \docType{methods}
-\alias{termdocmatrix}
-\alias{termdocmatrix,textdoccol-method}
+\alias{TermDocMatrix}
+\alias{TermDocMatrix,TextDocCol-method}
 \title{Term-document matrix}
 \description{
   Constructs a term-document matrix.
 }
 \usage{
-\S4method{termdocmatrix}{textdoccol}(object, weighting = "tf", stemming
+\S4method{TermDocMatrix}{TextDocCol}(object, weighting = "tf", stemming
 = FALSE, language = "english", minWordLength = 3, minDocFreq = 1,
 stopwords = NULL)
 }
@@ -30,11 +30,11 @@ stopwords = NULL)
   \item{stopwords}{a plain text file with all stopwords}
 }
 \value{
-  An S4 object of class \code{termdocmatrix} which extends the class
+  An S4 object of class \code{TermDocMatrix} which extends the class
   \code{matrix} containing a term-document matrix. The following slots
   contain useful information:
 
-  \item{weighting}{The weighting mode applied to the term-document matrix}
+  \item{Weighting}{The weighting mode applied to the term-document matrix}
 }
 \author{Ingo Feinerer \email{h0125130@wu-wien.ac.at}}
 \keyword{methods}

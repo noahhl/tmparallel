@@ -1,3 +1,7 @@
+2006-09-25  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* man/: Wrote some documentation.
+
 2006-09-24  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/: Further syntactic sugar in form of additional assignment and
