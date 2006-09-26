@@ -11,10 +11,17 @@
 stripWhiteSpace = FALSE, toLower = FALSE)
 }
 \arguments{
-  \item{object}{a directory containing the text documents.}
+  \item{object}{a directory containing the documents.}
   \item{inputType}{determines the input format. Possible settings are
     \itemize{
-      \item \code{PLAIN} Plain texts. Default import.
+      \item \code{PLAIN} Plain text format
+
+      Each entry in the \code{object} directory is imported without
+      further knowledge about the file format. That means the file is
+      interpreted as plain text without any markup or meta
+      information. The document \code{ID}s are generated automatically
+      and can be found together with the filename in the plain text
+      document's metadata.
       \item \code{CSV} Comma seperated values format
 
       This input format requires no special markup (like XML). Instead a
@@ -27,20 +34,23 @@ stripWhiteSpace = FALSE, toLower = FALSE)
       sources (like export from Excel files, \ldots).
       \item \code{RCV1} Reuters Corpus Volume 1 XML format
 
-      At the moment this format is not fully supported. It will be
-      implemented as soon I have access to the full sources (they are
-      not freely available in the net).
+      The Reuters Corpus Volume 1 comes in a special XML format which
+      can be imported directly with this switch.
       \item \code{REUT21578} Reuters 21578 XML format
 
-      A file format as used by the Reuters21578 XML format.
+      An XML file format as used by the Reuters21578 XML dataset. This
+      switch returns directly plain text documents with the corpus in
+      memory.
       \item \code{REUT21578_XML} Reuters 21578 XML format
 
-      A file format as used by the Reuters21578 XML format. See there
-      for details.
-
-      TODO: Insert link to the Reuters data set in XML format.
+      An XML file format as used by the Reuters21578 XML dataset. The
+      pure \code{XMLTextDocument}s are returned with loading on demand
+      activated. Thus the text corpus resides on disk until used.
       \item \code{NEWSGROUP} UCI KDD Newsgroup Dataset format.
 
+      A file format as found in the UCI KDD Newsgroup dataset. Thus each
+      newsgroup mail must be named after an unique \code{ID} and contain
+      distinct meta information in form of headers.
       \item \code{RIS} Austrian Rechtsinformationssystem des Bundes HTML
       format.
 
