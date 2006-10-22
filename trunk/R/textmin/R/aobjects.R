@@ -7,7 +7,7 @@ setClass("TextDocument",
          representation(Author = "character",
                         DateTimeStamp = "character",
                         Description = "character",
-                        ID = "integer",
+                        ID = "character",
                         Origin = "character",
                         Heading = "character",
                         LocalMetaData = "list"))
@@ -103,7 +103,7 @@ setMethod("LocalMetaData", "TextDocument", function(object) object@LocalMetaData
 # Inherited text documents
 # Plain text documents
 setClass("PlainTextDocument",
-         representation(FileName = "character", Cached = "numeric"),
+         representation(FileName = "character", Cached = "logical"),
          contains = c("character", "TextDocument"))
 
 if (!isGeneric("Corpus")) {
@@ -145,7 +145,7 @@ setReplaceMethod("Cached", "PlainTextDocument", function(x, value) {
 # If XMLDocument would be a S4 class, we could directly inherit from it
 # Instead we have to do a work-around with a list
 setClass("XMLTextDocument",
-         representation(FileName = "character", Cached = "numeric"),
+         representation(FileName = "character", Cached = "logical"),
          contains = c("list", "TextDocument"))
 
 setMethod("Corpus", "XMLTextDocument", function(object) object@.Data)
@@ -162,7 +162,7 @@ setReplaceMethod("Cached", "XMLTextDocument", function(x, value) {
 
 # Newsgroup document as found in the Newsgroup dataset of the UCI KDD archive
 setClass("NewsgroupDocument",
-         representation(Newsgroup = "character", FileName = "character", Cached = "numeric"),
+         representation(Newsgroup = "character", FileName = "character", Cached = "logical"),
          contains = c("character", "TextDocument"))
 
 setMethod("Corpus", "NewsgroupDocument", function(object) object@.Data)
