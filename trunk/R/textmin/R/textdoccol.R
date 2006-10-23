@@ -23,7 +23,7 @@ plaintext.parser <- function(file, lod) {
     return(doc)
 }
 
-reuter21578xml.parser <- function(file, lod) {
+reuters21578xml.parser <- function(file, lod) {
     tree <- xmlTreeParse(file)
     node <- xmlRoot(tree)
 
@@ -94,7 +94,6 @@ uci.kdd.newsgroup.parser <-  function(file, lod) {
 }
 
 # Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file
-# TODO: Check if it works with example
 rcv1.to.plain <- function(node) {
     datetimestamp <- xmlAttrs(node)[["date"]]
     id <- xmlAttrs(node)[["itemid"]]
@@ -107,7 +106,6 @@ rcv1.to.plain <- function(node) {
 }
 
 # Parse a <REUTERS></REUTERS> element from a well-formed Reuters-21578 XML file
-# TODO: Ensure it works
 reuters21578xml.to.plain <- function(node) {
     # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
     if (!is.null(node[["TEXT"]][["AUTHOR"]]))
@@ -139,11 +137,11 @@ reuters21578xml.to.plain <- function(node) {
         Description = description, ID = id, Origin = origin, Heading = heading, LocalMetaData = list(Topics = topics))
 }
 
-setGeneric("loadFileIntoMem", function(object, ...) standardGeneric("loadFileIntoMem"))
+setGeneric("loadFileIntoMem", function(object) standardGeneric("loadFileIntoMem"))
 setMethod("loadFileIntoMem",
           c("PlainTextDocument"),
-          function(object, ...) {
-              if (Cached(object) == FALSE) {
+          function(object) {
+              if (!Cached(object)) {
                   corpus <- readLines(FileName(object))
                   Corpus(object) <- corpus
                   Cached(object) <- TRUE
@@ -154,8 +152,8 @@ setMethod("loadFileIntoMem",
           })
 setMethod("loadFileIntoMem",
           c("XMLTextDocument"),
-          function(object, ...) {
-              if (Cached(object) == FALSE) {
+          function(object) {
+              if (!Cached(object)) {
                   file <- FileName(object)
                   doc <- xmlTreeParse(file)
                   class(doc) <- "list"
@@ -168,8 +166,8 @@ setMethod("loadFileIntoMem",
           })
 setMethod("loadFileIntoMem",
           c("NewsgroupDocument"),
-          function(object, ...) {
-              if (Cached(object) == FALSE) {
+          function(object) {
+              if (!Cached(object)) {
                   mail <- readLines(FileName(object))
                   Cached(object) <- TRUE
                   index <- grep("^Lines:", mail)
@@ -198,7 +196,7 @@ setMethod("toPlainTextDocument",
 setMethod("toPlainTextDocument",
           c("XMLTextDocument"),
           function(object, FUN, ...) {
-              if (Cached(object) == FALSE)
+              if (!Cached(object))
                   object <- loadFileIntoMem(object)
 
               corpus <- Corpus(object)
@@ -207,14 +205,14 @@ setMethod("toPlainTextDocument",
               class(corpus) <- "XMLDocument"
               names(corpus) <- c("doc","dtd")
 
-              return(FUN(xmlRoot(corpus), ...)))
+              return(FUN(xmlRoot(corpus), ...))
           })
 
 setGeneric("stemTextDocument", function(object, ...) standardGeneric("stemTextDocument"))
 setMethod("stemTextDocument",
           c("PlainTextDocument"),
-          function(object) {
-              if (Cached(object) == FALSE)
+          function(object, ...) {
+              if (!Cached(object))
                   object <- loadFileIntoMem(object)
 
               require(Rstem)
@@ -227,8 +225,8 @@ setMethod("stemTextDocument",
 setGeneric("removeStopWords", function(object, stopwords, ...) standardGeneric("removeStopWords"))
 setMethod("removeStopWords",
           signature(object = "PlainTextDocument", stopwords = "character"),
-          function(object, stopwords) {
-              if (Cached(object) == FALSE)
+          function(object, stopwords, ...) {
+              if (!Cached(object))
                   object <- loadFileIntoMem(object)
 
               require(Rstem)
@@ -238,18 +236,49 @@ setMethod("removeStopWords",
               return(object)
           })
 
-setGeneric("tm_filter", function(object, FUN, ...) standardGeneric("tm_filter"))
+setGeneric("tm_filter", function(object, ..., FUN = s.filter) standardGeneric("tm_filter"))
 setMethod("tm_filter",
-          c("TextDocCol"),
-          function(object, FUN, ...) {
+          signature(object = "TextDocCol"),
+          function(object, ..., FUN = s.filter) {
+              object[tm_index(object, ..., FUN)]
+          })
+
+setGeneric("tm_index", function(object, ..., FUN = s.filter) standardGeneric("tm_index"))
+setMethod("tm_index",
+          signature(object = "TextDocCol"),
+          function(object, ..., FUN = s.filter) {
               sapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object))
           })
 
-setGeneric("filterREUT21578Topics", function(object, topics, ...) standardGeneric("filterREUT21578Topics"))
-setMethod("filterREUT21578Topics",
+s.filter <- function(object, s, ..., GlobalMetaData) {
+    b <- TRUE
+    for (tag in names(s)) {
+        if (tag %in% names(LocalMetaData(object))) {
+            b <- b && any(grep(s[[tag]], LocalMetaData(object)[[tag]]))
+        } else if (tag %in% names(GlobalMetaData)){
+            b <- b && any(grep(s[[tag]], GlobalMetaData[[tag]]))
+        } else {
+            b <- b && any(grep(s[[tag]], eval(call(tag, object))))
+        }
+    }
+    return(b)
+}
+
+setGeneric("fulltext.search.filter", function(object, pattern, ...) standardGeneric("fulltext.search.filter"))
+setMethod("fulltext.search.filter",
+          signature(object = "PlainTextDocument", pattern = "character"),
+          function(object, pattern, ...) {
+              if (!Cached(object))
+                  object <- loadFileIntoMem(object)
+
+              return(any(grep(pattern, Corpus(object))))
+          })
+
+setGeneric("reuters21578.topic.filter", function(object, topics, ...) standardGeneric("reuters21578.topic.filter"))
+setMethod("reuters21578.topic.filter",
           c("PlainTextDocument", "character"),
-          function(object, topics) {
-              if (Cached(object) == FALSE)
+          function(object, topics, ...) {
+              if (!Cached(object))
                   object <- loadFileIntoMem(object)
 
               if (any(LocalMetaData(object)$Topics %in% topics))
@@ -258,10 +287,10 @@ setMethod("filterREUT21578Topics",
                   return(FALSE)
           })
 
-setGeneric("filterIDs", function(object, IDs, ...) standardGeneric("filterIDs"))
-setMethod("filterIDs",
+setGeneric("id.filter", function(object, IDs, ...) standardGeneric("id.filter"))
+setMethod("id.filter",
           c("TextDocument", "numeric"),
-          function(object, IDs) {
+          function(object, IDs, ...) {
               if (ID(object) %in% IDs)
                   return(TRUE)
               else

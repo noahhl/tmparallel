@@ -33,7 +33,7 @@ if (!isGeneric("DateTimeStamp")) {
         fun <- function(object) standardGeneric("DateTimeStamp")
     setGeneric("DateTimeStamp", fun)
 }
-setMethod("DateTimeStamp", "TextDocument", function(object) object@timestamp)
+setMethod("DateTimeStamp", "TextDocument", function(object) object@DateTimeStamp)
 setGeneric("DateTimeStamp<-", function(x, value) standardGeneric("DateTimeStamp<-"))
 setReplaceMethod("DateTimeStamp", "TextDocument", function(x, value) {
   x@DateTimeStamp <- value
