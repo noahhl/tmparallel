@@ -1,7 +1,7 @@
 # Author: Ingo Feinerer
 #
 # Copyright notice:
-# Parts of the preprocessing code were adapted from the "lsa" R package. Special thanks to Fridolin Wild.
+# Parts of the preprocessing code were adapted from the \pkg{lsa} package. Special thanks to Fridolin Wild.
 
 # Input matrix has to be in term-frequency format
 weightMatrix <- function(m, weighting = "tf") {
@@ -22,7 +22,8 @@ weightMatrix <- function(m, weighting = "tf") {
 }
 
 setGeneric("TermDocMatrix", function(object, weighting = "tf", stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) standardGeneric("TermDocMatrix"))
-setMethod("TermDocMatrix", c("TextDocCol"),
+setMethod("TermDocMatrix",
+          signature(object = "TextDocCol"),
           function(object, weighting = "tf", stemming = FALSE, language = "english",
                    minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
               tvlist <- lapply(object, textvector, stemming, language, minWordLength, minDocFreq, stopwords)
@@ -34,7 +35,7 @@ setMethod("TermDocMatrix", c("TextDocCol"),
           })
 
 textvector <- function(doc, stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
-    txt <- gsub( "\\.|:|\\(|\\)|\\[|\\]|\\{|\\}|,|;|\\?|-|\\!|\"|\'|\`|\\^|\=|\’|\–|\„|\”|\/", " ", doc)
+    txt <- gsub( "\\.|:|\\(|\\)|\\[|\\]|\\{|\\}|,|;|\\?|-|\\!|\"|\'|\`|\\^|\=|\-|\/", " ", doc)
     txt <- gsub("[[:space:]]+", " ", txt)
     txt <- tolower(txt)
     txt <- unlist(strsplit(txt, " ", fixed = TRUE))
@@ -71,20 +72,20 @@ textvector <- function(doc, stemming = FALSE, language = "english", minWordLengt
 
 setGeneric("findHighFreqTerms", function(object, freq) standardGeneric("findHighFreqTerms"))
 setMethod("findHighFreqTerms",
-          c("TermDocMatrix", "numeric"),
+          signature(object = "TermDocMatrix", freq = "numeric"),
           function(object, freq) {
               unique(rownames(which(t(object) >= freq, arr.ind = TRUE)))
           })
 
 setGeneric("findAssocs", function(object, term, corlimit) standardGeneric("findAssocs"))
 setMethod("findAssocs",
-          c("TermDocMatrix", "character"),
+          signature(object = "TermDocMatrix", term = "character"),
           function(object, term, corlimit) {
               suppressWarnings(object.cor <- cor(object))
               sort(round(object.cor[term, which(object.cor[term,] > corlimit)], 2), decreasing = TRUE)
           })
 setMethod("findAssocs",
-          c("matrix", "character"),
+          signature(object = "matrix", term = "character"),
           function(object, term, corlimit) {
               sort(round(object[term, which(object[term,] > corlimit)], 2), decreasing = TRUE)
           })

@@ -139,7 +139,7 @@ reuters21578xml.to.plain <- function(node) {
 
 setGeneric("loadFileIntoMem", function(object) standardGeneric("loadFileIntoMem"))
 setMethod("loadFileIntoMem",
-          c("PlainTextDocument"),
+          signature(object = "PlainTextDocument"),
           function(object) {
               if (!Cached(object)) {
                   corpus <- readLines(FileName(object))
@@ -151,7 +151,7 @@ setMethod("loadFileIntoMem",
               }
           })
 setMethod("loadFileIntoMem",
-          c("XMLTextDocument"),
+          signature(object =  "XMLTextDocument"),
           function(object) {
               if (!Cached(object)) {
                   file <- FileName(object)
@@ -165,7 +165,7 @@ setMethod("loadFileIntoMem",
               }
           })
 setMethod("loadFileIntoMem",
-          c("NewsgroupDocument"),
+          signature(object = "NewsgroupDocument"),
           function(object) {
               if (!Cached(object)) {
                   mail <- readLines(FileName(object))
@@ -180,7 +180,7 @@ setMethod("loadFileIntoMem",
 
 setGeneric("tm_transform", function(object, FUN, ...) standardGeneric("tm_transform"))
 setMethod("tm_transform",
-          c("TextDocCol"),
+          signature(object = "TextDocCol", FUN = "function"),
           function(object, FUN, ...) {
               result <- as(lapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object)), "TextDocCol")
               result@GlobalMetaData <- GlobalMetaData(object)
@@ -189,12 +189,12 @@ setMethod("tm_transform",
 
 setGeneric("toPlainTextDocument", function(object, FUN, ...) standardGeneric("toPlainTextDocument"))
 setMethod("toPlainTextDocument",
-          c("PlainTextDocument"),
+          signature(object = "PlainTextDocument"),
           function(object, FUN, ...) {
               return(object)
           })
 setMethod("toPlainTextDocument",
-          c("XMLTextDocument"),
+          signature(object = "XMLTextDocument", FUN = "function"),
           function(object, FUN, ...) {
               if (!Cached(object))
                   object <- loadFileIntoMem(object)
@@ -210,7 +210,7 @@ setMethod("toPlainTextDocument",
 
 setGeneric("stemTextDocument", function(object, ...) standardGeneric("stemTextDocument"))
 setMethod("stemTextDocument",
-          c("PlainTextDocument"),
+          signature(object = "PlainTextDocument"),
           function(object, ...) {
               if (!Cached(object))
                   object <- loadFileIntoMem(object)
@@ -276,7 +276,7 @@ setMethod("fulltext.search.filter",
 
 setGeneric("reuters21578.topic.filter", function(object, topics, ...) standardGeneric("reuters21578.topic.filter"))
 setMethod("reuters21578.topic.filter",
-          c("PlainTextDocument", "character"),
+          signature(object = "PlainTextDocument", topics = "character"),
           function(object, topics, ...) {
               if (!Cached(object))
                   object <- loadFileIntoMem(object)
@@ -289,7 +289,7 @@ setMethod("reuters21578.topic.filter",
 
 setGeneric("id.filter", function(object, IDs, ...) standardGeneric("id.filter"))
 setMethod("id.filter",
-          c("TextDocument", "numeric"),
+          signature(object = "TextDocument", IDs = "numeric"),
           function(object, IDs, ...) {
               if (ID(object) %in% IDs)
                   return(TRUE)
@@ -299,7 +299,7 @@ setMethod("id.filter",
 
 setGeneric("attachData", function(object, data) standardGeneric("attachData"))
 setMethod("attachData",
-          c("TextDocCol","TextDocument"),
+          signature(object = "TextDocCol", data = "TextDocument"),
           function(object, data) {
               data <- as(list(data), "TextDocCol")
               object@.Data <- as(c(object@.Data, data), "TextDocCol")
@@ -308,7 +308,7 @@ setMethod("attachData",
 
 setGeneric("attachMetaData", function(object, name, metadata) standardGeneric("attachMetaData"))
 setMethod("attachMetaData",
-          c("TextDocCol"),
+          signature(object = "TextDocCol"),
           function(object, name, metadata) {
               object@GlobalMetaData <- c(GlobalMetaData(object), new = list(metadata))
               names(object@GlobalMetaData)[length(names(GlobalMetaData(object)))] <- name
@@ -317,7 +317,7 @@ setMethod("attachMetaData",
 
 setGeneric("setSubscriptable", function(object, name) standardGeneric("setSubscriptable"))
 setMethod("setSubscriptable",
-          c("TextDocCol"),
+          signature(object = "TextDocCol"),
           function(object, name) {
               if (!is.character(GlobalMetaData(object)$subscriptable))
                   object <- attachMetaData(object, "subscriptable", name)

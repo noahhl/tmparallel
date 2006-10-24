@@ -36,5 +36,5 @@ stopwords = NULL)
 
   \item{Weighting}{The weighting mode applied to the term-document matrix}
 }
-\author{Ingo Feinerer \email{h0125130@wu-wien.ac.at}}
+\author{Ingo Feinerer}
 \keyword{methods}

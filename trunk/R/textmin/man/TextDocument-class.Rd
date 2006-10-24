@@ -82,5 +82,5 @@ Objects can be created by calls of the form \code{new("TextDocument", ...)}.
       the local metadata in form of a tag-value paired list}
   }
 }
-\author{Ingo Feinerer \email{h0125130@wu-wien.ac.at}}
+\author{Ingo Feinerer}
 \keyword{classes}

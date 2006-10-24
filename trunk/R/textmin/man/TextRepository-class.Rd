@@ -28,7 +28,7 @@ Class \code{"list"}, directly.
       representational metadata in form of a tag-value paired list.}
   }
 }
-\author{Ingo Feinerer \email{h0125130@wu-wien.ac.at}}
+\author{Ingo Feinerer}
 \seealso{
   \code{\link{TextRepository}}
 }

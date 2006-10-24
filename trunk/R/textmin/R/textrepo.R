@@ -2,7 +2,7 @@
 
 setGeneric("TextRepository", function(object, metaname = "created", meta = date()) standardGeneric("TextRepository"))
 setMethod("TextRepository",
-          c("TextDocCol"),
+          signature(object = "TextDocCol"),
           function(object, metaname, meta) {
               tr <- new("TextRepository", .Data = list(object), RepresentationMetaData = list(created = meta))
               names(tr@RepresentationMetaData) <- metaname
@@ -10,14 +10,14 @@ setMethod("TextRepository",
           })
 
 setMethod("attachData",
-          c("TextRepository","TextDocCol"),
+          signature(object = "TextRepository", data = "TextDocCol"),
           function(object, data) {
               object@.Data <- as(c(object@.Data, data), "TextRepository")
               return(object)
           })
 
 setMethod("attachMetaData",
-          c("TextRepository"),
+          signature(object = "TextRepository"),
           function(object, name, metadata) {
               object@RepresentationMetaData <- c(object@RepresentationMetaData, new = list(metadata))
               names(object@RepresentationMetaData)[length(names(object@RepresentationMetaData))] <- name

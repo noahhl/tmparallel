@@ -44,5 +44,5 @@ Class \code{character} and \code{TextDocument}, directly.
   }
 }
 \references{\url{http://kdd.ics.uci.edu/databases/20newsgroups/20newsgroups.html}}
-\author{Ingo Feinerer \email{h0125130@wu-wien.ac.at}}
+\author{Ingo Feinerer}
 \keyword{classes}

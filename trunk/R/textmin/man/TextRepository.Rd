@@ -18,5 +18,5 @@
   An S4 object of class \code{TextRepository} which extends the class
   \code{list} containing text document collections.
 }
-\author{Ingo Feinerer \email{h0125130@wu-wien.ac.at}}
+\author{Ingo Feinerer}
 \keyword{methods}

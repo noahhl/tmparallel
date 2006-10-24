@@ -2,7 +2,7 @@
 \docType{methods}
 \alias{tm_transform}
 \alias{tm_transform-methods}
-\alias{tm_transform,TextDocCol-method}
+\alias{tm_transform,TextDocCol,function-method}
 \title{Methods for Function tm\_transform in Package `textmin'}
 \description{
 Methods for function \code{tm_transform} in Package `textmin'

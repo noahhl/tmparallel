@@ -44,5 +44,5 @@ Class \code{character} and \code{TextDocument}, directly.
       status information for loading on demand}
   }
 }
-\author{Ingo Feinerer \email{h0125130@wu-wien.ac.at}}
+\author{Ingo Feinerer}
 \keyword{classes}

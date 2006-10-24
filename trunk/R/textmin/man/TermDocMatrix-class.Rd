@@ -34,7 +34,7 @@ Class \code{"matrix"}, directly.
       weighting mode}
   }
 }
-\author{Ingo Feinerer \email{h0125130@wu-wien.ac.at}}
+\author{Ingo Feinerer}
 \seealso{
   \code{\link{TermDocMatrix}}
 }
