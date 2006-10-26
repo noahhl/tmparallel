@@ -221,3 +221,32 @@ setReplaceMethod("Weighting", "TermDocMatrix", function(x, value) {
   x@Weighting <- value
   x
 })
+
+# Source objects
+
+# Mimic S4 class until their official definition is found in R
+setOldClass("file", prototype = file())
+
+setClass("Source",
+         representation(LoDSupport = "logical",
+                        Position = "numeric"))
+
+# A directory with files
+setClass("DirSource",
+         representation(FileList = "character",
+                        Load = "logical"),
+         contains = c("Source"))
+
+# A single CSV file where each line is interpreted as document
+setClass("CSVSource",
+         representation(FileName = "character",
+                        Content = "character"),
+         contains = c("Source"))
+
+# A single XML file consisting of several Reuters21578 documents
+# This format can be directly used for the reut2-???.xml files
+# from the official Reuters21578 XML archive
+setClass("Reuters21578XMLSource",
+         representation(FileName = "character",
+                        Content = "list"),
+         contains = c("Source"))

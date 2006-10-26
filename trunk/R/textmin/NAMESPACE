@@ -1,6 +1,7 @@
+import(cba)
 import(methods)
 import(XML)
-export("TextDocCol", "TextRepository", "TermDocMatrix",
+export("TextDocCol", "TextRepository", "TermDocMatrix", "DirSource", "CSVSource", "Reuters21578XMLSource",
        # Assignment and accessor functions
 
        # TextDocument
@@ -34,6 +35,11 @@ export("TextDocCol", "TextRepository", "TermDocMatrix",
        "Weighting",
        "Weighting<-",
 
+       # Sources
+       "stepNext",
+       "getElem",
+       "eoi",
+
        # Functions
 
        "loadFileIntoMem",
@@ -43,30 +49,28 @@ export("TextDocCol", "TextRepository", "TermDocMatrix",
        "removeStopWords",
        "tm_filter",
        "tm_index",
-       "s.filter",
-       "fulltext.search.filter",
-       "reuters21578.topic.filter",
-       "id.filter",
-       "plaintext.parser",
-       "reuters21578xml.parser",
-       "rcv1.parser",
-       "uci.kdd.newsgroup.parser",
-       "reuters21578xml.to.plain",
-       "rcv1.to.plain",
+       "s_filter",
+       "fulltext_search_filter",
+       "plaintext_parser",
+       "reuters21578xml_parser",
+       "rcv1_parser",
+       "uci_kdd_newsgroup_parser",
+       "reuters21578xml_to_plain",
+       "rcv1_to_plain",
        "findHighFreqTerms",
        "findAssocs",
        "attachData",
        "attachMetaData",
        "setSubscriptable",
        "[",
+       "[<-",
+       "[[",
+       "[[<-",
        "c",
        "length",
        "show",
        "summary",
        "inspect",
 
-       "cosinus",
-       "pearson",
-       "extjacc",
        "dissimilarity")
-exportClasses("TextDocument", "PlainTextDocument", "XMLTextDocument", "NewsgroupDocument", "TextDocCol", "TextRepository", "TermDocMatrix")
+exportClasses("TextDocument", "PlainTextDocument", "XMLTextDocument", "NewsgroupDocument", "TextDocCol", "TextRepository", "TermDocMatrix", "Source", "DirSource", "CSVSource", "Reuters21578XMLSource")

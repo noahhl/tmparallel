@@ -35,7 +35,7 @@ setMethod("TermDocMatrix",
           })
 
 textvector <- function(doc, stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
-    txt <- gsub( "\\.|:|\\(|\\)|\\[|\\]|\\{|\\}|,|;|\\?|-|\\!|\"|\'|\`|\\^|\=|\-|\/", " ", doc)
+    txt <- gsub( "\\.|:|\\(|\\)|\\[|\\]|\\{|\\}|,|;|\\?|-|\\!|\"|\'|`|\\^|=|-|/", " ", doc)
     txt <- gsub("[[:space:]]+", " ", txt)
     txt <- tolower(txt)
     txt <- unlist(strsplit(txt, " ", fixed = TRUE))

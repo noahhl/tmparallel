@@ -17,7 +17,7 @@ Methods for function \code{toPlainTextDocument} in Package `textmin'
   }
 }
 \seealso{
-  \code{\link{reuters21578xml.to.plain}}
-  \code{\link{rcv1.to.plain}}
+  \code{\link{reuters21578xml_to_plain}}
+  \code{\link{rcv1_to_plain}}
 }
 \keyword{methods}

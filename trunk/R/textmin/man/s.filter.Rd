@@ -1,11 +1,11 @@
-\name{s.filter}
-\alias{s.filter}
+\name{s_filter}
+\alias{s_filter}
 \title{Statement Filter}
 \description{
   Filter metadata by special statements.
 }
 \usage{
-s.filter(object, s, ..., GlobalMetaData)
+s_filter(object, s, ..., GlobalMetaData)
 }
 \arguments{
   \item{object}{a \code{TextDocument} to be the filter applied to.}

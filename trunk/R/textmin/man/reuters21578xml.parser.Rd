@@ -1,16 +1,14 @@
-\name{reuters21578xml.parser}
-\alias{reuters21578xml.parser}
+\name{reuters21578xml_parser}
+\alias{reuters21578xml_parser}
 \title{Parse Reuters21578 XML Document}
 \description{
   Parse a Reuters21578 XML document.
 }
 \usage{
-reuters21578xml.parser(file, lod)
+reuters21578xml_parser(...)
 }
 \arguments{
-  \item{file}{a character string giving the name of the file to parse.}
-  \item{lod}{a logical indicating whether the text corpus should be
-    loaded immediately into memory.}
+  \item{...}{arguments for generator function.}
 }
 \value{
   An \code{XMLTextDocument} representing \code{file}.

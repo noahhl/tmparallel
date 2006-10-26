@@ -1,3 +1,9 @@
+2006-10-26  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/: Modified the TextDocCol constructur and various parsers. It
+	is now modular and supports various file formats via plugins (see
+	the new "Source" class).
+
 2006-10-24  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* man/: Revised documentation after previous code changes.

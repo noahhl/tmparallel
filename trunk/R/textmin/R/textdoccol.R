@@ -1,100 +1,230 @@
 # Author: Ingo Feinerer
 
-setGeneric("TextDocCol", function(object, parser = plaintext.parser, lod = FALSE) standardGeneric("TextDocCol"))
+# ... fuer Argumente des Funktionengenerators
+setGeneric("TextDocCol", function(object, parser = plaintext_parser, ...) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
-          signature(object = "character"),
-          function(object, parser = plaintext.parser, lod = FALSE) {
-              filelist <- dir(object, full.names = TRUE)
-              tdl <- lapply(filelist, parser, lod)
+          signature(object = "Source"),
+          function(object, parser = plaintext_parser) {
+              if (inherits(parser, "function_generator"))
+                  parser <- parser(...)
+
+              tdl <- list()
+              counter <- 1
+              while (!eoi(object)) {
+                  object <- stepNext(object)
+                  elem <- getElem(object)
+                  # If there is no Load on Demand support
+                  # we need to load the corpus into memory at startup
+                  if (object@LoDSupport)
+                      load <- object@Load
+                  else
+                      load <- TRUE
+                  tdl <- c(tdl, list(parser(elem, object@LoDSupport, load, as.character(counter))))
+                  counter <- counter + 1
+              }
+
               return(new("TextDocCol", .Data = tdl))
           })
 
-plaintext.parser <- function(file, lod) {
-    id <- file
-    origin <- dirname(file)
+setGeneric("DirSource", function(directory, load = FALSE) standardGeneric("DirSource"))
+setMethod("DirSource",
+          signature(directory = "character"),
+          function(directory, load = FALSE) {
+              new("DirSource", LoDSupport = TRUE, FileList = dir(directory, full.names = TRUE),
+                  Position = 0, Load = load)
+          })
 
-    doc <- new("PlainTextDocument", FileName = file, Cached = FALSE, Author = "Unknown",
-               DateTimeStamp = date(), Description = "", ID = id, Origin = origin, Heading = "")
+setGeneric("CSVSource", function(file) standardGeneric("CSVSource"))
+setMethod("CSVSource",
+          signature(file = "character"),
+          function(file) {
+              new("CSVSource", LoDSupport = FALSE, FileName = file,
+                  Content = scan(file, what = "character"), Position = 0)
+          })
 
-    if (lod) {
-        doc <- loadFileIntoMem(doc)
+setGeneric("Reuters21578XMLSource", function(file) standardGeneric("Reuters21578XMLSource"))
+setMethod("Reuters21578XMLSource",
+          signature(file = "character"),
+          function(file) {
+              tree <- xmlTreeParse(file)
+              content <- xmlRoot(tree)$children
+              new("Reuters21578XMLSource", LoDSupport = FALSE, FileName = file,
+                  Content = content, Position = 0)
+          })
+
+setGeneric("stepNext", function(object) standardGeneric("stepNext"))
+setMethod("stepNext",
+          signature(object = "DirSource"),
+          function(object) {
+              object@Position <- object@Position + 1
+              object
+          })
+setMethod("stepNext",
+          signature(object = "CSVSource"),
+          function(object) {
+              object@Position <- object@Position + 1
+              object
+          })
+setMethod("stepNext",
+          signature(object = "Reuters21578XMLSource"),
+          function(object) {
+              object@Position <- object@Position + 1
+              object
+          })
+
+setGeneric("getElem", function(object) standardGeneric("getElem"))
+setMethod("getElem",
+          signature(object = "DirSource"),
+          function(object) {
+              list(content = readLines(object@FileList[object@Position]),
+                   filename = object@FileList[object@Position])
+          })
+setMethod("getElem",
+          signature(object = "CSVSource"),
+          function(object) {
+              list(content = object@Content[object@Position],
+                   filename = object@FileName)
+          })
+setMethod("getElem",
+          signature(object = "Reuters21578XMLSource"),
+          function(object) {
+              list(content = object@Content[object@Position],
+                   filename = object@FileName)
+          })
+
+setGeneric("eoi", function(object) standardGeneric("eoi"))
+setMethod("eoi",
+          signature(object = "DirSource"),
+          function(object) {
+              if (length(object@FileList) <= object@Position)
+                  return(TRUE)
+              else
+                  return(FALSE)
+          })
+setMethod("eoi",
+          signature(object = "CSVSource"),
+          function(object) {
+              if (length(object@Content) <= object@Position)
+                  return(TRUE)
+              else
+                  return(FALSE)
+          })
+setMethod("eoi",
+          signature(object = "Reuters21578XMLSource"),
+          function(object) {
+              if (length(object@Content) <= object@Position)
+                  return(TRUE)
+              else
+                  return(FALSE)
+          })
+
+plaintext_parser <- function(...) {
+    function(elem, lodsupport, load, id) {
+        if (!lodsupport || (lodsupport && load)) {
+            doc <- new("PlainTextDocument", .Data = elem$content, FileName = elem$filename, Cached = TRUE,
+                       Author = "", DateTimeStamp = date(), Description = "", ID = id, Origin = "", Heading = "")
+        }
+        else {
+            doc <- new("PlainTextDocument", FileName = elem$filename, Cached = FALSE,
+                       Author = "", DateTimeStamp = date(), Description = "", ID = id, Origin = "", Heading = "")
+        }
+
+        return(doc)
     }
-
-    return(doc)
 }
+class(plaintext_parser) <- "function_generator"
 
-reuters21578xml.parser <- function(file, lod) {
-    tree <- xmlTreeParse(file)
-    node <- xmlRoot(tree)
+reuters21578xml_parser <- function(...) {
+    function(elem, lodsupport, load, id) {
+        tree <- xmlTreeParse(elem$filename)
+        node <- xmlRoot(tree)
 
-    # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
-    if (!is.null(node[["TEXT"]][["AUTHOR"]]))
-        author <- xmlValue(node[["TEXT"]][["AUTHOR"]])
-    else
-        author <- ""
+        # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
+        if (!is.null(node[["TEXT"]][["AUTHOR"]]))
+            author <- xmlValue(node[["TEXT"]][["AUTHOR"]])
+        else
+            author <- ""
 
-    datetimestamp <- xmlValue(node[["DATE"]])
-    description <- ""
-    id <- xmlAttrs(node)[["NEWID"]]
+        datetimestamp <- xmlValue(node[["DATE"]])
+        description <- ""
+        id <- xmlAttrs(node)[["NEWID"]]
 
-    # The <TITLE></TITLE> tag is unfortunately NOT obligatory!
-    if (!is.null(node[["TEXT"]][["TITLE"]]))
-        heading <- xmlValue(node[["TEXT"]][["TITLE"]])
-    else
-        heading <- ""
+        # The <TITLE></TITLE> tag is unfortunately NOT obligatory!
+        if (!is.null(node[["TEXT"]][["TITLE"]]))
+            heading <- xmlValue(node[["TEXT"]][["TITLE"]])
+        else
+            heading <- ""
 
-    topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
+        topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
 
-    doc <- new("XMLTextDocument", FileName = file, Cached = FALSE, Author = author,
-               DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
-               Heading = heading, LocalMetaData = list(Topics = topics))
+        if (!lodsupport || (lodsupport && load)) {
+            doc <- new("XMLTextDocument", .Data = elem$content, FileName = elem$filename, Cached = TRUE, Author = author,
+                       DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
+                       Heading = heading, LocalMetaData = list(Topics = topics))
+        } else {
+            doc <- new("XMLTextDocument", FileName = elem$filename, Cached = FALSE, Author = author,
+                       DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
+                       Heading = heading, LocalMetaData = list(Topics = topics))
+        }
 
-    if (lod) {
-        doc <- loadFileIntoMem(doc)
+        return(doc)
     }
-
-    return(doc)
 }
+class(reuters21578xml_parser) <- "function_generator"
 
-rcv1.parser <- function(file, lod) {
-    tree <- xmlTreeParse(file)
-    node <- xmlRoot(tree)
+rcv1_parser <- function(...) {
+    function(elem, lodsupport, load, id) {
+        tree <- xmlTreeParse(elem$filename)
+        node <- xmlRoot(tree)
 
-    datetimestamp <- xmlAttrs(node)[["date"]]
-    id <- xmlAttrs(node)[["itemid"]]
-    heading <- xmlValue(node[["title"]])
+        datetimestamp <- xmlAttrs(node)[["date"]]
+        id <- xmlAttrs(node)[["itemid"]]
+        heading <- xmlValue(node[["title"]])
 
-    doc <- new("XMLTextDocument", FileName = file, Cached = FALSE, Author = "",
-               DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
-               Heading = heading)
+        if (!lodsupport || (lodsupport && load)) {
+            doc <- new("XMLTextDocument", .Data = elem$content, FileName = elem$filename, Cached = TRUE, Author = "",
+                       DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
+                       Heading = heading)
+        } else {
+            doc <- new("XMLTextDocument", FileName = elem$filename, Cached = FALSE, Author = "",
+                       DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
+                       Heading = heading)
+        }
 
-    if (lod) {
-        doc <- loadFileIntoMem(doc)
+        return(doc)
     }
-
-    return(doc)
 }
+class(rcv1_parser) <- "function_generator"
 
-uci.kdd.newsgroup.parser <-  function(file, lod) {
-    mail <- readLines(file)
-    author <- gsub("From: ", "", grep("^From:", mail, value = TRUE))
-    datetimestamp <- gsub("Date: ", "", grep("^Date:", mail, value = TRUE))
-    origin <- gsub("Path: ", "", grep("^Path:", mail, value = TRUE))
-    heading <- gsub("Subject: ", "", grep("^Subject:", mail, value = TRUE))
-    newsgroup <- gsub("Newsgroups: ", "", grep("^Newsgroups:", mail, value = TRUE))
+uci_kdd_newsgroup_parser <- function(...) {
+    function(elem, lodsupport, load, id) {
+        mail <- readLines(elem$filename)
+        author <- gsub("From: ", "", grep("^From:", mail, value = TRUE))
+        datetimestamp <- gsub("Date: ", "", grep("^Date:", mail, value = TRUE))
+        origin <- gsub("Path: ", "", grep("^Path:", mail, value = TRUE))
+        heading <- gsub("Subject: ", "", grep("^Subject:", mail, value = TRUE))
+        newsgroup <- gsub("Newsgroups: ", "", grep("^Newsgroups:", mail, value = TRUE))
 
-    new("NewsgroupDocument", FileName = file, Cached = FALSE, Author = author, DateTimeStamp = datetimestamp,
-        Description = "", ID = file, Origin = origin, Heading = heading, Newsgroup = newsgroup)
+        if (!lodsupport || (lodsupport && load)) {
+            index <- grep("^Lines:", mail)
+            content <- mail[(index + 1):length(mail)]
 
-    if (lod) {
-        doc <- loadFileIntoMem(doc)
+            doc <- new("NewsgroupDocument", .Data = content, FileName = elem$filename, Cached = TRUE,
+                       Author = author, DateTimeStamp = datetimestamp,
+                       Description = "", ID = elem$filename, Origin = origin,
+                       Heading = heading, Newsgroup = newsgroup)
+        } else {
+            doc <- new("NewsgroupDocument", FileName = elem$filename, Cached = FALSE, Author = author, DateTimeStamp = datetimestamp,
+                       Description = "", ID = elem$filename, Origin = origin, Heading = heading, Newsgroup = newsgroup)
+        }
+
+        return(doc)
     }
-
-    return(doc)
 }
+class(uci_kdd_newsgroup_parser) <- "function_generator"
 
 # Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file
-rcv1.to.plain <- function(node) {
+rcv1_to_plain <- function(node) {
     datetimestamp <- xmlAttrs(node)[["date"]]
     id <- xmlAttrs(node)[["itemid"]]
     origin <- "Reuters Corpus Volume 1 XML"
@@ -106,7 +236,7 @@ rcv1.to.plain <- function(node) {
 }
 
 # Parse a <REUTERS></REUTERS> element from a well-formed Reuters-21578 XML file
-reuters21578xml.to.plain <- function(node) {
+reuters21578xml_to_plain <- function(node) {
     # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
     if (!is.null(node[["TEXT"]][["AUTHOR"]]))
         author <- xmlValue(node[["TEXT"]][["AUTHOR"]])
@@ -243,14 +373,14 @@ setMethod("tm_filter",
               object[tm_index(object, ..., FUN)]
           })
 
-setGeneric("tm_index", function(object, ..., FUN = s.filter) standardGeneric("tm_index"))
+setGeneric("tm_index", function(object, ..., FUN = s_filter) standardGeneric("tm_index"))
 setMethod("tm_index",
           signature(object = "TextDocCol"),
           function(object, ..., FUN = s.filter) {
               sapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object))
           })
 
-s.filter <- function(object, s, ..., GlobalMetaData) {
+s_filter <- function(object, s, ..., GlobalMetaData) {
     b <- TRUE
     for (tag in names(s)) {
         if (tag %in% names(LocalMetaData(object))) {
@@ -264,37 +394,14 @@ s.filter <- function(object, s, ..., GlobalMetaData) {
     return(b)
 }
 
-setGeneric("fulltext.search.filter", function(object, pattern, ...) standardGeneric("fulltext.search.filter"))
-setMethod("fulltext.search.filter",
+setGeneric("fulltext_search_filter", function(object, pattern, ...) standardGeneric("fulltext_search_filter"))
+setMethod("fulltext_search_filter",
           signature(object = "PlainTextDocument", pattern = "character"),
           function(object, pattern, ...) {
               if (!Cached(object))
                   object <- loadFileIntoMem(object)
 
               return(any(grep(pattern, Corpus(object))))
-          })
-
-setGeneric("reuters21578.topic.filter", function(object, topics, ...) standardGeneric("reuters21578.topic.filter"))
-setMethod("reuters21578.topic.filter",
-          signature(object = "PlainTextDocument", topics = "character"),
-          function(object, topics, ...) {
-              if (!Cached(object))
-                  object <- loadFileIntoMem(object)
-
-              if (any(LocalMetaData(object)$Topics %in% topics))
-                  return(TRUE)
-              else
-                  return(FALSE)
-          })
-
-setGeneric("id.filter", function(object, IDs, ...) standardGeneric("id.filter"))
-setMethod("id.filter",
-          signature(object = "TextDocument", IDs = "numeric"),
-          function(object, IDs, ...) {
-              if (ID(object) %in% IDs)
-                  return(TRUE)
-              else
-                  return(FALSE)
           })
 
 setGeneric("attachData", function(object, data) standardGeneric("attachData"))
@@ -339,6 +446,28 @@ setMethod("[",
                       object@GlobalMetaData[[m]] <- GlobalMetaData(object)[[m]][i, ..., drop = FALSE]
                   }
               }
+              return(object)
+          })
+
+setMethod("[<-",
+          signature(x = "TextDocCol", i = "ANY", j = "ANY", value = "ANY"),
+          function(x, i, j, ... , value) {
+              object <- x
+              object@.Data[i, ...] <- value
+              return(object)
+          })
+
+setMethod("[[",
+          signature(x = "TextDocCol", i = "ANY", j = "ANY"),
+          function(x, i, j, ...) {
+              return(x@.Data[[i, ...]])
+          })
+
+setMethod("[[<-",
+          signature(x = "TextDocCol", i = "ANY", j = "ANY", value = "ANY"),
+          function(x, i, j, ..., value) {
+              object <- x
+              object@.Data[[i, ...]] <- value
               return(object)
           })
 

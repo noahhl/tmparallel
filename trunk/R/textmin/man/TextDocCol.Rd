@@ -17,7 +17,6 @@
     be loaded immediately into memory (\code{lod = TRUE}) or loaded when
     necessary (\code{lod = FALSE}). This allows to minimize memory
     demands for large document collections.}
-  }
 }
 \value{
   An S4 object of class \code{TextDocCol} which extends the class

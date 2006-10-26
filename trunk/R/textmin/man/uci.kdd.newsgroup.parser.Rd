@@ -1,5 +1,5 @@
-\name{uci.kdd.newsgroup.parser}
-\alias{uci.kdd.newsgroup.parser}
+\name{uci_kdd_newsgroup_parser}
+\alias{uci_kdd_newsgroup_parser}
 \title{Parse UCI KDD Newsgroup Dataset Document}
 \description{
   Parse a UCI KDD Newsgroup Dataset document. Thus each newsgroup mail
@@ -7,12 +7,10 @@
   information in form of headers.
 }
 \usage{
-uci.kdd.newsgroup.parser(file, lod)
+uci_kdd_newsgroup_parser(...)
 }
 \arguments{
-  \item{file}{a character string giving the name of the file to parse.}
-  \item{lod}{a logical indicating whether the text corpus should be
-    loaded immediately into memory.}
+  \item{...}{arguments for generator function.}
 }
 \value{
   A \code{NewsgroupDocument} representing \code{file}.

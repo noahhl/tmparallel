@@ -1,12 +1,12 @@
-\name{reuters21578xml.to.plain}
-\alias{reuters21578xml.to.plain}
+\name{reuters21578xml_to_plain}
+\alias{reuters21578xml_to_plain}
 \title{Transform Reuters21578 XML Document To Plain Text Document}
 \description{
   Transform a Reuters21578 XML document to a plain text
   document.
 }
 \usage{
-reuters21578xml.to.plain(node)
+reuters21578xml_to_plain(node)
 }
 \arguments{
   \item{node}{an XML node representing a <REUTERS></REUTERS> element

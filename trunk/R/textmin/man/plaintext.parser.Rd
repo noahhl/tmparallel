@@ -1,17 +1,15 @@
-\name{plaintext.parser}
-\alias{plaintext.parser}
+\name{plaintext_parser}
+\alias{plaintext_parser}
 \title{Parse Text Document}
 \description{
   Parse a text document without knowledge about internal structure and
   possible available metadata.
 }
 \usage{
-plaintext.parser(file, lod)
+plaintext_parser(...)
 }
 \arguments{
-  \item{file}{a character string giving the name of the file to parse.}
-  \item{lod}{a logical indicating whether the text corpus should be
-    loaded immediately into memory.}
+  \item{...}{arguments for generator function.}
 }
 \value{
   A \code{PlainTextDocument} representing \code{file}.
