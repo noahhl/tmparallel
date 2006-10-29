@@ -366,17 +366,17 @@ setMethod("removeStopWords",
               return(object)
           })
 
-setGeneric("tm_filter", function(object, ..., FUN = s.filter) standardGeneric("tm_filter"))
+setGeneric("tm_filter", function(object, ..., FUN = s_filter) standardGeneric("tm_filter"))
 setMethod("tm_filter",
           signature(object = "TextDocCol"),
-          function(object, ..., FUN = s.filter) {
+          function(object, ..., FUN = s_filter) {
               object[tm_index(object, ..., FUN)]
           })
 
 setGeneric("tm_index", function(object, ..., FUN = s_filter) standardGeneric("tm_index"))
 setMethod("tm_index",
           signature(object = "TextDocCol"),
-          function(object, ..., FUN = s.filter) {
+          function(object, ..., FUN = s_filter) {
               sapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object))
           })
 

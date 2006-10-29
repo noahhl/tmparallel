@@ -1,76 +1,96 @@
 import(cba)
 import(methods)
 import(XML)
-export("TextDocCol", "TextRepository", "TermDocMatrix", "DirSource", "CSVSource", "Reuters21578XMLSource",
-       # Assignment and accessor functions
 
-       # TextDocument
-       "Corpus",
-       "Corpus<-",
-       "Author",
-       "Author<-",
-       "DateTimeStamp",
-       "DateTimeStamp<-",
-       "Description",
-       "Description<-",
-       "ID",
-       "ID<-",
-       "Origin",
-       "Origin<-",
-       "Heading",
-       "Heading<-",
-       "LocalMetaData",
-
-       "Cached",
-       "Cached<-",
-       "FileName",
-
-       # TextDocCol
-       "GlobalMetaData",
-
-       # TextRepository
-       "RepresentationMetaData",
-
-       # TermDocMatrix
-       "Weighting",
-       "Weighting<-",
-
-       # Sources
-       "stepNext",
-       "getElem",
-       "eoi",
-
-       # Functions
-
-       "loadFileIntoMem",
-       "tm_transform",
-       "toPlainTextDocument",
-       "stemTextDocument",
-       "removeStopWords",
-       "tm_filter",
-       "tm_index",
-       "s_filter",
-       "fulltext_search_filter",
+export(
        "plaintext_parser",
        "reuters21578xml_parser",
        "rcv1_parser",
        "uci_kdd_newsgroup_parser",
        "reuters21578xml_to_plain",
        "rcv1_to_plain",
-       "findHighFreqTerms",
-       "findAssocs",
-       "attachData",
-       "attachMetaData",
-       "setSubscriptable",
-       "[",
-       "[<-",
-       "[[",
-       "[[<-",
-       "c",
-       "length",
-       "show",
-       "summary",
-       "inspect",
+       "s_filter",
+       "preprocessReuters21578XML"
+       )
 
-       "dissimilarity")
-exportClasses("TextDocument", "PlainTextDocument", "XMLTextDocument", "NewsgroupDocument", "TextDocCol", "TextRepository", "TermDocMatrix", "Source", "DirSource", "CSVSource", "Reuters21578XMLSource")
+exportMethods(
+              # Constructors
+              "TextDocCol",
+              "TextRepository",
+              "TermDocMatrix",
+              "DirSource",
+              "CSVSource",
+              "Reuters21578XMLSource",
+
+              # TextDocument
+              "Corpus",
+              "Corpus<-",
+              "Author",
+              "Author<-",
+              "DateTimeStamp",
+              "DateTimeStamp<-",
+              "Description",
+              "Description<-",
+              "ID",
+              "ID<-",
+              "Origin",
+              "Origin<-",
+              "Heading",
+              "Heading<-",
+              "LocalMetaData",
+
+              "Cached",
+              "Cached<-",
+              "FileName",
+
+              # TextDocCol
+              "GlobalMetaData",
+
+              # TextRepository
+              "RepresentationMetaData",
+
+              # TermDocMatrix
+              "Weighting",
+              "Weighting<-",
+
+              # Sources
+              "stepNext",
+              "getElem",
+              "eoi",
+
+              # Functions
+              "loadFileIntoMem",
+              "tm_transform",
+              "toPlainTextDocument",
+              "stemTextDocument",
+              "removeStopWords",
+              "tm_filter",
+              "tm_index",
+              "fulltext_search_filter",
+              "findHighFreqTerms",
+              "findAssocs",
+              "attachData",
+              "attachMetaData",
+              "setSubscriptable",
+              "[",
+              "[<-",
+              "[[",
+              "[[<-",
+              "c",
+              "length",
+              "show",
+              "summary",
+              "inspect",
+              "dissimilarity")
+
+exportClasses("TextDocument",
+              "PlainTextDocument",
+              "XMLTextDocument",
+              "NewsgroupDocument",
+              "TextDocCol",
+              "TextRepository",
+              "TermDocMatrix",
+              "Source",
+              "DirSource",
+              "CSVSource",
+              "Reuters21578XMLSource")

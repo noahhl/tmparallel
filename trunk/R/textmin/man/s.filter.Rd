@@ -33,5 +33,15 @@ s_filter(object, s, ..., GlobalMetaData)
   A Boolean value indicating whether \code{object} fulfils all
   requirements described by \code{s}.
 }
+\examples{
+## Load example dataset
+data(crude)
+
+## Statement Filter returning TRUE
+s_filter(crude[[1]], list(ID = "12[5-9]", Heading = "^DIAMOND"), GlobalMetaData = list())
+
+## Statement Filter returning FALSE
+s_filter(crude[[1]], list(Origin = "Reuters", Topics = "acq"), GlobalMetaData = list())
+}
 \author{Ingo Feinerer}
 \keyword{file}

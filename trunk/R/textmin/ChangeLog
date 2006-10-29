@@ -1,3 +1,8 @@
+2006-10-29  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* NAMESPACE: Corrected exports (generic methods need exportMethods
+	directives!).
+
 2006-10-26  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/: Modified the TextDocCol constructur and various parsers. It

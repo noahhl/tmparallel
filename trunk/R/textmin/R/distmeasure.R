@@ -1,6 +1,6 @@
 # Author: Ingo Feinerer
 
-setGeneric("dissimilarity", function(x, y, method) standardGeneric("dissimilarity"))
+setGeneric("dissimilarity", function(x, y = NULL, method) standardGeneric("dissimilarity"))
 setMethod("dissimilarity",
           signature(x = "TermDocMatrix", y = "ANY", method = "character"),
           function(x, y = NULL, method) {
@@ -9,10 +9,10 @@ setMethod("dissimilarity",
               dists(x, y, method)
           })
 setMethod("dissimilarity",
-          c("TextDocument", "TextDocument", "character"),
-          function(x, y, method) {
+          signature(x = "TextDocument", y = "TextDocument", method = "character"),
+          function(x, y = NULL, method) {
               tdm <- TermDocMatrix(as(list(x,y), "TextDocCol"))
               dissim <- dissimilarity(tdm, method = method)
-              class(dissim) <- "dist"
+              #class(dissim) <- "dist"
               return(dissim)
           })
