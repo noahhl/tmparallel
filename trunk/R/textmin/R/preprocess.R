@@ -2,7 +2,7 @@
 
 # Preprocess the Reuters21578 XML data
 # from https://www.cs.tcd.ie/courses/baict/baim/ss/part2/sw/reuters21578-xml.tar.bz2
-preprocessReuters21578XML <- function(reuters.dir, reuters.oapf.dir, fix.enc = TRUE) {
+preprocess_reut21578xml <- function(reuters.dir, reuters.oapf.dir, fix.enc = TRUE) {
     dir.create(reuters.oapf.dir, recursive = TRUE)
     files <- dir(reuters.dir, pattern = "\\.xml", full.names = TRUE)
 

@@ -4,13 +4,13 @@ import(XML)
 
 export(
        "plaintext_parser",
-       "reuters21578xml_parser",
+       "reut21578xml_parser",
        "rcv1_parser",
-       "uci_kdd_newsgroup_parser",
-       "reuters21578xml_to_plain",
+       "newsgroup_parser",
+       "reut21578xml_to_plain",
        "rcv1_to_plain",
        "s_filter",
-       "preprocessReuters21578XML"
+       "preprocess_reut21578xml"
        )
 
 exportMethods(
@@ -54,24 +54,24 @@ exportMethods(
               "Weighting<-",
 
               # Sources
-              "stepNext",
-              "getElem",
+              "step_next",
+              "get_elem",
               "eoi",
 
               # Functions
-              "loadFileIntoMem",
+              "load_doc",
               "tm_transform",
-              "toPlainTextDocument",
-              "stemTextDocument",
-              "removeStopWords",
+              "as.plaintext_doc",
+              "stem_doc",
+              "remove_words",
               "tm_filter",
               "tm_index",
               "fulltext_search_filter",
-              "findHighFreqTerms",
-              "findAssocs",
-              "attachData",
-              "attachMetaData",
-              "setSubscriptable",
+              "find_hf_terms",
+              "find_assocs",
+              "attach_data",
+              "attach_metadata",
+              "set_subscriptable",
               "[",
               "[<-",
               "[[",

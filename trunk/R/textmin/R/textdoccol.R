@@ -11,8 +11,8 @@ setMethod("TextDocCol",
               tdl <- list()
               counter <- 1
               while (!eoi(object)) {
-                  object <- stepNext(object)
-                  elem <- getElem(object)
+                  object <- step_next(object)
+                  elem <- get_elem(object)
                   # If there is no Load on Demand support
                   # we need to load the corpus into memory at startup
                   if (object@LoDSupport)
@@ -63,40 +63,40 @@ setMethod("ReutersSource",
                   Content = content, Position = 0)
           })
 
-setGeneric("stepNext", function(object) standardGeneric("stepNext"))
-setMethod("stepNext",
+setGeneric("step_next", function(object) standardGeneric("step_next"))
+setMethod("step_next",
           signature(object = "DirSource"),
           function(object) {
               object@Position <- object@Position + 1
               object
           })
-setMethod("stepNext",
+setMethod("step_next",
           signature(object = "CSVSource"),
           function(object) {
               object@Position <- object@Position + 1
               object
           })
-setMethod("stepNext",
+setMethod("step_next",
           signature(object = "ReutersSource"),
           function(object) {
               object@Position <- object@Position + 1
               object
           })
 
-setGeneric("getElem", function(object) standardGeneric("getElem"))
-setMethod("getElem",
+setGeneric("get_elem", function(object) standardGeneric("get_elem"))
+setMethod("get_elem",
           signature(object = "DirSource"),
           function(object) {
               list(content = readLines(object@FileList[object@Position]),
                    uri = paste('file("', object@FileList[object@Position], '")', sep = ""))
           })
-setMethod("getElem",
+setMethod("get_elem",
           signature(object = "CSVSource"),
           function(object) {
               list(content = object@Content[object@Position],
                    uri = object@URI)
           })
-setMethod("getElem",
+setMethod("get_elem",
           signature(object = "ReutersSource"),
           function(object) {
               # Construct a character representation from the XMLNode
@@ -149,7 +149,7 @@ plaintext_parser <- function(...) {
 }
 class(plaintext_parser) <- "function_generator"
 
-reuters21578xml_parser <- function(...) {
+reut21578xml_parser <- function(...) {
     function(elem, lodsupport, load, id) {
         corpus <- paste(elem$content, "\n", collapse = "")
         tree <- xmlTreeParse(corpus, asText = TRUE)
@@ -189,7 +189,7 @@ reuters21578xml_parser <- function(...) {
         return(doc)
     }
 }
-class(reuters21578xml_parser) <- "function_generator"
+class(reut21578xml_parser) <- "function_generator"
 
 rcv1_parser <- function(...) {
     function(elem, lodsupport, load, id) {
@@ -219,7 +219,7 @@ rcv1_parser <- function(...) {
 }
 class(rcv1_parser) <- "function_generator"
 
-uci_kdd_newsgroup_parser <- function(...) {
+newsgroup_parser <- function(...) {
     function(elem, lodsupport, load, id) {
         mail <- elem$content
         author <- gsub("From: ", "", grep("^From:", mail, value = TRUE))
@@ -249,7 +249,7 @@ uci_kdd_newsgroup_parser <- function(...) {
         return(doc)
     }
 }
-class(uci_kdd_newsgroup_parser) <- "function_generator"
+class(newsgroup_parser) <- "function_generator"
 
 # Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file
 rcv1_to_plain <- function(node, ...) {
@@ -264,7 +264,7 @@ rcv1_to_plain <- function(node, ...) {
 }
 
 # Parse a <REUTERS></REUTERS> element from a well-formed Reuters-21578 XML file
-reuters21578xml_to_plain <- function(node, ...) {
+reut21578xml_to_plain <- function(node, ...) {
     # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
     if (!is.null(node[["TEXT"]][["AUTHOR"]]))
         author <- xmlValue(node[["TEXT"]][["AUTHOR"]])
@@ -295,8 +295,8 @@ reuters21578xml_to_plain <- function(node, ...) {
         Description = description, ID = id, Origin = origin, Heading = heading, LocalMetaData = list(Topics = topics))
 }
 
-setGeneric("loadFileIntoMem", function(object, ...) standardGeneric("loadFileIntoMem"))
-setMethod("loadFileIntoMem",
+setGeneric("load_doc", function(object, ...) standardGeneric("load_doc"))
+setMethod("load_doc",
           signature(object = "PlainTextDocument"),
           function(object, ...) {
               if (!Cached(object)) {
@@ -310,7 +310,7 @@ setMethod("loadFileIntoMem",
                   return(object)
               }
           })
-setMethod("loadFileIntoMem",
+setMethod("load_doc",
           signature(object =  "XMLTextDocument"),
           function(object, ...) {
               if (!Cached(object)) {
@@ -326,7 +326,7 @@ setMethod("loadFileIntoMem",
                   return(object)
               }
           })
-setMethod("loadFileIntoMem",
+setMethod("load_doc",
           signature(object = "NewsgroupDocument"),
           function(object, ...) {
               if (!Cached(object)) {
@@ -354,17 +354,17 @@ setMethod("tm_transform",
               return(result)
           })
 
-setGeneric("toPlainTextDocument", function(object, FUN, ...) standardGeneric("toPlainTextDocument"))
-setMethod("toPlainTextDocument",
+setGeneric("as.plaintext_doc", function(object, FUN, ...) standardGeneric("as.plaintext_doc"))
+setMethod("as.plaintext_doc",
           signature(object = "PlainTextDocument"),
           function(object, FUN, ...) {
               return(object)
           })
-setMethod("toPlainTextDocument",
+setMethod("as.plaintext_doc",
           signature(object = "XMLTextDocument", FUN = "function"),
           function(object, FUN, ...) {
               if (!Cached(object))
-                  object <- loadFileIntoMem(object)
+                  object <- load_doc(object)
 
               corpus <- Corpus(object)
 
@@ -375,12 +375,12 @@ setMethod("toPlainTextDocument",
               return(FUN(xmlRoot(corpus), ...))
           })
 
-setGeneric("stemTextDocument", function(object, ...) standardGeneric("stemTextDocument"))
-setMethod("stemTextDocument",
+setGeneric("stem_doc", function(object, ...) standardGeneric("stem_doc"))
+setMethod("stem_doc",
           signature(object = "PlainTextDocument"),
           function(object, ...) {
               if (!Cached(object))
-                  object <- loadFileIntoMem(object)
+                  object <- load_doc(object)
 
               require(Rstem)
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
@@ -389,12 +389,12 @@ setMethod("stemTextDocument",
               return(object)
           })
 
-setGeneric("removeStopWords", function(object, stopwords, ...) standardGeneric("removeStopWords"))
-setMethod("removeStopWords",
+setGeneric("remove_words", function(object, stopwords, ...) standardGeneric("remove_words"))
+setMethod("remove_words",
           signature(object = "PlainTextDocument", stopwords = "character"),
           function(object, stopwords, ...) {
               if (!Cached(object))
-                  object <- loadFileIntoMem(object)
+                  object <- load_doc(object)
 
               require(Rstem)
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
@@ -436,13 +436,13 @@ setMethod("fulltext_search_filter",
           signature(object = "PlainTextDocument", pattern = "character"),
           function(object, pattern, ...) {
               if (!Cached(object))
-                  object <- loadFileIntoMem(object)
+                  object <- load_doc(object)
 
               return(any(grep(pattern, Corpus(object))))
           })
 
-setGeneric("attachData", function(object, data) standardGeneric("attachData"))
-setMethod("attachData",
+setGeneric("attach_data", function(object, data) standardGeneric("attach_data"))
+setMethod("attach_data",
           signature(object = "TextDocCol", data = "TextDocument"),
           function(object, data) {
               data <- as(list(data), "TextDocCol")
@@ -450,8 +450,8 @@ setMethod("attachData",
               return(object)
           })
 
-setGeneric("attachMetaData", function(object, name, metadata) standardGeneric("attachMetaData"))
-setMethod("attachMetaData",
+setGeneric("attach_metadata", function(object, name, metadata) standardGeneric("attach_metadata"))
+setMethod("attach_metadata",
           signature(object = "TextDocCol"),
           function(object, name, metadata) {
               object@GlobalMetaData <- c(GlobalMetaData(object), new = list(metadata))
@@ -459,12 +459,12 @@ setMethod("attachMetaData",
               return(object)
           })
 
-setGeneric("setSubscriptable", function(object, name) standardGeneric("setSubscriptable"))
-setMethod("setSubscriptable",
+setGeneric("set_subscriptable", function(object, name) standardGeneric("set_subscriptable"))
+setMethod("set_subscriptable",
           signature(object = "TextDocCol"),
           function(object, name) {
               if (!is.character(GlobalMetaData(object)$subscriptable))
-                  object <- attachMetaData(object, "subscriptable", name)
+                  object <- attach_metadata(object, "subscriptable", name)
               else
                   object@GlobalMetaData$subscriptable <- c(GlobalMetaData(object)$subscriptable, name)
               return(object)

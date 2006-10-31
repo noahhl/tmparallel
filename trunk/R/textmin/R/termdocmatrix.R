@@ -70,21 +70,21 @@ textvector <- function(doc, stemming = FALSE, language = "english", minWordLengt
     data.frame(docs = ID(doc), terms, Freq, row.names = NULL)
 }
 
-setGeneric("findHighFreqTerms", function(object, freq) standardGeneric("findHighFreqTerms"))
-setMethod("findHighFreqTerms",
+setGeneric("find_hf_terms", function(object, freq) standardGeneric("find_hf_terms"))
+setMethod("find_hf_terms",
           signature(object = "TermDocMatrix", freq = "numeric"),
           function(object, freq) {
               unique(rownames(which(t(object) >= freq, arr.ind = TRUE)))
           })
 
-setGeneric("findAssocs", function(object, term, corlimit) standardGeneric("findAssocs"))
-setMethod("findAssocs",
+setGeneric("find_assocs", function(object, term, corlimit) standardGeneric("find_assocs"))
+setMethod("find_assocs",
           signature(object = "TermDocMatrix", term = "character"),
           function(object, term, corlimit) {
               suppressWarnings(object.cor <- cor(object))
               sort(round(object.cor[term, which(object.cor[term,] > corlimit)], 2), decreasing = TRUE)
           })
-setMethod("findAssocs",
+setMethod("find_assocs",
           signature(object = "matrix", term = "character"),
           function(object, term, corlimit) {
               sort(round(object[term, which(object[term,] > corlimit)], 2), decreasing = TRUE)

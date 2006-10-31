@@ -9,14 +9,14 @@ setMethod("TextRepository",
               return(tr)
           })
 
-setMethod("attachData",
+setMethod("attach_data",
           signature(object = "TextRepository", data = "TextDocCol"),
           function(object, data) {
               object@.Data <- as(c(object@.Data, data), "TextRepository")
               return(object)
           })
 
-setMethod("attachMetaData",
+setMethod("attach_metadata",
           signature(object = "TextRepository"),
           function(object, name, metadata) {
               object@RepresentationMetaData <- c(object@RepresentationMetaData, new = list(metadata))

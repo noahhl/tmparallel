@@ -1,0 +1,67 @@
+\documentclass[a4paper]{article}
+
+\newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+\newcommand{\class}[1]{\mbox{\textsf{#1}}}
+\newcommand{\func}[1]{\mbox{\texttt{#1()}}}
+\newcommand{\code}[1]{\mbox{\texttt{#1}}}
+\newcommand{\pkg}[1]{\strong{#1}}
+\newcommand{\samp}[1]{`\mbox{\texttt{#1}}'}
+\newcommand{\proglang}[1]{\textsf{#1}}
+\newcommand{\set}[1]{\mathcal{#1}}
+
+%% \VignetteIndexEntry{Introduction to textmin}
+
+\begin{document}
+<<echo=FALSE>>=
+options(width = 75)
+### for sampling
+set.seed <- 1234
+@
+\title{Introduction to \pkg{textmin} --- Text Mining in \proglang{R}}
+\author{Ingo Feinerer}
+\maketitle
+\sloppy
+
+\section{Introduction}
+This vignette gives a short overview over available features in the
+\pkg{textmin} package for text mining purposes in \proglang{R}.
+
+We discuss following issues:
+\begin{itemize}
+\item Data Import
+\item Working with Text Document Collections
+\item From Collections to Term-Document Matrices
+\end{itemize}
+
+\section{Data Import}
+Before actually working we need to load the library:
+<<>>=
+library(textmin)
+@
+
+The main structure for managing documents is a socalled text document
+collection (\class{TextDocCol}). Its constructor takes two arguments:
+
+<<>>=
+# Plain text
+txt <- system.file("texts/txt/", package = "textmin")
+TextDocCol(DirSource(txt, load = TRUE))
+
+# Comma separated values
+cars.csv <- system.file("texts/cars.csv", package = "textmin")
+TextDocCol(CSVSource(cars.csv))
+
+# Reuters21578 XML
+#TextDocCol(ReutersSource("~/texts/reut21578.xml"), reuters21578xml_parser)
+#TextDocCol(ReutersSource("gzfile('~/texts/reut21578.xml.gz')", isConCall = TRUE), reuters21578xml_parser)
+#TextDocCol(DirSource("~/texts/reut21578/", load = TRUE), reuters21578xml_parser)
+
+# Reuters Corpus Volume 1
+#TextDocCol(ReutersSource("~/texts/rcv1.xml"), rcv1_parser)
+#TextDocCol(DirSource("~/texts/rcv1/", load = TRUE), rcv1_parser)
+
+# UCI KDD Newsgroup Mails
+#TextDocCol(DirSource("~/texts/newsgroup/", load = TRUE), uci_kdd_newsgroup_parser)
+@
+
+\end{document}
