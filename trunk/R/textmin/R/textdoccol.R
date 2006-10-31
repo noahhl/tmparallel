@@ -1,6 +1,6 @@
 # Author: Ingo Feinerer
 
-# ... fuer Argumente des Funktionengenerators
+# The "..." are additional arguments for the function_generator parser
 setGeneric("TextDocCol", function(object, parser = plaintext_parser, ...) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           signature(object = "Source"),
@@ -34,21 +34,32 @@ setMethod("DirSource",
                   Position = 0, Load = load)
           })
 
-setGeneric("CSVSource", function(file) standardGeneric("CSVSource"))
+setGeneric("CSVSource", function(object, isConCall = FALSE) standardGeneric("CSVSource"))
 setMethod("CSVSource",
-          signature(file = "character"),
-          function(file) {
-              new("CSVSource", LoDSupport = FALSE, FileName = file,
-                  Content = scan(file, what = "character"), Position = 0)
+          signature(object = "character"),
+          function(object, isConCall = FALSE) {
+              if (!isConCall)
+                  object <- paste('file("', object, '")', sep = "")
+              con <- eval(parse(text = object))
+              content <- scan(con, what = "character")
+              close(con)
+              new("CSVSource", LoDSupport = FALSE, URI = object,
+                  Content = content, Position = 0)
           })
 
-setGeneric("Reuters21578XMLSource", function(file) standardGeneric("Reuters21578XMLSource"))
-setMethod("Reuters21578XMLSource",
-          signature(file = "character"),
-          function(file) {
-              tree <- xmlTreeParse(file)
+setGeneric("ReutersSource", function(object, isConCall = FALSE) standardGeneric("ReutersSource"))
+setMethod("ReutersSource",
+          signature(object = "character"),
+          function(object, isConCall = FALSE) {
+              if (!isConCall)
+                 object <- paste('file("', object, '")', sep = "")
+              con <- eval(parse(text = object))
+              corpus <- paste(readLines(con), "\n", collapse = "")
+              close(con)
+              tree <- xmlTreeParse(corpus, asText = TRUE)
               content <- xmlRoot(tree)$children
-              new("Reuters21578XMLSource", LoDSupport = FALSE, FileName = file,
+
+              new("ReutersSource", LoDSupport = FALSE, URI = object,
                   Content = content, Position = 0)
           })
 
@@ -66,7 +77,7 @@ setMethod("stepNext",
               object
           })
 setMethod("stepNext",
-          signature(object = "Reuters21578XMLSource"),
+          signature(object = "ReutersSource"),
           function(object) {
               object@Position <- object@Position + 1
               object
@@ -77,19 +88,23 @@ setMethod("getElem",
           signature(object = "DirSource"),
           function(object) {
               list(content = readLines(object@FileList[object@Position]),
-                   filename = object@FileList[object@Position])
+                   uri = paste('file("', object@FileList[object@Position], '")', sep = ""))
           })
 setMethod("getElem",
           signature(object = "CSVSource"),
           function(object) {
               list(content = object@Content[object@Position],
-                   filename = object@FileName)
+                   uri = object@URI)
           })
 setMethod("getElem",
-          signature(object = "Reuters21578XMLSource"),
+          signature(object = "ReutersSource"),
           function(object) {
-              list(content = object@Content[object@Position],
-                   filename = object@FileName)
+              # Construct a character representation from the XMLNode
+              con <- textConnection("virtual.file", "w")
+              saveXML(object@Content[[object@Position]], con)
+              close(con)
+
+              list(content = virtual.file, uri = object@URI)
           })
 
 setGeneric("eoi", function(object) standardGeneric("eoi"))
@@ -110,7 +125,7 @@ setMethod("eoi",
                   return(FALSE)
           })
 setMethod("eoi",
-          signature(object = "Reuters21578XMLSource"),
+          signature(object = "ReutersSource"),
           function(object) {
               if (length(object@Content) <= object@Position)
                   return(TRUE)
@@ -121,11 +136,11 @@ setMethod("eoi",
 plaintext_parser <- function(...) {
     function(elem, lodsupport, load, id) {
         if (!lodsupport || (lodsupport && load)) {
-            doc <- new("PlainTextDocument", .Data = elem$content, FileName = elem$filename, Cached = TRUE,
+            doc <- new("PlainTextDocument", .Data = elem$content, URI = elem$uri, Cached = TRUE,
                        Author = "", DateTimeStamp = date(), Description = "", ID = id, Origin = "", Heading = "")
         }
         else {
-            doc <- new("PlainTextDocument", FileName = elem$filename, Cached = FALSE,
+            doc <- new("PlainTextDocument", URI = elem$uri, Cached = FALSE,
                        Author = "", DateTimeStamp = date(), Description = "", ID = id, Origin = "", Heading = "")
         }
 
@@ -136,8 +151,12 @@ class(plaintext_parser) <- "function_generator"
 
 reuters21578xml_parser <- function(...) {
     function(elem, lodsupport, load, id) {
-        tree <- xmlTreeParse(elem$filename)
+        corpus <- paste(elem$content, "\n", collapse = "")
+        tree <- xmlTreeParse(corpus, asText = TRUE)
         node <- xmlRoot(tree)
+
+        # Mask as list to bypass S4 checks
+        class(tree) <- "list"
 
         # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
         if (!is.null(node[["TEXT"]][["AUTHOR"]]))
@@ -158,11 +177,11 @@ reuters21578xml_parser <- function(...) {
         topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
 
         if (!lodsupport || (lodsupport && load)) {
-            doc <- new("XMLTextDocument", .Data = elem$content, FileName = elem$filename, Cached = TRUE, Author = author,
+            doc <- new("XMLTextDocument", .Data = tree, URI = elem$uri, Cached = TRUE, Author = author,
                        DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
                        Heading = heading, LocalMetaData = list(Topics = topics))
         } else {
-            doc <- new("XMLTextDocument", FileName = elem$filename, Cached = FALSE, Author = author,
+            doc <- new("XMLTextDocument", URI = elem$uri, Cached = FALSE, Author = author,
                        DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
                        Heading = heading, LocalMetaData = list(Topics = topics))
         }
@@ -174,19 +193,23 @@ class(reuters21578xml_parser) <- "function_generator"
 
 rcv1_parser <- function(...) {
     function(elem, lodsupport, load, id) {
-        tree <- xmlTreeParse(elem$filename)
+        corpus <- paste(elem$content, "\n", collapse = "")
+        tree <- xmlTreeParse(corpus, asText = TRUE)
         node <- xmlRoot(tree)
+
+        # Mask as list to bypass S4 checks
+        class(tree) <- "list"
 
         datetimestamp <- xmlAttrs(node)[["date"]]
         id <- xmlAttrs(node)[["itemid"]]
         heading <- xmlValue(node[["title"]])
 
         if (!lodsupport || (lodsupport && load)) {
-            doc <- new("XMLTextDocument", .Data = elem$content, FileName = elem$filename, Cached = TRUE, Author = "",
+            doc <- new("XMLTextDocument", .Data = tree, URI = elem$uri, Cached = TRUE, Author = "",
                        DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
                        Heading = heading)
         } else {
-            doc <- new("XMLTextDocument", FileName = elem$filename, Cached = FALSE, Author = "",
+            doc <- new("XMLTextDocument", URI = elem$uri, Cached = FALSE, Author = "",
                        DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
                        Heading = heading)
         }
@@ -198,7 +221,7 @@ class(rcv1_parser) <- "function_generator"
 
 uci_kdd_newsgroup_parser <- function(...) {
     function(elem, lodsupport, load, id) {
-        mail <- readLines(elem$filename)
+        mail <- elem$content
         author <- gsub("From: ", "", grep("^From:", mail, value = TRUE))
         datetimestamp <- gsub("Date: ", "", grep("^Date:", mail, value = TRUE))
         origin <- gsub("Path: ", "", grep("^Path:", mail, value = TRUE))
@@ -206,16 +229,21 @@ uci_kdd_newsgroup_parser <- function(...) {
         newsgroup <- gsub("Newsgroups: ", "", grep("^Newsgroups:", mail, value = TRUE))
 
         if (!lodsupport || (lodsupport && load)) {
-            index <- grep("^Lines:", mail)
+            # The header is separated from the body by a blank line.
+            # Reference: \url{http://en.wikipedia.org/wiki/E-mail#Internet_e-mail_format}
+            for (index in seq(along = mail)) {
+                if (mail[index] == "")
+                    break
+            }
             content <- mail[(index + 1):length(mail)]
 
-            doc <- new("NewsgroupDocument", .Data = content, FileName = elem$filename, Cached = TRUE,
+            doc <- new("NewsgroupDocument", .Data = content, URI = elem$uri, Cached = TRUE,
                        Author = author, DateTimeStamp = datetimestamp,
-                       Description = "", ID = elem$filename, Origin = origin,
+                       Description = "", ID = id, Origin = origin,
                        Heading = heading, Newsgroup = newsgroup)
         } else {
-            doc <- new("NewsgroupDocument", FileName = elem$filename, Cached = FALSE, Author = author, DateTimeStamp = datetimestamp,
-                       Description = "", ID = elem$filename, Origin = origin, Heading = heading, Newsgroup = newsgroup)
+            doc <- new("NewsgroupDocument", URI = elem$uri, Cached = FALSE, Author = author, DateTimeStamp = datetimestamp,
+                       Description = "", ID = id, Origin = origin, Heading = heading, Newsgroup = newsgroup)
         }
 
         return(doc)
@@ -224,19 +252,19 @@ uci_kdd_newsgroup_parser <- function(...) {
 class(uci_kdd_newsgroup_parser) <- "function_generator"
 
 # Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file
-rcv1_to_plain <- function(node) {
+rcv1_to_plain <- function(node, ...) {
     datetimestamp <- xmlAttrs(node)[["date"]]
     id <- xmlAttrs(node)[["itemid"]]
     origin <- "Reuters Corpus Volume 1 XML"
     corpus <- unlist(xmlApply(node[["text"]], xmlValue), use.names = FALSE)
     heading <- xmlValue(node[["title"]])
 
-    new("PlainTextDocument", .Data = corpus, Author = "", DateTimeStamp = datetimestamp,
+    new("PlainTextDocument", .Data = corpus, Cached = TRUE, URI = "", Author = "", DateTimeStamp = datetimestamp,
         Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML", Heading = heading)
 }
 
 # Parse a <REUTERS></REUTERS> element from a well-formed Reuters-21578 XML file
-reuters21578xml_to_plain <- function(node) {
+reuters21578xml_to_plain <- function(node, ...) {
     # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
     if (!is.null(node[["TEXT"]][["AUTHOR"]]))
         author <- xmlValue(node[["TEXT"]][["AUTHOR"]])
@@ -263,16 +291,18 @@ reuters21578xml_to_plain <- function(node) {
 
     topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
 
-    new("PlainTextDocument", .Data = corpus, Cached = TRUE, Author = author, DateTimeStamp = datetimestamp,
+    new("PlainTextDocument", .Data = corpus, Cached = TRUE, URI = "", Author = author, DateTimeStamp = datetimestamp,
         Description = description, ID = id, Origin = origin, Heading = heading, LocalMetaData = list(Topics = topics))
 }
 
-setGeneric("loadFileIntoMem", function(object) standardGeneric("loadFileIntoMem"))
+setGeneric("loadFileIntoMem", function(object, ...) standardGeneric("loadFileIntoMem"))
 setMethod("loadFileIntoMem",
           signature(object = "PlainTextDocument"),
-          function(object) {
+          function(object, ...) {
               if (!Cached(object)) {
-                  corpus <- readLines(FileName(object))
+                  con <- eval(parse(text = URI(object)))
+                  corpus <- readLines(con)
+                  close(con)
                   Corpus(object) <- corpus
                   Cached(object) <- TRUE
                   return(object)
@@ -282,10 +312,12 @@ setMethod("loadFileIntoMem",
           })
 setMethod("loadFileIntoMem",
           signature(object =  "XMLTextDocument"),
-          function(object) {
+          function(object, ...) {
               if (!Cached(object)) {
-                  file <- FileName(object)
-                  doc <- xmlTreeParse(file)
+                  con <- eval(parse(text = URI(object)))
+                  corpus <- paste(readLines(con), "\n", collapse = "")
+                  close(con)
+                  doc <- xmlTreeParse(corpus, asText = TRUE)
                   class(doc) <- "list"
                   Corpus(object) <- doc
                   Cached(object) <- TRUE
@@ -296,11 +328,16 @@ setMethod("loadFileIntoMem",
           })
 setMethod("loadFileIntoMem",
           signature(object = "NewsgroupDocument"),
-          function(object) {
+          function(object, ...) {
               if (!Cached(object)) {
-                  mail <- readLines(FileName(object))
+                  con <- eval(parse(text = URI(object)))
+                  mail <- readLines(con)
+                  close(con)
                   Cached(object) <- TRUE
-                  index <- grep("^Lines:", mail)
+                  for (index in seq(along = mail)) {
+                      if (mail[index] == "")
+                          break
+                  }
                   Corpus(object) <- mail[(index + 1):length(mail)]
                   return(object)
               } else {
@@ -479,6 +516,14 @@ setMethod("c",
                   return(x)
               return(as(c(as(x, "list"), ...), "TextDocCol"))
     })
+setMethod("c",
+          signature(x = "TextDocument"),
+          function(x, ..., recursive = TRUE){
+              args <- list(...)
+              if(length(args) == 0)
+                  return(x)
+              return(new("TextDocCol", .Data = list(x, ...)))
+    })
 
 setMethod("length",
           signature(x = "TextDocCol"),
@@ -513,9 +558,17 @@ setMethod("summary",
 
 setGeneric("inspect", function(object) standardGeneric("inspect"))
 setMethod("inspect",
-          c("TextDocCol"),
+          signature("TextDocCol"),
           function(object) {
               summary(object)
               cat("\n")
               show(as(object, "list"))
+          })
+
+# No metadata is checked
+setGeneric("%IN%", function(x, y) standardGeneric("%IN%"))
+setMethod("%IN%",
+          signature(x = "TextDocument", y = "TextDocCol"),
+          function(x, y) {
+              x %in% y
           })

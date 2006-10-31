@@ -105,7 +105,7 @@ setMethod("LocalMetaData", "TextDocument", function(object) object@LocalMetaData
 # Inherited text documents
 # Plain text documents
 setClass("PlainTextDocument",
-         representation(FileName = "character", Cached = "logical"),
+         representation(URI = "character", Cached = "logical"),
          contains = c("character", "TextDocument"))
 
 if (!isGeneric("Corpus")) {
@@ -122,13 +122,13 @@ setReplaceMethod("Corpus", "PlainTextDocument", function(x, value) {
   x
 })
 
-if (!isGeneric("FileName")) {
-    if (is.function("FileName"))
-        fun <- FileName
-    else fun <- function(object) standardGeneric("FileName")
-    setGeneric("FileName", fun)
+if (!isGeneric("URI")) {
+    if (is.function("URI"))
+        fun <- URI
+    else fun <- function(object) standardGeneric("URI")
+    setGeneric("URI", fun)
 }
-setMethod("FileName", "PlainTextDocument", function(object) object@FileName)
+setMethod("URI", "PlainTextDocument", function(object) object@URI)
 
 if (!isGeneric("Cached")) {
     if (is.function("Cached"))
@@ -147,7 +147,7 @@ setReplaceMethod("Cached", "PlainTextDocument", function(x, value) {
 # If XMLDocument would be a S4 class, we could directly inherit from it
 # Instead we have to do a work-around with a list
 setClass("XMLTextDocument",
-         representation(FileName = "character", Cached = "logical"),
+         representation(URI = "character", Cached = "logical"),
          contains = c("list", "TextDocument"))
 
 setMethod("Corpus", "XMLTextDocument", function(object) object@.Data)
@@ -155,7 +155,7 @@ setReplaceMethod("Corpus", "XMLTextDocument", function(x, value) {
     x@.Data <- value
     x
 })
-setMethod("FileName", "XMLTextDocument", function(object) object@FileName)
+setMethod("URI", "XMLTextDocument", function(object) object@URI)
 setMethod("Cached", "XMLTextDocument", function(object) object@Cached)
 setReplaceMethod("Cached", "XMLTextDocument", function(x, value) {
     x@Cached <- value
@@ -164,7 +164,7 @@ setReplaceMethod("Cached", "XMLTextDocument", function(x, value) {
 
 # Newsgroup document as found in the Newsgroup dataset of the UCI KDD archive
 setClass("NewsgroupDocument",
-         representation(Newsgroup = "character", FileName = "character", Cached = "logical"),
+         representation(Newsgroup = "character", URI = "character", Cached = "logical"),
          contains = c("character", "TextDocument"))
 
 setMethod("Corpus", "NewsgroupDocument", function(object) object@.Data)
@@ -172,7 +172,7 @@ setReplaceMethod("Corpus", "NewsgroupDocument", function(x, value) {
     x@.Data <- value
     x
 })
-setMethod("FileName", "NewsgroupDocument", function(object) object@FileName)
+setMethod("URI", "NewsgroupDocument", function(object) object@URI)
 setMethod("Cached", "NewsgroupDocument", function(object) object@Cached)
 setReplaceMethod("Cached", "NewsgroupDocument", function(x, value) {
   x@Cached <- value
@@ -226,9 +226,6 @@ setReplaceMethod("Weighting", "TermDocMatrix", function(x, value) {
 
 # Source objects
 
-# Mimic S4 class until their official definition is found in R
-setOldClass("file", prototype = file())
-
 setClass("Source",
          representation(LoDSupport = "logical",
                         Position = "numeric"))
@@ -240,15 +237,19 @@ setClass("DirSource",
          contains = c("Source"))
 
 # A single CSV file where each line is interpreted as document
+#setClass("CSVSource",
+#         representation(FileName = "character",
+#                        Content = "character"),
+#         contains = c("Source"))
+
 setClass("CSVSource",
-         representation(FileName = "character",
+         representation(URI = "character",
                         Content = "character"),
          contains = c("Source"))
 
-# A single XML file consisting of several Reuters21578 documents
-# This format can be directly used for the reut2-???.xml files
-# from the official Reuters21578 XML archive
-setClass("Reuters21578XMLSource",
-         representation(FileName = "character",
+# A single XML file consisting of several Reuters documents
+# Works both for Reuters21578XML and RCV1 XML files
+setClass("ReutersSource",
+         representation(URI = "character",
                         Content = "list"),
          contains = c("Source"))

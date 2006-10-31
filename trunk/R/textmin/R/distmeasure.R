@@ -13,6 +13,5 @@ setMethod("dissimilarity",
           function(x, y = NULL, method) {
               tdm <- TermDocMatrix(as(list(x,y), "TextDocCol"))
               dissim <- dissimilarity(tdm, method = method)
-              #class(dissim) <- "dist"
               return(dissim)
           })

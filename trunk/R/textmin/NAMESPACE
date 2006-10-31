@@ -20,7 +20,7 @@ exportMethods(
               "TermDocMatrix",
               "DirSource",
               "CSVSource",
-              "Reuters21578XMLSource",
+              "ReutersSource",
 
               # TextDocument
               "Corpus",
@@ -41,7 +41,7 @@ exportMethods(
 
               "Cached",
               "Cached<-",
-              "FileName",
+              "URI",
 
               # TextDocCol
               "GlobalMetaData",
@@ -81,6 +81,7 @@ exportMethods(
               "show",
               "summary",
               "inspect",
+              "%IN%",
               "dissimilarity")
 
 exportClasses("TextDocument",
@@ -93,4 +94,4 @@ exportClasses("TextDocument",
               "Source",
               "DirSource",
               "CSVSource",
-              "Reuters21578XMLSource")
+              "ReutersSource")

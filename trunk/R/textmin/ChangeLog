@@ -1,3 +1,7 @@
+2006-10-31  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/: Final changes based upon David's comments.
+
 2006-10-29  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* NAMESPACE: Corrected exports (generic methods need exportMethods
