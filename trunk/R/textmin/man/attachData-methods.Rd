@@ -1,12 +1,12 @@
-\name{attachData-methods}
+\name{attach_data-methods}
 \docType{methods}
-\alias{attachData}
-\alias{attachData-methods}
-\alias{attachData,TextDocCol,TextDocument-method}
-\alias{attachData,TextRepository,TextDocCol-method}
-\title{Methods for Function attachData in Package `textmin'}
+\alias{attach_data}
+\alias{attach_data-methods}
+\alias{attach_data,TextDocCol,TextDocument-method}
+\alias{attach_data,TextRepository,TextDocCol-method}
+\title{Methods for Function attach\_data in Package `textmin'}
 \description{
-Methods for function \code{attachData} in Package `textmin'
+Methods for function \code{attach_data} in Package `textmin'
 }
 \section{Methods}{
 \describe{

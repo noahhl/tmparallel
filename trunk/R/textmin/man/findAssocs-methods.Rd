@@ -1,12 +1,12 @@
-\name{findAssocs-methods}
+\name{find_assocs-methods}
 \docType{methods}
-\alias{findAssocs}
-\alias{findAssocs-methods}
-\alias{findAssocs,TermDocMatrix,character-method}
-\alias{findAssocs,matrix,character-method}
-\title{Methods for Function findAssocs in Package `textmin'}
+\alias{find_assocs}
+\alias{find_assocs-methods}
+\alias{find_assocs,TermDocMatrix,character-method}
+\alias{find_assocs,matrix,character-method}
+\title{Methods for Function find\_assocs in Package `textmin'}
 \description{
-Methods for function \code{findAssocs} in Package `textmin'
+Methods for function \code{find_assocs} in Package `textmin'
 }
 \section{Methods}{
 \describe{

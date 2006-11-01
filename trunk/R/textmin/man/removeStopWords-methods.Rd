@@ -1,11 +1,11 @@
-\name{removeStopWords-methods}
+\name{remove_words-methods}
 \docType{methods}
-\alias{removeStopWords}
-\alias{removeStopWords-methods}
-\alias{removeStopWords,PlainTextDocument,character-method}
-\title{Methods for Function removeStopWords in Package `textmin'}
+\alias{remove_words}
+\alias{remove_words-methods}
+\alias{remove_words,PlainTextDocument,character-method}
+\title{Methods for Function remove\_words in Package `textmin'}
 \description{
-Methods for function \code{removeStopWords} in Package `textmin'
+Methods for function \code{remove_words} in Package `textmin'
 }
 \section{Methods}{
 \describe{

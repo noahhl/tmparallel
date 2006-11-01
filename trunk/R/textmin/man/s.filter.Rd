@@ -12,7 +12,7 @@ s_filter(object, s, ..., GlobalMetaData)
   \item{s}{a statement of format \code{list(tag1 = "regexpr1", tag2 =
       "regexpr2", ...)}.}
   \item{...}{arguments passed over by calling functions.}
-  \item{GlobalMetaData}{A named list, i.e. tag-value pairs, representing
+  \item{GlobalMetaData}{a named list, i.e. tag-value pairs, representing
     global available metadata.}
 }
 \details{

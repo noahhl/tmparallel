@@ -4,7 +4,7 @@
 setGeneric("TextDocCol", function(object, parser = plaintext_parser, ...) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           signature(object = "Source"),
-          function(object, parser = plaintext_parser) {
+          function(object, parser = plaintext_parser, ...) {
               if (inherits(parser, "function_generator"))
                   parser <- parser(...)
 
@@ -34,26 +34,47 @@ setMethod("DirSource",
                   Position = 0, Load = load)
           })
 
-setGeneric("CSVSource", function(object, isConCall = FALSE) standardGeneric("CSVSource"))
+setGeneric("CSVSource", function(object) standardGeneric("CSVSource"))
 setMethod("CSVSource",
           signature(object = "character"),
-          function(object, isConCall = FALSE) {
-              if (!isConCall)
-                  object <- paste('file("', object, '")', sep = "")
-              con <- eval(parse(text = object))
+          function(object) {
+              object <- substitute(file(object))
+              con <- eval(object)
+              content <- scan(con, what = "character")
+              close(con)
+              new("CSVSource", LoDSupport = FALSE, URI = object,
+                  Content = content, Position = 0)
+          })
+setMethod("CSVSource",
+          signature(object = "ANY"),
+          function(object) {
+              object <- substitute(object)
+              con <- eval(object)
               content <- scan(con, what = "character")
               close(con)
               new("CSVSource", LoDSupport = FALSE, URI = object,
                   Content = content, Position = 0)
           })
 
-setGeneric("ReutersSource", function(object, isConCall = FALSE) standardGeneric("ReutersSource"))
+setGeneric("ReutersSource", function(object) standardGeneric("ReutersSource"))
 setMethod("ReutersSource",
           signature(object = "character"),
-          function(object, isConCall = FALSE) {
-              if (!isConCall)
-                 object <- paste('file("', object, '")', sep = "")
-              con <- eval(parse(text = object))
+          function(object) {
+              object <- substitute(file(object))
+              con <- eval(object)
+              corpus <- paste(readLines(con), "\n", collapse = "")
+              close(con)
+              tree <- xmlTreeParse(corpus, asText = TRUE)
+              content <- xmlRoot(tree)$children
+
+              new("ReutersSource", LoDSupport = FALSE, URI = object,
+                  Content = content, Position = 0)
+          })
+setMethod("ReutersSource",
+          signature(object = "ANY"),
+          function(object) {
+              object <- substitute(object)
+              con <- eval(object)
               corpus <- paste(readLines(con), "\n", collapse = "")
               close(con)
               tree <- xmlTreeParse(corpus, asText = TRUE)
@@ -87,8 +108,9 @@ setGeneric("get_elem", function(object) standardGeneric("get_elem"))
 setMethod("get_elem",
           signature(object = "DirSource"),
           function(object) {
+              filename <- object@FileList[object@Position]
               list(content = readLines(object@FileList[object@Position]),
-                   uri = paste('file("', object@FileList[object@Position], '")', sep = ""))
+                   uri = substitute(file(filename)))
           })
 setMethod("get_elem",
           signature(object = "CSVSource"),
@@ -300,7 +322,7 @@ setMethod("load_doc",
           signature(object = "PlainTextDocument"),
           function(object, ...) {
               if (!Cached(object)) {
-                  con <- eval(parse(text = URI(object)))
+                  con <- eval(URI(object))
                   corpus <- readLines(con)
                   close(con)
                   Corpus(object) <- corpus
@@ -314,7 +336,7 @@ setMethod("load_doc",
           signature(object =  "XMLTextDocument"),
           function(object, ...) {
               if (!Cached(object)) {
-                  con <- eval(parse(text = URI(object)))
+                  con <- eval(URI(object))
                   corpus <- paste(readLines(con), "\n", collapse = "")
                   close(con)
                   doc <- xmlTreeParse(corpus, asText = TRUE)
@@ -330,7 +352,7 @@ setMethod("load_doc",
           signature(object = "NewsgroupDocument"),
           function(object, ...) {
               if (!Cached(object)) {
-                  con <- eval(parse(text = URI(object)))
+                  con <- eval(URI(object))
                   mail <- readLines(con)
                   close(con)
                   Cached(object) <- TRUE
@@ -375,6 +397,28 @@ setMethod("as.plaintext_doc",
               return(FUN(xmlRoot(corpus), ...))
           })
 
+setGeneric("tm_tolower", function(object, ...) standardGeneric("tm_tolower"))
+setMethod("tm_tolower",
+          signature(object = "PlainTextDocument"),
+          function(object, ...) {
+              if (!Cached(object))
+                  object <- load_doc(object)
+
+              Corpus(object) <- tolower(object)
+              return(object)
+          })
+
+setGeneric("strip_whitespace", function(object, ...) standardGeneric("strip_whitespace"))
+setMethod("strip_whitespace",
+          signature(object = "PlainTextDocument"),
+          function(object, ...) {
+              if (!Cached(object))
+                  object <- load_doc(object)
+
+              Corpus(object) <- gsub("[[:space:]]+", " ", object)
+              return(object)
+          })
+
 setGeneric("stem_doc", function(object, ...) standardGeneric("stem_doc"))
 setMethod("stem_doc",
           signature(object = "PlainTextDocument"),
@@ -384,7 +428,7 @@ setMethod("stem_doc",
 
               require(Rstem)
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
-              stemmedCorpus <- wordStem(splittedCorpus, ...)
+              stemmedCorpus <- wordStem(splittedCorpus)
               Corpus(object) <- paste(stemmedCorpus, collapse = " ")
               return(object)
           })

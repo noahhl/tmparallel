@@ -4,7 +4,7 @@
 # Parts of the preprocessing code were adapted from the \pkg{lsa} package. Special thanks to Fridolin Wild.
 
 # Input matrix has to be in term-frequency format
-weightMatrix <- function(m, weighting = "tf") {
+weight_matrix <- function(m, weighting = "tf") {
     type <- match.arg(weighting,c("tf","tf-idf","bin"))
     switch(type,
            "tf" = {
@@ -29,7 +29,7 @@ setMethod("TermDocMatrix",
               tvlist <- lapply(object, textvector, stemming, language, minWordLength, minDocFreq, stopwords)
               tm <- as.matrix(xtabs(Freq ~ ., data = do.call("rbind", tvlist)))
               class(tm) <- "matrix"
-              tm <- weightMatrix(tm, weighting)
+              tm <- weight_matrix(tm, weighting)
 
               new("TermDocMatrix", .Data = tm, Weighting = weighting)
           })

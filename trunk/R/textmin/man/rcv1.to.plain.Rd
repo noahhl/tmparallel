@@ -6,15 +6,16 @@
   document.
 }
 \usage{
-rcv1_to_plain(node)
+rcv1_to_plain(node, ...)
 }
 \arguments{
   \item{node}{an XML node representing a <newsitem></newsitem> element
     from a well-formed RCV1 XML file.}
+  \item{...}{Arguments passed over by calling functions.}
 }
 \value{
   A \code{PlainTextDocument} representing \code{node}.
 }
-\seealso{\code{\link{toPlainTextDocument}}}
+\seealso{\code{\link{as.plaintext_doc}}}
 \author{Ingo Feinerer}
 \keyword{file}

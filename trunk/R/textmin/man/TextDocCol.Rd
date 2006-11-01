@@ -1,13 +1,13 @@
 \name{TextDocCol}
 \docType{methods}
 \alias{TextDocCol}
-\alias{TextDocCol,character-method}
+\alias{TextDocCol,Source-method}
 \title{Text document collection}
 \description{
   Constructs a text document collection.
 }
 \usage{
-\S4method{TextDocCol}{character}(object, parser = plaintext.parser, lod = FALSE)
+\S4method{TextDocCol}{Source}(object, parser = plaintext.parser, lod = FALSE)
 }
 \arguments{
   \item{object}{a directory containing the documents.}

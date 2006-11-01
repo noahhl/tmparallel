@@ -105,7 +105,7 @@ setMethod("LocalMetaData", "TextDocument", function(object) object@LocalMetaData
 # Inherited text documents
 # Plain text documents
 setClass("PlainTextDocument",
-         representation(URI = "character", Cached = "logical"),
+         representation(URI = "ANY", Cached = "logical"),
          contains = c("character", "TextDocument"))
 
 if (!isGeneric("Corpus")) {
@@ -147,7 +147,7 @@ setReplaceMethod("Cached", "PlainTextDocument", function(x, value) {
 # If XMLDocument would be a S4 class, we could directly inherit from it
 # Instead we have to do a work-around with a list
 setClass("XMLTextDocument",
-         representation(URI = "character", Cached = "logical"),
+         representation(URI = "ANY", Cached = "logical"),
          contains = c("list", "TextDocument"))
 
 setMethod("Corpus", "XMLTextDocument", function(object) object@.Data)
@@ -164,7 +164,7 @@ setReplaceMethod("Cached", "XMLTextDocument", function(x, value) {
 
 # Newsgroup document as found in the Newsgroup dataset of the UCI KDD archive
 setClass("NewsgroupDocument",
-         representation(Newsgroup = "character", URI = "character", Cached = "logical"),
+         representation(Newsgroup = "character", URI = "ANY", Cached = "logical"),
          contains = c("character", "TextDocument"))
 
 setMethod("Corpus", "NewsgroupDocument", function(object) object@.Data)
@@ -237,19 +237,14 @@ setClass("DirSource",
          contains = c("Source"))
 
 # A single CSV file where each line is interpreted as document
-#setClass("CSVSource",
-#         representation(FileName = "character",
-#                        Content = "character"),
-#         contains = c("Source"))
-
 setClass("CSVSource",
-         representation(URI = "character",
+         representation(URI = "ANY",
                         Content = "character"),
          contains = c("Source"))
 
 # A single XML file consisting of several Reuters documents
 # Works both for Reuters21578XML and RCV1 XML files
 setClass("ReutersSource",
-         representation(URI = "character",
+         representation(URI = "ANY",
                         Content = "list"),
          contains = c("Source"))

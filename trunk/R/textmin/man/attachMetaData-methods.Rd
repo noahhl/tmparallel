@@ -1,12 +1,12 @@
-\name{attachMetaData-methods}
+\name{attach_metadata-methods}
 \docType{methods}
-\alias{attachMetaData}
-\alias{attachMetaData-methods}
-\alias{attachMetaData,TextDocCol-method}
-\alias{attachMetaData,TextRepository-method}
-\title{Methods for Function attachMetaData in Package `textmin'}
+\alias{attach_metadata}
+\alias{attach_metadata-methods}
+\alias{attach_metadata,TextDocCol-method}
+\alias{attach_metadata,TextRepository-method}
+\title{Methods for Function attach\_metadata in Package `textmin'}
 \description{
-Methods for function \code{attachMetaData} in Package `textmin'
+Methods for function \code{attach_metadata} in Package `textmin'
 }
 \section{Methods}{
 \describe{

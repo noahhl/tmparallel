@@ -1,11 +1,11 @@
-\name{findHighFreqTerms-methods}
+\name{find_hf_terms-methods}
 \docType{methods}
-\alias{findHighFreqTerms}
-\alias{findHighFreqTerms-methods}
-\alias{findHighFreqTerms,TermDocMatrix,numeric-method}
-\title{Methods for Function findHighFreqTerms in Package `textmin'}
+\alias{find_hf_terms}
+\alias{find_hf_terms-methods}
+\alias{find_hf_terms,TermDocMatrix,numeric-method}
+\title{Methods for Function find\_hf\_terms in Package `textmin'}
 \description{
-Methods for function \code{findHighFreqTerms} in Package `textmin'
+Methods for function \code{find_hf_terms} in Package `textmin'
 }
 \section{Methods}{
 \describe{

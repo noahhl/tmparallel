@@ -1,13 +1,13 @@
-\name{loadFileIntoMem-methods}
+\name{load_doc-methods}
 \docType{methods}
-\alias{loadFileIntoMem}
-\alias{loadFileIntoMem-methods}
-\alias{loadFileIntoMem,PlainTextDocument-method}
-\alias{loadFileIntoMem,XMLTextDocument-method}
-\alias{loadFileIntoMem,NewsgroupDocument-method}
-\title{Methods for Function loadFileIntoMem in Package `textmin'}
+\alias{load_doc}
+\alias{load_doc-methods}
+\alias{load_doc,PlainTextDocument-method}
+\alias{load_doc,XMLTextDocument-method}
+\alias{load_doc,NewsgroupDocument-method}
+\title{Methods for Function load\_doc in Package `textmin'}
 \description{
-Methods for function \code{loadFileIntoMem} in Package `textmin'
+Methods for function \code{load_doc} in Package `textmin'
 }
 \section{Methods}{
 \describe{

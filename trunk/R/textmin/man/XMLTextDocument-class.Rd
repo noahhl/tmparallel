@@ -3,7 +3,7 @@
 \alias{XMLTextDocument-class}
 \alias{Corpus,XMLTextDocument-method}
 \alias{Corpus<-,XMLTextDocument-method}
-\alias{FileName,XMLTextDocument-method}
+\alias{URI,XMLTextDocument-method}
 \alias{Cached,XMLTextDocument-method}
 \alias{Cached<-,XMLTextDocument-method}
 \title{Text document}
@@ -17,7 +17,7 @@ Objects can be created by calls of the form \code{new("XMLTextDocument", ...)}.
 }
 \section{Slots}{
   \describe{
-    \item{\code{FileName}:}{Object of class \code{character} containing
+    \item{\code{URI}:}{Object of class \code{character} containing
       the path and filename holding the data physically on disk}
     \item{\code{Cached}:}{Object of class \code{numeric} containing the
       status whether the file was already loaded in memory. Zero indicates
@@ -33,7 +33,7 @@ Class \code{list} and \code{TextDocument}, directly.
       text corpus, i.e., the actual XMLDocument in the data slot}
     \item{Corpus<-}{\code{signature(object = "XMLTextDocument")}: sets the
       text corpus, i.e., the actual XMLDocument in data slot}
-    \item{FileName}{\code{signature(object = "XMLTextDocument")}: returns the
+    \item{URI}{\code{signature(object = "XMLTextDocument")}: returns the
       filename on disk}
     \item{Cached}{\code{signature(object = "XMLTextDocument")}: returns
       status information for loading on demand}

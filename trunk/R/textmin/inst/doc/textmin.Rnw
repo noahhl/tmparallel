@@ -33,35 +33,169 @@ We discuss following issues:
 \item From Collections to Term-Document Matrices
 \end{itemize}
 
-\section{Data Import}
+\section{Working with the Package}
+
+\subsection{Loading the Library}
 Before actually working we need to load the library:
 <<>>=
 library(textmin)
 @
 
+\subsection{Data Import}
 The main structure for managing documents is a socalled text document
-collection (\class{TextDocCol}). Its constructor takes two arguments:
+collection (\class{TextDocCol}). Its constructor takes following arguments:
+\begin{itemize}
+\item \code{object}: a \class{Source} object which abstracts the input location
+\item \code{parser}: a parser which constructs a text document from a single element
+  delivered by a source. A parser must have the argument signature \code{(elem,
+    lodsupport, load, id)}. The first argument is the element provided
+  from the source, the second indicates whether the source supports
+  load on demand, the third if the user wants to load the documents
+  immediately into memory, and the fourth is a unique identification
+  string.
+\item \code{...}: Formally if the passed over \code{parser} function is of
+  class \code{function\_generator}, it is assumed to be a function
+  generating a parser. This way custom parsers taking various
+  parameters (specified in \code{...}) can be built, which in fact
+  must produce a valid parser signature but can access additional
+  parameters via lexical scoping (i.e., by the including
+  environment).
+\end{itemize}
 
+Available sources are \class{DirSource}, \class{CSVSource} and
+\class{ReutersSource} which handle a directory and a mixed CSV or
+mixed Reuters file (mixed means several documents are in a single
+file). Except \class{DirSource}, which is designated
+solely for directories on a file system, all other implemented sources
+can take connections as input (a character string is interpreted as
+filename).
+
+This package ships with several parser (\code{plaintext\_parser}
+(default), \code{rcv1\_parser}, \code{reut21578xml\_parser} and
+\code{newsgroup\_parser}). The default just reads in the whole input
+file and interprets the content as text.
+
+Plain text files in a directory:
 <<>>=
 # Plain text
 txt <- system.file("texts/txt/", package = "textmin")
 TextDocCol(DirSource(txt, load = TRUE))
+@
 
+A single comma separated values file:
+<<>>=
 # Comma separated values
 cars.csv <- system.file("texts/cars.csv", package = "textmin")
 TextDocCol(CSVSource(cars.csv))
-
-# Reuters21578 XML
-#TextDocCol(ReutersSource("~/texts/reut21578.xml"), reuters21578xml_parser)
-#TextDocCol(ReutersSource("gzfile('~/texts/reut21578.xml.gz')", isConCall = TRUE), reuters21578xml_parser)
-#TextDocCol(DirSource("~/texts/reut21578/", load = TRUE), reuters21578xml_parser)
-
-# Reuters Corpus Volume 1
-#TextDocCol(ReutersSource("~/texts/rcv1.xml"), rcv1_parser)
-#TextDocCol(DirSource("~/texts/rcv1/", load = TRUE), rcv1_parser)
-
-# UCI KDD Newsgroup Mails
-#TextDocCol(DirSource("~/texts/newsgroup/", load = TRUE), uci_kdd_newsgroup_parser)
 @
 
+Reuters21578 files either in directory (one document per file) or a single
+file (several documents per file). Note that connections can be used
+as input:
+<<>>=
+# Reuters21578 XML
+reut21578 <- system.file("texts/reut21578/", package = "textmin")
+reut21578.xml <- system.file("texts/reut21578.xml", package = "textmin")
+reut21578.xml.gz <- system.file("texts/reut21578.xml.gz", package = "textmin")
+
+reut21578.tdc <- TextDocCol(DirSource(reut21578), reut21578xml_parser)
+reut21578.tdc
+
+TextDocCol(ReutersSource(reut21578.xml), reut21578xml_parser)
+TextDocCol(ReutersSource(gzfile(reut21578.xml.gz)), reut21578xml_parser)
+@
+
+Analogously for files in the Reuters Corpus Volume 1 format:
+<<>>=
+# Reuters Corpus Volume 1
+rcv1 <- system.file("texts/rcv1/", package = "textmin")
+rcv1.xml <- system.file("texts/rcv1.xml", package = "textmin")
+
+TextDocCol(DirSource(rcv1, load = TRUE), rcv1_parser)
+TextDocCol(ReutersSource(rcv1.xml), rcv1_parser)
+@
+
+Or mails from newsgroups (as found in the UCI KDD newsgroup dataset):
+<<>>=
+# UCI KDD Newsgroup Mails
+newsgroup <- system.file("texts/newsgroup/", package = "textmin")
+
+TextDocCol(DirSource(newsgroup, load = TRUE), newsgroup_parser)
+@
+
+\subsection{Inspecting the Text Document Collection}
+Custom \code{show} and \code{summary} methods are available, which
+hide the raw amount of information (consider a collection could
+consists of several thousand documents, like a database). In order to
+actually see the content use the command \code{inspect} on a
+collection.
+
+\subsection{Transformations}
+Once we have a text document collection one typically wants to modify
+the documents in it, e.g., stemming, stopword removal, et cetera. All
+this functionality is subsumed by the concept of
+\emph{transformation}s in \pkg{textmin}. Transformation are done via
+the \code{tm\_transform} function.
+
+\subsubsection{Loading Documents into Memory}
+If the source objects supports load on demand, but the user has not
+enforced the package to load the input content directly into memory,
+this can be done manually via \code{load\_doc}. Normally it is not
+necessary to call this explicitly, as other functions working on text
+corpora trigger this function for not-loaded documents.
+<<>>=
+reut21578.tdc <- tm_transform(reut21578.tdc, load_doc)
+@
+
+\subsubsection{Converting to Plaintext Documents}
+The text document collection \code{reut21578.tdc} contains documents
+in XML format. We have no further use for the XML interna and just
+want to work with the text content. This can be done by converting the
+documents to plaintext documents. It is done by the generic
+\code{as.plaintext\_doc} in assistance by a converter function
+\code{reut21578xml\_to\_plain} which knows how to actually do it.
+<<>>=
+reut21578.tdc <- tm_transform(reut21578.tdc, as.plaintext_doc, reut21578xml_to_plain)
+@
+
+\subsubsection{Eliminating Extra Whitespace}
+Extra whitespace is eliminated by:
+<<>>=
+reut21578.tdc <- tm_transform(reut21578.tdc, strip_whitespace)
+@
+
+\subsubsection{Convert to Lower Case}
+Conversion to lower case by:
+<<>>=
+reut21578.tdc <- tm_transform(reut21578.tdc, tm_tolower)
+@
+
+\subsubsection{Remove Stopwords}
+Removal of stopwords by:
+<<>>=
+data(stopwords_en)
+reut21578.tdc <- tm_transform(reut21578.tdc, remove_words, stopwords_en)
+@
+
+\subsubsection{Stemming}
+Stemming is done by:
+<<>>=
+reut21578.tdc <- tm_transform(reut21578.tdc, stem_doc)
+@
+
+\subsection{Filters}
+Often it is of special interest to filter out documents satisfying given
+properties. For this purpose the function \code{tm\_filter} is
+designated. It is possible to write custom filter functions, but for
+most cases the default filter does it job: it integrates a minimal
+query language to filter metadata. Statements in this query language
+are logically and-conjuncted \code{tag="regexpr"} pairs in form of a
+named list.
+
+E.g., following statement filters out those documents, where
+\code{COMPUTER} occurs in their heading and has an \code{ID} which can
+be interpreted as integer and is 2-ary.
+<<>>=
+tm_filter(reut21578.tdc, list(ID = "^[0-9][0-9]$", Heading = "COMPUTER"))
+@
 \end{document}

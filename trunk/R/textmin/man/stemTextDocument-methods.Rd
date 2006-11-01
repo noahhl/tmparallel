@@ -1,11 +1,11 @@
-\name{stemTextDocument-methods}
+\name{stem_doc-methods}
 \docType{methods}
-\alias{stemTextDocument}
-\alias{stemTextDocument-methods}
-\alias{stemTextDocument,PlainTextDocument-method}
-\title{Methods for Function stemTextDocument in Package `textmin'}
+\alias{stem_doc}
+\alias{stem_doc-methods}
+\alias{stem_doc,PlainTextDocument-method}
+\title{Methods for Function stem\_doc in Package `textmin'}
 \description{
-Methods for function \code{stemTextDocument} in Package `textmin'
+Methods for function \code{stem_doc} in Package `textmin'
 }
 \section{Methods}{
 \describe{

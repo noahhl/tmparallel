@@ -1,11 +1,11 @@
-\name{setSubscriptable-methods}
+\name{set_subscriptable-methods}
 \docType{methods}
-\alias{setSubscriptable}
-\alias{setSubscriptable-methods}
-\alias{setSubscriptable,TextDocCol-method}
-\title{Methods for Function setSubscriptable in Package `textmin'}
+\alias{set_subscriptable}
+\alias{set_subscriptable-methods}
+\alias{set_subscriptable,TextDocCol-method}
+\title{Methods for Function set\_subscriptable in Package `textmin'}
 \description{
-Methods for function \code{setSubscriptable} in Package `textmin'
+Methods for function \code{set_subscriptable} in Package `textmin'
 }
 \section{Methods}{
 \describe{

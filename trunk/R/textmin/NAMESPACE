@@ -62,6 +62,8 @@ exportMethods(
               "load_doc",
               "tm_transform",
               "as.plaintext_doc",
+              "strip_whitespace",
+              "tm_tolower",
               "stem_doc",
               "remove_words",
               "tm_filter",

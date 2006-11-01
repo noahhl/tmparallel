@@ -1,12 +1,12 @@
-\name{toPlainTextDocument-methods}
+\name{as.plaintext_doc-methods}
 \docType{methods}
-\alias{toPlainTextDocument}
-\alias{toPlainTextDocument-methods}
-\alias{toPlainTextDocument,PlainTextDocument,ANY-method}
-\alias{toPlainTextDocument,XMLTextDocument,function-method}
-\title{Methods for Function toPlainTextDocument in Package `textmin'}
+\alias{as.plaintext_doc}
+\alias{as.plaintext_doc-methods}
+\alias{as.plaintext_doc,PlainTextDocument,ANY-method}
+\alias{as.plaintext_doc,XMLTextDocument,function-method}
+\title{Methods for Function as.plaintext\_doc in Package `textmin'}
 \description{
-Methods for function \code{toPlainTextDocument} in Package `textmin'
+Methods for function \code{as.plaintext_doc} in Package `textmin'
 }
 \section{Methods}{
   \describe{
@@ -17,7 +17,7 @@ Methods for function \code{toPlainTextDocument} in Package `textmin'
   }
 }
 \seealso{
-  \code{\link{reuters21578xml_to_plain}}
+  \code{\link{reut21578xml_to_plain}}
   \code{\link{rcv1_to_plain}}
 }
 \keyword{methods}
