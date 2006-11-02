@@ -12,7 +12,7 @@ setMethod("TextRepository",
 setMethod("attach_data",
           signature(object = "TextRepository", data = "TextDocCol"),
           function(object, data) {
-              object@.Data <- as(c(object@.Data, data), "TextRepository")
+              object[[length(object)+1]] <- data
               return(object)
           })
 

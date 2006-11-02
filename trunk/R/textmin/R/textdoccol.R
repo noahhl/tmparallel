@@ -451,7 +451,8 @@ setGeneric("tm_filter", function(object, ..., FUN = s_filter) standardGeneric("t
 setMethod("tm_filter",
           signature(object = "TextDocCol"),
           function(object, ..., FUN = s_filter) {
-              object[tm_index(object, ..., FUN)]
+              indices <- sapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object))
+              object[indices]
           })
 
 setGeneric("tm_index", function(object, ..., FUN = s_filter) standardGeneric("tm_index"))

@@ -22,18 +22,12 @@ set.seed <- 1234
 \maketitle
 \sloppy
 
-\section{Introduction}
+\begin{abstract}
 This vignette gives a short overview over available features in the
 \pkg{textmin} package for text mining purposes in \proglang{R}.
+\end{abstract}
 
-We discuss following issues:
-\begin{itemize}
-\item Data Import
-\item Working with Text Document Collections
-\item From Collections to Term-Document Matrices
-\end{itemize}
-
-\section{Working with the Package}
+\section{Working with \pkg{textmin}}
 
 \subsection{Loading the Library}
 Before actually working we need to load the library:
@@ -53,7 +47,7 @@ collection (\class{TextDocCol}). Its constructor takes following arguments:
   load on demand, the third if the user wants to load the documents
   immediately into memory, and the fourth is a unique identification
   string.
-\item \code{...}: Formally if the passed over \code{parser} function is of
+\item \code{...}: formally if the passed over \code{parser} function is of
   class \code{function\_generator}, it is assumed to be a function
   generating a parser. This way custom parsers taking various
   parameters (specified in \code{...}) can be built, which in fact
@@ -70,7 +64,7 @@ solely for directories on a file system, all other implemented sources
 can take connections as input (a character string is interpreted as
 filename).
 
-This package ships with several parser (\code{plaintext\_parser}
+This package ships with several parsers (\code{plaintext\_parser}
 (default), \code{rcv1\_parser}, \code{reut21578xml\_parser} and
 \code{newsgroup\_parser}). The default just reads in the whole input
 file and interprets the content as text.
@@ -134,7 +128,7 @@ collection.
 Once we have a text document collection one typically wants to modify
 the documents in it, e.g., stemming, stopword removal, et cetera. All
 this functionality is subsumed by the concept of
-\emph{transformation}s in \pkg{textmin}. Transformation are done via
+\emph{transformation}s in \pkg{textmin}. Transformations are done via
 the \code{tm\_transform} function.
 
 \subsubsection{Loading Documents into Memory}
@@ -180,7 +174,7 @@ reut21578.tdc <- tm_transform(reut21578.tdc, remove_words, stopwords_en)
 \subsubsection{Stemming}
 Stemming is done by:
 <<>>=
-reut21578.tdc <- tm_transform(reut21578.tdc, stem_doc)
+tm_transform(reut21578.tdc, stem_doc)
 @
 
 \subsection{Filters}
@@ -197,5 +191,86 @@ E.g., following statement filters out those documents, where
 be interpreted as integer and is 2-ary.
 <<>>=
 tm_filter(reut21578.tdc, list(ID = "^[0-9][0-9]$", Heading = "COMPUTER"))
+@
+
+There is also a full text search available as filter:
+<<>>=
+tm_filter(reut21578.tdc, FUN = fulltext_search_filter, "partnership")
+@
+
+\subsection{Adding Data or Metadata}
+Text documents or metadata can be added to text document collections
+with \code{attach\_data} and \code{attach\_metadata}, respectively.
+<<>>=
+data(crude)
+reut21578.tdc <- attach_data(reut21578.tdc, crude[[1]])
+reut21578.tdc <- attach_metadata(reut21578.tdc, "modified", date())
+summary(reut21578.tdc)
+GlobalMetaData(reut21578.tdc)
+@
+
+\subsection{Tagging Metadata as Subscriptable}
+Often it makes sense that a subset operation applied to a text
+document collection also modifies its metadata. For this purpose
+metadata elements can be tagged as subscriptable.
+<<>>=
+reut21578.tdc <- attach_metadata(reut21578.tdc, "myclusters", c(1,2,1,1,2,1,1,1,1,1,2))
+reut21578.tdc <- set_subscriptable(reut21578.tdc, "myclusters")
+summary(reut21578.tdc[1:2])
+GlobalMetaData(reut21578.tdc[1:2])
+@
+
+\subsection{Operators}
+Most standard operators have been overloaded for text document
+collections with semantics similar to standard \proglang{R}
+routines.
+E.g. \code{c} concatenates two (or more) text document
+collections. Applied to several text documents it returns a text
+document collection.
+
+Note also the custom element-of operator---it checks whether a text
+document is already in a text document collection (metadata is not
+checked, only the corpus):
+<<>>=
+crude[[1]] %IN% reut21578.tdc
+crude[[2]] %IN% reut21578.tdc
+@
+
+\subsection{Keeping Track of Text Document Collections}
+There is a mechanism available for managing text document
+collections. It is called \class{TextRepository}. A typical use would
+be to save different states of a text document collection.
+<<>>=
+data(acq)
+repo <- TextRepository(reut21578.tdc)
+repo <- attach_data(repo, acq)
+repo <- attach_metadata(repo, "modified", date())
+summary(repo)
+RepresentationMetaData(repo)
+summary(repo[[1]])
+summary(repo[[2]])
+@
+
+\subsection{Creating Term-Document Matrices}
+A common approach in text mining is to create a term-document matrix
+for given texts. In this package the class \class{TermDocMatrix}
+handles this for text document collections.
+<<>>=
+tdm <- TermDocMatrix(reut21578.tdc)
+tdm[1:8,50:55]
+@
+
+\subsection{Operations on Term-Document Matrices}
+Besides the fact that on this matrix a huge amount of \proglang{R}
+functions (like clustering, classifications, etc.) is possible, this
+package brings some shortcuts for text mining specific. Consider we
+want to find those terms that occur at least 5 times:
+<<>>=
+find_hf_terms(tdm, 5)
+@
+Or we want to find associations (i.e., terms which correlate) with at
+least $0.97$ correlation for the term \code{crop}:
+<<>>=
+find_assocs(tdm, "crop", 0.97)
 @
 \end{document}
