@@ -24,6 +24,20 @@ setMethod("attach_metadata",
               return(object)
           })
 
+setMethod("remove_metadata",
+          signature(object = "TextRepository"),
+          function(object, name) {
+              object@RepresentationMetaData <- RepresentationMetaData(object)[names(RepresentationMetaData(object)) != name]
+              return(object)
+          })
+
+setMethod("modify_metadata",
+          signature(object = "TextRepository"),
+          function(object, name, metadata) {
+              object@RepresentationMetaData[[name]] <- metadata
+              return(object)
+          })
+
 setMethod("length",
           signature(x = "TextRepository"),
           function(x){

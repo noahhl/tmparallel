@@ -504,6 +504,22 @@ setMethod("attach_metadata",
               return(object)
           })
 
+setGeneric("remove_metadata", function(object, name) standardGeneric("remove_metadata"))
+setMethod("remove_metadata",
+          signature(object = "TextDocCol"),
+          function(object, name) {
+              object@GlobalMetaData <- GlobalMetaData(object)[names(GlobalMetaData(object)) != name]
+              return(object)
+          })
+
+setGeneric("modify_metadata", function(object, name, metadata) standardGeneric("modify_metadata"))
+setMethod("modify_metadata",
+          signature(object = "TextDocCol"),
+          function(object, name, metadata) {
+              object@GlobalMetaData[[name]] <- metadata
+              return(object)
+          })
+
 setGeneric("set_subscriptable", function(object, name) standardGeneric("set_subscriptable"))
 setMethod("set_subscriptable",
           signature(object = "TextDocCol"),

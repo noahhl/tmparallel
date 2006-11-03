@@ -73,6 +73,8 @@ exportMethods(
               "find_assocs",
               "attach_data",
               "attach_metadata",
+              "modify_metadata",
+              "remove_metadata",
               "set_subscriptable",
               "[",
               "[<-",

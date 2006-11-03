@@ -209,6 +209,19 @@ summary(reut21578.tdc)
 GlobalMetaData(reut21578.tdc)
 @
 
+\subsection{Modifying or Removing Metadata}
+The metadata of text document collections can be easily modified or
+removed:
+<<>>=
+data(crude)
+reut21578.tdc <- attach_metadata(reut21578.tdc, "test", c(1,2,3))
+GlobalMetaData(reut21578.tdc)
+reut21578.tdc <- modify_metadata(reut21578.tdc, "test", c(4,5,6))
+GlobalMetaData(reut21578.tdc)
+reut21578.tdc <- remove_metadata(reut21578.tdc, "test")
+GlobalMetaData(reut21578.tdc)
+@
+
 \subsection{Tagging Metadata as Subscriptable}
 Often it makes sense that a subset operation applied to a text
 document collection also modifies its metadata. For this purpose
