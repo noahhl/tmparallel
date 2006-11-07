@@ -595,11 +595,10 @@ setMethod("length",
 setMethod("show",
           signature(object = "TextDocCol"),
           function(object){
-              cat("A text document collection with", length(object), "text document")
-              if (length(object) == 1)
-                  cat("\n")
-              else
-                  cat("s\n")
+              cat(sprintf(ngettext(length(object),
+                                   "A text document collection with %d text document\n",
+                                   "A text document collection with %d text documents\n"),
+                          length(object)))
     })
 
 setMethod("summary",
@@ -607,11 +606,10 @@ setMethod("summary",
           function(object){
               show(object)
               if (length(GlobalMetaData(object)) > 0) {
-                  cat("\nThe global metadata consists of", length(GlobalMetaData(object)), "tag-value pair")
-                  if (length(GlobalMetaData(object)) == 1)
-                      cat(".\n")
-                  else
-                      cat("s.\n")
+                  cat(sprintf(ngettext(length(GlobalMetaData(object)),
+                                              "\nThe global metadata consists of %d tag-value pair\n",
+                                              "\nThe global metadata consists of %d tag-value pairs\n"),
+                                       length(GlobalMetaData(object))))
                   cat("Available tags are:\n")
                   cat(names(GlobalMetaData(object)), "\n")
               }

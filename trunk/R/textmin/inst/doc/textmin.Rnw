@@ -29,8 +29,8 @@ This vignette gives a short overview over available features in the
 
 \section{Working with \pkg{textmin}}
 
-\subsection{Loading the Library}
-Before actually working we need to load the library:
+\subsection{Loading the Package}
+Before actually working we need to load the package:
 <<>>=
 library(textmin)
 @

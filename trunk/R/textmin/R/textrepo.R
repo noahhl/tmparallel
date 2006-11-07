@@ -47,11 +47,10 @@ setMethod("length",
 setMethod("show",
           signature(object = "TextRepository"),
           function(object){
-              cat("A text repository with", length(object), "text document collection")
-              if (length(object) == 1)
-                  cat("\n")
-              else
-                  cat("s\n")
+               cat(sprintf(ngettext(length(object),
+                                    "A text repository with %d text document collection\n",
+                                    "A text repository with %d text document collections\n"),
+                           length(object)))
     })
 
 setMethod("summary",
@@ -59,11 +58,10 @@ setMethod("summary",
           function(object){
               show(object)
               if (length(RepresentationMetaData(object)) > 0) {
-                  cat("\nThe representation metadata consists of", length(RepresentationMetaData(object)), "tag-value pair")
-                  if (length(RepresentationMetaData(object)) == 1)
-                      cat(".\n")
-                  else
-                      cat("s.\n")
+                  cat(sprintf(ngettext(length(RepresentationMetaData(object)),
+                                              "\nThe representation metadata consists of %d tag-value pair\n",
+                                              "\nThe representation metadata consists of %d tag-value pairs\n"),
+                                       length(RepresentationMetaData(object))))
                   cat("Available tags are:\n")
                   cat(names(RepresentationMetaData(object)), "\n")
               }
