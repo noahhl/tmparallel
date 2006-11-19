@@ -44,7 +44,8 @@ exportMethods(
               "URI",
 
               # TextDocCol
-              "GlobalMetaData",
+              "DMetaData",
+              "DCMetaData",
 
               # TextRepository
               "RepresentationMetaData",
@@ -71,11 +72,12 @@ exportMethods(
               "fulltext_search_filter",
               "find_hf_terms",
               "find_assocs",
+              "append_doc",
+              "append_meta",
               "attach_data",
               "attach_metadata",
               "modify_metadata",
               "remove_metadata",
-              "set_subscriptable",
               "[",
               "[<-",
               "[[",
@@ -93,6 +95,7 @@ exportClasses("TextDocument",
               "XMLTextDocument",
               "NewsgroupDocument",
               "TextDocCol",
+              "MetaDataNode",
               "TextRepository",
               "TermDocMatrix",
               "Source",

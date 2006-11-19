@@ -179,18 +179,34 @@ setReplaceMethod("Cached", "NewsgroupDocument", function(x, value) {
   x
 })
 
+# A node in the metadata tree of a text document collection
+setClass("MetaDataNode",
+         representation(NodeID = "numeric",
+                        MetaData = "list",
+                        children = "list"))
+
 # Text document collection
 setClass("TextDocCol",
-         representation(GlobalMetaData = "list"),
+         representation(DMetaData = "data.frame", DCMetaData = "MetaDataNode"),
          contains = c("list"))
 
-if (!isGeneric("GlobalMetaData")) {
-    if (is.function("GlobalMetaData"))
-        fun <- GlobalMetaData
-    else fun <- function(object) standardGeneric("GlobalMetaData")
-    setGeneric("GlobalMetaData", fun)
+# DMetaData = *MetaData* available for all *D*ocuments
+if (!isGeneric("DMetaData")) {
+    if (is.function("DMetaData"))
+        fun <- DMetaData
+    else fun <- function(object) standardGeneric("DMetaData")
+    setGeneric("DMetaData", fun)
 }
-setMethod("GlobalMetaData", "TextDocCol", function(object) object@GlobalMetaData)
+setMethod("DMetaData", "TextDocCol", function(object) object@DMetaData)
+
+# DCMetaData = *MetaData* describing only the *D*ocument *C*ollection itself
+if (!isGeneric("DCMetaData")) {
+    if (is.function("DCMetaData"))
+        fun <- DCMetaData
+    else fun <- function(object) standardGeneric("DCMetaData")
+    setGeneric("DCMetaData", fun)
+}
+setMethod("DCMetaData", "TextDocCol", function(object) object@DCMetaData)
 
 # Repository for text document collections
 setClass("TextRepository",

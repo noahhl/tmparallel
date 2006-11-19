@@ -23,7 +23,13 @@ setMethod("TextDocCol",
                   counter <- counter + 1
               }
 
-              return(new("TextDocCol", .Data = tdl))
+              dmeta.df <- data.frame(MetaID = rep(0, length(tdl)))
+              dcmeta.node <- new("MetaDataNode",
+                            NodeID = 0,
+                            MetaData = list(create_date = date(), creator = Sys.getenv("LOGNAME")),
+                            children = list())
+
+              return(new("TextDocCol", .Data = tdl, DMetaData = dmeta.df, DCMetaData = dcmeta.node))
           })
 
 setGeneric("DirSource", function(directory, load = FALSE) standardGeneric("DirSource"))
@@ -371,8 +377,8 @@ setGeneric("tm_transform", function(object, FUN, ...) standardGeneric("tm_transf
 setMethod("tm_transform",
           signature(object = "TextDocCol", FUN = "function"),
           function(object, FUN, ...) {
-              result <- as(lapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object)), "TextDocCol")
-              result@GlobalMetaData <- GlobalMetaData(object)
+              result <- as(lapply(object, FUN, ..., DMetaData = DMetaData(object)), "TextDocCol")
+              result@DMetaData <- DMetaData(object)
               return(result)
           })
 
@@ -451,7 +457,7 @@ setGeneric("tm_filter", function(object, ..., FUN = s_filter) standardGeneric("t
 setMethod("tm_filter",
           signature(object = "TextDocCol"),
           function(object, ..., FUN = s_filter) {
-              indices <- sapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object))
+              indices <- sapply(object, FUN, ..., DMetaData = DMetaData(object))
               object[indices]
           })
 
@@ -459,16 +465,16 @@ setGeneric("tm_index", function(object, ..., FUN = s_filter) standardGeneric("tm
 setMethod("tm_index",
           signature(object = "TextDocCol"),
           function(object, ..., FUN = s_filter) {
-              sapply(object, FUN, ..., GlobalMetaData = GlobalMetaData(object))
+              sapply(object, FUN, ..., DMetaData = DMetaData(object))
           })
 
-s_filter <- function(object, s, ..., GlobalMetaData) {
+s_filter <- function(object, s, ..., DMetaData) {
     b <- TRUE
     for (tag in names(s)) {
         if (tag %in% names(LocalMetaData(object))) {
             b <- b && any(grep(s[[tag]], LocalMetaData(object)[[tag]]))
-        } else if (tag %in% names(GlobalMetaData)){
-            b <- b && any(grep(s[[tag]], GlobalMetaData[[tag]]))
+        } else if (tag %in% names(DMetaData)){
+            b <- b && any(grep(s[[tag]], DMetaData[[tag]]))
         } else {
             b <- b && any(grep(s[[tag]], eval(call(tag, object))))
         }
@@ -487,49 +493,41 @@ setMethod("fulltext_search_filter",
           })
 
 setGeneric("attach_data", function(object, data) standardGeneric("attach_data"))
-setMethod("attach_data",
-          signature(object = "TextDocCol", data = "TextDocument"),
-          function(object, data) {
-              data <- as(list(data), "TextDocCol")
-              object@.Data <- as(c(object@.Data, data), "TextDocCol")
+setGeneric("attach_metadata", function(object, name, metadata) standardGeneric("attach_metadata"))
+
+setGeneric("append_doc", function(object, data, meta) standardGeneric("append_doc"))
+setMethod("append_doc",
+          signature(object = "TextDocCol", data = "TextDocument", meta = "list"),
+          function(object, data, meta) {
+              object@.Data <- c(object@.Data, list(data))
+              object@DMetaData <- rbind(object@DMetaData, c(MetaID = DCMetaData(object)@NodeID, meta))
               return(object)
           })
 
-setGeneric("attach_metadata", function(object, name, metadata) standardGeneric("attach_metadata"))
-setMethod("attach_metadata",
-          signature(object = "TextDocCol"),
-          function(object, name, metadata) {
-              object@GlobalMetaData <- c(GlobalMetaData(object), new = list(metadata))
-              names(object@GlobalMetaData)[length(names(GlobalMetaData(object)))] <- name
+setGeneric("append_meta", function(object, dcmeta, dmeta) standardGeneric("append_meta"))
+setMethod("append_meta",
+          signature(object = "TextDocCol", dcmeta = "list", dmeta = "list"),
+          function(object, dcmeta, dmeta) {
+              object@DCMetaData@MetaData <- c(object@DCMetaData@MetaData, dcmeta)
+              object@DMetaData <- cbind(object@DMetaData, dmeta)
               return(object)
           })
 
 setGeneric("remove_metadata", function(object, name) standardGeneric("remove_metadata"))
-setMethod("remove_metadata",
-          signature(object = "TextDocCol"),
-          function(object, name) {
-              object@GlobalMetaData <- GlobalMetaData(object)[names(GlobalMetaData(object)) != name]
-              return(object)
-          })
+#setMethod("remove_metadata",
+#          signature(object = "TextDocCol"),
+#          function(object, name) {
+#              object@DMetaData <- DMetaData(object)[names(DMetaData(object)) != name]
+#              return(object)
+#          })
 
 setGeneric("modify_metadata", function(object, name, metadata) standardGeneric("modify_metadata"))
-setMethod("modify_metadata",
-          signature(object = "TextDocCol"),
-          function(object, name, metadata) {
-              object@GlobalMetaData[[name]] <- metadata
-              return(object)
-          })
-
-setGeneric("set_subscriptable", function(object, name) standardGeneric("set_subscriptable"))
-setMethod("set_subscriptable",
-          signature(object = "TextDocCol"),
-          function(object, name) {
-              if (!is.character(GlobalMetaData(object)$subscriptable))
-                  object <- attach_metadata(object, "subscriptable", name)
-              else
-                  object@GlobalMetaData$subscriptable <- c(GlobalMetaData(object)$subscriptable, name)
-              return(object)
-          })
+#setMethod("modify_metadata",
+#          signature(object = "TextDocCol"),
+#          function(object, name, metadata) {
+#              object@DMetaData[[name]] <- metadata
+#              return(object)
+#          })
 
 setMethod("[",
           signature(x = "TextDocCol", i = "ANY", j = "ANY", drop = "ANY"),
@@ -539,11 +537,7 @@ setMethod("[",
 
               object <- x
               object@.Data <- x@.Data[i, ..., drop = FALSE]
-              for (m in names(GlobalMetaData(object))) {
-                  if (m %in% GlobalMetaData(object)$subscriptable) {
-                      object@GlobalMetaData[[m]] <- GlobalMetaData(object)[[m]][i, ..., drop = FALSE]
-                  }
-              }
+              object@DMetaData <- DMetaData(object)[i, ]
               return(object)
           })
 
@@ -569,22 +563,100 @@ setMethod("[[<-",
               return(object)
           })
 
+# Update \code{NodeID}s of a DCMetaData tree
+# TODO: Avoid global variables outside of update_id function
+update_id <- function(object) {
+    id <<- 0
+    mapping <<- left.mapping <<- NULL
+    level <<- 0
+    return(list(root = set_id(object), left.mapping = left.mapping, right.mapping = mapping))
+}
+
+# Traversal of (binary) DCMetaData tree with setup of \code{NodeID}s
+set_id <- function(object) {
+    object@NodeID <- id
+    id <<- id + 1
+    level <<- level + 1
+
+    if (length(object@children) > 0) {
+        mapping <<- cbind(mapping, c(object@children[[1]]@NodeID, id))
+        left <- set_id(object@children[[1]])
+        if (level == 1) {
+            left.mapping <<- mapping
+            mapping <<- NULL
+        }
+        mapping <<- cbind(mapping, c(object@children[[2]]@NodeID, id))
+        right <- set_id(object@children[[2]])
+
+        object@children <- list(left, right)
+    }
+    level <<- level - 1
+
+    return(object)
+}
+
 setMethod("c",
           signature(x = "TextDocCol"),
-          function(x, ..., recursive = TRUE){
-              args <- list(...)
-              if(length(args) == 0)
-                  return(x)
-              return(as(c(as(x, "list"), ...), "TextDocCol"))
+          function(x, y, ..., meta = list(merge_date = date(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
+              if (!inherits(y, "TextDocCol"))
+                  stop("invalid argument")
+
+              object <- x
+              # Concatenate data slots
+              object@.Data <- c(as(x, "list"), as(y, "list"))
+
+              # Update the DCMetaData tree
+              dcmeta <- new("MetaDataNode", NodeID = 0, MetaData = meta, children = list(DCMetaData(x), DCMetaData(y)))
+              update.struct <- update_id(dcmeta)
+              object@DCMetaData <- update.struct$root
+
+              # Find indices to be updated for the left tree
+              indices.mapping <- NULL
+              for (m in levels(as.factor(DMetaData(x)$MetaID))) {
+                  indices <- (DMetaData(x)$MetaID == m)
+                  indices.mapping <- c(indices.mapping, list(m = indices))
+                  names(indices.mapping)[length(indices.mapping)] <- m
+              }
+
+              # Update the DMetaData data frames for the left tree
+              for (i in 1:ncol(update.struct$left.mapping)) {
+                  map <- update.struct$left.mapping[,i]
+                  x@DMetaData$MetaID <- replace(DMetaData(x)$MetaID, indices.mapping[[as.character(map[1])]], map[2])
+              }
+
+              # Find indices to be updated for the right tree
+              indices.mapping <- NULL
+              for (m in levels(as.factor(DMetaData(y)$MetaID))) {
+                  indices <- (DMetaData(y)$MetaID == m)
+                  indices.mapping <- c(indices.mapping, list(m = indices))
+                  names(indices.mapping)[length(indices.mapping)] <- m
+              }
+
+              # Update the DMetaData data frames for the right tree
+              for (i in 1:ncol(update.struct$right.mapping)) {
+                  map <- update.struct$right.mapping[,i]
+                  y@DMetaData$MetaID <- replace(DMetaData(y)$MetaID, indices.mapping[[as.character(map[1])]], map[2])
+              }
+
+              # Merge the DMetaData data frames
+              labels <- setdiff(names(DMetaData(y)), names(DMetaData(x)))
+              na.matrix <- matrix(NA, nrow = nrow(DMetaData(x)), ncol = length(labels), dimnames = list(row.names(DMetaData(x)), labels))
+              x.dmeta.aug <- cbind(DMetaData(x), na.matrix)
+              labels <- setdiff(names(DMetaData(x)), names(DMetaData(y)))
+              na.matrix <- matrix(NA, nrow = nrow(DMetaData(y)), ncol = length(labels), dimnames = list(row.names(DMetaData(y)), labels))
+              y.dmeta.aug <- cbind(DMetaData(y), na.matrix)
+              object@DMetaData <- rbind(x.dmeta.aug, y.dmeta.aug)
+
+              return(object)
     })
-setMethod("c",
-          signature(x = "TextDocument"),
-          function(x, ..., recursive = TRUE){
-              args <- list(...)
-              if(length(args) == 0)
-                  return(x)
-              return(new("TextDocCol", .Data = list(x, ...)))
-    })
+#setMethod("c",
+#          signature(x = "TextDocument"),
+#          function(x, ..., recursive = TRUE){
+#              args <- list(...)
+#              if(length(args) == 0)
+#                  return(x)
+#              return(new("TextDocCol", .Data = list(x, ...)))
+#    })
 
 setMethod("length",
           signature(x = "TextDocCol"),
@@ -605,13 +677,13 @@ setMethod("summary",
           signature(object = "TextDocCol"),
           function(object){
               show(object)
-              if (length(GlobalMetaData(object)) > 0) {
-                  cat(sprintf(ngettext(length(GlobalMetaData(object)),
+              if (length(DMetaData(object)) > 0) {
+                  cat(sprintf(ngettext(length(DMetaData(object)),
                                               "\nThe global metadata consists of %d tag-value pair\n",
                                               "\nThe global metadata consists of %d tag-value pairs\n"),
-                                       length(GlobalMetaData(object))))
+                                       length(DMetaData(object))))
                   cat("Available tags are:\n")
-                  cat(names(GlobalMetaData(object)), "\n")
+                  cat(names(DMetaData(object)), "\n")
               }
     })
 

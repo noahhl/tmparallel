@@ -1,3 +1,10 @@
+2006-11-19  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/: Merging of document collections now creates a binary tree
+	for reconstructing merged document collections.
+
+	* R/: Redesign of metadata for document collections.
+
 2006-11-07  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/: Messages now use \code{ngettext}.

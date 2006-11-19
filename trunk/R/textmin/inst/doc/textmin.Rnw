@@ -32,7 +32,7 @@ This vignette gives a short overview over available features in the
 \subsection{Loading the Package}
 Before actually working we need to load the package:
 <<>>=
-library(textmin)
+library("textmin")
 @
 
 \subsection{Data Import}
@@ -206,7 +206,7 @@ data(crude)
 reut21578.tdc <- attach_data(reut21578.tdc, crude[[1]])
 reut21578.tdc <- attach_metadata(reut21578.tdc, "modified", date())
 summary(reut21578.tdc)
-GlobalMetaData(reut21578.tdc)
+DMetaData(reut21578.tdc)
 @
 
 \subsection{Modifying or Removing Metadata}
@@ -215,11 +215,11 @@ removed:
 <<>>=
 data(crude)
 reut21578.tdc <- attach_metadata(reut21578.tdc, "test", c(1,2,3))
-GlobalMetaData(reut21578.tdc)
+DMetaData(reut21578.tdc)
 reut21578.tdc <- modify_metadata(reut21578.tdc, "test", c(4,5,6))
-GlobalMetaData(reut21578.tdc)
+DMetaData(reut21578.tdc)
 reut21578.tdc <- remove_metadata(reut21578.tdc, "test")
-GlobalMetaData(reut21578.tdc)
+DMetaData(reut21578.tdc)
 @
 
 \subsection{Tagging Metadata as Subscriptable}
@@ -230,7 +230,7 @@ metadata elements can be tagged as subscriptable.
 reut21578.tdc <- attach_metadata(reut21578.tdc, "myclusters", c(1,2,1,1,2,1,1,1,1,1,2))
 reut21578.tdc <- set_subscriptable(reut21578.tdc, "myclusters")
 summary(reut21578.tdc[1:2])
-GlobalMetaData(reut21578.tdc[1:2])
+DMetaData(reut21578.tdc[1:2])
 @
 
 \subsection{Operators}
