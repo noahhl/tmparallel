@@ -61,6 +61,7 @@ exportMethods(
 
               # Functions
               "load_doc",
+              "tm_update",
               "tm_transform",
               "as.plaintext_doc",
               "strip_whitespace",

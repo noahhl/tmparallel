@@ -115,7 +115,7 @@ setMethod("get_elem",
           signature(object = "DirSource"),
           function(object) {
               filename <- object@FileList[object@Position]
-              list(content = readLines(object@FileList[object@Position]),
+              list(content = readLines(filename),
                    uri = substitute(file(filename)))
           })
 setMethod("get_elem",
@@ -373,6 +373,27 @@ setMethod("load_doc",
               }
           })
 
+setGeneric("tm_update", function(object, origin, parser = plaintext_parser, ...) standardGeneric("tm_update"))
+# Update is only supported for directories
+# At the moment no other LoD devices are available anyway
+setMethod("tm_update",
+          signature(object = "TextDocCol", origin = "DirSource"),
+          function(object, origin, parser = plaintext_parser, ...) {
+              if (inherits(parser, "function_generator"))
+                  parser <- parser(...)
+
+              object.filelist <- unlist(lapply(object, function(x) {as.character(URI(x))[2]}))
+              new.files <- setdiff(origin@FileList, object.filelist)
+
+              for (filename in new.files) {
+                  elem <- list(content = readLines(filename),
+                               uri = substitute(file(filename)))
+                  object <- append_doc(object, parser(elem, TRUE, origin@Load, filename), NA)
+              }
+
+              return(object)
+          })
+
 setGeneric("tm_transform", function(object, FUN, ...) standardGeneric("tm_transform"))
 setMethod("tm_transform",
           signature(object = "TextDocCol", FUN = "function"),
@@ -495,21 +516,23 @@ setMethod("fulltext_search_filter",
 setGeneric("attach_data", function(object, data) standardGeneric("attach_data"))
 setGeneric("attach_metadata", function(object, name, metadata) standardGeneric("attach_metadata"))
 
-setGeneric("append_doc", function(object, data, meta) standardGeneric("append_doc"))
+setGeneric("append_doc", function(object, data, meta = NULL) standardGeneric("append_doc"))
 setMethod("append_doc",
-          signature(object = "TextDocCol", data = "TextDocument", meta = "list"),
-          function(object, data, meta) {
+          signature(object = "TextDocCol", data = "TextDocument"),
+          function(object, data, meta = NULL) {
               object@.Data <- c(object@.Data, list(data))
-              object@DMetaData <- rbind(object@DMetaData, c(MetaID = DCMetaData(object)@NodeID, meta))
+              if (length(meta) > 0)
+                  object@DMetaData <- rbind(object@DMetaData, c(MetaID = DCMetaData(object)@NodeID, meta))
               return(object)
           })
 
-setGeneric("append_meta", function(object, dcmeta, dmeta) standardGeneric("append_meta"))
+setGeneric("append_meta", function(object, dcmeta = list(), dmeta = NULL) standardGeneric("append_meta"))
 setMethod("append_meta",
-          signature(object = "TextDocCol", dcmeta = "list", dmeta = "list"),
-          function(object, dcmeta, dmeta) {
+          signature(object = "TextDocCol"),
+          function(object, dcmeta = list(), dmeta = NULL) {
               object@DCMetaData@MetaData <- c(object@DCMetaData@MetaData, dcmeta)
-              object@DMetaData <- cbind(object@DMetaData, dmeta)
+              if (length(dmeta) > 0)
+                  object@DMetaData <- cbind(object@DMetaData, dmeta)
               return(object)
           })
 
@@ -648,15 +671,22 @@ setMethod("c",
               object@DMetaData <- rbind(x.dmeta.aug, y.dmeta.aug)
 
               return(object)
-    })
-#setMethod("c",
-#          signature(x = "TextDocument"),
-#          function(x, ..., recursive = TRUE){
-#              args <- list(...)
-#              if(length(args) == 0)
-#                  return(x)
-#              return(new("TextDocCol", .Data = list(x, ...)))
-#    })
+          })
+setMethod("c",
+          signature(x = "TextDocument"),
+          function(x, ..., recursive = TRUE){
+              args <- list(...)
+              if(length(args) == 0)
+                  return(x)
+
+              dmeta.df <- data.frame(MetaID = rep(0, length(list(x, ...))))
+              dcmeta.node <- new("MetaDataNode",
+                            NodeID = 0,
+                            MetaData = list(create_date = date(), creator = Sys.getenv("LOGNAME")),
+                            children = list())
+
+              return(new("TextDocCol", .Data = list(x, ...), DMetaData = dmeta.df, DCMetaData = dcmeta.node))
+          })
 
 setMethod("length",
           signature(x = "TextDocCol"),
