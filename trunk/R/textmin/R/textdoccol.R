@@ -23,7 +23,7 @@ setMethod("TextDocCol",
                   counter <- counter + 1
               }
 
-              dmeta.df <- data.frame(MetaID = rep(0, length(tdl)))
+              dmeta.df <- data.frame(MetaID = rep(0, length(tdl)), stringsAsFactors = FALSE)
               dcmeta.node <- new("MetaDataNode",
                             NodeID = 0,
                             MetaData = list(create_date = date(), creator = Sys.getenv("LOGNAME")),
@@ -398,8 +398,8 @@ setGeneric("tm_transform", function(object, FUN, ...) standardGeneric("tm_transf
 setMethod("tm_transform",
           signature(object = "TextDocCol", FUN = "function"),
           function(object, FUN, ...) {
-              result <- as(lapply(object, FUN, ..., DMetaData = DMetaData(object)), "TextDocCol")
-              result@DMetaData <- DMetaData(object)
+              result <- object
+              result@.Data <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
               return(result)
           })
 
@@ -474,34 +474,76 @@ setMethod("remove_words",
               return(object)
           })
 
-setGeneric("tm_filter", function(object, ..., FUN = s_filter) standardGeneric("tm_filter"))
+setGeneric("tm_filter", function(object, ..., FUN = s_filter, doclevel = FALSE) standardGeneric("tm_filter"))
 setMethod("tm_filter",
           signature(object = "TextDocCol"),
-          function(object, ..., FUN = s_filter) {
-              indices <- sapply(object, FUN, ..., DMetaData = DMetaData(object))
-              object[indices]
+          function(object, ..., FUN = s_filter, doclevel = FALSE) {
+              if (doclevel)
+                  return(object[sapply(object, FUN, ..., DMetaData = DMetaData(object))])
+              else
+                  return(object[FUN(object, ...)])
           })
 
-setGeneric("tm_index", function(object, ..., FUN = s_filter) standardGeneric("tm_index"))
+setGeneric("tm_index", function(object, ..., FUN = s_filter, doclevel = FALSE) standardGeneric("tm_index"))
 setMethod("tm_index",
           signature(object = "TextDocCol"),
-          function(object, ..., FUN = s_filter) {
-              sapply(object, FUN, ..., DMetaData = DMetaData(object))
+          function(object, ..., FUN = s_filter, doclevel = FALSE) {
+              if (doclevel)
+                  return(sapply(object, FUN, ..., DMetaData = DMetaData(object)))
+              else
+                  return(FUN(object, ...))
           })
 
-s_filter <- function(object, s, ..., DMetaData) {
-    b <- TRUE
-    for (tag in names(s)) {
-        if (tag %in% names(LocalMetaData(object))) {
-            b <- b && any(grep(s[[tag]], LocalMetaData(object)[[tag]]))
-        } else if (tag %in% names(DMetaData)){
-            b <- b && any(grep(s[[tag]], DMetaData[[tag]]))
-        } else {
-            b <- b && any(grep(s[[tag]], eval(call(tag, object))))
+s_filter <- function(object, s, ...) {
+    query.df <- DMetaData(object)
+    con <- textConnection(s)
+    tokens <- scan(con, "character")
+    close(con)
+    local.meta <- lapply(object, LocalMetaData)
+    local.used.meta <- lapply(local.meta, function(x) names(x) %in% tokens)
+    l.meta <- NULL
+    for (i in 1:length(object)) {
+        l.meta <- c(l.meta, list(local.meta[[i]][local.used.meta[[i]]]))
+    }
+    # TODO: Handle entries (\code{m} with length greater 1, i.e., lists)
+    for (i in 1:length(l.meta)) {
+        for (m in l.meta[[i]]) {
+            if (!(names(l.meta[[i]]) %in% names(query.df))) {
+                before <- rep(NA, i - 1)
+                after <- rep(NA, length(l.meta) - i)
+                insert <- c(before, m, after)
+                query.df <- cbind(query.df, insert, stringsAsFactors = FALSE)
+                names(query.df)[length(query.df)] <- names(l.meta[[i]])
+            }
+            else {
+                if (is.null(m))
+                    m <- NA
+                #if (length(m) > 1)
+                #    query.df[i,names(l.meta[[i]])] <- list(m)
+                #else
+                    query.df[i,names(l.meta[[i]])] <- m
+            }
         }
     }
-    return(b)
+    attach(query.df)
+    result <- rownames(query.df) == row.names(query.df[eval(parse(text = s)), ])
+    detach(query.df)
+    return(result)
 }
+
+#s_filter <- function(object, s, ..., DMetaData) {
+#    b <- TRUE
+#    for (tag in names(s)) {
+#        if (tag %in% names(LocalMetaData(object))) {
+#            b <- b && any(grep(s[[tag]], LocalMetaData(object)[[tag]]))
+#        } else if (tag %in% names(DMetaData)){
+#            b <- b && any(grep(s[[tag]], DMetaData[[tag]]))
+#        } else {
+#            b <- b && any(grep(s[[tag]], eval(call(tag, object))))
+#        }
+#    }
+#    return(b)
+#}
 
 setGeneric("fulltext_search_filter", function(object, pattern, ...) standardGeneric("fulltext_search_filter"))
 setMethod("fulltext_search_filter",
@@ -551,6 +593,24 @@ setGeneric("modify_metadata", function(object, name, metadata) standardGeneric("
 #              object@DMetaData[[name]] <- metadata
 #              return(object)
 #          })
+
+setGeneric("prescind_meta", function(object, meta) standardGeneric("prescind_meta"))
+setMethod("prescind_meta",
+          signature(object = "TextDocCol", meta = "character"),
+          function(object, meta) {
+              for (m in meta) {
+                  local.meta <- lapply(object, LocalMetaData)
+                  local.m <- lapply(local.meta, "[[", m)
+                  local.m <- lapply(local.m, function(x) if (is.null(x)) return(NA) else return(x))
+                  if (length(local.m) == length(unlist(local.m)))
+                      local.m <- unlist(local.m)
+                  else
+                      local.m <- I(local.m)
+                  object@DMetaData <- cbind(DMetaData(object), data.frame(m = local.m), stringsAsFactors = FALSE)
+                  names(object@DMetaData)[length(object@DMetaData)] <- m
+              }
+              return(object)
+          })
 
 setMethod("[",
           signature(x = "TextDocCol", i = "ANY", j = "ANY", drop = "ANY"),
@@ -679,7 +739,7 @@ setMethod("c",
               if(length(args) == 0)
                   return(x)
 
-              dmeta.df <- data.frame(MetaID = rep(0, length(list(x, ...))))
+              dmeta.df <- data.frame(MetaID = rep(0, length(list(x, ...))), stringsAsFactors = FALSE)
               dcmeta.node <- new("MetaDataNode",
                             NodeID = 0,
                             MetaData = list(create_date = date(), creator = Sys.getenv("LOGNAME")),

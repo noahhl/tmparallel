@@ -75,6 +75,7 @@ exportMethods(
               "find_assocs",
               "append_doc",
               "append_meta",
+              "prescind_meta",
               "attach_data",
               "attach_metadata",
               "modify_metadata",

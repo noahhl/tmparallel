@@ -1,3 +1,7 @@
+2006-11-21  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/: Rewrote s_filter function (has still some restrictions).
+
 2006-11-20  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/: Various fixes in handling metadata.
