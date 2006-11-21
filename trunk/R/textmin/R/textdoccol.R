@@ -505,15 +505,26 @@ s_filter <- function(object, s, ...) {
     for (i in 1:length(object)) {
         l.meta <- c(l.meta, list(local.meta[[i]][local.used.meta[[i]]]))
     }
+    # Load local meta data from text documents into data frame
+    for (i in 1:length(l.meta)) {
+        l.meta[[i]] <- c(l.meta[[i]], list(author = Author(object[[i]])))
+        l.meta[[i]] <- c(l.meta[[i]], list(datetimestamp = DateTimeStamp(object[[i]])))
+        l.meta[[i]] <- c(l.meta[[i]], list(description = Description(object[[i]])))
+        l.meta[[i]] <- c(l.meta[[i]], list(identifier = ID(object[[i]])))
+        l.meta[[i]] <- c(l.meta[[i]], list(origin = Origin(object[[i]])))
+        l.meta[[i]] <- c(l.meta[[i]], list(heading = Heading(object[[i]])))
+    }
     # TODO: Handle entries (\code{m} with length greater 1, i.e., lists)
     for (i in 1:length(l.meta)) {
-        for (m in l.meta[[i]]) {
-            if (!(names(l.meta[[i]]) %in% names(query.df))) {
+        for (j in 1:length(l.meta[[i]])) {
+            m <- l.meta[[i]][[j]]
+            m.name <- names(l.meta[[i]][j])
+            if (!(m.name %in% names(query.df))) {
                 before <- rep(NA, i - 1)
                 after <- rep(NA, length(l.meta) - i)
                 insert <- c(before, m, after)
                 query.df <- cbind(query.df, insert, stringsAsFactors = FALSE)
-                names(query.df)[length(query.df)] <- names(l.meta[[i]])
+                names(query.df)[length(query.df)] <- m.name
             }
             else {
                 if (is.null(m))
@@ -521,12 +532,12 @@ s_filter <- function(object, s, ...) {
                 #if (length(m) > 1)
                 #    query.df[i,names(l.meta[[i]])] <- list(m)
                 #else
-                    query.df[i,names(l.meta[[i]])] <- m
+                    query.df[i,m.name] <- m
             }
         }
     }
     attach(query.df)
-    result <- rownames(query.df) == row.names(query.df[eval(parse(text = s)), ])
+    try(result <- rownames(query.df) %in% row.names(query.df[eval(parse(text = s)), ]))
     detach(query.df)
     return(result)
 }
@@ -594,6 +605,7 @@ setGeneric("modify_metadata", function(object, name, metadata) standardGeneric("
 #              return(object)
 #          })
 
+# TODO: Handle metadata in document slots
 setGeneric("prescind_meta", function(object, meta) standardGeneric("prescind_meta"))
 setMethod("prescind_meta",
           signature(object = "TextDocCol", meta = "character"),
