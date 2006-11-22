@@ -1,3 +1,11 @@
+2006-11-22  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/textdoccol.R: Bug fixes in s_filter. Added full query support
+	to s_filter.
+
+	* R/textdoccol.R: Local text documents' metadata can now be copied
+	to a document collection's data frame with prescind_meta.
+
 2006-11-21  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/: Text documents' slot metadata is now accessible in s_filter.

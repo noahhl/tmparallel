@@ -514,7 +514,6 @@ s_filter <- function(object, s, ...) {
         l.meta[[i]] <- c(l.meta[[i]], list(origin = Origin(object[[i]])))
         l.meta[[i]] <- c(l.meta[[i]], list(heading = Heading(object[[i]])))
     }
-    # TODO: Handle entries (\code{m} with length greater 1, i.e., lists)
     for (i in 1:length(l.meta)) {
         for (j in 1:length(l.meta[[i]])) {
             m <- l.meta[[i]][[j]]
@@ -522,17 +521,28 @@ s_filter <- function(object, s, ...) {
             if (!(m.name %in% names(query.df))) {
                 before <- rep(NA, i - 1)
                 after <- rep(NA, length(l.meta) - i)
-                insert <- c(before, m, after)
+                if (length(m) > 1) {
+                    nl <- vector("list", length(l.meta))
+                    nl[1:(i-1)] <- before
+                    nl[i] <- list(m)
+                    nl[(i+1):length(l.meta)] <- after
+                    insert <- data.frame(I(nl), stringsAsFactors = FALSE)
+                }
+                else
+                    insert <- c(before, m, after)
                 query.df <- cbind(query.df, insert, stringsAsFactors = FALSE)
                 names(query.df)[length(query.df)] <- m.name
             }
             else {
                 if (is.null(m))
                     m <- NA
-                #if (length(m) > 1)
-                #    query.df[i,names(l.meta[[i]])] <- list(m)
-                #else
-                    query.df[i,m.name] <- m
+                if (length(m) > 1) {
+                    rl <- query.df[ , m.name]
+                    rl[i] <- list(m)
+                    query.df[ , m.name] <- data.frame(I(rl), stringsAsFactors = FALSE)
+                }
+                else
+                    query.df[i, m.name] <- m
             }
         }
     }
@@ -541,20 +551,6 @@ s_filter <- function(object, s, ...) {
     detach(query.df)
     return(result)
 }
-
-#s_filter <- function(object, s, ..., DMetaData) {
-#    b <- TRUE
-#    for (tag in names(s)) {
-#        if (tag %in% names(LocalMetaData(object))) {
-#            b <- b && any(grep(s[[tag]], LocalMetaData(object)[[tag]]))
-#        } else if (tag %in% names(DMetaData)){
-#            b <- b && any(grep(s[[tag]], DMetaData[[tag]]))
-#        } else {
-#            b <- b && any(grep(s[[tag]], eval(call(tag, object))))
-#        }
-#    }
-#    return(b)
-#}
 
 setGeneric("fulltext_search_filter", function(object, pattern, ...) standardGeneric("fulltext_search_filter"))
 setMethod("fulltext_search_filter",
@@ -605,21 +601,29 @@ setGeneric("modify_metadata", function(object, name, metadata) standardGeneric("
 #              return(object)
 #          })
 
-# TODO: Handle metadata in document slots
 setGeneric("prescind_meta", function(object, meta) standardGeneric("prescind_meta"))
 setMethod("prescind_meta",
           signature(object = "TextDocCol", meta = "character"),
           function(object, meta) {
               for (m in meta) {
-                  local.meta <- lapply(object, LocalMetaData)
-                  local.m <- lapply(local.meta, "[[", m)
-                  local.m <- lapply(local.m, function(x) if (is.null(x)) return(NA) else return(x))
-                  if (length(local.m) == length(unlist(local.m)))
+                  if (m %in% c("Author", "DateTimeStamp", "Description", "ID", "Origin", "Heading")) {
+                      local.m <- lapply(object, m)
+                      local.m <- lapply(local.m, function(x) if (is.null(x)) return(NA) else return(x))
                       local.m <- unlist(local.m)
-                  else
-                      local.m <- I(local.m)
-                  object@DMetaData <- cbind(DMetaData(object), data.frame(m = local.m), stringsAsFactors = FALSE)
-                  names(object@DMetaData)[length(object@DMetaData)] <- m
+                      object@DMetaData <- cbind(DMetaData(object), data.frame(m = local.m), stringsAsFactors = FALSE)
+                      names(object@DMetaData)[length(object@DMetaData)] <- m
+                  }
+                  else {
+                      local.meta <- lapply(object, LocalMetaData)
+                      local.m <- lapply(local.meta, "[[", m)
+                      local.m <- lapply(local.m, function(x) if (is.null(x)) return(NA) else return(x))
+                      if (length(local.m) == length(unlist(local.m)))
+                          local.m <- unlist(local.m)
+                      else
+                          local.m <- I(local.m)
+                      object@DMetaData <- cbind(DMetaData(object), data.frame(m = local.m), stringsAsFactors = FALSE)
+                      names(object@DMetaData)[length(object@DMetaData)] <- m
+                  }
               }
               return(object)
           })
