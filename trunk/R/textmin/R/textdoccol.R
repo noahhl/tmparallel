@@ -570,8 +570,7 @@ setMethod("append_doc",
           signature(object = "TextDocCol", data = "TextDocument"),
           function(object, data, meta = NULL) {
               object@.Data <- c(object@.Data, list(data))
-              if (length(meta) > 0)
-                  object@DMetaData <- rbind(object@DMetaData, c(MetaID = DCMetaData(object)@NodeID, meta))
+              object@DMetaData <- rbind(object@DMetaData, c(MetaID = DCMetaData(object)@NodeID, meta))
               return(object)
           })
 
@@ -636,7 +635,9 @@ setMethod("[",
 
               object <- x
               object@.Data <- x@.Data[i, ..., drop = FALSE]
-              object@DMetaData <- DMetaData(object)[i, ]
+              df <- as.data.frame(DMetaData(object)[i, ])
+              names(df) <- names(DMetaData(object))
+              object@DMetaData <- df
               return(object)
           })
 

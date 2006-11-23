@@ -92,8 +92,7 @@ reut21578 <- system.file("texts/reut21578/", package = "textmin")
 reut21578.xml <- system.file("texts/reut21578.xml", package = "textmin")
 reut21578.xml.gz <- system.file("texts/reut21578.xml.gz", package = "textmin")
 
-reut21578.tdc <- TextDocCol(DirSource(reut21578), reut21578xml_parser)
-reut21578.tdc
+(reut21578.tdc <- TextDocCol(DirSource(reut21578), reut21578xml_parser))
 
 TextDocCol(ReutersSource(reut21578.xml), reut21578xml_parser)
 TextDocCol(ReutersSource(gzfile(reut21578.xml.gz)), reut21578xml_parser)
@@ -187,25 +186,26 @@ are logically and-conjuncted \code{tag="regexpr"} pairs in form of a
 named list.
 
 E.g., following statement filters out those documents, where
-\code{COMPUTER} occurs in their heading and has an \code{ID} which can
-be interpreted as integer and is 2-ary.
+\code{COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE} is their
+heading and has an \code{ID} equal to 10.
 <<>>=
-tm_filter(reut21578.tdc, list(ID = "^[0-9][0-9]$", Heading = "COMPUTER"))
+tm_filter(reut21578.tdc, "identifier == '10' & heading == 'COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE'")
 @
 
 There is also a full text search available as filter:
 <<>>=
-tm_filter(reut21578.tdc, FUN = fulltext_search_filter, "partnership")
+tm_filter(reut21578.tdc, FUN = fulltext_search_filter, "partnership", doclevel = TRUE)
 @
 
 \subsection{Adding Data or Metadata}
 Text documents or metadata can be added to text document collections
-with \code{attach\_data} and \code{attach\_metadata}, respectively.
+with \code{append\_doc} and \code{append\_meta}, respectively.
 <<>>=
 data(crude)
-reut21578.tdc <- attach_data(reut21578.tdc, crude[[1]])
-reut21578.tdc <- attach_metadata(reut21578.tdc, "modified", date())
+reut21578.tdc <- append_doc(reut21578.tdc, crude[[1]], list())
+reut21578.tdc <- append_meta(reut21578.tdc, dcmeta = list(test = c(1,2,3)), dmeta = list(cl1 = 1:11))
 summary(reut21578.tdc)
+DCMetaData(reut21578.tdc)
 DMetaData(reut21578.tdc)
 @
 
@@ -213,13 +213,14 @@ DMetaData(reut21578.tdc)
 The metadata of text document collections can be easily modified or
 removed:
 <<>>=
-data(crude)
-reut21578.tdc <- attach_metadata(reut21578.tdc, "test", c(1,2,3))
-DMetaData(reut21578.tdc)
-reut21578.tdc <- modify_metadata(reut21578.tdc, "test", c(4,5,6))
-DMetaData(reut21578.tdc)
-reut21578.tdc <- remove_metadata(reut21578.tdc, "test")
-DMetaData(reut21578.tdc)
+print("ToDo")
+#data(crude)
+#reut21578.tdc <- attach_metadata(reut21578.tdc, "test", c(1,2,3))
+#DMetaData(reut21578.tdc)
+#reut21578.tdc <- modify_metadata(reut21578.tdc, "test", c(4,5,6))
+#DMetaData(reut21578.tdc)
+#reut21578.tdc <- remove_metadata(reut21578.tdc, "test")
+#DMetaData(reut21578.tdc)
 @
 
 \subsection{Tagging Metadata as Subscriptable}
@@ -227,10 +228,11 @@ Often it makes sense that a subset operation applied to a text
 document collection also modifies its metadata. For this purpose
 metadata elements can be tagged as subscriptable.
 <<>>=
-reut21578.tdc <- attach_metadata(reut21578.tdc, "myclusters", c(1,2,1,1,2,1,1,1,1,1,2))
-reut21578.tdc <- set_subscriptable(reut21578.tdc, "myclusters")
-summary(reut21578.tdc[1:2])
-DMetaData(reut21578.tdc[1:2])
+print("ToDo")
+#reut21578.tdc <- attach_metadata(reut21578.tdc, "myclusters", c(1,2,1,1,2,1,1,1,1,1,2))
+#reut21578.tdc <- set_subscriptable(reut21578.tdc, "myclusters")
+#summary(reut21578.tdc[1:2])
+#DMetaData(reut21578.tdc[1:2])
 @
 
 \subsection{Operators}
