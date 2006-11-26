@@ -562,43 +562,37 @@ setMethod("fulltext_search_filter",
               return(any(grep(pattern, Corpus(object))))
           })
 
-setGeneric("attach_data", function(object, data) standardGeneric("attach_data"))
-setGeneric("attach_metadata", function(object, name, metadata) standardGeneric("attach_metadata"))
-
-setGeneric("append_doc", function(object, data, meta = NULL) standardGeneric("append_doc"))
-setMethod("append_doc",
+setGeneric("append_elem", function(object, data, meta = NULL) standardGeneric("append_elem"))
+setMethod("append_elem",
           signature(object = "TextDocCol", data = "TextDocument"),
           function(object, data, meta = NULL) {
-              object@.Data <- c(object@.Data, list(data))
+              object@.Data[[length(object)+1]] <- data
               object@DMetaData <- rbind(object@DMetaData, c(MetaID = DCMetaData(object)@NodeID, meta))
               return(object)
           })
 
-setGeneric("append_meta", function(object, dcmeta = list(), dmeta = NULL) standardGeneric("append_meta"))
+setGeneric("append_meta", function(object, dcmeta = NULL, dmeta = NULL) standardGeneric("append_meta"))
 setMethod("append_meta",
           signature(object = "TextDocCol"),
-          function(object, dcmeta = list(), dmeta = NULL) {
+          function(object, dcmeta = NULL, dmeta = NULL) {
               object@DCMetaData@MetaData <- c(object@DCMetaData@MetaData, dcmeta)
-              if (length(dmeta) > 0)
+              if (!is.null(dcmeta))
                   object@DMetaData <- cbind(object@DMetaData, dmeta)
               return(object)
           })
 
-setGeneric("remove_metadata", function(object, name) standardGeneric("remove_metadata"))
-#setMethod("remove_metadata",
-#          signature(object = "TextDocCol"),
-#          function(object, name) {
-#              object@DMetaData <- DMetaData(object)[names(DMetaData(object)) != name]
-#              return(object)
-#          })
-
-setGeneric("modify_metadata", function(object, name, metadata) standardGeneric("modify_metadata"))
-#setMethod("modify_metadata",
-#          signature(object = "TextDocCol"),
-#          function(object, name, metadata) {
-#              object@DMetaData[[name]] <- metadata
-#              return(object)
-#          })
+setGeneric("remove_meta", function(object, dcname = NULL, dname = NULL) standardGeneric("remove_meta"))
+setMethod("remove_meta",
+          signature(object = "TextDocCol"),
+          function(object, dcname = NULL, dname = NULL) {
+              if (!is.null(dcname)) {
+                  object@DCMetaData@MetaData <- DCMetaData(object)@MetaData[names(DCMetaData(object)@MetaData) != dcname]
+              }
+              if (!is.null(dname)) {
+                  object@DMetaData <- DMetaData(object)[names(DMetaData(object)) != dname]
+              }
+              return(object)
+          })
 
 setGeneric("prescind_meta", function(object, meta) standardGeneric("prescind_meta"))
 setMethod("prescind_meta",
@@ -785,11 +779,13 @@ setMethod("summary",
           function(object){
               show(object)
               if (length(DMetaData(object)) > 0) {
-                  cat(sprintf(ngettext(length(DMetaData(object)),
-                                              "\nThe global metadata consists of %d tag-value pair\n",
-                                              "\nThe global metadata consists of %d tag-value pairs\n"),
-                                       length(DMetaData(object))))
+                  cat(sprintf(ngettext(length(DCMetaData(object)@MetaData),
+                                              "\nThe metadata consists of %d tag-value pair and a data frame\n",
+                                              "\nThe metadata consists of %d tag-value pairs and a data frame\n"),
+                                       length(DCMetaData(object)@MetaData)))
                   cat("Available tags are:\n")
+                  cat(names(DCMetaData(object)@MetaData), "\n")
+                  cat("Available variables in the data frame are:\n")
                   cat(names(DMetaData(object)), "\n")
               }
     })

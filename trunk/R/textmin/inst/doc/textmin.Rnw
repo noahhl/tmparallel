@@ -199,10 +199,10 @@ tm_filter(reut21578.tdc, FUN = fulltext_search_filter, "partnership", doclevel =
 
 \subsection{Adding Data or Metadata}
 Text documents or metadata can be added to text document collections
-with \code{append\_doc} and \code{append\_meta}, respectively.
+with \code{append\_elem} and \code{append\_meta}, respectively.
 <<>>=
 data(crude)
-reut21578.tdc <- append_doc(reut21578.tdc, crude[[1]], list())
+reut21578.tdc <- append_elem(reut21578.tdc, crude[[1]], list())
 reut21578.tdc <- append_meta(reut21578.tdc, dcmeta = list(test = c(1,2,3)), dmeta = list(cl1 = 1:11))
 summary(reut21578.tdc)
 DCMetaData(reut21578.tdc)
@@ -213,26 +213,13 @@ DMetaData(reut21578.tdc)
 The metadata of text document collections can be easily modified or
 removed:
 <<>>=
-print("ToDo")
-#data(crude)
-#reut21578.tdc <- attach_metadata(reut21578.tdc, "test", c(1,2,3))
-#DMetaData(reut21578.tdc)
+data(crude)
 #reut21578.tdc <- modify_metadata(reut21578.tdc, "test", c(4,5,6))
-#DMetaData(reut21578.tdc)
-#reut21578.tdc <- remove_metadata(reut21578.tdc, "test")
-#DMetaData(reut21578.tdc)
-@
-
-\subsection{Tagging Metadata as Subscriptable}
-Often it makes sense that a subset operation applied to a text
-document collection also modifies its metadata. For this purpose
-metadata elements can be tagged as subscriptable.
-<<>>=
-print("ToDo")
-#reut21578.tdc <- attach_metadata(reut21578.tdc, "myclusters", c(1,2,1,1,2,1,1,1,1,1,2))
-#reut21578.tdc <- set_subscriptable(reut21578.tdc, "myclusters")
-#summary(reut21578.tdc[1:2])
-#DMetaData(reut21578.tdc[1:2])
+DCMetaData(reut21578.tdc)
+DMetaData(reut21578.tdc)
+reut21578.tdc <- remove_meta(reut21578.tdc, dcname = "test", dname = "cl1")
+DCMetaData(reut21578.tdc)
+DMetaData(reut21578.tdc)
 @
 
 \subsection{Operators}
@@ -258,10 +245,10 @@ be to save different states of a text document collection.
 <<>>=
 data(acq)
 repo <- TextRepository(reut21578.tdc)
-repo <- attach_data(repo, acq)
-repo <- attach_metadata(repo, "modified", date())
+repo <- append_elem(repo, acq, list(modified = date()))
+repo <- append_meta(repo, list(moremeta = 5:10))
 summary(repo)
-RepresentationMetaData(repo)
+RepoMetaData(repo)
 summary(repo[[1]])
 summary(repo[[2]])
 @

@@ -48,7 +48,7 @@ exportMethods(
               "DCMetaData",
 
               # TextRepository
-              "RepresentationMetaData",
+              "RepoMetaData",
 
               # TermDocMatrix
               "Weighting",
@@ -73,13 +73,10 @@ exportMethods(
               "fulltext_search_filter",
               "find_hf_terms",
               "find_assocs",
-              "append_doc",
+              "append_elem",
               "append_meta",
               "prescind_meta",
-              "attach_data",
-              "attach_metadata",
-              "modify_metadata",
-              "remove_metadata",
+              "remove_meta",
               "[",
               "[<-",
               "[[",

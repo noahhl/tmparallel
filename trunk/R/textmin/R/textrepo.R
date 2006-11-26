@@ -1,40 +1,32 @@
 # Author: Ingo Feinerer
 
-setGeneric("TextRepository", function(object, metaname = "created", meta = date()) standardGeneric("TextRepository"))
+setGeneric("TextRepository", function(object, meta = list(created = date())) standardGeneric("TextRepository"))
 setMethod("TextRepository",
           signature(object = "TextDocCol"),
-          function(object, metaname, meta) {
-              tr <- new("TextRepository", .Data = list(object), RepresentationMetaData = list(created = meta))
-              names(tr@RepresentationMetaData) <- metaname
-              return(tr)
+          function(object, meta) {
+              return(new("TextRepository", .Data = list(object), RepoMetaData = meta))
           })
 
-setMethod("attach_data",
+setMethod("append_elem",
           signature(object = "TextRepository", data = "TextDocCol"),
-          function(object, data) {
+          function(object, data, meta = NULL) {
               object[[length(object)+1]] <- data
+              object@RepoMetaData <- c(object@RepoMetaData, meta)
               return(object)
           })
 
-setMethod("attach_metadata",
+setMethod("append_meta",
           signature(object = "TextRepository"),
-          function(object, name, metadata) {
-              object@RepresentationMetaData <- c(object@RepresentationMetaData, new = list(metadata))
-              names(object@RepresentationMetaData)[length(names(object@RepresentationMetaData))] <- name
+          function(object, dcmeta = NULL, dmeta = NULL) {
+              object@RepoMetaData <- c(object@RepoMetaData, dcmeta)
               return(object)
           })
 
-setMethod("remove_metadata",
+setMethod("remove_meta",
           signature(object = "TextRepository"),
-          function(object, name) {
-              object@RepresentationMetaData <- RepresentationMetaData(object)[names(RepresentationMetaData(object)) != name]
-              return(object)
-          })
-
-setMethod("modify_metadata",
-          signature(object = "TextRepository"),
-          function(object, name, metadata) {
-              object@RepresentationMetaData[[name]] <- metadata
+          function(object, dcname = NULL, dname = NULL) {
+              if (!is.null(dcname))
+                  object@RepoMetaData <- RepoMetaData(object)[names(RepoMetaData(object)) != dcname]
               return(object)
           })
 
@@ -57,12 +49,12 @@ setMethod("summary",
           signature(object = "TextRepository"),
           function(object){
               show(object)
-              if (length(RepresentationMetaData(object)) > 0) {
-                  cat(sprintf(ngettext(length(RepresentationMetaData(object)),
-                                              "\nThe representation metadata consists of %d tag-value pair\n",
-                                              "\nThe representation metadata consists of %d tag-value pairs\n"),
-                                       length(RepresentationMetaData(object))))
+              if (length(RepoMetaData(object)) > 0) {
+                  cat(sprintf(ngettext(length(RepoMetaData(object)),
+                                              "\nThe repository metadata consists of %d tag-value pair\n",
+                                              "\nThe repository metadata consists of %d tag-value pairs\n"),
+                                       length(RepoMetaData(object))))
                   cat("Available tags are:\n")
-                  cat(names(RepresentationMetaData(object)), "\n")
+                  cat(names(RepoMetaData(object)), "\n")
               }
     })

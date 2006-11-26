@@ -210,16 +210,16 @@ setMethod("DCMetaData", "TextDocCol", function(object) object@DCMetaData)
 
 # Repository for text document collections
 setClass("TextRepository",
-         representation(RepresentationMetaData = "list"),
+         representation(RepoMetaData = "list"),
          contains = c("list"))
 
-if (!isGeneric("RepresentationMetaData")) {
-    if (is.function("RepresentationMetaData"))
-        fun <- RepresentationMetaData
-    else fun <- function(object) standardGeneric("RepresentationMetaData")
-    setGeneric("RepresentationMetaData", fun)
+if (!isGeneric("RepoMetaData")) {
+    if (is.function("RepoMetaData"))
+        fun <- RepoMetaData
+    else fun <- function(object) standardGeneric("RepoMetaData")
+    setGeneric("RepoMetaData", fun)
 }
-setMethod("RepresentationMetaData", "TextRepository", function(object) object@RepresentationMetaData)
+setMethod("RepoMetaData", "TextRepository", function(object) object@RepoMetaData)
 
 # Term-document matrix
 setClass("TermDocMatrix",
