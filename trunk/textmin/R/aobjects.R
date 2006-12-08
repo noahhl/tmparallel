@@ -7,12 +7,13 @@
 # Text document
 setClass("TextDocument",
          representation(Author = "character",
-                        DateTimeStamp = "character",
+                        DateTimeStamp = "POSIXct",
                         Description = "character",
                         ID = "character",
                         Origin = "character",
                         Heading = "character",
-                        LocalMetaData = "list"))
+                        LocalMetaData = "list",
+                        "VIRTUAL"))
 
 if (!isGeneric("Author")) {
     if (is.function("Author"))
@@ -239,28 +240,3 @@ setReplaceMethod("Weighting", "TermDocMatrix", function(x, value) {
   x@Weighting <- value
   x
 })
-
-# Source objects
-
-setClass("Source",
-         representation(LoDSupport = "logical",
-                        Position = "numeric"))
-
-# A directory with files
-setClass("DirSource",
-         representation(FileList = "character",
-                        Load = "logical"),
-         contains = c("Source"))
-
-# A single CSV file where each line is interpreted as document
-setClass("CSVSource",
-         representation(URI = "ANY",
-                        Content = "character"),
-         contains = c("Source"))
-
-# A single XML file consisting of several Reuters documents
-# Works both for Reuters21578XML and RCV1 XML files
-setClass("ReutersSource",
-         representation(URI = "ANY",
-                        Content = "list"),
-         contains = c("Source"))

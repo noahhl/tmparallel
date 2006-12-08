@@ -7,6 +7,7 @@ export(
        "reut21578xml_parser",
        "rcv1_parser",
        "newsgroup_parser",
+       "gmane_r_reader",
        "reut21578xml_to_plain",
        "rcv1_to_plain",
        "s_filter",
@@ -21,6 +22,7 @@ exportMethods(
               "DirSource",
               "CSVSource",
               "ReutersSource",
+              "GmaneRSource",
 
               # TextDocument
               "Corpus",
@@ -100,4 +102,5 @@ exportClasses("TextDocument",
               "Source",
               "DirSource",
               "CSVSource",
-              "ReutersSource")
+              "ReutersSource",
+              "GmaneRSource")

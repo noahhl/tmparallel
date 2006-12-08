@@ -1,6 +1,6 @@
 # Author: Ingo Feinerer
 
-setGeneric("TextRepository", function(object, meta = list(created = date())) standardGeneric("TextRepository"))
+setGeneric("TextRepository", function(object, meta = list(created = Sys.time())) standardGeneric("TextRepository"))
 setMethod("TextRepository",
           signature(object = "TextDocCol"),
           function(object, meta) {

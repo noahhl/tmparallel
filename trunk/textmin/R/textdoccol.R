@@ -26,302 +26,11 @@ setMethod("TextDocCol",
               dmeta.df <- data.frame(MetaID = rep(0, length(tdl)), stringsAsFactors = FALSE)
               dcmeta.node <- new("MetaDataNode",
                             NodeID = 0,
-                            MetaData = list(create_date = date(), creator = Sys.getenv("LOGNAME")),
+                            MetaData = list(create_date = Sys.time(), creator = Sys.getenv("LOGNAME")),
                             children = list())
 
               return(new("TextDocCol", .Data = tdl, DMetaData = dmeta.df, DCMetaData = dcmeta.node))
           })
-
-setGeneric("DirSource", function(directory, load = FALSE) standardGeneric("DirSource"))
-setMethod("DirSource",
-          signature(directory = "character"),
-          function(directory, load = FALSE) {
-              new("DirSource", LoDSupport = TRUE, FileList = dir(directory, full.names = TRUE),
-                  Position = 0, Load = load)
-          })
-
-setGeneric("CSVSource", function(object) standardGeneric("CSVSource"))
-setMethod("CSVSource",
-          signature(object = "character"),
-          function(object) {
-              object <- substitute(file(object))
-              con <- eval(object)
-              content <- scan(con, what = "character")
-              close(con)
-              new("CSVSource", LoDSupport = FALSE, URI = object,
-                  Content = content, Position = 0)
-          })
-setMethod("CSVSource",
-          signature(object = "ANY"),
-          function(object) {
-              object <- substitute(object)
-              con <- eval(object)
-              content <- scan(con, what = "character")
-              close(con)
-              new("CSVSource", LoDSupport = FALSE, URI = object,
-                  Content = content, Position = 0)
-          })
-
-setGeneric("ReutersSource", function(object) standardGeneric("ReutersSource"))
-setMethod("ReutersSource",
-          signature(object = "character"),
-          function(object) {
-              object <- substitute(file(object))
-              con <- eval(object)
-              corpus <- paste(readLines(con), "\n", collapse = "")
-              close(con)
-              tree <- xmlTreeParse(corpus, asText = TRUE)
-              content <- xmlRoot(tree)$children
-
-              new("ReutersSource", LoDSupport = FALSE, URI = object,
-                  Content = content, Position = 0)
-          })
-setMethod("ReutersSource",
-          signature(object = "ANY"),
-          function(object) {
-              object <- substitute(object)
-              con <- eval(object)
-              corpus <- paste(readLines(con), "\n", collapse = "")
-              close(con)
-              tree <- xmlTreeParse(corpus, asText = TRUE)
-              content <- xmlRoot(tree)$children
-
-              new("ReutersSource", LoDSupport = FALSE, URI = object,
-                  Content = content, Position = 0)
-          })
-
-setGeneric("step_next", function(object) standardGeneric("step_next"))
-setMethod("step_next",
-          signature(object = "DirSource"),
-          function(object) {
-              object@Position <- object@Position + 1
-              object
-          })
-setMethod("step_next",
-          signature(object = "CSVSource"),
-          function(object) {
-              object@Position <- object@Position + 1
-              object
-          })
-setMethod("step_next",
-          signature(object = "ReutersSource"),
-          function(object) {
-              object@Position <- object@Position + 1
-              object
-          })
-
-setGeneric("get_elem", function(object) standardGeneric("get_elem"))
-setMethod("get_elem",
-          signature(object = "DirSource"),
-          function(object) {
-              filename <- object@FileList[object@Position]
-              list(content = readLines(filename),
-                   uri = substitute(file(filename)))
-          })
-setMethod("get_elem",
-          signature(object = "CSVSource"),
-          function(object) {
-              list(content = object@Content[object@Position],
-                   uri = object@URI)
-          })
-setMethod("get_elem",
-          signature(object = "ReutersSource"),
-          function(object) {
-              # Construct a character representation from the XMLNode
-              con <- textConnection("virtual.file", "w")
-              saveXML(object@Content[[object@Position]], con)
-              close(con)
-
-              list(content = virtual.file, uri = object@URI)
-          })
-
-setGeneric("eoi", function(object) standardGeneric("eoi"))
-setMethod("eoi",
-          signature(object = "DirSource"),
-          function(object) {
-              if (length(object@FileList) <= object@Position)
-                  return(TRUE)
-              else
-                  return(FALSE)
-          })
-setMethod("eoi",
-          signature(object = "CSVSource"),
-          function(object) {
-              if (length(object@Content) <= object@Position)
-                  return(TRUE)
-              else
-                  return(FALSE)
-          })
-setMethod("eoi",
-          signature(object = "ReutersSource"),
-          function(object) {
-              if (length(object@Content) <= object@Position)
-                  return(TRUE)
-              else
-                  return(FALSE)
-          })
-
-plaintext_parser <- function(...) {
-    function(elem, lodsupport, load, id) {
-        if (!lodsupport || (lodsupport && load)) {
-            doc <- new("PlainTextDocument", .Data = elem$content, URI = elem$uri, Cached = TRUE,
-                       Author = "", DateTimeStamp = date(), Description = "", ID = id, Origin = "", Heading = "")
-        }
-        else {
-            doc <- new("PlainTextDocument", URI = elem$uri, Cached = FALSE,
-                       Author = "", DateTimeStamp = date(), Description = "", ID = id, Origin = "", Heading = "")
-        }
-
-        return(doc)
-    }
-}
-class(plaintext_parser) <- "function_generator"
-
-reut21578xml_parser <- function(...) {
-    function(elem, lodsupport, load, id) {
-        corpus <- paste(elem$content, "\n", collapse = "")
-        tree <- xmlTreeParse(corpus, asText = TRUE)
-        node <- xmlRoot(tree)
-
-        # Mask as list to bypass S4 checks
-        class(tree) <- "list"
-
-        # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
-        if (!is.null(node[["TEXT"]][["AUTHOR"]]))
-            author <- xmlValue(node[["TEXT"]][["AUTHOR"]])
-        else
-            author <- ""
-
-        datetimestamp <- xmlValue(node[["DATE"]])
-        description <- ""
-        id <- xmlAttrs(node)[["NEWID"]]
-
-        # The <TITLE></TITLE> tag is unfortunately NOT obligatory!
-        if (!is.null(node[["TEXT"]][["TITLE"]]))
-            heading <- xmlValue(node[["TEXT"]][["TITLE"]])
-        else
-            heading <- ""
-
-        topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
-
-        if (!lodsupport || (lodsupport && load)) {
-            doc <- new("XMLTextDocument", .Data = tree, URI = elem$uri, Cached = TRUE, Author = author,
-                       DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
-                       Heading = heading, LocalMetaData = list(Topics = topics))
-        } else {
-            doc <- new("XMLTextDocument", URI = elem$uri, Cached = FALSE, Author = author,
-                       DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
-                       Heading = heading, LocalMetaData = list(Topics = topics))
-        }
-
-        return(doc)
-    }
-}
-class(reut21578xml_parser) <- "function_generator"
-
-rcv1_parser <- function(...) {
-    function(elem, lodsupport, load, id) {
-        corpus <- paste(elem$content, "\n", collapse = "")
-        tree <- xmlTreeParse(corpus, asText = TRUE)
-        node <- xmlRoot(tree)
-
-        # Mask as list to bypass S4 checks
-        class(tree) <- "list"
-
-        datetimestamp <- xmlAttrs(node)[["date"]]
-        id <- xmlAttrs(node)[["itemid"]]
-        heading <- xmlValue(node[["title"]])
-
-        if (!lodsupport || (lodsupport && load)) {
-            doc <- new("XMLTextDocument", .Data = tree, URI = elem$uri, Cached = TRUE, Author = "",
-                       DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
-                       Heading = heading)
-        } else {
-            doc <- new("XMLTextDocument", URI = elem$uri, Cached = FALSE, Author = "",
-                       DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
-                       Heading = heading)
-        }
-
-        return(doc)
-    }
-}
-class(rcv1_parser) <- "function_generator"
-
-newsgroup_parser <- function(...) {
-    function(elem, lodsupport, load, id) {
-        mail <- elem$content
-        author <- gsub("From: ", "", grep("^From:", mail, value = TRUE))
-        datetimestamp <- gsub("Date: ", "", grep("^Date:", mail, value = TRUE))
-        origin <- gsub("Path: ", "", grep("^Path:", mail, value = TRUE))
-        heading <- gsub("Subject: ", "", grep("^Subject:", mail, value = TRUE))
-        newsgroup <- gsub("Newsgroups: ", "", grep("^Newsgroups:", mail, value = TRUE))
-
-        if (!lodsupport || (lodsupport && load)) {
-            # The header is separated from the body by a blank line.
-            # Reference: \url{http://en.wikipedia.org/wiki/E-mail#Internet_e-mail_format}
-            for (index in seq(along = mail)) {
-                if (mail[index] == "")
-                    break
-            }
-            content <- mail[(index + 1):length(mail)]
-
-            doc <- new("NewsgroupDocument", .Data = content, URI = elem$uri, Cached = TRUE,
-                       Author = author, DateTimeStamp = datetimestamp,
-                       Description = "", ID = id, Origin = origin,
-                       Heading = heading, Newsgroup = newsgroup)
-        } else {
-            doc <- new("NewsgroupDocument", URI = elem$uri, Cached = FALSE, Author = author, DateTimeStamp = datetimestamp,
-                       Description = "", ID = id, Origin = origin, Heading = heading, Newsgroup = newsgroup)
-        }
-
-        return(doc)
-    }
-}
-class(newsgroup_parser) <- "function_generator"
-
-# Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file
-rcv1_to_plain <- function(node, ...) {
-    datetimestamp <- xmlAttrs(node)[["date"]]
-    id <- xmlAttrs(node)[["itemid"]]
-    origin <- "Reuters Corpus Volume 1 XML"
-    corpus <- unlist(xmlApply(node[["text"]], xmlValue), use.names = FALSE)
-    heading <- xmlValue(node[["title"]])
-
-    new("PlainTextDocument", .Data = corpus, Cached = TRUE, URI = "", Author = "", DateTimeStamp = datetimestamp,
-        Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML", Heading = heading)
-}
-
-# Parse a <REUTERS></REUTERS> element from a well-formed Reuters-21578 XML file
-reut21578xml_to_plain <- function(node, ...) {
-    # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
-    if (!is.null(node[["TEXT"]][["AUTHOR"]]))
-        author <- xmlValue(node[["TEXT"]][["AUTHOR"]])
-    else
-        author <- ""
-
-    datetimestamp <- xmlValue(node[["DATE"]])
-    description <- ""
-    id <- xmlAttrs(node)[["NEWID"]]
-
-    origin <- "Reuters-21578 XML"
-
-    # The <BODY></BODY> tag is unfortunately NOT obligatory!
-    if (!is.null(node[["TEXT"]][["BODY"]]))
-        corpus <- xmlValue(node[["TEXT"]][["BODY"]])
-    else
-        corpus <- ""
-
-    # The <TITLE></TITLE> tag is unfortunately NOT obligatory!
-    if (!is.null(node[["TEXT"]][["TITLE"]]))
-        heading <- xmlValue(node[["TEXT"]][["TITLE"]])
-    else
-        heading <- ""
-
-    topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
-
-    new("PlainTextDocument", .Data = corpus, Cached = TRUE, URI = "", Author = author, DateTimeStamp = datetimestamp,
-        Description = description, ID = id, Origin = origin, Heading = heading, LocalMetaData = list(Topics = topics))
-}
 
 setGeneric("load_doc", function(object, ...) standardGeneric("load_doc"))
 setMethod("load_doc",
@@ -399,6 +108,7 @@ setMethod("tm_transform",
           signature(object = "TextDocCol", FUN = "function"),
           function(object, FUN, ...) {
               result <- object
+              # Note that text corpora are automatically loaded into memory via \code{[[}
               result@.Data <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
               return(result)
           })
@@ -412,9 +122,6 @@ setMethod("as.plaintext_doc",
 setMethod("as.plaintext_doc",
           signature(object = "XMLTextDocument", FUN = "function"),
           function(object, FUN, ...) {
-              if (!Cached(object))
-                  object <- load_doc(object)
-
               corpus <- Corpus(object)
 
               # As XMLDocument is no native S4 class, restore valid information
@@ -428,9 +135,6 @@ setGeneric("tm_tolower", function(object, ...) standardGeneric("tm_tolower"))
 setMethod("tm_tolower",
           signature(object = "PlainTextDocument"),
           function(object, ...) {
-              if (!Cached(object))
-                  object <- load_doc(object)
-
               Corpus(object) <- tolower(object)
               return(object)
           })
@@ -439,9 +143,6 @@ setGeneric("strip_whitespace", function(object, ...) standardGeneric("strip_whit
 setMethod("strip_whitespace",
           signature(object = "PlainTextDocument"),
           function(object, ...) {
-              if (!Cached(object))
-                  object <- load_doc(object)
-
               Corpus(object) <- gsub("[[:space:]]+", " ", object)
               return(object)
           })
@@ -450,9 +151,6 @@ setGeneric("stem_doc", function(object, ...) standardGeneric("stem_doc"))
 setMethod("stem_doc",
           signature(object = "PlainTextDocument"),
           function(object, ...) {
-              if (!Cached(object))
-                  object <- load_doc(object)
-
               require(Rstem)
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
               stemmedCorpus <- wordStem(splittedCorpus)
@@ -464,9 +162,6 @@ setGeneric("remove_words", function(object, stopwords, ...) standardGeneric("rem
 setMethod("remove_words",
           signature(object = "PlainTextDocument", stopwords = "character"),
           function(object, stopwords, ...) {
-              if (!Cached(object))
-                  object <- load_doc(object)
-
               require(Rstem)
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
               noStopwordsCorpus <- splittedCorpus[!splittedCorpus %in% stopwords]
@@ -556,9 +251,6 @@ setGeneric("fulltext_search_filter", function(object, pattern, ...) standardGene
 setMethod("fulltext_search_filter",
           signature(object = "PlainTextDocument", pattern = "character"),
           function(object, pattern, ...) {
-              if (!Cached(object))
-                  object <- load_doc(object)
-
               return(any(grep(pattern, Corpus(object))))
           })
 
@@ -646,7 +338,7 @@ setMethod("[<-",
 setMethod("[[",
           signature(x = "TextDocCol", i = "ANY", j = "ANY"),
           function(x, i, j, ...) {
-              return(x@.Data[[i, ...]])
+              return(load_doc(x@.Data[[i]]))
           })
 
 setMethod("[[<-",
@@ -691,10 +383,24 @@ set_id <- function(object) {
 
 setMethod("c",
           signature(x = "TextDocCol"),
-          function(x, y, ..., meta = list(merge_date = date(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
-              if (!inherits(y, "TextDocCol"))
-                  stop("invalid argument")
+          function(x, ..., meta = list(merge_date = Sys.time(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
+              args <- list(...)
+              if(length(args) == 0)
+                  return(x)
 
+              result <- x
+              for (c in args) {
+                  if (!inherits(c, "TextDocCol"))
+                      stop("invalid argument")
+                  result <- c2(result, c)
+              }
+              return(result)
+          })
+
+setGeneric("c2", function(x, y, ..., meta = list(merge_date = Sys.time(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) standardGeneric("c2"))
+setMethod("c2",
+          signature(x = "TextDocCol", y = "TextDocCol"),
+          function(x, y, ..., meta = list(merge_date = Sys.time(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
               object <- x
               # Concatenate data slots
               object@.Data <- c(as(x, "list"), as(y, "list"))
@@ -743,6 +449,8 @@ setMethod("c",
 
               return(object)
           })
+
+
 setMethod("c",
           signature(x = "TextDocument"),
           function(x, ..., recursive = TRUE){
@@ -753,7 +461,7 @@ setMethod("c",
               dmeta.df <- data.frame(MetaID = rep(0, length(list(x, ...))), stringsAsFactors = FALSE)
               dcmeta.node <- new("MetaDataNode",
                             NodeID = 0,
-                            MetaData = list(create_date = date(), creator = Sys.getenv("LOGNAME")),
+                            MetaData = list(create_date = Sys.time(), creator = Sys.getenv("LOGNAME")),
                             children = list())
 
               return(new("TextDocCol", .Data = list(x, ...), DMetaData = dmeta.df, DCMetaData = dcmeta.node))
