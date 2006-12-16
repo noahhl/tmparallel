@@ -3,13 +3,14 @@ import(methods)
 import(XML)
 
 export(
-       "plaintext_parser",
-       "reut21578xml_parser",
-       "rcv1_parser",
-       "newsgroup_parser",
-       "gmane_r_reader",
-       "reut21578xml_to_plain",
-       "rcv1_to_plain",
+       "read_plain",
+       "read_reut21578xml",
+       "read_rcv1",
+       "read_newsgroup",
+       "read_gmane_r",
+       "convert_reut21578xml_plain",
+       "convert_rcv1_plain",
+       "convert_mbox_eml",
        "s_filter",
        "preprocess_reut21578xml"
        )
@@ -64,15 +65,15 @@ exportMethods(
               # Functions
               "load_doc",
               "tm_update",
-              "tm_transform",
-              "as.plaintext_doc",
+              "tm_map",
+              "as.plain",
               "strip_whitespace",
               "tm_tolower",
               "stem_doc",
               "remove_words",
               "tm_filter",
               "tm_index",
-              "fulltext_search_filter",
+              "search_fulltext",
               "find_hf_terms",
               "find_assocs",
               "append_elem",

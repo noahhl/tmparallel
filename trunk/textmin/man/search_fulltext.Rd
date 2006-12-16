@@ -1,11 +1,11 @@
-\name{fulltext_search_filter-methods}
+\name{search_fulltext-methods}
 \docType{methods}
-\alias{fulltext_search_filter}
-\alias{fulltext_search_filter-methods}
-\alias{fulltext_search_filter,PlainTextDocument,character-method}
+\alias{search_fulltext}
+\alias{search_fulltext-methods}
+\alias{search_fulltext,PlainTextDocument,character-method}
 \title{Methods for Function fulltext\_search\_filter in Package `textmin'}
 \description{
-  Methods for function \code{fulltext_search_filter} in Package `textmin'
+  Methods for function \code{search_fulltext} in Package `textmin'
 }
 \section{Methods}{
   \describe{

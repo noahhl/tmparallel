@@ -9,13 +9,16 @@ Methods for function \code{tm_index} in Package `textmin'
 }
 \section{Methods}{
   \describe{
-    \item{object = "TextDocCol", FUN}{Applies \code{FUN} onto each element
-      of \code{object}. Note that global metadata is automatically passed to
-      \code{FUN} as argument \code{GlobalMetaData}. The function \code{FUN}
-      must return a Boolean value.}
+    \item{object = "TextDocCol", FUN  = s\_filter, doclevel = FALSE}{If
+      \code{doclevel} is set, the method applies \code{FUN} onto each element
+      of \code{object} and returns the indices; otherwise
+      \code{FUN} is applied to \code{object} itself. Note that metadata is
+      automatically passed to \code{FUN}. The function \code{FUN} must
+      return a Boolean value.}
   }
 }
 \seealso{
+  \code{\link{s_filter}}
   \code{\link{tm_filter}}
 }
 \keyword{methods}

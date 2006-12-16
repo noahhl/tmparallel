@@ -9,7 +9,7 @@
 \newcommand{\proglang}[1]{\textsf{#1}}
 \newcommand{\set}[1]{\mathcal{#1}}
 
-%% \VignetteIndexEntry{Introduction to textmin}
+%% \VignetteIndexEntry{Introduction to tm}
 
 \begin{document}
 <<echo=FALSE>>=
@@ -17,22 +17,22 @@ options(width = 75)
 ### for sampling
 set.seed <- 1234
 @
-\title{Introduction to \pkg{textmin} --- Text Mining in \proglang{R}}
+\title{Introduction to \pkg{tm} --- Text Mining in \proglang{R}}
 \author{Ingo Feinerer}
 \maketitle
 \sloppy
 
 \begin{abstract}
 This vignette gives a short overview over available features in the
-\pkg{textmin} package for text mining purposes in \proglang{R}.
+\pkg{tm} package for text mining purposes in \proglang{R}.
 \end{abstract}
 
-\section{Working with \pkg{textmin}}
+\section{Working with \pkg{tm}}
 
 \subsection{Loading the Package}
 Before actually working we need to load the package:
 <<>>=
-library("textmin")
+library("tm")
 @
 
 \subsection{Data Import}
@@ -72,14 +72,14 @@ file and interprets the content as text.
 Plain text files in a directory:
 <<>>=
 # Plain text
-txt <- system.file("texts/txt/", package = "textmin")
+txt <- system.file("texts/txt/", package = "tm")
 TextDocCol(DirSource(txt, load = TRUE))
 @
 
 A single comma separated values file:
 <<>>=
 # Comma separated values
-cars.csv <- system.file("texts/cars.csv", package = "textmin")
+cars.csv <- system.file("texts/cars.csv", package = "tm")
 TextDocCol(CSVSource(cars.csv))
 @
 
@@ -88,32 +88,32 @@ file (several documents per file). Note that connections can be used
 as input:
 <<>>=
 # Reuters21578 XML
-reut21578 <- system.file("texts/reut21578/", package = "textmin")
-reut21578.xml <- system.file("texts/reut21578.xml", package = "textmin")
-reut21578.xml.gz <- system.file("texts/reut21578.xml.gz", package = "textmin")
+reut21578 <- system.file("texts/reut21578/", package = "tm")
+reut21578.xml <- system.file("texts/reut21578.xml", package = "tm")
+reut21578.xml.gz <- system.file("texts/reut21578.xml.gz", package = "tm")
 
-(reut21578.tdc <- TextDocCol(DirSource(reut21578), reut21578xml_parser))
+(reut21578.tdc <- TextDocCol(DirSource(reut21578), read_reut21578xml))
 
-TextDocCol(ReutersSource(reut21578.xml), reut21578xml_parser)
-TextDocCol(ReutersSource(gzfile(reut21578.xml.gz)), reut21578xml_parser)
+TextDocCol(ReutersSource(reut21578.xml), read_reut21578xml)
+TextDocCol(ReutersSource(gzfile(reut21578.xml.gz)), read_reut21578xml)
 @
 
 Analogously for files in the Reuters Corpus Volume 1 format:
 <<>>=
 # Reuters Corpus Volume 1
-rcv1 <- system.file("texts/rcv1/", package = "textmin")
-rcv1.xml <- system.file("texts/rcv1.xml", package = "textmin")
+rcv1 <- system.file("texts/rcv1/", package = "tm")
+rcv1.xml <- system.file("texts/rcv1.xml", package = "tm")
 
-TextDocCol(DirSource(rcv1, load = TRUE), rcv1_parser)
-TextDocCol(ReutersSource(rcv1.xml), rcv1_parser)
+TextDocCol(DirSource(rcv1, load = TRUE), read_rcv1)
+TextDocCol(ReutersSource(rcv1.xml), read_rcv1)
 @
 
 Or mails from newsgroups (as found in the UCI KDD newsgroup dataset):
 <<>>=
 # UCI KDD Newsgroup Mails
-newsgroup <- system.file("texts/newsgroup/", package = "textmin")
+newsgroup <- system.file("texts/newsgroup/", package = "tm")
 
-TextDocCol(DirSource(newsgroup, load = TRUE), newsgroup_parser)
+TextDocCol(DirSource(newsgroup, load = TRUE), read_newsgroup)
 @
 
 \subsection{Inspecting the Text Document Collection}
@@ -127,8 +127,8 @@ collection.
 Once we have a text document collection one typically wants to modify
 the documents in it, e.g., stemming, stopword removal, et cetera. All
 this functionality is subsumed by the concept of
-\emph{transformation}s in \pkg{textmin}. Transformations are done via
-the \code{tm\_transform} function.
+\emph{transformation}s in \pkg{tm}. Transformations are done via
+the \code{tm\_map} function.
 
 \subsubsection{Loading Documents into Memory}
 If the source objects supports load on demand, but the user has not
@@ -137,7 +137,7 @@ this can be done manually via \code{load\_doc}. Normally it is not
 necessary to call this explicitly, as other functions working on text
 corpora trigger this function for not-loaded documents.
 <<>>=
-reut21578.tdc <- tm_transform(reut21578.tdc, load_doc)
+reut21578.tdc <- tm_map(reut21578.tdc, load_doc)
 @
 
 \subsubsection{Converting to Plaintext Documents}
@@ -145,35 +145,35 @@ The text document collection \code{reut21578.tdc} contains documents
 in XML format. We have no further use for the XML interna and just
 want to work with the text content. This can be done by converting the
 documents to plaintext documents. It is done by the generic
-\code{as.plaintext\_doc} in assistance by a converter function
-\code{reut21578xml\_to\_plain} which knows how to actually do it.
+\code{as.plain} in assistance by a converter function
+\code{convert\_reut21578xml\_plain} which knows how to actually do it.
 <<>>=
-reut21578.tdc <- tm_transform(reut21578.tdc, as.plaintext_doc, reut21578xml_to_plain)
+reut21578.tdc <- tm_map(reut21578.tdc, as.plain, convert_reut21578xml_plain)
 @
 
 \subsubsection{Eliminating Extra Whitespace}
 Extra whitespace is eliminated by:
 <<>>=
-reut21578.tdc <- tm_transform(reut21578.tdc, strip_whitespace)
+reut21578.tdc <- tm_map(reut21578.tdc, strip_whitespace)
 @
 
 \subsubsection{Convert to Lower Case}
 Conversion to lower case by:
 <<>>=
-reut21578.tdc <- tm_transform(reut21578.tdc, tm_tolower)
+reut21578.tdc <- tm_map(reut21578.tdc, tm_tolower)
 @
 
 \subsubsection{Remove Stopwords}
 Removal of stopwords by:
 <<>>=
 data(stopwords_en)
-reut21578.tdc <- tm_transform(reut21578.tdc, remove_words, stopwords_en)
+reut21578.tdc <- tm_map(reut21578.tdc, remove_words, stopwords_en)
 @
 
 \subsubsection{Stemming}
 Stemming is done by:
 <<>>=
-tm_transform(reut21578.tdc, stem_doc)
+tm_map(reut21578.tdc, stem_doc)
 @
 
 \subsection{Filters}
@@ -194,7 +194,7 @@ tm_filter(reut21578.tdc, "identifier == '10' & heading == 'COMPUTER TERMINAL SYS
 
 There is also a full text search available as filter:
 <<>>=
-tm_filter(reut21578.tdc, FUN = fulltext_search_filter, "partnership", doclevel = TRUE)
+tm_filter(reut21578.tdc, FUN = search_fulltext, "partnership", doclevel = TRUE)
 @
 
 \subsection{Adding Data or Metadata}

@@ -1,10 +1,10 @@
 # Author: Ingo Feinerer
 
 # The "..." are additional arguments for the function_generator parser
-setGeneric("TextDocCol", function(object, parser = plaintext_parser, ...) standardGeneric("TextDocCol"))
+setGeneric("TextDocCol", function(object, parser = read_plain, ...) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           signature(object = "Source"),
-          function(object, parser = plaintext_parser, ...) {
+          function(object, parser = read_plain, ...) {
               if (inherits(parser, "function_generator"))
                   parser <- parser(...)
 
@@ -82,12 +82,12 @@ setMethod("load_doc",
               }
           })
 
-setGeneric("tm_update", function(object, origin, parser = plaintext_parser, ...) standardGeneric("tm_update"))
+setGeneric("tm_update", function(object, origin, parser = read_plain, ...) standardGeneric("tm_update"))
 # Update is only supported for directories
 # At the moment no other LoD devices are available anyway
 setMethod("tm_update",
           signature(object = "TextDocCol", origin = "DirSource"),
-          function(object, origin, parser = plaintext_parser, ...) {
+          function(object, origin, parser = read_plain, ...) {
               if (inherits(parser, "function_generator"))
                   parser <- parser(...)
 
@@ -103,8 +103,8 @@ setMethod("tm_update",
               return(object)
           })
 
-setGeneric("tm_transform", function(object, FUN, ...) standardGeneric("tm_transform"))
-setMethod("tm_transform",
+setGeneric("tm_map", function(object, FUN, ...) standardGeneric("tm_map"))
+setMethod("tm_map",
           signature(object = "TextDocCol", FUN = "function"),
           function(object, FUN, ...) {
               result <- object
@@ -113,13 +113,13 @@ setMethod("tm_transform",
               return(result)
           })
 
-setGeneric("as.plaintext_doc", function(object, FUN, ...) standardGeneric("as.plaintext_doc"))
-setMethod("as.plaintext_doc",
+setGeneric("as.plain", function(object, FUN, ...) standardGeneric("as.plain"))
+setMethod("as.plain",
           signature(object = "PlainTextDocument"),
           function(object, FUN, ...) {
               return(object)
           })
-setMethod("as.plaintext_doc",
+setMethod("as.plain",
           signature(object = "XMLTextDocument", FUN = "function"),
           function(object, FUN, ...) {
               corpus <- Corpus(object)
@@ -247,8 +247,8 @@ s_filter <- function(object, s, ...) {
     return(result)
 }
 
-setGeneric("fulltext_search_filter", function(object, pattern, ...) standardGeneric("fulltext_search_filter"))
-setMethod("fulltext_search_filter",
+setGeneric("search_fulltext", function(object, pattern, ...) standardGeneric("search_fulltext"))
+setMethod("search_fulltext",
           signature(object = "PlainTextDocument", pattern = "character"),
           function(object, pattern, ...) {
               return(any(grep(pattern, Corpus(object))))
@@ -350,7 +350,6 @@ setMethod("[[<-",
           })
 
 # Update \code{NodeID}s of a DCMetaData tree
-# TODO: Avoid global variables outside of update_id function
 update_id <- function(object) {
     id <<- 0
     mapping <<- left.mapping <<- NULL

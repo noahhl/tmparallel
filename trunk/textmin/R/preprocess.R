@@ -30,3 +30,24 @@ preprocess_reut21578xml <- function(reuters.dir, reuters.oapf.dir, fix.enc = TRU
                  })
     }
 }
+
+convert_mbox_eml <- function(mbox, eml.dir) {
+    dir.create(eml.dir, recursive = TRUE)
+    content <- readLines(mbox)
+    counter <- start <- end <- 1
+    needWrite <- FALSE
+    for (i in seq_along(content)) {
+        if (length(grep("^From ", content[i])) > 0) {
+            end <- i - 1
+            if (needWrite && start <= end) {
+                writeLines(content[start:end], file(paste(eml.dir, counter, sep = "")))
+                needWrite <- FALSE
+                counter <- counter + 1
+            }
+            start <- i
+            needWrite <- TRUE
+        }
+    }
+    if (needWrite && start <= end)
+        writeLines(content[start:end], file(paste(eml.dir, counter, sep = "")))
+}

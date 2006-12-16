@@ -2,7 +2,7 @@
 
 # Reader
 
-plaintext_parser <- function(...) {
+read_plain <- function(...) {
     function(elem, lodsupport, load, id) {
         if (!lodsupport || (lodsupport && load)) {
             doc <- new("PlainTextDocument", .Data = elem$content, URI = elem$uri, Cached = TRUE,
@@ -16,9 +16,9 @@ plaintext_parser <- function(...) {
         return(doc)
     }
 }
-class(plaintext_parser) <- "function_generator"
+class(read_plain) <- "function_generator"
 
-reut21578xml_parser <- function(...) {
+read_reut21578xml <- function(...) {
     function(elem, lodsupport, load, id) {
         corpus <- paste(elem$content, "\n", collapse = "")
         tree <- xmlTreeParse(corpus, asText = TRUE)
@@ -58,9 +58,9 @@ reut21578xml_parser <- function(...) {
         return(doc)
     }
 }
-class(reut21578xml_parser) <- "function_generator"
+class(read_reut21578xml) <- "function_generator"
 
-rcv1_parser <- function(...) {
+read_rcv1 <- function(...) {
     function(elem, lodsupport, load, id) {
         corpus <- paste(elem$content, "\n", collapse = "")
         tree <- xmlTreeParse(corpus, asText = TRUE)
@@ -86,9 +86,9 @@ rcv1_parser <- function(...) {
         return(doc)
     }
 }
-class(rcv1_parser) <- "function_generator"
+class(read_rcv1) <- "function_generator"
 
-newsgroup_parser <- function(...) {
+read_newsgroup <- function(...) {
     function(elem, lodsupport, load, id) {
         mail <- elem$content
         author <- gsub("From: ", "", grep("^From:", mail, value = TRUE))
@@ -118,9 +118,9 @@ newsgroup_parser <- function(...) {
         return(doc)
     }
 }
-class(newsgroup_parser) <- "function_generator"
+class(read_newsgroup) <- "function_generator"
 
-gmane_r_reader <- function(...) {
+read_gmane_r <- function(...) {
     function(elem, lodsupport, load, id) {
         corpus <- paste(elem$content, "\n", collapse = "")
         # Remove namespaces
@@ -151,13 +151,12 @@ gmane_r_reader <- function(...) {
         return(doc)
     }
 }
-class(gmane_r_reader) <- "function_generator"
+class(read_gmane_r) <- "function_generator"
 
-
-# Parser
+# Converter
 
 # Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file
-rcv1_to_plain <- function(node, ...) {
+convert_rcv1_plain <- function(node, ...) {
     datetimestamp <- as.POSIXct(xmlAttrs(node)[["date"]])
     id <- xmlAttrs(node)[["itemid"]]
     origin <- "Reuters Corpus Volume 1 XML"
@@ -169,7 +168,7 @@ rcv1_to_plain <- function(node, ...) {
 }
 
 # Parse a <REUTERS></REUTERS> element from a well-formed Reuters-21578 XML file
-reut21578xml_to_plain <- function(node, ...) {
+convert_reut21578xml_plain <- function(node, ...) {
     # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
     if (!is.null(node[["TEXT"]][["AUTHOR"]]))
         author <- xmlValue(node[["TEXT"]][["AUTHOR"]])

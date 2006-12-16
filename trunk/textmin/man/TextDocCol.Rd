@@ -7,16 +7,13 @@
   Constructs a text document collection.
 }
 \usage{
-\S4method{TextDocCol}{Source}(object, parser = plaintext.parser, lod = FALSE)
+\S4method{TextDocCol}{Source}(object, parser = read_plain, ...)
 }
 \arguments{
-  \item{object}{a directory containing the documents.}
+  \item{object}{a \code{Source} object.}
   \item{parser}{a parsing function capable of handling the file format
     found in \code{object}.}
-  \item{lod}{a logical value indicating whether the text corpus should
-    be loaded immediately into memory (\code{lod = TRUE}) or loaded when
-    necessary (\code{lod = FALSE}). This allows to minimize memory
-    demands for large document collections.}
+  \item{...}{optional arguments for the \code{parser}.}
 }
 \value{
   An S4 object of class \code{TextDocCol} which extends the class

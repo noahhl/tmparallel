@@ -1,12 +1,12 @@
-\name{reut21578xml_to_plain}
-\alias{reut21578xml_to_plain}
-\title{Transform Reuters21578 XML Document To Plain Text Document}
+\name{convert_reut21578xml_plain}
+\alias{convert_reut21578xml_plain}
+\title{Transform A Reuters21578 XML Document To A Plain Text Document}
 \description{
   Transform a Reuters21578 XML document to a plain text
   document.
 }
 \usage{
-reut21578xml_to_plain(node, ...)
+convert_reut21578xml_plain(node, ...)
 }
 \arguments{
   \item{node}{an XML node representing a <REUTERS></REUTERS> element
@@ -16,6 +16,6 @@ reut21578xml_to_plain(node, ...)
 \value{
   A \code{PlainTextDocument} representing \code{node}.
 }
-\seealso{\code{\link{as.plaintext_doc}}}
+\seealso{\code{\link{as.plain}}}
 \author{Ingo Feinerer}
 \keyword{file}

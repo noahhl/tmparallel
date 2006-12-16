@@ -1,0 +1,26 @@
+\name{append_meta-methods}
+\docType{methods}
+\alias{append_meta}
+\alias{append_meta-methods}
+\alias{append_meta,TextDocCol-method}
+\alias{append_meta,TextRepository-method}
+\title{Methods for Function attach\_metadata in Package `textmin'}
+\description{
+Methods for function \code{append_meta} in Package `textmin'
+}
+\section{Methods}{
+  \describe{
+    \item{object = "TextDocCol", dcmeta = NULL, dmeta = NULL}{Returns a text
+      document collection where the \code{dcmeta} is added to the
+      \code{DCMetaData} and \code{dmeta} is added to the \code{DMetaData}.}  
+    \item{object = "TextRepository", dcmeta = NULL, dmeta = NULL}{Returns a text
+      repository where \code{dcmeta} is added to the metadata slot of the
+      \code{object} text repository.}
+  }
+}
+\seealso{
+  \code{\link{DMetaData}}
+  \code{\link{DCMetaData}}
+  \code{\link{RepoMetaData}}
+}
+\keyword{methods}

@@ -1,8 +1,8 @@
 \name{TextRepository-class}
 \docType{class}
 \alias{TextRepository-class}
-\alias{RepresentationMetaData}
-\alias{RepresentationMetaData,TextRepository-method}
+\alias{RepoMetaData}
+\alias{RepoMetaData,TextRepository-method}
 \title{Text document collection}
 \description{
   A class representing a repository of text document collections.

@@ -1,8 +1,10 @@
 \name{TextDocCol-class}
 \docType{class}
 \alias{TextDocCol-class}
-\alias{GlobalMetaData}
-\alias{GlobalMetaData,TextDocCol-method}
+\alias{DCMetaData}
+\alias{DMetaData}
+\alias{DCMetaData,TextDocCol-method}
+\alias{DMetaData,TextDocCol-method}
 \title{Text document collection}
 \description{
   A class representing a collection of text documents.
@@ -14,9 +16,16 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{GlobalMetaData}:}{Object of class \code{"list"} containing
-      the global metadata for the text document collection in form of
-      tag-value pairs.}
+    \item{\code{DCMetaData}:}{Object of class \code{"MetaDataNode"} containing
+      the Document Collection specific MetaData for the collection in form of
+      tag-value pairs and information about children in form of a binary
+      tree. This information is useful for reconstructing meta data
+      after e.g. merging document collection.}
+    \item{\code{DMetaData}:}{Object of class \code{"data.frame"} containing
+      the Document specific MetaData for the collection. This dataframe
+      typically encompasses clustering or classification results which
+      basically are metadata for documents but form an own entity (e.g.,
+      with its name, the value range, etc.)}
   }
 }
 \section{Extends}{
@@ -24,12 +33,16 @@ Class \code{"list"}, directly.
 }
 \section{Methods}{
   \describe{
-    \item{GlobalMetaData}{\code{signature(object = "TextDocCol")}: returns the
-      global metadata in form of a tag-value paired list.}
+    \item{DCMetaData}{\code{signature(object = "TextDocCol")}: returns the
+      document collection specific metadata in form of a tag-value
+      paired list.}
+    \item{DMetaData}{\code{signature(object = "TextDocCol")}: returns the
+      document specific metadata in form of a data frame.}
   }
 }
 \author{Ingo Feinerer}
 \seealso{
+  \code{\link{MetaDataNode-class}}
   \code{\link{TextDocCol}}
 }
 \keyword{classes}
