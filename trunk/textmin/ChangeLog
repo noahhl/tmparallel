@@ -1,3 +1,9 @@
+2006-12-17  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* inst/doc/: Rewrote vignette.
+
+	* man/: Improved documentation.
+
 2006-12-16  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* man/: Updated documentation.

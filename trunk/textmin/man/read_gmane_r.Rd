@@ -21,20 +21,19 @@ read_gmane_r(...)
 }
 \value{
   A \code{function} with the signature \code{elem, lodsupport, load,
-    id}.
-
+    id}:
   \itemize{
-    \item{\code{elem}:} A \code{list} with the two named elements
+    \item{\code{elem}}{A \code{list} with the two named elements
     \code{content} and \code{uri}. The first element must hold the
     document corpus to be read in, the second element must hold a
     call to the document corpus. The call is evaluated upon
-    a request for load on demand.
-    \item{\code{lodsupport}:} A \code{logical} value indicating whether
-    Load On Demand is supported by the input device.
-    \item{\code{load}:} A \code{logical} value indicating whether the
-    document corpus should be immediately loaded into memory.
-    \item{\code{id}:} A \code{character} representing a unique
-    identification string for the returned text document.
+    a request for load on demand.}
+    \item{\code{lodsupport}}{A \code{logical} value indicating whether
+    Load On Demand is supported by the input device.}
+    \item{\code{load}}{A \code{logical} value indicating whether the
+    document corpus should be immediately loaded into memory.}
+    \item{\code{id}}{A \code{character} representing a unique
+    identification string for the returned text document.}
   }
 
   The function returns a \code{NewsgroupDocument} representing

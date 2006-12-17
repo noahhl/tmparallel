@@ -56,18 +56,20 @@ collection (\class{TextDocCol}). Its constructor takes following arguments:
   environment).
 \end{itemize}
 
-Available sources are \class{DirSource}, \class{CSVSource} and
-\class{ReutersSource} which handle a directory and a mixed CSV or
+Available sources are \class{DirSource}, \class{CSVSource},
+\class{GmaneRSource} and
+\class{ReutersSource} which handle a directory, a mixed CSV, a Gmane R
+mailing list archive RSS feed or a
 mixed Reuters file (mixed means several documents are in a single
 file). Except \class{DirSource}, which is designated
 solely for directories on a file system, all other implemented sources
 can take connections as input (a character string is interpreted as
 filename).
 
-This package ships with several parsers (\code{plaintext\_parser}
-(default), \code{rcv1\_parser}, \code{reut21578xml\_parser} and
-\code{newsgroup\_parser}). The default just reads in the whole input
-file and interprets the content as text.
+This package ships with several readers (\code{read\_plain}
+(default), \code{read\_rcv1}, \code{read\_reut21578xml},
+\code{read\_gmane\_r} and \code{read\_newsgroup}). The default just
+reads in the whole input file and interprets the content as text.
 
 Plain text files in a directory:
 <<>>=
@@ -116,6 +118,13 @@ newsgroup <- system.file("texts/newsgroup/", package = "tm")
 TextDocCol(DirSource(newsgroup, load = TRUE), read_newsgroup)
 @
 
+RSS feed as delivered by Gmane for the R mailing list archive:
+<<>>=
+rss <- system.file("texts/gmane.comp.lang.r.gr.rdf", package = "tm")
+
+TextDocCol(GmaneRSource(rss), read_gmane_r)
+@
+
 \subsection{Inspecting the Text Document Collection}
 Custom \code{show} and \code{summary} methods are available, which
 hide the raw amount of information (consider a collection could
@@ -135,7 +144,8 @@ If the source objects supports load on demand, but the user has not
 enforced the package to load the input content directly into memory,
 this can be done manually via \code{load\_doc}. Normally it is not
 necessary to call this explicitly, as other functions working on text
-corpora trigger this function for not-loaded documents.
+corpora trigger this function for not-loaded documents (the corpus is
+automatically loaded if accessed via \code{[[}).
 <<>>=
 reut21578.tdc <- tm_map(reut21578.tdc, load_doc)
 @
@@ -182,12 +192,12 @@ properties. For this purpose the function \code{tm\_filter} is
 designated. It is possible to write custom filter functions, but for
 most cases the default filter does it job: it integrates a minimal
 query language to filter metadata. Statements in this query language
-are logically and-conjuncted \code{tag="regexpr"} pairs in form of a
-named list.
+are statements as used for subsetting data frames.
 
 E.g., following statement filters out those documents, where
 \code{COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE} is their
-heading and has an \code{ID} equal to 10.
+heading and has an \code{ID} equal to 10 (both are metadata slot
+variables of the text document).
 <<>>=
 tm_filter(reut21578.tdc, "identifier == '10' & heading == 'COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE'")
 @
@@ -209,26 +219,24 @@ DCMetaData(reut21578.tdc)
 DMetaData(reut21578.tdc)
 @
 
-\subsection{Modifying or Removing Metadata}
+\subsection{Removing Metadata}
 The metadata of text document collections can be easily modified or
 removed:
 <<>>=
 data(crude)
-#reut21578.tdc <- modify_metadata(reut21578.tdc, "test", c(4,5,6))
-DCMetaData(reut21578.tdc)
-DMetaData(reut21578.tdc)
 reut21578.tdc <- remove_meta(reut21578.tdc, dcname = "test", dname = "cl1")
 DCMetaData(reut21578.tdc)
 DMetaData(reut21578.tdc)
 @
 
 \subsection{Operators}
-Most standard operators have been overloaded for text document
+Most standard operators are available for text document
 collections with semantics similar to standard \proglang{R}
 routines.
 E.g. \code{c} concatenates two (or more) text document
 collections. Applied to several text documents it returns a text
-document collection.
+document collection. The metadata is automatically updated, if text
+document collections are concatenated (i.e., merged).
 
 Note also the custom element-of operator---it checks whether a text
 document is already in a text document collection (metadata is not
@@ -265,7 +273,7 @@ tdm[1:8,50:55]
 \subsection{Operations on Term-Document Matrices}
 Besides the fact that on this matrix a huge amount of \proglang{R}
 functions (like clustering, classifications, etc.) is possible, this
-package brings some shortcuts for text mining specific. Consider we
+package brings some shortcuts. Consider we
 want to find those terms that occur at least 5 times:
 <<>>=
 find_hf_terms(tdm, 5)

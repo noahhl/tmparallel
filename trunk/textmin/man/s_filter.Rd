@@ -9,8 +9,8 @@ s_filter(object, s, ...)
 }
 \arguments{
   \item{object}{a \code{TextDocCol} to be the filter applied to.}
-  \item{s}{a statement of format \code{"tag1 = 'expr1' && tag1 =
-      'expr2'" && ...}.}
+  \item{s}{a statement of format \code{"tag1 = 'expr1' & tag2 =
+      'expr2' & ..."}.}
   \item{...}{arguments passed over by calling functions.}
 }
 \details{

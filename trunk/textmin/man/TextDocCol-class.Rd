@@ -20,12 +20,12 @@
       the Document Collection specific MetaData for the collection in form of
       tag-value pairs and information about children in form of a binary
       tree. This information is useful for reconstructing meta data
-      after e.g. merging document collection.}
+      after e.g. merging document collections.}
     \item{\code{DMetaData}:}{Object of class \code{"data.frame"} containing
       the Document specific MetaData for the collection. This dataframe
       typically encompasses clustering or classification results which
       basically are metadata for documents but form an own entity (e.g.,
-      with its name, the value range, etc.)}
+      with its name, the value range, etc.).}
   }
 }
 \section{Extends}{
