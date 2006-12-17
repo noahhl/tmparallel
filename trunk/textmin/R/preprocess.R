@@ -40,7 +40,9 @@ convert_mbox_eml <- function(mbox, eml.dir) {
         if (length(grep("^From ", content[i])) > 0) {
             end <- i - 1
             if (needWrite && start <= end) {
-                writeLines(content[start:end], file(paste(eml.dir, counter, sep = "")))
+                con <- file(paste(eml.dir, counter, sep = ""))
+                writeLines(content[start:end], con)
+                close(con)
                 needWrite <- FALSE
                 counter <- counter + 1
             }
