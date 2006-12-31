@@ -1,12 +1,12 @@
-\name{GmaneRSource-class}
+\name{GmaneSource-class}
 \docType{class}
-\alias{GmaneRSource-class}
-\title{Source for Gmane R Feeds}
+\alias{GmaneSource-class}
+\title{Source for Gmane Feeds}
 \description{
-  A class representing a Gmane R RSS feed.
+  A class representing a Gmane RSS feed.
 }
 \section{Objects from the Class}{
-Objects can be created by calls of the form \code{new("GmaneRSource", ...)}.
+Objects can be created by calls of the form \code{new("GmaneSource", ...)}.
 }
 \section{Slots}{
   \describe{

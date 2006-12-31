@@ -1,10 +1,10 @@
 # Author: Ingo Feinerer
 
 # The "..." are additional arguments for the function_generator parser
-setGeneric("TextDocCol", function(object, parser = read_plain, ...) standardGeneric("TextDocCol"))
+setGeneric("TextDocCol", function(object, parser = read_plain, load = FALSE, ...) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           signature(object = "Source"),
-          function(object, parser = read_plain, ...) {
+          function(object, parser = read_plain, load = FALSE, ...) {
               if (inherits(parser, "function_generator"))
                   parser <- parser(...)
 
@@ -15,11 +15,9 @@ setMethod("TextDocCol",
                   elem <- get_elem(object)
                   # If there is no Load on Demand support
                   # we need to load the corpus into memory at startup
-                  if (object@LoDSupport)
-                      load <- object@Load
-                  else
+                  if (!object@LoDSupport)
                       load <- TRUE
-                  tdl <- c(tdl, list(parser(elem, object@LoDSupport, load, as.character(counter))))
+                  tdl <- c(tdl, list(parser(elem, load, as.character(counter))))
                   counter <- counter + 1
               }
 
@@ -503,7 +501,7 @@ setMethod("inspect",
           function(object) {
               summary(object)
               cat("\n")
-              show(as(object, "list"))
+              show(object@.Data)
           })
 
 # No metadata is checked

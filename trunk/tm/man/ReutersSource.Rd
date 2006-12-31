@@ -3,7 +3,7 @@
 \alias{ReutersSource}
 \alias{ReutersSource,character-method}
 \alias{ReutersSource,ANY-method}
-\title{Reutersectory Source}
+\title{Reuters Source}
 \description{
   Constructs a source for a Reuters XML document.
 }

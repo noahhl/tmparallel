@@ -9,8 +9,7 @@ setClass("Source",
 
 # A directory with files
 setClass("DirSource",
-         representation(FileList = "character",
-                        Load = "logical"),
+         representation(FileList = "character"),
          contains = c("Source"))
 
 # A single CSV file where each line is interpreted as document
@@ -26,8 +25,8 @@ setClass("ReutersSource",
                         Content = "list"),
          contains = c("Source"))
 
-# A single XML (RDF) file containing Gmane R mailing list archive feeds
-setClass("GmaneRSource",
+# A single XML (RDF) file containing Gmane mailing list archive feeds
+setClass("GmaneSource",
          representation(URI = "ANY",
                         Content = "list"),
          contains = c("Source"))
@@ -35,15 +34,15 @@ setClass("GmaneRSource",
 
 # Methods for Source objects
 
-setGeneric("DirSource", function(directory, load = FALSE, recursive = FALSE) standardGeneric("DirSource"))
+setGeneric("DirSource", function(directory, recursive = FALSE) standardGeneric("DirSource"))
 setMethod("DirSource",
           signature(directory = "character"),
-          function(directory, load = FALSE, recursive = FALSE) {
+          function(directory, recursive = FALSE) {
               d <- dir(directory, full.names = TRUE, recursive = recursive)
               isdir <- sapply(d, file.info)["isdir",]
               files <- d[isdir == FALSE]
               new("DirSource", LoDSupport = TRUE, FileList = files,
-                  Position = 0, Load = load)
+                  Position = 0)
           })
 
 setGeneric("CSVSource", function(object) standardGeneric("CSVSource"))
@@ -96,8 +95,8 @@ setMethod("ReutersSource",
                   Content = content, Position = 0)
           })
 
-setGeneric("GmaneRSource", function(object) standardGeneric("GmaneRSource"))
-setMethod("GmaneRSource",
+setGeneric("GmaneSource", function(object) standardGeneric("GmaneSource"))
+setMethod("GmaneSource",
           signature(object = "character"),
           function(object) {
               object <- substitute(file(object))
@@ -108,10 +107,10 @@ setMethod("GmaneRSource",
               content <- xmlRoot(tree)$children
               content <- content[names(content) == "item"]
 
-              new("GmaneRSource", LoDSupport = FALSE, URI = object,
+              new("GmaneSource", LoDSupport = FALSE, URI = object,
                   Content = content, Position = 0)
           })
-setMethod("GmaneRSource",
+setMethod("GmaneSource",
           signature(object = "ANY"),
           function(object) {
               object <- substitute(object)
@@ -122,7 +121,7 @@ setMethod("GmaneRSource",
               content <- xmlRoot(tree)$children
               content <- content[names(content) == "item"]
 
-              new("GmaneRSource", LoDSupport = FALSE, URI = object,
+              new("GmaneSource", LoDSupport = FALSE, URI = object,
                   Content = content, Position = 0)
           })
 
@@ -146,7 +145,7 @@ setMethod("step_next",
               object
           })
 setMethod("step_next",
-          signature(object = "GmaneRSource"),
+          signature(object = "GmaneSource"),
           function(object) {
               object@Position <- object@Position + 1
               object
@@ -177,7 +176,7 @@ setMethod("get_elem",
               list(content = virtual.file, uri = object@URI)
           })
 setMethod("get_elem",
-          signature(object = "GmaneRSource"),
+          signature(object = "GmaneSource"),
           function(object) {
               # Construct a character representation from the XMLNode
               con <- textConnection("virtual.file", "w")
@@ -213,7 +212,7 @@ setMethod("eoi",
                   return(FALSE)
           })
 setMethod("eoi",
-          signature(object = "GmaneRSource"),
+          signature(object = "GmaneSource"),
           function(object) {
               if (length(object@Content) <= object@Position)
                   return(TRUE)

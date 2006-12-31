@@ -19,6 +19,7 @@ stopwords = NULL)
       \item \code{tf} Term frequency
       \item \code{tf-idf} Term frequency inverse document frequency
       \item \code{bin} Binary frequency
+      \item \code{logical} Similar to binary frequency but with Boolean values
     }
   }
   \item{stemming}{if set, stems words before making the term-document matrix.}

@@ -19,7 +19,7 @@ read_rcv1(...)
   data structures which need a lot of configuration options.
 }
 \value{
-   A \code{function} with the signature \code{elem, lodsupport, load,
+   A \code{function} with the signature \code{elem, load,
     id}:
   \itemize{
     \item{\code{elem}}{A \code{list} with the two named elements
@@ -27,8 +27,6 @@ read_rcv1(...)
     document corpus to be read in, the second element must hold a
     call to the document corpus. The call is evaluated upon
     a request for load on demand.}
-    \item{\code{lodsupport}}{A \code{logical} value indicating whether
-    Load On Demand is supported by the input device.}
     \item{\code{load}}{A \code{logical} value indicating whether the
     document corpus should be immediately loaded into memory.}
     \item{\code{id}}{A \code{character} representing a unique

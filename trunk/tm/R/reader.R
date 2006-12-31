@@ -3,14 +3,14 @@
 # Reader
 
 read_plain <- function(...) {
-    function(elem, lodsupport, load, id) {
-        if (!lodsupport || (lodsupport && load)) {
-            doc <- new("PlainTextDocument", .Data = elem$content, URI = elem$uri, Cached = TRUE,
-                       Author = "", DateTimeStamp = Sys.time(), Description = "", ID = id, Origin = "", Heading = "")
+    function(elem, load, id) {
+        doc <- if (load) {
+            new("PlainTextDocument", .Data = elem$content, URI = elem$uri, Cached = TRUE,
+                Author = "", DateTimeStamp = Sys.time(), Description = "", ID = id, Origin = "", Heading = "")
         }
         else {
-            doc <- new("PlainTextDocument", URI = elem$uri, Cached = FALSE,
-                       Author = "", DateTimeStamp = Sys.time(), Description = "", ID = id, Origin = "", Heading = "")
+            new("PlainTextDocument", URI = elem$uri, Cached = FALSE,
+                Author = "", DateTimeStamp = Sys.time(), Description = "", ID = id, Origin = "", Heading = "")
         }
 
         return(doc)
@@ -19,7 +19,7 @@ read_plain <- function(...) {
 class(read_plain) <- "function_generator"
 
 read_reut21578xml <- function(...) {
-    function(elem, lodsupport, load, id) {
+    function(elem, load, id) {
         corpus <- paste(elem$content, "\n", collapse = "")
         tree <- xmlTreeParse(corpus, asText = TRUE)
         node <- xmlRoot(tree)
@@ -28,31 +28,31 @@ read_reut21578xml <- function(...) {
         class(tree) <- "list"
 
         # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
-        if (!is.null(node[["TEXT"]][["AUTHOR"]]))
-            author <- xmlValue(node[["TEXT"]][["AUTHOR"]])
+        author <- if (!is.null(node[["TEXT"]][["AUTHOR"]]))
+            xmlValue(node[["TEXT"]][["AUTHOR"]])
         else
-            author <- ""
+            ""
 
         datetimestamp <- as.POSIXct(strptime(xmlValue(node[["DATE"]]), format = "%d-%B-%Y %H:%M:%S"))
         description <- ""
         id <- xmlAttrs(node)[["NEWID"]]
 
         # The <TITLE></TITLE> tag is unfortunately NOT obligatory!
-        if (!is.null(node[["TEXT"]][["TITLE"]]))
-            heading <- xmlValue(node[["TEXT"]][["TITLE"]])
+        heading <- if (!is.null(node[["TEXT"]][["TITLE"]]))
+            xmlValue(node[["TEXT"]][["TITLE"]])
         else
-            heading <- ""
+            ""
 
         topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
 
-        if (!lodsupport || (lodsupport && load)) {
-            doc <- new("XMLTextDocument", .Data = tree, URI = elem$uri, Cached = TRUE, Author = author,
-                       DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
-                       Heading = heading, LocalMetaData = list(Topics = topics))
+        doc <- if (load) {
+            new("XMLTextDocument", .Data = tree, URI = elem$uri, Cached = TRUE, Author = author,
+                DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
+                Heading = heading, LocalMetaData = list(Topics = topics))
         } else {
-            doc <- new("XMLTextDocument", URI = elem$uri, Cached = FALSE, Author = author,
-                       DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
-                       Heading = heading, LocalMetaData = list(Topics = topics))
+            new("XMLTextDocument", URI = elem$uri, Cached = FALSE, Author = author,
+                DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
+                Heading = heading, LocalMetaData = list(Topics = topics))
         }
 
         return(doc)
@@ -61,7 +61,7 @@ read_reut21578xml <- function(...) {
 class(read_reut21578xml) <- "function_generator"
 
 read_rcv1 <- function(...) {
-    function(elem, lodsupport, load, id) {
+    function(elem, load, id) {
         corpus <- paste(elem$content, "\n", collapse = "")
         tree <- xmlTreeParse(corpus, asText = TRUE)
         node <- xmlRoot(tree)
@@ -73,14 +73,14 @@ read_rcv1 <- function(...) {
         id <- xmlAttrs(node)[["itemid"]]
         heading <- xmlValue(node[["title"]])
 
-        if (!lodsupport || (lodsupport && load)) {
-            doc <- new("XMLTextDocument", .Data = tree, URI = elem$uri, Cached = TRUE, Author = "",
-                       DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
-                       Heading = heading)
+        doc <- if (load) {
+            new("XMLTextDocument", .Data = tree, URI = elem$uri, Cached = TRUE, Author = "",
+                DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
+                Heading = heading)
         } else {
-            doc <- new("XMLTextDocument", URI = elem$uri, Cached = FALSE, Author = "",
-                       DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
-                       Heading = heading)
+            new("XMLTextDocument", URI = elem$uri, Cached = FALSE, Author = "",
+                DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
+                Heading = heading)
         }
 
         return(doc)
@@ -89,7 +89,7 @@ read_rcv1 <- function(...) {
 class(read_rcv1) <- "function_generator"
 
 read_newsgroup <- function(...) {
-    function(elem, lodsupport, load, id) {
+    function(elem, load, id) {
         mail <- elem$content
         author <- gsub("From: ", "", grep("^From:", mail, value = TRUE))
         datetimestamp <- as.POSIXct(strptime(gsub("Date: ", "", grep("^Date:", mail, value = TRUE)), format = "%d %B %Y %H:%M:%S"))
@@ -97,7 +97,7 @@ read_newsgroup <- function(...) {
         heading <- gsub("Subject: ", "", grep("^Subject:", mail, value = TRUE))
         newsgroup <- gsub("Newsgroups: ", "", grep("^Newsgroups:", mail, value = TRUE))
 
-        if (!lodsupport || (lodsupport && load)) {
+        doc <- if (load) {
             # The header is separated from the body by a blank line.
             # Reference: \url{http://en.wikipedia.org/wiki/E-mail#Internet_e-mail_format}
             for (index in seq(along = mail)) {
@@ -106,13 +106,13 @@ read_newsgroup <- function(...) {
             }
             content <- mail[(index + 1):length(mail)]
 
-            doc <- new("NewsgroupDocument", .Data = content, URI = elem$uri, Cached = TRUE,
-                       Author = author, DateTimeStamp = datetimestamp,
-                       Description = "", ID = id, Origin = origin,
-                       Heading = heading, Newsgroup = newsgroup)
+            new("NewsgroupDocument", .Data = content, URI = elem$uri, Cached = TRUE,
+                Author = author, DateTimeStamp = datetimestamp,
+                Description = "", ID = id, Origin = origin,
+                Heading = heading, Newsgroup = newsgroup)
         } else {
-            doc <- new("NewsgroupDocument", URI = elem$uri, Cached = FALSE, Author = author, DateTimeStamp = datetimestamp,
-                       Description = "", ID = id, Origin = origin, Heading = heading, Newsgroup = newsgroup)
+            new("NewsgroupDocument", URI = elem$uri, Cached = FALSE, Author = author, DateTimeStamp = datetimestamp,
+                Description = "", ID = id, Origin = origin, Heading = heading, Newsgroup = newsgroup)
         }
 
         return(doc)
@@ -120,8 +120,8 @@ read_newsgroup <- function(...) {
 }
 class(read_newsgroup) <- "function_generator"
 
-read_gmane_r <- function(...) {
-    function(elem, lodsupport, load, id) {
+read_gmane <- function(...) {
+    function(elem, load, id) {
         corpus <- paste(elem$content, "\n", collapse = "")
         # Remove namespaces
         corpus <- gsub("dc:date", "date", corpus)
@@ -134,24 +134,24 @@ read_gmane_r <- function(...) {
         heading <- xmlValue(node[["title"]])
         id <- xmlValue(node[["link"]])
         newsgroup <- gsub("[0-9]+", "", xmlValue(node[["link"]]))
-        origin <- "Gmane R Mailing Lists Archive"
+        origin <- "Gmane Mailing List Archive"
 
-        if (!lodsupport || (lodsupport && load)) {
+        doc <- if (load) {
             content <- xmlValue(node[["description"]])
 
-            doc <- new("NewsgroupDocument", .Data = content, URI = elem$uri, Cached = TRUE,
-                       Author = author, DateTimeStamp = datetimestamp,
-                       Description = "", ID = id, Origin = origin,
-                       Heading = heading, Newsgroup = newsgroup)
+            new("NewsgroupDocument", .Data = content, URI = elem$uri, Cached = TRUE,
+                Author = author, DateTimeStamp = datetimestamp,
+                Description = "", ID = id, Origin = origin,
+                Heading = heading, Newsgroup = newsgroup)
         } else {
-            doc <- new("NewsgroupDocument", URI = elem$uri, Cached = FALSE, Author = author, DateTimeStamp = datetimestamp,
-                       Description = "", ID = id, Origin = origin, Heading = heading, Newsgroup = newsgroup)
+            new("NewsgroupDocument", URI = elem$uri, Cached = FALSE, Author = author, DateTimeStamp = datetimestamp,
+                Description = "", ID = id, Origin = origin, Heading = heading, Newsgroup = newsgroup)
         }
 
         return(doc)
     }
 }
-class(read_gmane_r) <- "function_generator"
+class(read_gmane) <- "function_generator"
 
 # Converter
 
@@ -182,16 +182,16 @@ convert_reut21578xml_plain <- function(node, ...) {
     origin <- "Reuters-21578 XML"
 
     # The <BODY></BODY> tag is unfortunately NOT obligatory!
-    if (!is.null(node[["TEXT"]][["BODY"]]))
-        corpus <- xmlValue(node[["TEXT"]][["BODY"]])
+    corpus <- if (!is.null(node[["TEXT"]][["BODY"]]))
+        xmlValue(node[["TEXT"]][["BODY"]])
     else
-        corpus <- ""
+        ""
 
     # The <TITLE></TITLE> tag is unfortunately NOT obligatory!
-    if (!is.null(node[["TEXT"]][["TITLE"]]))
-        heading <- xmlValue(node[["TEXT"]][["TITLE"]])
+    heading <- if (!is.null(node[["TEXT"]][["TITLE"]]))
+        xmlValue(node[["TEXT"]][["TITLE"]])
     else
-        heading <- ""
+        ""
 
     topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
 

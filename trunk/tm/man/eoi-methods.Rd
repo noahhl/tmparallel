@@ -5,7 +5,7 @@
 \alias{eoi,DirSource-method}
 \alias{eoi,CSVSource-method}
 \alias{eoi,ReutersSource-method}
-\alias{eoi,GmaneRSource-method}
+\alias{eoi,GmaneSource-method}
 \title{Methods for Function eoi in Package `textmin'}
 \description{
   Methods for function \code{eoi} in Package `textmin'.
@@ -18,7 +18,7 @@
       been reached.}
     \item{object = "ReutersSource"}{returns \code{TRUE} if the last item has
       been reached.}
-    \item{object = "GmaneRSource"}{returns \code{TRUE} if the last item has
+    \item{object = "GmaneSource"}{returns \code{TRUE} if the last item has
       been reached.}
   }
 }

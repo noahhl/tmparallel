@@ -5,7 +5,7 @@
 
 # Input matrix has to be in term-frequency format
 weight_matrix <- function(m, weighting = "tf") {
-    type <- match.arg(weighting,c("tf","tf-idf","bin"))
+    type <- match.arg(weighting,c("tf","tf-idf","bin","logical"))
     switch(type,
            "tf" = {
                wm <- m
@@ -16,6 +16,9 @@ weight_matrix <- function(m, weighting = "tf") {
            },
            "bin" = {
                wm <- (m > 0) * 1
+           },
+           "logical" = {
+               wm <- m > 0
            }
            )
     wm
@@ -70,11 +73,11 @@ textvector <- function(doc, stemming = FALSE, language = "english", minWordLengt
     data.frame(docs = ID(doc), terms, Freq, row.names = NULL)
 }
 
-setGeneric("find_hf_terms", function(object, freq) standardGeneric("find_hf_terms"))
-setMethod("find_hf_terms",
-          signature(object = "TermDocMatrix", freq = "numeric"),
-          function(object, freq) {
-              unique(rownames(which(t(object) >= freq, arr.ind = TRUE)))
+setGeneric("find_freq_terms", function(object, lowfreq, highfreq) standardGeneric("find_freq_terms"))
+setMethod("find_freq_terms",
+          signature(object = "TermDocMatrix", lowfreq = "numeric", highfreq = "numeric"),
+          function(object, lowfreq, highfreq) {
+              unique(rownames(which(t(object) >= lowfreq & t(object) <= highfreq, arr.ind = TRUE)))
           })
 
 setGeneric("find_assocs", function(object, term, corlimit) standardGeneric("find_assocs"))

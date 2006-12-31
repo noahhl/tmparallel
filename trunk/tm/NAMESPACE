@@ -7,7 +7,7 @@ export(
        "read_reut21578xml",
        "read_rcv1",
        "read_newsgroup",
-       "read_gmane_r",
+       "read_gmane",
        "convert_reut21578xml_plain",
        "convert_rcv1_plain",
        "convert_mbox_eml",
@@ -23,7 +23,7 @@ exportMethods(
               "DirSource",
               "CSVSource",
               "ReutersSource",
-              "GmaneRSource",
+              "GmaneSource",
 
               # TextDocument
               "Corpus",
@@ -74,7 +74,7 @@ exportMethods(
               "tm_filter",
               "tm_index",
               "search_fulltext",
-              "find_hf_terms",
+              "find_freq_terms",
               "find_assocs",
               "append_elem",
               "append_meta",
@@ -104,4 +104,4 @@ exportClasses("TextDocument",
               "DirSource",
               "CSVSource",
               "ReutersSource",
-              "GmaneRSource")
+              "GmaneSource")

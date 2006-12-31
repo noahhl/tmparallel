@@ -1,8 +1,8 @@
-\name{textmin-internal}
+\name{tm-internal}
 \alias{fun}
-\title{Internal Textmin Functions}
+\title{Internal tm Functions}
 \description{
-  Internal Textmin functions
+  Internal tm functions
 }
 \details{
   These are not to be called by the user (or in some cases are just
