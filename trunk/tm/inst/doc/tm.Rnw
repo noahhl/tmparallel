@@ -229,7 +229,7 @@ is the metadata related to the documents (e.g., clusterings)
 dataframe for the added data element.
 <<>>=
 data(crude)
-reut21578.tdc <- append_elem(reut21578.tdc, crude[[1]], list())
+reut21578.tdc <- append_elem(reut21578.tdc, crude[[1]], 0)
 reut21578.tdc <- append_meta(reut21578.tdc, dcmeta = list(test = c(1,2,3)), dmeta = list(cl1 = 1:11))
 summary(reut21578.tdc)
 DCMetaData(reut21578.tdc)
