@@ -63,7 +63,7 @@ textvector <- function(doc, stemming = FALSE, language = "english", minWordLengt
     else {
         # stemming?
         if (stemming) {
-            require(Rstem)
+            require("Rstem")
             names(tab) <- wordStem(names(tab), language = language)
         }
         terms <- names(tab)

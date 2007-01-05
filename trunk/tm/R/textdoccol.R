@@ -149,7 +149,7 @@ setGeneric("stem_doc", function(object, ...) standardGeneric("stem_doc"))
 setMethod("stem_doc",
           signature(object = "PlainTextDocument"),
           function(object, ...) {
-              require(Rstem)
+              require("Rstem")
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
               stemmedCorpus <- wordStem(splittedCorpus)
               Corpus(object) <- paste(stemmedCorpus, collapse = " ")
@@ -160,7 +160,7 @@ setGeneric("remove_words", function(object, stopwords, ...) standardGeneric("rem
 setMethod("remove_words",
           signature(object = "PlainTextDocument", stopwords = "character"),
           function(object, stopwords, ...) {
-              require(Rstem)
+              require("Rstem")
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
               noStopwordsCorpus <- splittedCorpus[!splittedCorpus %in% stopwords]
               Corpus(object) <- paste(noStopwordsCorpus, collapse = " ")
