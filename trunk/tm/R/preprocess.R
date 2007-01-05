@@ -8,7 +8,6 @@ preprocess_reut21578xml <- function(reuters.dir, reuters.oapf.dir, fix.enc = TRU
     if (fix.enc) {
         # Correct invalid UTF-8 encoding
         # The invalid multibyte string is in reut2-017.xml at line 35578
-        bad.file.index <- grep("reut2-017\\.xml", files)
         content <- readLines(paste(reuters.dir, "reut2-017.xml", sep = ""))
         content[35578] <- "world economic growth. side measures to boost growth, he said."
         writeLines(content, paste(reuters.dir, "reut2-017.xml", sep = ""))

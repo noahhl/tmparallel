@@ -348,34 +348,31 @@ setMethod("[[<-",
           })
 
 # Update \code{NodeID}s of a DCMetaData tree
-update_id <- function(object) {
-    id <<- 0
-    mapping <<- left.mapping <<- NULL
-    level <<- 0
-    return(list(root = set_id(object), left.mapping = left.mapping, right.mapping = mapping))
-}
+update_id <- function(object, id = 0, mapping = NULL, left.mapping = NULL, level = 0) {
+    # Traversal of (binary) DCMetaData tree with setup of \code{NodeID}s
+    set_id <- function(object) {
+        object@NodeID <- id
+        id <<- id + 1
+        level <<- level + 1
 
-# Traversal of (binary) DCMetaData tree with setup of \code{NodeID}s
-set_id <- function(object) {
-    object@NodeID <- id
-    id <<- id + 1
-    level <<- level + 1
+        if (length(object@children) > 0) {
+            mapping <<- cbind(mapping, c(object@children[[1]]@NodeID, id))
+            left <- set_id(object@children[[1]])
+            if (level == 1) {
+                left.mapping <<- mapping
+                mapping <<- NULL
+            }
+            mapping <<- cbind(mapping, c(object@children[[2]]@NodeID, id))
+            right <- set_id(object@children[[2]])
 
-    if (length(object@children) > 0) {
-        mapping <<- cbind(mapping, c(object@children[[1]]@NodeID, id))
-        left <- set_id(object@children[[1]])
-        if (level == 1) {
-            left.mapping <<- mapping
-            mapping <<- NULL
+            object@children <- list(left, right)
         }
-        mapping <<- cbind(mapping, c(object@children[[2]]@NodeID, id))
-        right <- set_id(object@children[[2]])
+        level <<- level - 1
 
-        object@children <- list(left, right)
+        return(object)
     }
-    level <<- level - 1
 
-    return(object)
+    return(list(root = set_id(object), left.mapping = left.mapping, right.mapping = mapping))
 }
 
 setMethod("c",

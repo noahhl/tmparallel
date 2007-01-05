@@ -34,7 +34,6 @@ read_reut21578xml <- function(...) {
             ""
 
         datetimestamp <- as.POSIXct(strptime(xmlValue(node[["DATE"]]), format = "%d-%B-%Y %H:%M:%S"))
-        description <- ""
         id <- xmlAttrs(node)[["NEWID"]]
 
         # The <TITLE></TITLE> tag is unfortunately NOT obligatory!
@@ -159,7 +158,6 @@ class(read_gmane) <- "function_generator"
 convert_rcv1_plain <- function(node, ...) {
     datetimestamp <- as.POSIXct(xmlAttrs(node)[["date"]])
     id <- xmlAttrs(node)[["itemid"]]
-    origin <- "Reuters Corpus Volume 1 XML"
     corpus <- unlist(xmlApply(node[["text"]], xmlValue), use.names = FALSE)
     heading <- xmlValue(node[["title"]])
 
@@ -179,8 +177,6 @@ convert_reut21578xml_plain <- function(node, ...) {
     description <- ""
     id <- xmlAttrs(node)[["NEWID"]]
 
-    origin <- "Reuters-21578 XML"
-
     # The <BODY></BODY> tag is unfortunately NOT obligatory!
     corpus <- if (!is.null(node[["TEXT"]][["BODY"]]))
         xmlValue(node[["TEXT"]][["BODY"]])
@@ -196,5 +192,5 @@ convert_reut21578xml_plain <- function(node, ...) {
     topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
 
     new("PlainTextDocument", .Data = corpus, Cached = TRUE, URI = "", Author = author, DateTimeStamp = datetimestamp,
-        Description = description, ID = id, Origin = origin, Heading = heading, LocalMetaData = list(Topics = topics))
+        Description = description, ID = id, Origin = "Reuters-21578 XML", Heading = heading, LocalMetaData = list(Topics = topics))
 }
