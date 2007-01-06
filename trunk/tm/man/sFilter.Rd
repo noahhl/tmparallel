@@ -33,8 +33,8 @@ sFilter(object, s, ...)
 ## Load example dataset
 data(crude)
 
-## Statement Filter returning TRUE for document with ID 127 and heading COMPUTER ...
-sFilter(crude, "identifier == '127' & heading == 'COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE'")
+## Statement Filter returning TRUE for document with ID 127 and heading DIAMOND ...
+sFilter(crude, "identifier == '127' & heading == 'DIAMOND SHAMROCK (DIA) CUTS CRUDE PRICES'")
 }
 \author{Ingo Feinerer}
 \keyword{file}
