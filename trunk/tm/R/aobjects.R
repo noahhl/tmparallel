@@ -188,7 +188,7 @@ setClass("MetaDataNode",
 
 # Text document collection
 setClass("TextDocCol",
-         representation(DMetaData = "data.frame", DCMetaData = "MetaDataNode"),
+         representation(DMetaData = "data.frame", CMetaData = "MetaDataNode"),
          contains = c("list"))
 
 # DMetaData = *MetaData* available for all *D*ocuments
@@ -200,14 +200,14 @@ if (!isGeneric("DMetaData")) {
 }
 setMethod("DMetaData", "TextDocCol", function(object) object@DMetaData)
 
-# DCMetaData = *MetaData* describing only the *D*ocument *C*ollection itself
-if (!isGeneric("DCMetaData")) {
-    if (is.function("DCMetaData"))
-        fun <- DCMetaData
-    else fun <- function(object) standardGeneric("DCMetaData")
-    setGeneric("DCMetaData", fun)
+# CMetaData = *MetaData* describing only the Document *C*ollection itself
+if (!isGeneric("CMetaData")) {
+    if (is.function("CMetaData"))
+        fun <- CMetaData
+    else fun <- function(object) standardGeneric("CMetaData")
+    setGeneric("CMetaData", fun)
 }
-setMethod("DCMetaData", "TextDocCol", function(object) object@DCMetaData)
+setMethod("CMetaData", "TextDocCol", function(object) object@CMetaData)
 
 # Repository for text document collections
 setClass("TextRepository",

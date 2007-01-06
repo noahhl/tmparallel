@@ -1,12 +1,12 @@
-\name{append_elem-methods}
+\name{appendElem-methods}
 \docType{methods}
-\alias{append_elem}
-\alias{append_elem-methods}
-\alias{append_elem,TextDocCol,TextDocument-method}
-\alias{append_elem,TextRepository,TextDocCol-method}
-\title{Methods for Function append\_elem in Package `textmin'}
+\alias{appendElem}
+\alias{appendElem-methods}
+\alias{appendElem,TextDocCol,TextDocument-method}
+\alias{appendElem,TextRepository,TextDocCol-method}
+\title{Methods for Function appendElem in Package `textmin'}
 \description{
-Methods for function \code{append_elem} in Package `textmin'
+Methods for function \code{appendElem} in Package `textmin'
 }
 \section{Methods}{
   \describe{

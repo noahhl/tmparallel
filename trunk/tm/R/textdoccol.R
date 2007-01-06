@@ -1,18 +1,18 @@
 # Author: Ingo Feinerer
 
-# The "..." are additional arguments for the function_generator parser
-setGeneric("TextDocCol", function(object, parser = read_plain, load = FALSE, ...) standardGeneric("TextDocCol"))
+# The "..." are additional arguments for the FunctionGenerator parser
+setGeneric("TextDocCol", function(object, parser = readPlain, load = FALSE, ...) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           signature(object = "Source"),
-          function(object, parser = read_plain, load = FALSE, ...) {
-              if (inherits(parser, "function_generator"))
+          function(object, parser = readPlain, load = FALSE, ...) {
+              if (inherits(parser, "FunctionGenerator"))
                   parser <- parser(...)
 
               tdl <- list()
               counter <- 1
               while (!eoi(object)) {
-                  object <- step_next(object)
-                  elem <- get_elem(object)
+                  object <- stepNext(object)
+                  elem <- getElem(object)
                   # If there is no Load on Demand support
                   # we need to load the corpus into memory at startup
                   if (!object@LoDSupport)
@@ -22,16 +22,16 @@ setMethod("TextDocCol",
               }
 
               dmeta.df <- data.frame(MetaID = rep(0, length(tdl)), stringsAsFactors = FALSE)
-              dcmeta.node <- new("MetaDataNode",
+              cmeta.node <- new("MetaDataNode",
                             NodeID = 0,
                             MetaData = list(create_date = Sys.time(), creator = Sys.getenv("LOGNAME")),
                             children = list())
 
-              return(new("TextDocCol", .Data = tdl, DMetaData = dmeta.df, DCMetaData = dcmeta.node))
+              return(new("TextDocCol", .Data = tdl, DMetaData = dmeta.df, CMetaData = cmeta.node))
           })
 
-setGeneric("load_doc", function(object, ...) standardGeneric("load_doc"))
-setMethod("load_doc",
+setGeneric("loadDoc", function(object, ...) standardGeneric("loadDoc"))
+setMethod("loadDoc",
           signature(object = "PlainTextDocument"),
           function(object, ...) {
               if (!Cached(object)) {
@@ -45,7 +45,7 @@ setMethod("load_doc",
                   return(object)
               }
           })
-setMethod("load_doc",
+setMethod("loadDoc",
           signature(object =  "XMLTextDocument"),
           function(object, ...) {
               if (!Cached(object)) {
@@ -61,7 +61,7 @@ setMethod("load_doc",
                   return(object)
               }
           })
-setMethod("load_doc",
+setMethod("loadDoc",
           signature(object = "NewsgroupDocument"),
           function(object, ...) {
               if (!Cached(object)) {
@@ -80,13 +80,13 @@ setMethod("load_doc",
               }
           })
 
-setGeneric("tm_update", function(object, origin, parser = read_plain, ...) standardGeneric("tm_update"))
+setGeneric("tmUpdate", function(object, origin, parser = readPlain, ...) standardGeneric("tmUpdate"))
 # Update is only supported for directories
 # At the moment no other LoD devices are available anyway
-setMethod("tm_update",
+setMethod("tmUpdate",
           signature(object = "TextDocCol", origin = "DirSource"),
-          function(object, origin, parser = read_plain, ...) {
-              if (inherits(parser, "function_generator"))
+          function(object, origin, parser = readPlain, load = FALSE, ...) {
+              if (inherits(parser, "FunctionGenerator"))
                   parser <- parser(...)
 
               object.filelist <- unlist(lapply(object, function(x) {as.character(URI(x))[2]}))
@@ -95,14 +95,14 @@ setMethod("tm_update",
               for (filename in new.files) {
                   elem <- list(content = readLines(filename),
                                uri = substitute(file(filename)))
-                  object <- append_doc(object, parser(elem, TRUE, origin@Load, filename), NA)
+                  object <- appendElem(object, parser(elem, load, filename))
               }
 
               return(object)
           })
 
-setGeneric("tm_map", function(object, FUN, ...) standardGeneric("tm_map"))
-setMethod("tm_map",
+setGeneric("tmMap", function(object, FUN, ...) standardGeneric("tmMap"))
+setMethod("tmMap",
           signature(object = "TextDocCol", FUN = "function"),
           function(object, FUN, ...) {
               result <- object
@@ -111,13 +111,13 @@ setMethod("tm_map",
               return(result)
           })
 
-setGeneric("as.plain", function(object, FUN, ...) standardGeneric("as.plain"))
-setMethod("as.plain",
+setGeneric("asPlain", function(object, FUN, ...) standardGeneric("asPlain"))
+setMethod("asPlain",
           signature(object = "PlainTextDocument"),
           function(object, FUN, ...) {
               return(object)
           })
-setMethod("as.plain",
+setMethod("asPlain",
           signature(object = "XMLTextDocument", FUN = "function"),
           function(object, FUN, ...) {
               corpus <- Corpus(object)
@@ -129,24 +129,24 @@ setMethod("as.plain",
               return(FUN(xmlRoot(corpus), ...))
           })
 
-setGeneric("tm_tolower", function(object, ...) standardGeneric("tm_tolower"))
-setMethod("tm_tolower",
+setGeneric("tmTolower", function(object, ...) standardGeneric("tmTolower"))
+setMethod("tmTolower",
           signature(object = "PlainTextDocument"),
           function(object, ...) {
               Corpus(object) <- tolower(object)
               return(object)
           })
 
-setGeneric("strip_whitespace", function(object, ...) standardGeneric("strip_whitespace"))
-setMethod("strip_whitespace",
+setGeneric("stripWhitespace", function(object, ...) standardGeneric("stripWhitespace"))
+setMethod("stripWhitespace",
           signature(object = "PlainTextDocument"),
           function(object, ...) {
               Corpus(object) <- gsub("[[:space:]]+", " ", object)
               return(object)
           })
 
-setGeneric("stem_doc", function(object, ...) standardGeneric("stem_doc"))
-setMethod("stem_doc",
+setGeneric("stemDoc", function(object, ...) standardGeneric("stemDoc"))
+setMethod("stemDoc",
           signature(object = "PlainTextDocument"),
           function(object, ...) {
               require("Rstem")
@@ -156,8 +156,8 @@ setMethod("stem_doc",
               return(object)
           })
 
-setGeneric("remove_words", function(object, stopwords, ...) standardGeneric("remove_words"))
-setMethod("remove_words",
+setGeneric("removeWords", function(object, stopwords, ...) standardGeneric("removeWords"))
+setMethod("removeWords",
           signature(object = "PlainTextDocument", stopwords = "character"),
           function(object, stopwords, ...) {
               require("Rstem")
@@ -167,27 +167,27 @@ setMethod("remove_words",
               return(object)
           })
 
-setGeneric("tm_filter", function(object, ..., FUN = s_filter, doclevel = FALSE) standardGeneric("tm_filter"))
-setMethod("tm_filter",
+setGeneric("tmFilter", function(object, ..., FUN = sFilter, doclevel = FALSE) standardGeneric("tmFilter"))
+setMethod("tmFilter",
           signature(object = "TextDocCol"),
-          function(object, ..., FUN = s_filter, doclevel = FALSE) {
+          function(object, ..., FUN = sFilter, doclevel = FALSE) {
               if (doclevel)
                   return(object[sapply(object, FUN, ..., DMetaData = DMetaData(object))])
               else
                   return(object[FUN(object, ...)])
           })
 
-setGeneric("tm_index", function(object, ..., FUN = s_filter, doclevel = FALSE) standardGeneric("tm_index"))
-setMethod("tm_index",
+setGeneric("tmIndex", function(object, ..., FUN = sFilter, doclevel = FALSE) standardGeneric("tmIndex"))
+setMethod("tmIndex",
           signature(object = "TextDocCol"),
-          function(object, ..., FUN = s_filter, doclevel = FALSE) {
+          function(object, ..., FUN = sFilter, doclevel = FALSE) {
               if (doclevel)
                   return(sapply(object, FUN, ..., DMetaData = DMetaData(object)))
               else
                   return(FUN(object, ...))
           })
 
-s_filter <- function(object, s, ...) {
+sFilter <- function(object, s, ...) {
     query.df <- DMetaData(object)
     con <- textConnection(s)
     tokens <- scan(con, "character")
@@ -245,38 +245,38 @@ s_filter <- function(object, s, ...) {
     return(result)
 }
 
-setGeneric("search_fulltext", function(object, pattern, ...) standardGeneric("search_fulltext"))
-setMethod("search_fulltext",
+setGeneric("searchFullText", function(object, pattern, ...) standardGeneric("searchFullText"))
+setMethod("searchFullText",
           signature(object = "PlainTextDocument", pattern = "character"),
           function(object, pattern, ...) {
               return(any(grep(pattern, Corpus(object))))
           })
 
-setGeneric("append_elem", function(object, data, meta = NULL) standardGeneric("append_elem"))
-setMethod("append_elem",
+setGeneric("appendElem", function(object, data, meta = NULL) standardGeneric("appendElem"))
+setMethod("appendElem",
           signature(object = "TextDocCol", data = "TextDocument"),
           function(object, data, meta = NULL) {
               object@.Data[[length(object)+1]] <- data
-              object@DMetaData <- rbind(object@DMetaData, c(MetaID = DCMetaData(object)@NodeID, meta))
+              object@DMetaData <- rbind(object@DMetaData, c(MetaID = CMetaData(object)@NodeID, meta))
               return(object)
           })
 
-setGeneric("append_meta", function(object, dcmeta = NULL, dmeta = NULL) standardGeneric("append_meta"))
-setMethod("append_meta",
+setGeneric("appendMeta", function(object, cmeta = NULL, dmeta = NULL) standardGeneric("appendMeta"))
+setMethod("appendMeta",
           signature(object = "TextDocCol"),
-          function(object, dcmeta = NULL, dmeta = NULL) {
-              object@DCMetaData@MetaData <- c(object@DCMetaData@MetaData, dcmeta)
-              if (!is.null(dcmeta))
+          function(object, cmeta = NULL, dmeta = NULL) {
+              object@CMetaData@MetaData <- c(object@CMetaData@MetaData, cmeta)
+              if (!is.null(cmeta))
                   object@DMetaData <- cbind(object@DMetaData, dmeta)
               return(object)
           })
 
-setGeneric("remove_meta", function(object, dcname = NULL, dname = NULL) standardGeneric("remove_meta"))
-setMethod("remove_meta",
+setGeneric("removeMeta", function(object, cname = NULL, dname = NULL) standardGeneric("removeMeta"))
+setMethod("removeMeta",
           signature(object = "TextDocCol"),
-          function(object, dcname = NULL, dname = NULL) {
-              if (!is.null(dcname)) {
-                  object@DCMetaData@MetaData <- DCMetaData(object)@MetaData[names(DCMetaData(object)@MetaData) != dcname]
+          function(object, cname = NULL, dname = NULL) {
+              if (!is.null(cname)) {
+                  object@CMetaData@MetaData <- CMetaData(object)@MetaData[names(CMetaData(object)@MetaData) != cname]
               }
               if (!is.null(dname)) {
                   object@DMetaData <- DMetaData(object)[names(DMetaData(object)) != dname]
@@ -284,8 +284,8 @@ setMethod("remove_meta",
               return(object)
           })
 
-setGeneric("prescind_meta", function(object, meta) standardGeneric("prescind_meta"))
-setMethod("prescind_meta",
+setGeneric("prescindMeta", function(object, meta) standardGeneric("prescindMeta"))
+setMethod("prescindMeta",
           signature(object = "TextDocCol", meta = "character"),
           function(object, meta) {
               for (m in meta) {
@@ -336,7 +336,7 @@ setMethod("[<-",
 setMethod("[[",
           signature(x = "TextDocCol", i = "ANY", j = "ANY"),
           function(x, i, j, ...) {
-              return(load_doc(x@.Data[[i]]))
+              return(loadDoc(x@.Data[[i]]))
           })
 
 setMethod("[[<-",
@@ -347,9 +347,9 @@ setMethod("[[<-",
               return(object)
           })
 
-# Update \code{NodeID}s of a DCMetaData tree
+# Update \code{NodeID}s of a CMetaData tree
 update_id <- function(object, id = 0, mapping = NULL, left.mapping = NULL, level = 0) {
-    # Traversal of (binary) DCMetaData tree with setup of \code{NodeID}s
+    # Traversal of (binary) CMetaData tree with setup of \code{NodeID}s
     set_id <- function(object) {
         object@NodeID <- id
         id <<- id + 1
@@ -399,10 +399,10 @@ setMethod("c2",
               # Concatenate data slots
               object@.Data <- c(as(x, "list"), as(y, "list"))
 
-              # Update the DCMetaData tree
-              dcmeta <- new("MetaDataNode", NodeID = 0, MetaData = meta, children = list(DCMetaData(x), DCMetaData(y)))
-              update.struct <- update_id(dcmeta)
-              object@DCMetaData <- update.struct$root
+              # Update the CMetaData tree
+              cmeta <- new("MetaDataNode", NodeID = 0, MetaData = meta, children = list(CMetaData(x), CMetaData(y)))
+              update.struct <- update_id(cmeta)
+              object@CMetaData <- update.struct$root
 
               # Find indices to be updated for the left tree
               indices.mapping <- NULL
@@ -453,12 +453,12 @@ setMethod("c",
                   return(x)
 
               dmeta.df <- data.frame(MetaID = rep(0, length(list(x, ...))), stringsAsFactors = FALSE)
-              dcmeta.node <- new("MetaDataNode",
+              cmeta.node <- new("MetaDataNode",
                             NodeID = 0,
                             MetaData = list(create_date = Sys.time(), creator = Sys.getenv("LOGNAME")),
                             children = list())
 
-              return(new("TextDocCol", .Data = list(x, ...), DMetaData = dmeta.df, DCMetaData = dcmeta.node))
+              return(new("TextDocCol", .Data = list(x, ...), DMetaData = dmeta.df, CMetaData = cmeta.node))
           })
 
 setMethod("length",
@@ -481,12 +481,12 @@ setMethod("summary",
           function(object){
               show(object)
               if (length(DMetaData(object)) > 0) {
-                  cat(sprintf(ngettext(length(DCMetaData(object)@MetaData),
+                  cat(sprintf(ngettext(length(CMetaData(object)@MetaData),
                                               "\nThe metadata consists of %d tag-value pair and a data frame\n",
                                               "\nThe metadata consists of %d tag-value pairs and a data frame\n"),
-                                       length(DCMetaData(object)@MetaData)))
+                                       length(CMetaData(object)@MetaData)))
                   cat("Available tags are:\n")
-                  cat(names(DCMetaData(object)@MetaData), "\n")
+                  cat(names(CMetaData(object)@MetaData), "\n")
                   cat("Available variables in the data frame are:\n")
                   cat(names(DMetaData(object)), "\n")
               }

@@ -1,14 +1,14 @@
-\name{step_next-methods}
+\name{stepNext-methods}
 \docType{methods}
-\alias{step_next}
-\alias{step_next-methods}
-\alias{step_next,DirSource-method}
-\alias{step_next,CSVSource-method}
-\alias{step_next,ReutersSource-method}
-\alias{step_next,GmaneSource-method}
-\title{Methods for Function step\_next in Package `textmin'}
+\alias{stepNext}
+\alias{stepNext-methods}
+\alias{stepNext,DirSource-method}
+\alias{stepNext,CSVSource-method}
+\alias{stepNext,ReutersSource-method}
+\alias{stepNext,GmaneSource-method}
+\title{Methods for Function stepNext in Package `textmin'}
 \description{
-  Methods for function \code{step_next} in Package `textmin'.
+  Methods for function \code{stepNext} in Package `textmin'.
 }
 \section{Methods}{
   \describe{

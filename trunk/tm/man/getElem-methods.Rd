@@ -1,14 +1,14 @@
-\name{get_elem-methods}
+\name{getElem-methods}
 \docType{methods}
-\alias{get_elem}
-\alias{get_elem-methods}
-\alias{get_elem,DirSource-method}
-\alias{get_elem,CSVSource-method}
-\alias{get_elem,ReutersSource-method}
-\alias{get_elem,GmaneSource-method}
-\title{Methods for Function get\_elem in Package `textmin'}
+\alias{getElem}
+\alias{getElem-methods}
+\alias{getElem,DirSource-method}
+\alias{getElem,CSVSource-method}
+\alias{getElem,ReutersSource-method}
+\alias{getElem,GmaneSource-method}
+\title{Methods for Function getElem in Package `textmin'}
 \description{
-  Methods for function \code{get_elem} in Package `textmin'.
+  Methods for function \code{getElem} in Package `textmin'.
 }
 \section{Methods}{
   \describe{

@@ -7,7 +7,7 @@ setMethod("TextRepository",
               return(new("TextRepository", .Data = list(object), RepoMetaData = meta))
           })
 
-setMethod("append_elem",
+setMethod("appendElem",
           signature(object = "TextRepository", data = "TextDocCol"),
           function(object, data, meta = NULL) {
               object[[length(object)+1]] <- data
@@ -15,18 +15,18 @@ setMethod("append_elem",
               return(object)
           })
 
-setMethod("append_meta",
+setMethod("appendMeta",
           signature(object = "TextRepository"),
-          function(object, dcmeta = NULL, dmeta = NULL) {
-              object@RepoMetaData <- c(object@RepoMetaData, dcmeta)
+          function(object, cmeta = NULL, dmeta = NULL) {
+              object@RepoMetaData <- c(object@RepoMetaData, cmeta)
               return(object)
           })
 
-setMethod("remove_meta",
+setMethod("removeMeta",
           signature(object = "TextRepository"),
-          function(object, dcname = NULL, dname = NULL) {
-              if (!is.null(dcname))
-                  object@RepoMetaData <- RepoMetaData(object)[names(RepoMetaData(object)) != dcname]
+          function(object, cname = NULL, dname = NULL) {
+              if (!is.null(cname))
+                  object@RepoMetaData <- RepoMetaData(object)[names(RepoMetaData(object)) != cname]
               return(object)
           })
 

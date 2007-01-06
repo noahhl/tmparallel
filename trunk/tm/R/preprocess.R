@@ -1,7 +1,7 @@
 # Author: Ingo Feinerer
 
 # Preprocess the Reuters21578 XML data
-preprocess_reut21578xml <- function(reuters.dir, reuters.oapf.dir, fix.enc = TRUE) {
+preprocessReut21578XML <- function(reuters.dir, reuters.oapf.dir, fix.enc = TRUE) {
     dir.create(reuters.oapf.dir, recursive = TRUE)
     files <- dir(reuters.dir, pattern = "\\.xml", full.names = TRUE)
 
@@ -30,7 +30,7 @@ preprocess_reut21578xml <- function(reuters.dir, reuters.oapf.dir, fix.enc = TRU
     }
 }
 
-convert_mbox_eml <- function(mbox, eml.dir) {
+convertMboxEml <- function(mbox, eml.dir) {
     dir.create(eml.dir, recursive = TRUE)
     content <- readLines(mbox)
     counter <- start <- end <- 1

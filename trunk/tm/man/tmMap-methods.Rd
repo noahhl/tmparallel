@@ -1,11 +1,11 @@
-\name{tm_map-methods}
+\name{tmMap-methods}
 \docType{methods}
-\alias{tm_map}
-\alias{tm_map-methods}
-\alias{tm_map,TextDocCol,function-method}
-\title{Methods for Function tm\_map in Package `textmin'}
+\alias{tmMap}
+\alias{tmMap-methods}
+\alias{tmMap,TextDocCol,function-method}
+\title{Methods for Function tmMap in Package `textmin'}
 \description{
-Methods for function \code{tm_map} in Package `textmin'
+Methods for function \code{tmMap} in Package `textmin'
 }
 \section{Methods}{
 \describe{

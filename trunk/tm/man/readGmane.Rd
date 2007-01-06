@@ -1,19 +1,20 @@
-\name{read_plain}
-\alias{read_plain}
-\title{Read In A Text Document}
+\name{readGmane}
+\alias{readGmane}
+\title{Read In A Newsgroup Document}
 \description{
-  Returns a function which reads in a text document without knowledge
-  about its internal structure and possible available metadata.
+  Returns a function which reads in a RSS feed as returned by Gmane for
+  mailing lists.
 }
 \usage{
-read_plain(...)
+readGmane(...)
 }
 \arguments{
   \item{...}{arguments for the generator function.}
 }
 \details{
   Formally this function is a function generator, i.e., it returns a
-  function (which reads in a text document) with a well-defined
+  function (which reads in a RSS feed) with
+  a well-defined
   signature, but can access passed over arguments via lexical
   scoping. This is especially useful for reader functions for complex
   data structures which need a lot of configuration options.
@@ -22,17 +23,18 @@ read_plain(...)
   A \code{function} with the signature \code{elem, load,
     id}:
   \itemize{
-    \item{\code{elem}}{A \code{list} with the two named elements
+    \item{elem}{A \code{list} with the two named elements
       \code{content} and \code{uri}. The first element must hold the
       document corpus to be read in, the second element must hold a
       call to the document corpus. The call is evaluated upon
       a request for load on demand.}
-    \item{\code{load}}{A \code{logical} value indicating whether the
+    \item{load}{A \code{logical} value indicating whether the
       document corpus should be immediately loaded into memory.}
-    \item{\code{id}}{A \code{character} representing a unique
-      identification string for the returned text document.}}
+    \item{id}{A \code{character} representing a unique
+      identification string for the returned text document.}
+  }
 
-  The function returns a \code{PlainTextDocument} representing
+  The function returns a \code{NewsgroupDocument} representing
   \code{content}.
 }
 \author{Ingo Feinerer}

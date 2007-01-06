@@ -125,47 +125,47 @@ setMethod("GmaneSource",
                   Content = content, Position = 0)
           })
 
-setGeneric("step_next", function(object) standardGeneric("step_next"))
-setMethod("step_next",
+setGeneric("stepNext", function(object) standardGeneric("stepNext"))
+setMethod("stepNext",
           signature(object = "DirSource"),
           function(object) {
               object@Position <- object@Position + 1
               object
           })
-setMethod("step_next",
+setMethod("stepNext",
           signature(object = "CSVSource"),
           function(object) {
               object@Position <- object@Position + 1
               object
           })
-setMethod("step_next",
+setMethod("stepNext",
           signature(object = "ReutersSource"),
           function(object) {
               object@Position <- object@Position + 1
               object
           })
-setMethod("step_next",
+setMethod("stepNext",
           signature(object = "GmaneSource"),
           function(object) {
               object@Position <- object@Position + 1
               object
           })
 
-setGeneric("get_elem", function(object) standardGeneric("get_elem"))
-setMethod("get_elem",
+setGeneric("getElem", function(object) standardGeneric("getElem"))
+setMethod("getElem",
           signature(object = "DirSource"),
           function(object) {
               filename <- object@FileList[object@Position]
               list(content = readLines(filename),
                    uri = substitute(file(filename)))
           })
-setMethod("get_elem",
+setMethod("getElem",
           signature(object = "CSVSource"),
           function(object) {
               list(content = object@Content[object@Position],
                    uri = object@URI)
           })
-setMethod("get_elem",
+setMethod("getElem",
           signature(object = "ReutersSource"),
           function(object) {
               # Construct a character representation from the XMLNode
@@ -175,7 +175,7 @@ setMethod("get_elem",
 
               list(content = virtual.file, uri = object@URI)
           })
-setMethod("get_elem",
+setMethod("getElem",
           signature(object = "GmaneSource"),
           function(object) {
               # Construct a character representation from the XMLNode

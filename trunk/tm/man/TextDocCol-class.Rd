@@ -1,9 +1,9 @@
 \name{TextDocCol-class}
 \docType{class}
 \alias{TextDocCol-class}
-\alias{DCMetaData}
+\alias{CMetaData}
 \alias{DMetaData}
-\alias{DCMetaData,TextDocCol-method}
+\alias{CMetaData,TextDocCol-method}
 \alias{DMetaData,TextDocCol-method}
 \title{Text document collection}
 \description{
@@ -16,7 +16,7 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{DCMetaData}:}{Object of class \code{"MetaDataNode"} containing
+    \item{\code{CMetaData}:}{Object of class \code{"MetaDataNode"} containing
       the Document Collection specific MetaData for the collection in form of
       tag-value pairs and information about children in form of a binary
       tree. This information is useful for reconstructing meta data
@@ -33,7 +33,7 @@ Class \code{"list"}, directly.
 }
 \section{Methods}{
   \describe{
-    \item{DCMetaData}{\code{signature(object = "TextDocCol")}: returns the
+    \item{CMetaData}{\code{signature(object = "TextDocCol")}: returns the
       document collection specific metadata in form of a tag-value
       paired list.}
     \item{DMetaData}{\code{signature(object = "TextDocCol")}: returns the

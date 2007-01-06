@@ -1,11 +1,11 @@
-\name{prescind_meta-methods}
+\name{prescindMeta-methods}
 \docType{methods}
-\alias{prescind_meta}
-\alias{prescind_meta-methods}
-\alias{prescind_meta,TextDocCol,character-method}
-\title{Methods for Function prescind\_metadata in Package `textmin'}
+\alias{prescindMeta}
+\alias{prescindMeta-methods}
+\alias{prescindMeta,TextDocCol,character-method}
+\title{Methods for Function prescindMetadata in Package `textmin'}
 \description{
-Methods for function \code{prescind_meta} in Package `textmin'
+Methods for function \code{prescindMeta} in Package `textmin'
 }
 \section{Methods}{
   \describe{

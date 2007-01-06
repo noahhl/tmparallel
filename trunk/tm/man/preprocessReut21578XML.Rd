@@ -1,12 +1,12 @@
-\name{preprocess_reut21578xml}
-\alias{preprocess_reut21578xml}
+\name{preprocessReut21578XML}
+\alias{preprocessReut21578XML}
 \title{Preprocess the Reuters21578 XML archive.}
 \description{
   Preprocess the Reuters21578 XML archive by correcting invalid UTF8
   encoding and copying each text document into a separate file.
 }
 \usage{
-preprocess_reut21578xml(reuters.dir, reuters.oapf.dir, fix.enc = TRUE)
+preprocessReut21578XML(reuters.dir, reuters.oapf.dir, fix.enc = TRUE)
 }
 \arguments{
   \item{reuters.dir}{a character describing the input directory.}

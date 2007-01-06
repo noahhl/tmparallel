@@ -1,11 +1,11 @@
-\name{s_filter}
-\alias{s_filter}
+\name{sFilter}
+\alias{sFilter}
 \title{Statement Filter}
 \description{
   Filter metadata by special statements.
 }
 \usage{
-s_filter(object, s, ...)
+sFilter(object, s, ...)
 }
 \arguments{
   \item{object}{a \code{TextDocCol} to be the filter applied to.}
@@ -34,7 +34,7 @@ s_filter(object, s, ...)
 data(crude)
 
 ## Statement Filter returning TRUE for document with ID 127 and heading COMPUTER ...
-s_filter(crude, "identifier == '127' & heading == 'COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE'")
+sFilter(crude, "identifier == '127' & heading == 'COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE'")
 }
 \author{Ingo Feinerer}
 \keyword{file}

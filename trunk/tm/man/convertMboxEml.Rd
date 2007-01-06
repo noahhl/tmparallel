@@ -1,12 +1,12 @@
-\name{convert_mbox_eml}
-\alias{convert_mbox_eml}
+\name{convertMboxEml}
+\alias{convertMboxEml}
 \title{Convert E-Mails From mbox Format To eml Format}
 \description{
   Convert e-mails from mbox (i.e., several mails in a single box) format
   to eml (i.e., every mail in a single file) format.
 }
 \usage{
-convert_mbox_eml(mbox, eml.dir)
+convertMboxEml(mbox, eml.dir)
 }
 \arguments{
   \item{mbox}{a character describing the mbox location.}

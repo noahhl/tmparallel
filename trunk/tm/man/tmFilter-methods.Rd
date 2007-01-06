@@ -1,15 +1,15 @@
-\name{tm_filter-methods}
+\name{tmFilter-methods}
 \docType{methods}
-\alias{tm_filter}
-\alias{tm_filter-methods}
-\alias{tm_filter,TextDocCol-method}
-\title{Methods for Function tm\_filter in Package `textmin'}
+\alias{tmFilter}
+\alias{tmFilter-methods}
+\alias{tmFilter,TextDocCol-method}
+\title{Methods for Function tmFilter in Package `textmin'}
 \description{
-Methods for function \code{tm_filter} in Package `textmin'
+Methods for function \code{tmFilter} in Package `textmin'
 }
 \section{Methods}{
   \describe{
-    \item{object = "TextDocCol", FUN  = s\_filter, doclevel = FALSE}{If
+    \item{object = "TextDocCol", FUN  = sFilter, doclevel = FALSE}{If
       \code{doclevel} is set, the method applies \code{FUN} onto each element
       of \code{object} and returns the filtered \code{object}; otherwise
       \code{FUN} is applied to \code{object} itself, i.e., the
@@ -19,7 +19,7 @@ Methods for function \code{tm_filter} in Package `textmin'
   }
 }
 \seealso{
-  \code{\link{s_filter}}
-  \code{\link{tm_index}}
+  \code{\link{sFilter}}
+  \code{\link{tmIndex}}
 }
 \keyword{methods}

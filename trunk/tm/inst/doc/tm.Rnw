@@ -48,7 +48,7 @@ collection (\class{TextDocCol}). Its constructor takes following arguments:
   the documents immediately into memory, and the third is a unique
   identification string.
 \item \code{...}: formally if the passed over \code{parser} function is of
-  class \code{function\_generator}, it is assumed to be a function
+  class \code{FunctionGenerator}, it is assumed to be a function
   generating a parser. This way custom parsers taking various
   parameters (specified in \code{...}) can be built, which in fact
   must produce a valid parser signature but can access additional
@@ -66,22 +66,22 @@ solely for directories on a file system, all other implemented sources
 can take connections as input (a character string is interpreted as
 filename).
 
-This package ships with several readers (\code{read\_plain()}
-(default), \code{read\_rcv1()}, \code{read\_reut21578xml()},
-\code{read\_gmane()} and \code{read\_newsgroup()}). The default just
+This package ships with several readers (\code{readPlain()}
+(default), \code{readRCV1()}, \code{readReut21578XML()},
+\code{readGmane()} and \code{readNewsgroup()}). The default just
 reads in the whole input file and interprets the content as text.
 
 Plain text files in a directory:
 <<>>=
 # Plain text
-txt <- system.file("texts/txt/", package = "tm")
+txt <- system.file("texts", "txt", package = "tm")
 (Ovid.tdc <- TextDocCol(DirSource(txt), load = TRUE))
 @
 
 A single comma separated values file:
 <<>>=
 # Comma separated values
-cars.csv <- system.file("texts/cars.csv", package = "tm")
+cars.csv <- system.file("texts", "cars.csv", package = "tm")
 TextDocCol(CSVSource(cars.csv))
 @
 
@@ -90,39 +90,39 @@ file (several documents per file). Note that connections can be used
 as input:
 <<>>=
 # Reuters21578 XML
-reut21578 <- system.file("texts/reut21578/", package = "tm")
-reut21578.xml <- system.file("texts/reut21578.xml", package = "tm")
-reut21578.xml.gz <- system.file("texts/reut21578.xml.gz", package = "tm")
+reut21578 <- system.file("texts", "reut21578", package = "tm")
+reut21578.xml <- system.file("texts", "reut21578.xml", package = "tm")
+reut21578.xml.gz <- system.file("texts", "reut21578.xml.gz", package = "tm")
 
-(reut21578.tdc <- TextDocCol(DirSource(reut21578), read_reut21578xml))
+(reut21578.tdc <- TextDocCol(DirSource(reut21578), readReut21578XML))
 
-TextDocCol(ReutersSource(reut21578.xml), read_reut21578xml)
-TextDocCol(ReutersSource(gzfile(reut21578.xml.gz)), read_reut21578xml)
+TextDocCol(ReutersSource(reut21578.xml), readReut21578XML)
+TextDocCol(ReutersSource(gzfile(reut21578.xml.gz)), readReut21578XML)
 @
 
 Analogously for files in the Reuters Corpus Volume 1 format:
 <<>>=
 # Reuters Corpus Volume 1
-rcv1 <- system.file("texts/rcv1/", package = "tm")
-rcv1.xml <- system.file("texts/rcv1.xml", package = "tm")
+rcv1 <- system.file("texts", "rcv1", package = "tm")
+rcv1.xml <- system.file("texts", "rcv1.xml", package = "tm")
 
-TextDocCol(DirSource(rcv1), read_rcv1, load = TRUE)
-TextDocCol(ReutersSource(rcv1.xml), read_rcv1)
+TextDocCol(DirSource(rcv1), readRCV1, load = TRUE)
+TextDocCol(ReutersSource(rcv1.xml), readRCV1)
 @
 
 Or mails from newsgroups (as found in the UCI KDD newsgroup dataset):
 <<>>=
 # UCI KDD Newsgroup Mails
-newsgroup <- system.file("texts/newsgroup/", package = "tm")
+newsgroup <- system.file("texts", "newsgroup", package = "tm")
 
-TextDocCol(DirSource(newsgroup), read_newsgroup, load = TRUE)
+TextDocCol(DirSource(newsgroup), readNewsgroup, load = TRUE)
 @
 
 RSS feed as delivered by Gmane for the R mailing list archive:
 <<>>=
-rss <- system.file("texts/gmane.comp.lang.r.gr.rdf", package = "tm")
+rss <- system.file("texts", "gmane.comp.lang.r.gr.rdf", package = "tm")
 
-TextDocCol(GmaneSource(rss), read_gmane)
+TextDocCol(GmaneSource(rss), readGmane)
 @
 
 \section*{Inspecting the Text Document Collection}
@@ -143,20 +143,20 @@ Once we have a text document collection one typically wants to modify
 the documents in it, e.g., stemming, stopword removal, et cetera. All
 this functionality is subsumed by the concept of
 \emph{transformation}s in \pkg{tm}. Transformations are done via
-the \code{tm\_map} function which applies a function to all elements
+the \code{tmMap} function which applies a function to all elements
 of the collection. Basically, all transformations work on single text
-documents and \code{tm\_map} just applies them to all documents in a
+documents and \code{tmMap} just applies them to all documents in a
 document collection.
 
 \subsection*{Loading Documents into Memory}
 If the source objects supports load on demand, but the user has not
 enforced the package to load the input content directly into memory,
-this can be done manually via \code{load\_doc}. Normally it is not
+this can be done manually via \code{loadDoc}. Normally it is not
 necessary to call this explicitly, as other functions working on text
 corpora trigger this function for not-loaded documents (the corpus is
 automatically loaded if accessed via \code{[[}).
 <<>>=
-reut21578.tdc <- tm_map(reut21578.tdc, load_doc)
+reut21578.tdc <- tmMap(reut21578.tdc, loadDoc)
 @
 
 \subsection*{Converting to Plaintext Documents}
@@ -164,40 +164,40 @@ The text document collection \code{reut21578.tdc} contains documents
 in XML format. We have no further use for the XML interna and just
 want to work with the text content. This can be done by converting the
 documents to plaintext documents. It is done by the generic
-\code{as.plain} in assistance by a converter function
-\code{convert\_reut21578xml\_plain} which knows how to actually do it.
+\code{asPlain} in assistance by a converter function
+\code{convertReut21578XMLPlain} which knows how to actually do it.
 <<>>=
-reut21578.tdc <- tm_map(reut21578.tdc, as.plain, convert_reut21578xml_plain)
+reut21578.tdc <- tmMap(reut21578.tdc, asPlain, convertReut21578XMLPlain)
 @
 
 \subsection*{Eliminating Extra Whitespace}
 Extra whitespace is eliminated by:
 <<>>=
-reut21578.tdc <- tm_map(reut21578.tdc, strip_whitespace)
+reut21578.tdc <- tmMap(reut21578.tdc, stripWhitespace)
 @
 
 \subsection*{Convert to Lower Case}
 Conversion to lower case by:
 <<>>=
-reut21578.tdc <- tm_map(reut21578.tdc, tm_tolower)
+reut21578.tdc <- tmMap(reut21578.tdc, tmTolower)
 @
 
 \subsection*{Remove Stopwords}
 Removal of stopwords by:
 <<>>=
 data(stopwords_en)
-reut21578.tdc <- tm_map(reut21578.tdc, remove_words, stopwords_en)
+reut21578.tdc <- tmMap(reut21578.tdc, removeWords, stopwords_en)
 @
 
 \subsection*{Stemming}
 Stemming is done by:
 <<>>=
-tm_map(reut21578.tdc, stem_doc)
+tmMap(reut21578.tdc, stemDoc)
 @
 
 \section*{Filters}
 Often it is of special interest to filter out documents satisfying given
-properties. For this purpose the function \code{tm\_filter} is
+properties. For this purpose the function \code{tmFilter} is
 designated. It is possible to write custom filter functions, but for
 most cases the default filter does its job: it integrates a minimal
 query language to filter metadata. Statements in this query language
@@ -209,30 +209,30 @@ heading and an \code{ID} equal to 10 (both are metadata slot
 variables of the text document).
 <<>>=
 query <- "identifier == '10' & heading == 'COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE'"
-tm_filter(reut21578.tdc, query)
+tmFilter(reut21578.tdc, query)
 @
 
 There is also a full text search filter available which accepts regular
 expressions:
 <<>>=
-tm_filter(reut21578.tdc, FUN = search_fulltext, "partnership", doclevel = TRUE)
+tmFilter(reut21578.tdc, FUN = searchFullText, "partnership", doclevel = TRUE)
 @
 
 \section*{Adding Data or Metadata}
 Text documents or metadata can be added to text document collections
-with \code{append\_elem} and \code{append\_meta}, respectively. The
+with \code{appendElem} and \code{appendMeta}, respectively. The
 text document collection has two types of metadata: one is the
-metadata on the document collection level (\code{dcmeta}), the other
+metadata on the document collection level (\code{cmeta}), the other
 is the metadata related to the documents (e.g., clusterings)
 (\code{dmeta}) in form of a dataframe. For the method
-\code{append\_elem} it is possible to give a row of values in the
+\code{appendElem} it is possible to give a row of values in the
 dataframe for the added data element.
 <<>>=
 data(crude)
-reut21578.tdc <- append_elem(reut21578.tdc, crude[[1]], 0)
-reut21578.tdc <- append_meta(reut21578.tdc, dcmeta = list(test = c(1,2,3)), dmeta = list(cl1 = 1:11))
+reut21578.tdc <- appendElem(reut21578.tdc, crude[[1]], 0)
+reut21578.tdc <- appendMeta(reut21578.tdc, cmeta = list(test = c(1,2,3)), dmeta = list(cl1 = 1:11))
 summary(reut21578.tdc)
-DCMetaData(reut21578.tdc)
+CMetaData(reut21578.tdc)
 DMetaData(reut21578.tdc)
 @
 
@@ -241,8 +241,8 @@ The metadata of text document collections can be easily modified or
 removed:
 <<>>=
 data(crude)
-reut21578.tdc <- remove_meta(reut21578.tdc, dcname = "test", dname = "cl1")
-DCMetaData(reut21578.tdc)
+reut21578.tdc <- removeMeta(reut21578.tdc, cname = "test", dname = "cl1")
+CMetaData(reut21578.tdc)
 DMetaData(reut21578.tdc)
 @
 
@@ -269,13 +269,13 @@ There is a mechanism available for managing text document
 collections. It is called \class{TextRepository}. A typical use would
 be to save different states of a text document collection. A
 repository has metadata in list format which can be either set with
-\code{append\_elem} as additional argument (e.g., a date when a new
-element is added), or directly with \code{append\_meta}.
+\code{appendElem} as additional argument (e.g., a date when a new
+element is added), or directly with \code{appendMeta}.
 <<>>=
 data(acq)
 repo <- TextRepository(reut21578.tdc)
-repo <- append_elem(repo, acq, list(modified = date()))
-repo <- append_meta(repo, list(moremeta = 5:10))
+repo <- appendElem(repo, acq, list(modified = date()))
+repo <- appendMeta(repo, list(moremeta = 5:10))
 summary(repo)
 RepoMetaData(repo)
 summary(repo[[1]])
@@ -297,12 +297,12 @@ functions (like clustering, classifications, etc.) is possible, this
 package brings some shortcuts. Consider we
 want to find those terms that occur at least 5 times:
 <<>>=
-find_freq_terms(tdm, 5, Inf)
+findFreqTerms(tdm, 5, Inf)
 @
 Or we want to find associations (i.e., terms which correlate) with at
 least $0.97$ correlation for the term \code{crop}:
 <<>>=
-find_assocs(tdm, "crop", 0.97)
+findAssocs(tdm, "crop", 0.97)
 @
 The function also accepts a matrix as first argument (which does not
 inherit from a term-document matrix). This matrix is then interpreted

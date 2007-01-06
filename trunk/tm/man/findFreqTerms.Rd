@@ -1,11 +1,11 @@
-\name{find_freq_terms-methods}
+\name{findFreqTerms-methods}
 \docType{methods}
-\alias{find_freq_terms}
-\alias{find_freq_terms-methods}
-\alias{find_freq_terms,TermDocMatrix,numeric,numeric-method}
-\title{Methods for Function find\_freq\_terms in Package `textmin'}
+\alias{findFreqTerms}
+\alias{findFreqTerms-methods}
+\alias{findFreqTerms,TermDocMatrix,numeric,numeric-method}
+\title{Methods for Function findFreqTerms in Package `textmin'}
 \description{
-Methods for function \code{find_freq_terms} in Package `textmin'
+Methods for function \code{findFreqTerms} in Package `textmin'
 }
 \section{Methods}{
   \describe{

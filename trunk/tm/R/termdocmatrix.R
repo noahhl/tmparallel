@@ -4,7 +4,7 @@
 # Parts of the preprocessing code were adapted from the \pkg{lsa} package. Special thanks to Fridolin Wild.
 
 # Input matrix has to be in term-frequency format
-weight_matrix <- function(m, weighting = "tf") {
+weightMatrix <- function(m, weighting = "tf") {
     type <- match.arg(weighting,c("tf","tf-idf","bin","logical"))
     switch(type,
            "tf" = {
@@ -32,7 +32,7 @@ setMethod("TermDocMatrix",
               tvlist <- lapply(object, textvector, stemming, language, minWordLength, minDocFreq, stopwords)
               tm <- as.matrix(xtabs(Freq ~ ., data = do.call("rbind", tvlist)))
               class(tm) <- "matrix"
-              tm <- weight_matrix(tm, weighting)
+              tm <- weightMatrix(tm, weighting)
 
               new("TermDocMatrix", .Data = tm, Weighting = weighting)
           })
@@ -73,21 +73,21 @@ textvector <- function(doc, stemming = FALSE, language = "english", minWordLengt
     data.frame(docs = ID(doc), terms, Freq, row.names = NULL)
 }
 
-setGeneric("find_freq_terms", function(object, lowfreq, highfreq) standardGeneric("find_freq_terms"))
-setMethod("find_freq_terms",
+setGeneric("findFreqTerms", function(object, lowfreq, highfreq) standardGeneric("findFreqTerms"))
+setMethod("findFreqTerms",
           signature(object = "TermDocMatrix", lowfreq = "numeric", highfreq = "numeric"),
           function(object, lowfreq, highfreq) {
               unique(rownames(which(t(object) >= lowfreq & t(object) <= highfreq, arr.ind = TRUE)))
           })
 
-setGeneric("find_assocs", function(object, term, corlimit) standardGeneric("find_assocs"))
-setMethod("find_assocs",
+setGeneric("findAssocs", function(object, term, corlimit) standardGeneric("findAssocs"))
+setMethod("findAssocs",
           signature(object = "TermDocMatrix", term = "character"),
           function(object, term, corlimit) {
               suppressWarnings(object.cor <- cor(object))
               sort(round(object.cor[term, which(object.cor[term,] > corlimit)], 2), decreasing = TRUE)
           })
-setMethod("find_assocs",
+setMethod("findAssocs",
           signature(object = "matrix", term = "character"),
           function(object, term, corlimit) {
               sort(round(object[term, which(object[term,] > corlimit)], 2), decreasing = TRUE)
