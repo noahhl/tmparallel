@@ -11,6 +11,6 @@ Methods for function \code{stripWhitespace} in Package `textmin'
 \describe{
 
 \item{object = "PlainTextDocument", ...}{Strips any unnecessary
-whitespace from \code{object} return the object.}
+whitespace from \code{object} and return the object.}
 }}
 \keyword{methods}

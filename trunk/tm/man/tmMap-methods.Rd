@@ -8,11 +8,12 @@
 Methods for function \code{tmMap} in Package `textmin'
 }
 \section{Methods}{
-\describe{
-
-\item{object = "TextDocCol", FUN}{Applies \code{FUN} onto each element
-  of \code{object}. Note that metadata is automatically passed to
-  \code{FUN}. \code{FUN} must be a function which returns a
-  \code{TextDocument}.}
-}}
+  \describe{
+    \item{object = "TextDocCol", FUN}{Applies \code{FUN} onto each element
+      of \code{object}. Note that document specific metadata (i.e.,
+      \code{DMetaData(object)} is automatically passed to
+      \code{FUN} as argument \code{DMetaData}. \code{FUN} must be a
+      function which returns a \code{TextDocument}.}
+  }
+}
 \keyword{methods}
