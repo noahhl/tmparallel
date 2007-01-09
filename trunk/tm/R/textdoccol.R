@@ -151,7 +151,7 @@ setMethod("stemDoc",
           function(object, ...) {
               require("Rstem")
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
-              stemmedCorpus <- wordStem(splittedCorpus)
+              stemmedCorpus <- Rstem::wordStem(splittedCorpus)
               Corpus(object) <- paste(stemmedCorpus, collapse = " ")
               return(object)
           })

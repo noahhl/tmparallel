@@ -1,3 +1,8 @@
+2007-01-09  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/textdoccol.R (stemDoc): Use Rstem::wordStem instead of
+	wordStem.
+
 2007-01-06  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/: Changes due to Kurt's review.
