@@ -3,9 +3,9 @@
 \alias{summary-methods}
 \alias{summary,TextDocCol-method}
 \alias{summary,TextRepository-method}
-\title{Methods for Function summary in Package `textmin'}
+\title{Methods for Function summary in Package `tm'}
 \description{
-Methods for function \code{summary} in Package `textmin'
+Methods for function \code{summary} in package \pkg{tm}.
 }
 \section{Methods}{
 \describe{

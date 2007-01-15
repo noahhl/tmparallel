@@ -3,9 +3,9 @@
 \alias{prescindMeta}
 \alias{prescindMeta-methods}
 \alias{prescindMeta,TextDocCol,character-method}
-\title{Methods for Function prescindMetadata in Package `textmin'}
+\title{Methods for Function prescindMetadata in Package `tm'}
 \description{
-Methods for function \code{prescindMeta} in Package `textmin'
+Methods for function \code{prescindMeta} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{

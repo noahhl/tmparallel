@@ -4,9 +4,9 @@
 \alias{appendElem-methods}
 \alias{appendElem,TextDocCol,TextDocument-method}
 \alias{appendElem,TextRepository,TextDocCol-method}
-\title{Methods for Function appendElem in Package `textmin'}
+\title{Methods for Function appendElem in Package `tm'}
 \description{
-Methods for function \code{appendElem} in Package `textmin'
+Methods for function \code{appendElem} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{

@@ -4,9 +4,9 @@
 \alias{removeMeta-methods}
 \alias{removeMeta,TextDocCol-method}
 \alias{removeMeta,TextRepository-method}
-\title{Methods for Function removeMeta in Package `textmin'}
+\title{Methods for Function removeMeta in Package `tm'}
 \description{
-Methods for function \code{removeMeta} in Package `textmin'
+Methods for function \code{removeMeta} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{

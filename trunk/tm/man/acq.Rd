@@ -7,7 +7,7 @@
   information from the Reuters-21578 XML data set. All documents belong
   to the topic \code{acq}.
 }
-\usage{data(acq)}
+\usage{data("acq")}
 \format{A text document collection of 50 text documents.}
 \source{Reuters-21578 Text Categorization Collection Distribution 1.0
   (XML format)}

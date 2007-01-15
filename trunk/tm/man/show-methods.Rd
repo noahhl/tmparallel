@@ -3,9 +3,9 @@
 \alias{show-methods}
 \alias{show,TextDocCol-method}
 \alias{show,TextRepository-method}
-\title{Methods for Function show in Package `textmin'}
+\title{Methods for Function show in Package `tm'}
 \description{
-Methods for function \code{show} in Package `textmin'
+Methods for function \code{show} in package \pkg{tm}.
 }
 \section{Methods}{
 \describe{

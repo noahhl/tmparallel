@@ -7,7 +7,7 @@
   ignored when processing text.
 }
 \usage{
-   data(stopwords_en)
+data("stopwords_en")
 }
 \format{A character vector containing 424 English stopwords.}
 \keyword{datasets}

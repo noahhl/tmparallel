@@ -4,9 +4,9 @@
 \alias{appendMeta-methods}
 \alias{appendMeta,TextDocCol-method}
 \alias{appendMeta,TextRepository-method}
-\title{Methods for Function appendMeta in Package `textmin'}
+\title{Methods for Function appendMeta in Package `tm'}
 \description{
-Methods for function \code{appendMeta} in Package `textmin'
+Methods for function \code{appendMeta} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{

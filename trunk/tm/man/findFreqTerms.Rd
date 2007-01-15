@@ -3,9 +3,9 @@
 \alias{findFreqTerms}
 \alias{findFreqTerms-methods}
 \alias{findFreqTerms,TermDocMatrix,numeric,numeric-method}
-\title{Methods for Function findFreqTerms in Package `textmin'}
+\title{Methods for Function findFreqTerms in Package `tm'}
 \description{
-Methods for function \code{findFreqTerms} in Package `textmin'
+Methods for function \code{findFreqTerms} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{

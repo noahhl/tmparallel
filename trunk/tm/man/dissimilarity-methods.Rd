@@ -4,9 +4,9 @@
 \alias{dissimilarity-methods}
 \alias{dissimilarity,TermDocMatrix,ANY,character-method}
 \alias{dissimilarity,TextDocument,TextDocument,character-method}
-\title{Methods for Function dissimilarity in Package `textmin'}
+\title{Methods for Function dissimilarity in Package `tm'}
 \description{
-Methods for function \code{dissimilarity} in Package `textmin'
+Methods for function \code{dissimilarity} in package \pkg{tm}.
 }
 \section{Methods}{
 \describe{
@@ -17,7 +17,7 @@ Methods for function \code{dissimilarity} in Package `textmin'
   \itemize{
     \item \code{cosine} Cosine Measure
     \item \code{pearson} Pearson Measure
-    \item \code{extjacc} Extended Jaccardi Measure
+    \item \code{extjacc} Extended Jaccard Measure
   }
   Formally the dissimilarity is returned in form of a \code{dist}
   object.
@@ -29,7 +29,7 @@ Methods for function \code{dissimilarity} in Package `textmin'
   \itemize{
     \item \code{cosine} Cosine Measure
     \item \code{pearson} Pearson Measure
-    \item \code{extjacc} Extended Jaccardi Measure
+    \item \code{extjacc} Extended Jaccard Measure
   }}
 }}
 \keyword{methods}

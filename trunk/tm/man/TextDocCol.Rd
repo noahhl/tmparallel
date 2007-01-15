@@ -7,7 +7,7 @@
   Constructs a text document collection.
 }
 \usage{
-\S4method{TextDocCol}{Source}(object, parser = read_plain, load = FALSE,...)
+\S4method{TextDocCol}{Source}(object, parser = readPlain, load = FALSE,...)
 }
 \arguments{
   \item{object}{a \code{Source} object.}

@@ -4,9 +4,9 @@
 \alias{asPlain-methods}
 \alias{asPlain,PlainTextDocument,ANY-method}
 \alias{asPlain,XMLTextDocument,function-method}
-\title{Methods for Function asPlain in Package `textmin'}
+\title{Methods for Function asPlain in Package `tm'}
 \description{
-Methods for function \code{asPlain} in Package `textmin'
+Methods for function \code{asPlain} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{

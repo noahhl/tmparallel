@@ -3,9 +3,9 @@
 \alias{stemDoc}
 \alias{stemDoc-methods}
 \alias{stemDoc,PlainTextDocument-method}
-\title{Methods for Function stemDoc in Package `textmin'}
+\title{Methods for Function stemDoc in Package `tm'}
 \description{
-Methods for function \code{stemDoc} in Package `textmin'
+Methods for function \code{stemDoc} in package \pkg{tm}.
 }
 \section{Methods}{
 \describe{

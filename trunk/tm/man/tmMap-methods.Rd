@@ -3,9 +3,9 @@
 \alias{tmMap}
 \alias{tmMap-methods}
 \alias{tmMap,TextDocCol,function-method}
-\title{Methods for Function tmMap in Package `textmin'}
+\title{Methods for Function tmMap in Package `tm'}
 \description{
-Methods for function \code{tmMap} in Package `textmin'
+Methods for function \code{tmMap} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{

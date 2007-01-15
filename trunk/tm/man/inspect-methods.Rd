@@ -3,9 +3,9 @@
 \alias{inspect}
 \alias{inspect-methods}
 \alias{inspect,TextDocCol-method}
-\title{Methods for Function inspect in Package `textmin'}
+\title{Methods for Function inspect in Package `tm'}
 \description{
-Methods for function \code{inspect} in Package `textmin'
+Methods for function \code{inspect} in package \pkg{tm}.
 }
 \section{Methods}{
 \describe{

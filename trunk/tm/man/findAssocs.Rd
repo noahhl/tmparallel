@@ -4,9 +4,9 @@
 \alias{findAssocs-methods}
 \alias{findAssocs,TermDocMatrix,character-method}
 \alias{findAssocs,matrix,character-method}
-\title{Methods for Function findAssocs in Package `textmin'}
+\title{Methods for Function findAssocs in Package `tm'}
 \description{
-Methods for function \code{findAssocs} in Package `textmin'
+Methods for function \code{findAssocs} in package \pkg{tm}.
 }
 \section{Methods}{
 \describe{

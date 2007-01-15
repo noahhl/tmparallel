@@ -13,11 +13,10 @@ readGmane(...)
 }
 \details{
   Formally this function is a function generator, i.e., it returns a
-  function (which reads in a RSS feed) with
-  a well-defined
-  signature, but can access passed over arguments via lexical
-  scoping. This is especially useful for reader functions for complex
-  data structures which need a lot of configuration options.
+  function (which reads in an RSS feed) with a well-defined signature,
+  but can access passed over arguments via lexical scoping.  This is
+  especially useful for reader functions for complex data structures
+  which need a lot of configuration options.
 }
 \value{
   A \code{function} with the signature \code{elem, load,

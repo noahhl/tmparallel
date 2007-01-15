@@ -17,14 +17,14 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{Weighting}:}{Object of class \code{"character"} containing
+    \item{\code{Weighting}:}{Object of class \code{character} containing
       the mode which was applied on the matrix. Possible are term
       frequency \code{"tf"}, term frequency-inverse document frequency
       \code{"tf-idf"}, binary \code{"bin"} and logical \code{"logical"}.}
   }
 }
 \section{Extends}{
-Class \code{"matrix"}, directly.
+Class \code{matrix}, directly.
 }
 \section{Methods}{
   \describe{

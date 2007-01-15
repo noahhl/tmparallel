@@ -3,9 +3,9 @@
 \alias{tmFilter}
 \alias{tmFilter-methods}
 \alias{tmFilter,TextDocCol-method}
-\title{Methods for Function tmFilter in Package `textmin'}
+\title{Methods for Function tmFilter in Package `tm'}
 \description{
-Methods for function \code{tmFilter} in Package `textmin'
+Methods for function \code{tmFilter} in package \pkg{tm}..
 }
 \section{Methods}{
   \describe{

@@ -3,9 +3,9 @@
 \alias{c-methods}
 \alias{c,TextDocCol-method}
 \alias{c,TextDocument-method}
-\title{Methods for Function c in Package `textmin'}
+\title{Methods for Function c in Package `tm'}
 \description{
-Methods for function \code{c} in Package `textmin'
+Methods for function \code{c} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{

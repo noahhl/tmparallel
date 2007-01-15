@@ -13,9 +13,9 @@ Objects can be created by calls of the form \code{new("DirSource", ...)}.
   \describe{
     \item{\code{FileList}:}{Object of class \code{character} giving the
       filelist in the directory}
-    \item{\code{LoDSupport}:}{Object of class \code{"logical"}
+    \item{\code{LoDSupport}:}{Object of class \code{logical}
       indicating Load on Demand Support}
-    \item{\code{Position}:}{Object of class \code{"numeric"} giving the
+    \item{\code{Position}:}{Object of class \code{numeric} giving the
       position in the source}
   }
 }

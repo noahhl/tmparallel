@@ -3,9 +3,9 @@
 \alias{stripWhitespace}
 \alias{stripWhitespace-methods}
 \alias{stripWhitespace,PlainTextDocument-method}
-\title{Methods for Function stripWhitespace in Package `textmin'}
+\title{Methods for Function stripWhitespace in Package `tm'}
 \description{
-Methods for function \code{stripWhitespace} in Package `textmin'
+Methods for function \code{stripWhitespace} in package \pkg{tm}.
 }
 \section{Methods}{
 \describe{
