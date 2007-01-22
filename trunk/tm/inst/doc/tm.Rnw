@@ -1,7 +1,8 @@
 \documentclass[a4paper]{article}
 
 \usepackage[utf8]{inputenc}
-\usepackage{courier}
+\DeclareUnicodeCharacter{201C}{"}
+\DeclareUnicodeCharacter{201D}{"}
 
 \newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
 \newcommand{\class}[1]{\mbox{\textsf{#1}}}
@@ -75,14 +76,14 @@ Plain text files in a directory:
 <<>>=
 # Plain text
 txt <- system.file("texts", "txt", package = "tm")
-(Ovid.tdc <- TextDocCol(DirSource(txt), load = TRUE))
+(OvidTDC <- TextDocCol(DirSource(txt), load = TRUE))
 @
 
 A single comma separated values file:
 <<>>=
 # Comma separated values
-cars.csv <- system.file("texts", "cars.csv", package = "tm")
-TextDocCol(CSVSource(cars.csv))
+cars <- system.file("texts", "cars.csv", package = "tm")
+TextDocCol(CSVSource(cars))
 @
 
 Reuters21578 files either in directory (one document per file) or a single
@@ -91,23 +92,23 @@ as input:
 <<>>=
 # Reuters21578 XML
 reut21578 <- system.file("texts", "reut21578", package = "tm")
-reut21578.xml <- system.file("texts", "reut21578.xml", package = "tm")
-reut21578.xml.gz <- system.file("texts", "reut21578.xml.gz", package = "tm")
+reut21578XML <- system.file("texts", "reut21578.xml", package = "tm")
+reut21578XMLgz <- system.file("texts", "reut21578.xml.gz", package = "tm")
 
-(reut21578.tdc <- TextDocCol(DirSource(reut21578), readReut21578XML))
+(reut21578TDC <- TextDocCol(DirSource(reut21578), readReut21578XML))
 
-TextDocCol(ReutersSource(reut21578.xml), readReut21578XML)
-TextDocCol(ReutersSource(gzfile(reut21578.xml.gz)), readReut21578XML)
+TextDocCol(ReutersSource(reut21578XML), readReut21578XML)
+TextDocCol(ReutersSource(gzfile(reut21578XMLgz)), readReut21578XML)
 @
 
 Analogously for files in the Reuters Corpus Volume 1 format:
 <<>>=
 # Reuters Corpus Volume 1
 rcv1 <- system.file("texts", "rcv1", package = "tm")
-rcv1.xml <- system.file("texts", "rcv1.xml", package = "tm")
+rcv1XML <- system.file("texts", "rcv1.xml", package = "tm")
 
 TextDocCol(DirSource(rcv1), readRCV1, load = TRUE)
-TextDocCol(ReutersSource(rcv1.xml), readRCV1)
+TextDocCol(ReutersSource(rcv1XML), readRCV1)
 @
 
 Or mails from newsgroups (as found in the UCI KDD newsgroup data set):
@@ -133,9 +134,9 @@ database). \code{summary} gives more details on metadata than
 \code{show}, whereas in order to actually see the content of text
 documents use the command \code{inspect} on a collection.
 <<>>=
-show(Ovid.tdc)
-summary(Ovid.tdc)
-inspect(Ovid.tdc[1:2])
+show(OvidTDC)
+summary(OvidTDC)
+inspect(OvidTDC[1:2])
 @
 
 \section*{Transformations}
@@ -156,44 +157,44 @@ necessary to call this explicitly, as other functions working on text
 corpora trigger this function for not-loaded documents (the corpus is
 automatically loaded if accessed via \code{[[}).
 <<>>=
-reut21578.tdc <- tmMap(reut21578.tdc, loadDoc)
+reut21578TDC <- tmMap(reut21578TDC, loadDoc)
 @
 
 \subsection*{Converting to Plaintext Documents}
-The text document collection \code{reut21578.tdc} contains documents
+The text document collection \code{reut21578TDC} contains documents
 in XML format. We have no further use for the XML interna and just
 want to work with the text content. This can be done by converting the
 documents to plaintext documents. It is done by the generic
 \code{asPlain} in assistance by a converter function
 \code{convertReut21578XMLPlain} which knows how to actually do it.
 <<>>=
-reut21578.tdc <- tmMap(reut21578.tdc, asPlain, convertReut21578XMLPlain)
+reut21578TDC <- tmMap(reut21578TDC, asPlain, convertReut21578XMLPlain)
 @
 
 \subsection*{Eliminating Extra Whitespace}
 Extra whitespace is eliminated by:
 <<>>=
-reut21578.tdc <- tmMap(reut21578.tdc, stripWhitespace)
+reut21578TDC <- tmMap(reut21578TDC, stripWhitespace)
 @
 
 \subsection*{Convert to Lower Case}
 Conversion to lower case by:
 <<>>=
-reut21578.tdc <- tmMap(reut21578.tdc, tmTolower)
+reut21578TDC <- tmMap(reut21578TDC, tmTolower)
 @
 
 \subsection*{Remove Stopwords}
 Removal of stopwords by:
 <<>>=
-data(stopwords_en)
-reut21578.tdc <- tmMap(reut21578.tdc, removeWords, stopwords_en)
+data(stopwordsEn)
+reut21578TDC <- tmMap(reut21578TDC, removeWords, stopwordsEn)
 @
 
 \subsection*{Stemming}
 Stemming is done by:
 <<>>=
 if (require("Rstem"))
-    tmMap(reut21578.tdc, stemDoc)
+    tmMap(reut21578TDC, stemDoc)
 @
 
 \section*{Filters}
@@ -210,13 +211,13 @@ heading and an \code{ID} equal to 10 (both are metadata slot
 variables of the text document).
 <<>>=
 query <- "identifier == '10' & heading == 'COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE'"
-tmFilter(reut21578.tdc, query)
+tmFilter(reut21578TDC, query)
 @
 
 There is also a full text search filter available which accepts regular
 expressions:
 <<>>=
-tmFilter(reut21578.tdc, FUN = searchFullText, "partnership", doclevel = TRUE)
+tmFilter(reut21578TDC, FUN = searchFullText, "partnership", doclevel = TRUE)
 @
 
 \section*{Adding Data or Metadata}
@@ -230,11 +231,11 @@ in form of a dataframe. For the method \code{appendElem} it is possible
 to give a row of values in the dataframe for the added data element.
 <<>>=
 data(crude)
-reut21578.tdc <- appendElem(reut21578.tdc, crude[[1]], 0)
-reut21578.tdc <- appendMeta(reut21578.tdc, cmeta = list(test = c(1,2,3)), dmeta = list(cl1 = 1:11))
-summary(reut21578.tdc)
-CMetaData(reut21578.tdc)
-DMetaData(reut21578.tdc)
+reut21578TDC <- appendElem(reut21578TDC, crude[[1]], 0)
+reut21578TDC <- appendMeta(reut21578TDC, cmeta = list(test = c(1,2,3)), dmeta = list(cl1 = 1:11))
+summary(reut21578TDC)
+CMetaData(reut21578TDC)
+DMetaData(reut21578TDC)
 @
 
 \section*{Removing Metadata}
@@ -242,9 +243,9 @@ The metadata of text document collections can be easily modified or
 removed:
 <<>>=
 data(crude)
-reut21578.tdc <- removeMeta(reut21578.tdc, cname = "test", dname = "cl1")
-CMetaData(reut21578.tdc)
-DMetaData(reut21578.tdc)
+reut21578TDC <- removeMeta(reut21578TDC, cname = "test", dname = "cl1")
+CMetaData(reut21578TDC)
+DMetaData(reut21578TDC)
 @
 
 \section*{Operators}
@@ -261,8 +262,8 @@ Note also the custom element-of operator---it checks whether a text
 document is already in a text document collection (metadata is not
 checked, only the corpus):
 <<>>=
-crude[[1]] %IN% reut21578.tdc
-crude[[2]] %IN% reut21578.tdc
+crude[[1]] %IN% reut21578TDC
+crude[[2]] %IN% reut21578TDC
 @
 
 \section*{Keeping Track of Text Document Collections}
@@ -274,7 +275,7 @@ repository has metadata in list format which can be either set with
 element is added), or directly with \code{appendMeta}.
 <<>>=
 data(acq)
-repo <- TextRepository(reut21578.tdc)
+repo <- TextRepository(reut21578TDC)
 repo <- appendElem(repo, acq, list(modified = date()))
 repo <- appendMeta(repo, list(moremeta = 5:10))
 summary(repo)
@@ -288,7 +289,7 @@ A common approach in text mining is to create a term-document matrix
 for given texts. In this package the class \class{TermDocMatrix}
 handles this for text document collections.
 <<>>=
-tdm <- TermDocMatrix(reut21578.tdc)
+tdm <- TermDocMatrix(reut21578TDC)
 tdm[1:8,50:55]
 @
 

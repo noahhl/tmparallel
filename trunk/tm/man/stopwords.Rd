@@ -1,6 +1,6 @@
 \name{stopwords}
 \docType{data}
-\alias{stopwords_en}
+\alias{stopwordsEn}
 \title{English Stopwords}
 \description{
   This dataset contains very common words that typically want to be
