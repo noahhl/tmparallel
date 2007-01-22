@@ -37,7 +37,7 @@ library("tm")
 @
 
 \section*{Data Import}
-The main structure for managing documents is a socalled text document
+The main structure for managing documents is a so-called text document
 collection (\class{TextDocCol}). Its constructor takes following arguments:
 \begin{itemize}
 \item \code{object}: a \class{Source} object which abstracts the input location
@@ -48,7 +48,7 @@ collection (\class{TextDocCol}). Its constructor takes following arguments:
   the documents immediately into memory, and the third is a unique
   identification string.
 \item \code{...}: formally if the passed over \code{parser} function is of
-  class \code{FunctionGenerator}, it is assumed to be a function
+  class~\class{FunctionGenerator}, it is assumed to be a function
   generating a parser. This way custom parsers taking various
   parameters (specified in \code{...}) can be built, which in fact
   must produce a valid parser signature but can access additional
@@ -64,12 +64,12 @@ mixed Reuters file (mixed means several documents are in a single
 file). Except \class{DirSource}, which is designated
 solely for directories on a file system, all other implemented sources
 can take connections as input (a character string is interpreted as
-filename).
+file path).
 
 This package ships with several readers (\code{readPlain()}
 (default), \code{readRCV1()}, \code{readReut21578XML()},
 \code{readGmane()} and \code{readNewsgroup()}). The default just
-reads in the whole input file and interprets the content as text.
+reads in the whole input file and interprets its content as text.
 
 Plain text files in a directory:
 <<>>=
@@ -110,7 +110,7 @@ TextDocCol(DirSource(rcv1), readRCV1, load = TRUE)
 TextDocCol(ReutersSource(rcv1.xml), readRCV1)
 @
 
-Or mails from newsgroups (as found in the UCI KDD newsgroup dataset):
+Or mails from newsgroups (as found in the UCI KDD newsgroup data set):
 <<>>=
 # UCI KDD Newsgroup Mails
 newsgroup <- system.file("texts", "newsgroup", package = "tm")
@@ -140,13 +140,13 @@ inspect(Ovid.tdc[1:2])
 
 \section*{Transformations}
 Once we have a text document collection one typically wants to modify
-the documents in it, e.g., stemming, stopword removal, et cetera. All
-this functionality is subsumed by the concept of
-\emph{transformation}s in \pkg{tm}. Transformations are done via
-the \code{tmMap} function which applies a function to all elements
-of the collection. Basically, all transformations work on single text
-documents and \code{tmMap} just applies them to all documents in a
-document collection.
+the documents in it, e.g., stemming, stopword removal, et cetera.  In
+\pkg{tm}, all this functionality is subsumed into the concept of
+\emph{transformation}s . Transformations are done via the \code{tmMap}
+function which applies a function to all elements of the
+collection. Basically, all transformations work on single text documents
+and \code{tmMap} just applies them to all documents in a document
+collection.
 
 \subsection*{Loading Documents into Memory}
 If the source objects supports load on demand, but the user has not
@@ -220,14 +220,14 @@ tmFilter(reut21578.tdc, FUN = searchFullText, "partnership", doclevel = TRUE)
 @
 
 \section*{Adding Data or Metadata}
+
 Text documents or metadata can be added to text document collections
-with \code{appendElem} and \code{appendMeta}, respectively. The
-text document collection has two types of metadata: one is the
-metadata on the document collection level (\code{cmeta}), the other
-is the metadata related to the documents (e.g., clusterings)
-(\code{dmeta}) in form of a dataframe. For the method
-\code{appendElem} it is possible to give a row of values in the
-dataframe for the added data element.
+with \code{appendElem} and \code{appendMeta}, respectively. The text
+document collection has two types of metadata: one is the metadata on
+the document collection level (\code{cmeta}), the other is the metadata
+related to the individual documents (e.g., clusterings) (\code{dmeta})
+in form of a dataframe. For the method \code{appendElem} it is possible
+to give a row of values in the dataframe for the added data element.
 <<>>=
 data(crude)
 reut21578.tdc <- appendElem(reut21578.tdc, crude[[1]], 0)
@@ -252,7 +252,7 @@ Most standard operators (\code{[}, \code{[<-}, \code{[[}, \code{[[<-},
   \code{c}, \code{length}) are available for text document
 collections with semantics similar to standard \proglang{R}
 routines.
-E.g. \code{c} concatenates two (or more) text document
+E.g., \code{c} concatenates two (or more) text document
 collections. Applied to several text documents it returns a text
 document collection. The metadata is automatically updated, if text
 document collections are concatenated (i.e., merged).
