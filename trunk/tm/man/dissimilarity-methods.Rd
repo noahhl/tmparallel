@@ -9,27 +9,20 @@
 Methods for function \code{dissimilarity} in package \pkg{tm}.
 }
 \section{Methods}{
-\describe{
+  \describe{
+    \item{x = "TermDocMatrix", y = "ANY", method = "character"}{Computes the
+      dissimilarity between the documents in \code{x}
+      with the distance measure \code{method}. Any method accepted by
+      \code{dists} from package \pkg{cba} can be passed over.
 
-\item{x = "TermDocMatrix", y = "ANY", method = "character"}{Computes the
-  dissimilarity between the documents in \code{x}
-  with the distance measure \code{method}. Available methods are:
-  \itemize{
-    \item \code{cosine} Cosine Measure
-    \item \code{pearson} Pearson Measure
-    \item \code{extjacc} Extended Jaccard Measure
+      Formally the dissimilarity is returned in form of a \code{dist}
+      object.
+    }
+
+    \item{x = "TextDocument", y = "TextDocument", method =
+      "character"}{Computes the dissimilarity between \code{x} and \code{y}
+      with the distance measure \code{method}. Any method accepted by
+      \code{dists} from package \pkg{cba} can be passed over.}
   }
-  Formally the dissimilarity is returned in form of a \code{dist}
-  object.
 }
-
-\item{x = "TextDocument", y = "TextDocument", method =
-  "character"}{Computes the dissimilarity between \code{x} and \code{y}
-  with the distance measure \code{method}. Available methods are:
-  \itemize{
-    \item \code{cosine} Cosine Measure
-    \item \code{pearson} Pearson Measure
-    \item \code{extjacc} Extended Jaccard Measure
-  }}
-}}
 \keyword{methods}
