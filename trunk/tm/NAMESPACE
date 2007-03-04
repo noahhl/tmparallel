@@ -49,6 +49,7 @@ exportMethods(
               # TextDocCol
               "DMetaData",
               "CMetaData",
+              "DBControl",
 
               # TextRepository
               "RepoMetaData",

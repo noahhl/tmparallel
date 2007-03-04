@@ -188,7 +188,7 @@ setClass("MetaDataNode",
 
 # Text document collection
 setClass("TextDocCol",
-         representation(DMetaData = "data.frame", CMetaData = "MetaDataNode"),
+         representation(DMetaData = "data.frame", CMetaData = "MetaDataNode", DBControl = "list"),
          contains = c("list"))
 
 # DMetaData = *MetaData* available for all *D*ocuments
@@ -198,7 +198,31 @@ if (!isGeneric("DMetaData")) {
     else fun <- function(object) standardGeneric("DMetaData")
     setGeneric("DMetaData", fun)
 }
-setMethod("DMetaData", "TextDocCol", function(object) object@DMetaData)
+setMethod("DMetaData", "TextDocCol",
+          function(object) {
+              if (DBControl(object)[["useDB"]]) {
+                  db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
+                  result <- dbFetch(db, "DMetaData")
+                  dbDisconnect(db)
+                  return(result)
+              }
+              else
+                  return(object@DMetaData)
+          })
+setGeneric("DMetaData<-", function(x, value) standardGeneric("DMetaData<-"))
+setReplaceMethod("DMetaData", "TextDocCol",
+                 function(x, value) {
+                     if (DBControl(x)[["useDB"]]) {
+                         db <- dbInit(DBControl(x)[["dbName"]], DBControl(object)[["dbType"]])
+                         db[["DMetaData"]] <- value
+                         dbDisconnect(db)
+                         return(x)
+                     }
+                     else {
+                         x@DMetaData <- value
+                         return(x)
+                     }
+                 })
 
 # CMetaData = *MetaData* describing only the Document *C*ollection itself
 if (!isGeneric("CMetaData")) {
@@ -208,6 +232,14 @@ if (!isGeneric("CMetaData")) {
     setGeneric("CMetaData", fun)
 }
 setMethod("CMetaData", "TextDocCol", function(object) object@CMetaData)
+
+if (!isGeneric("DBControl")) {
+    if (is.function("DBControl"))
+        fun <- DBControl
+    else fun <- function(object) standardGeneric("DBControl")
+    setGeneric("DBControl", fun)
+}
+setMethod("DBControl", "TextDocCol", function(object) object@DBControl)
 
 # Repository for text document collections
 setClass("TextRepository",

@@ -1,12 +1,22 @@
 # Author: Ingo Feinerer
 
 # The "..." are additional arguments for the FunctionGenerator parser
-setGeneric("TextDocCol", function(object, parser = readPlain, load = FALSE, ...) standardGeneric("TextDocCol"))
+setGeneric("TextDocCol", function(object,
+                                  parser = readPlain,
+                                  load = FALSE,
+                                  dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
+                                  ...) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           signature(object = "Source"),
-          function(object, parser = readPlain, load = FALSE, ...) {
+          function(object, parser = readPlain, load = FALSE, dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"), ...) {
               if (inherits(parser, "FunctionGenerator"))
                   parser <- parser(...)
+
+              if (dbControl$useDb) {
+                  if (!dbCreate(dbControl$dbName, dbControl$dbType))
+                      stop("error in creating database")
+                  db <- dbInit(dbControl$dbName, dbControl$dbType)
+              }
 
               tdl <- list()
               counter <- 1
@@ -17,17 +27,31 @@ setMethod("TextDocCol",
                   # we need to load the corpus into memory at startup
                   if (!object@LoDSupport)
                       load <- TRUE
-                  tdl <- c(tdl, list(parser(elem, load, as.character(counter))))
+                  doc <- parser(elem, load, as.character(counter))
+                  if (dbControl$useDb) {
+                      dbInsert(db, ID(doc), doc)
+                      tdl <- c(tdl, ID(doc))
+                  }
+                  else
+                      tdl <- c(tdl, list(doc))
                   counter <- counter + 1
               }
 
-              dmeta.df <- data.frame(MetaID = rep(0, length(tdl)), stringsAsFactors = FALSE)
+              df <- data.frame(MetaID = rep(0, length(tdl)), stringsAsFactors = FALSE)
+              if (dbControl$useDb) {
+                  dbInsert(db, "DMetaData", df)
+                  dmeta.df <- data.frame(key = "DMetaData")
+                  dbDisconnect(db)
+              }
+              else
+                  dmeta.df <- df
+
               cmeta.node <- new("MetaDataNode",
                             NodeID = 0,
                             MetaData = list(create_date = Sys.time(), creator = Sys.getenv("LOGNAME")),
                             children = list())
 
-              return(new("TextDocCol", .Data = tdl, DMetaData = dmeta.df, CMetaData = cmeta.node))
+              return(new("TextDocCol", .Data = tdl, DMetaData = dmeta.df, CMetaData = cmeta.node, DBControl = dbControl))
           })
 
 setGeneric("loadDoc", function(object, ...) standardGeneric("loadDoc"))
@@ -174,7 +198,7 @@ setMethod("tmFilter",
               if (doclevel)
                   return(object[sapply(object, FUN, ..., DMetaData = DMetaData(object))])
               else
-                  return(object[FUN(object, ...)])
+                  return(object[FUN(object, ...)]) # TODO: Check that FUN knows about the database
           })
 
 setGeneric("tmIndex", function(object, ..., FUN = sFilter, doclevel = FALSE) standardGeneric("tmIndex"))
@@ -184,9 +208,10 @@ setMethod("tmIndex",
               if (doclevel)
                   return(sapply(object, FUN, ..., DMetaData = DMetaData(object)))
               else
-                  return(FUN(object, ...))
+                  return(FUN(object, ...)) # TODO: Check that FUN knows about the database
           })
 
+# TODO
 sFilter <- function(object, s, ...) {
     query.df <- DMetaData(object)
     con <- textConnection(s)
@@ -256,8 +281,17 @@ setGeneric("appendElem", function(object, data, meta = NULL) standardGeneric("ap
 setMethod("appendElem",
           signature(object = "TextDocCol", data = "TextDocument"),
           function(object, data, meta = NULL) {
-              object@.Data[[length(object)+1]] <- data
-              object@DMetaData <- rbind(object@DMetaData, c(MetaID = CMetaData(object)@NodeID, meta))
+              if (DBControl(object)[["useDb"]]) {
+                  db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
+                  if (dbExists(db, ID(data)))
+                      warning("document with identical ID already exists")
+                  dbInsert(db, ID(data), data)
+                  dbDisconnect(db)
+                  object@.Data[[length(object)+1]] <- ID(data)
+              }
+              else
+                  object@.Data[[length(object)+1]] <- data
+              DMetaData(object) <- rbind(DMetaData(object), c(MetaID = CMetaData(object)@NodeID, meta))
               return(object)
           })
 
@@ -265,9 +299,10 @@ setGeneric("appendMeta", function(object, cmeta = NULL, dmeta = NULL) standardGe
 setMethod("appendMeta",
           signature(object = "TextDocCol"),
           function(object, cmeta = NULL, dmeta = NULL) {
-              object@CMetaData@MetaData <- c(object@CMetaData@MetaData, cmeta)
-              if (!is.null(cmeta))
-                  object@DMetaData <- cbind(object@DMetaData, dmeta)
+              object@CMetaData@MetaData <- c(CMetaData(object)@MetaData, cmeta)
+              if (!is.null(dmeta)) {
+                  DMetaData(object) <- cbind(DMetaData(object), dmeta)
+              }
               return(object)
           })
 
@@ -279,11 +314,12 @@ setMethod("removeMeta",
                   object@CMetaData@MetaData <- CMetaData(object)@MetaData[names(CMetaData(object)@MetaData) != cname]
               }
               if (!is.null(dname)) {
-                  object@DMetaData <- DMetaData(object)[names(DMetaData(object)) != dname]
+                  DMetaData(object) <- DMetaData(object)[names(DMetaData(object)) != dname]
               }
               return(object)
           })
 
+# TODO
 setGeneric("prescindMeta", function(object, meta) standardGeneric("prescindMeta"))
 setMethod("prescindMeta",
           signature(object = "TextDocCol", meta = "character"),
@@ -311,6 +347,7 @@ setMethod("prescindMeta",
               return(object)
           })
 
+# WARNING: DMetaData is changed (since both use the same database)
 setMethod("[",
           signature(x = "TextDocCol", i = "ANY", j = "ANY", drop = "ANY"),
           function(x, i, j, ... , drop) {
@@ -321,10 +358,11 @@ setMethod("[",
               object@.Data <- x@.Data[i, ..., drop = FALSE]
               df <- as.data.frame(DMetaData(object)[i, ])
               names(df) <- names(DMetaData(object))
-              object@DMetaData <- df
+              object@DMetaData(object) <- df
               return(object)
           })
 
+# TODO
 setMethod("[<-",
           signature(x = "TextDocCol", i = "ANY", j = "ANY", value = "ANY"),
           function(x, i, j, ... , value) {
@@ -336,17 +374,32 @@ setMethod("[<-",
 setMethod("[[",
           signature(x = "TextDocCol", i = "ANY", j = "ANY"),
           function(x, i, j, ...) {
-              return(loadDoc(x@.Data[[i]]))
+              if (DBControl(x)[["useDb"]]) {
+                  db <- dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
+                  result <- dbFetch(db, x@.Data[[i]])
+                  dbDisconnect(db)
+                  return(loadDoc(result))
+              }
+              else
+                  return(loadDoc(x@.Data[[i]]))
           })
 
 setMethod("[[<-",
           signature(x = "TextDocCol", i = "ANY", j = "ANY", value = "ANY"),
           function(x, i, j, ..., value) {
               object <- x
-              object@.Data[[i, ...]] <- value
+              if (DBControl(object)[["useDb"]]) {
+                  db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
+                  index <- object@.Data[[i]]
+                  db[[index]] <- value
+                  dbDisconnect(db)
+              }
+              else
+                  object@.Data[[i, ...]] <- value
               return(object)
           })
 
+# TODO
 # Update \code{NodeID}s of a CMetaData tree
 update_id <- function(object, id = 0, mapping = NULL, left.mapping = NULL, level = 0) {
     # Traversal of (binary) CMetaData tree with setup of \code{NodeID}s
@@ -375,6 +428,7 @@ update_id <- function(object, id = 0, mapping = NULL, left.mapping = NULL, level
     return(list(root = set_id(object), left.mapping = left.mapping, right.mapping = mapping))
 }
 
+# TODO
 setMethod("c",
           signature(x = "TextDocCol"),
           function(x, ..., meta = list(merge_date = Sys.time(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
@@ -391,6 +445,7 @@ setMethod("c",
               return(result)
           })
 
+# TODO
 setGeneric("c2", function(x, y, ..., meta = list(merge_date = Sys.time(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) standardGeneric("c2"))
 setMethod("c2",
           signature(x = "TextDocCol", y = "TextDocCol"),
@@ -444,7 +499,7 @@ setMethod("c2",
               return(object)
           })
 
-
+# TODO
 setMethod("c",
           signature(x = "TextDocument"),
           function(x, ..., recursive = TRUE){
@@ -492,6 +547,7 @@ setMethod("summary",
               }
     })
 
+# TODO
 setGeneric("inspect", function(object) standardGeneric("inspect"))
 setMethod("inspect",
           signature("TextDocCol"),
@@ -501,6 +557,7 @@ setMethod("inspect",
               show(object@.Data)
           })
 
+# TODO
 # No metadata is checked
 setGeneric("%IN%", function(x, y) standardGeneric("%IN%"))
 setMethod("%IN%",

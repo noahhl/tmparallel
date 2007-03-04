@@ -143,7 +143,7 @@ inspect(OvidTDC[1:2])
 Once we have a text document collection one typically wants to modify
 the documents in it, e.g., stemming, stopword removal, et cetera.  In
 \pkg{tm}, all this functionality is subsumed into the concept of
-\emph{transformation}s . Transformations are done via the \code{tmMap}
+\emph{transformation}s. Transformations are done via the \code{tmMap}
 function which applies a function to all elements of the
 collection. Basically, all transformations work on single text documents
 and \code{tmMap} just applies them to all documents in a document
