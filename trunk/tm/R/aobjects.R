@@ -200,7 +200,7 @@ if (!isGeneric("DMetaData")) {
 }
 setMethod("DMetaData", "TextDocCol",
           function(object) {
-              if (DBControl(object)[["useDB"]]) {
+              if (DBControl(object)[["useDb"]]) {
                   db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
                   result <- dbFetch(db, "DMetaData")
                   dbDisconnect(db)
@@ -212,7 +212,7 @@ setMethod("DMetaData", "TextDocCol",
 setGeneric("DMetaData<-", function(x, value) standardGeneric("DMetaData<-"))
 setReplaceMethod("DMetaData", "TextDocCol",
                  function(x, value) {
-                     if (DBControl(x)[["useDB"]]) {
+                     if (DBControl(x)[["useDb"]]) {
                          db <- dbInit(DBControl(x)[["dbName"]], DBControl(object)[["dbType"]])
                          db[["DMetaData"]] <- value
                          dbDisconnect(db)

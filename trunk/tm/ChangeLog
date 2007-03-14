@@ -1,5 +1,8 @@
 2007-03-14  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
+	* Work/tmDataSetup.R: The datasets acq and crude can now be
+	created on the fly.
+
 	* R/stopwords.R: Introduced a function returning the stopwords for
 	a given language (English, German and French at the moment)
 

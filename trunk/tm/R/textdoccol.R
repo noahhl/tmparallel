@@ -357,9 +357,9 @@ setMethod("[",
 
               object <- x
               object@.Data <- x@.Data[i, ..., drop = FALSE]
-              df <- as.data.frame(DMetaData(object)[i, ])
-              names(df) <- names(DMetaData(object))
-              object@DMetaData(object) <- df
+              df <- as.data.frame(DMetaData(x)[i, ])
+              names(df) <- names(DMetaData(x))
+              DMetaData(object) <- df
               return(object)
           })
 
