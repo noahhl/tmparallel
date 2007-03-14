@@ -63,8 +63,10 @@ textvector <- function(doc, stemming = FALSE, language = "english", minWordLengt
     else {
         # stemming?
         if (stemming) {
-            require("Rstem")
-            names(tab) <- Rstem::wordStem(names(tab), language = language)
+            names(tab) <- if (require("Rstem"))
+                Rstem::wordStem(names(tab), language = language)
+            else
+                SnowballStemmer(splittedCorpus, Weka_control(S = language))
         }
         terms <- names(tab)
         Freq <- tab

@@ -169,13 +169,15 @@ setMethod("stripWhitespace",
               return(object)
           })
 
-setGeneric("stemDoc", function(object, ...) standardGeneric("stemDoc"))
+setGeneric("stemDoc", function(object, language = "english", ...) standardGeneric("stemDoc"))
 setMethod("stemDoc",
           signature(object = "PlainTextDocument"),
-          function(object, ...) {
-              require("Rstem")
+          function(object, language = "english", ...) {
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
-              stemmedCorpus <- Rstem::wordStem(splittedCorpus)
+              stemmedCorpus <- if (require("Rstem"))
+                  Rstem::wordStem(splittedCorpus, language)
+              else
+                  SnowballStemmer(splittedCorpus, Weka_control(S = language))
               Corpus(object) <- paste(stemmedCorpus, collapse = " ")
               return(object)
           })
@@ -184,7 +186,6 @@ setGeneric("removeWords", function(object, stopwords, ...) standardGeneric("remo
 setMethod("removeWords",
           signature(object = "PlainTextDocument", stopwords = "character"),
           function(object, stopwords, ...) {
-              require("Rstem")
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
               noStopwordsCorpus <- splittedCorpus[!splittedCorpus %in% stopwords]
               Corpus(object) <- paste(noStopwordsCorpus, collapse = " ")

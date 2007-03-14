@@ -1,5 +1,7 @@
 import(cba)
+import(filehash)
 import(methods)
+import(Snowball)
 import(XML)
 
 export(
@@ -12,8 +14,8 @@ export(
        "convertRCV1Plain",
        "convertMboxEml",
        "sFilter",
-       "preprocessReut21578XML"
-       )
+       "preprocessReut21578XML",
+       "stopwords")
 
 exportMethods(
               # Constructors
