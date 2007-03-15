@@ -5,7 +5,7 @@
 
 # Input matrix has to be in term-frequency format
 weightMatrix <- function(m, weighting = "tf") {
-    type <- match.arg(weighting,c("tf","tf-idf","bin","logical"))
+    type <- match.arg(weighting, c("tf","tf-idf","bin","logical"))
     switch(type,
            "tf" = {
                wm <- m
@@ -38,13 +38,20 @@ setMethod("TermDocMatrix",
           })
 
 textvector <- function(doc, stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
-    txt <- gsub( "\\.|:|\\(|\\)|\\[|\\]|\\{|\\}|,|;|\\?|-|\\!|\"|\'|`|\\^|=|-|/", " ", doc)
-    txt <- gsub("[[:space:]]+", " ", txt)
+    txt <- gsub("[^[:alnum:]]+", " ", doc)
     txt <- tolower(txt)
     txt <- unlist(strsplit(txt, " ", fixed = TRUE))
 
     # stopword filtering?
     if (!is.null(stopwords)) txt = txt[!txt %in% stopwords]
+
+    # stemming
+    if (stemming) {
+        txt <- if (require("Rstem"))
+            Rstem::wordStem(txt, language = language)
+        else
+            SnowballStemmer(txt, Weka_control(S = language))
+    }
 
     # tabulate
     tab <- sort(table(txt), decreasing = TRUE)
@@ -61,13 +68,6 @@ textvector <- function(doc, stemming = FALSE, language = "english", minWordLengt
         Freq <- 0
     }
     else {
-        # stemming?
-        if (stemming) {
-            names(tab) <- if (require("Rstem"))
-                Rstem::wordStem(names(tab), language = language)
-            else
-                SnowballStemmer(splittedCorpus, Weka_control(S = language))
-        }
         terms <- names(tab)
         Freq <- tab
     }

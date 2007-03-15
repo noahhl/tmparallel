@@ -1,5 +1,6 @@
 import(cba)
 import(filehash)
+import(Matrix)
 import(methods)
 import(Snowball)
 import(XML)
