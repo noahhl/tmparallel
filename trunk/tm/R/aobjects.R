@@ -270,8 +270,21 @@ setMethod("RepoMetaData", "TextRepository", function(object) object@RepoMetaData
 
 # Term-document matrix
 setClass("TermDocMatrix",
-         representation(Weighting = "character"),
-         contains = c("matrix"))
+         representation(Data = "Matrix", Weighting = "character"))
+
+if (!isGeneric("Data")) {
+    if (is.function("Data"))
+        fun <- Data
+    else
+        fun <- function(object) standardGeneric("Data")
+    setGeneric("Data", fun)
+}
+setMethod("Data", "TermDocMatrix", function(object) object@Data)
+setGeneric("Data<-", function(x, value) standardGeneric("Data<-"))
+setReplaceMethod("Data", "TermDocMatrix", function(x, value) {
+  x@Data <- value
+  x
+})
 
 if (!isGeneric("Weighting")) {
     if (is.function("Weighting"))
