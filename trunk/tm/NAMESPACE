@@ -43,6 +43,8 @@ exportMethods(
               "Origin<-",
               "Heading",
               "Heading<-",
+              "Language",
+              "Language<-",
               "LocalMetaData",
 
               "Cached",

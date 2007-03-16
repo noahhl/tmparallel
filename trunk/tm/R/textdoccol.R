@@ -2,15 +2,17 @@
 
 # The "..." are additional arguments for the FunctionGenerator parser
 setGeneric("TextDocCol", function(object,
-                                  parser = readPlain,
-                                  load = FALSE,
+                                  parserControl = list(parser = readPlain, language = "en_US", load = FALSE),
                                   dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
                                   ...) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           signature(object = "Source"),
-          function(object, parser = readPlain, load = FALSE, dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"), ...) {
-              if (inherits(parser, "FunctionGenerator"))
-                  parser <- parser(...)
+          function(object,
+                   parserControl = list(parser = readPlain, language = "en_US", load = FALSE),
+                   dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
+                   ...) {
+              if (inherits(parserControl$parser, "FunctionGenerator"))
+                  parserControl$parser <- parserControl$parser(...)
 
               if (dbControl$useDb) {
                   if (!dbCreate(dbControl$dbName, dbControl$dbType))
@@ -26,8 +28,8 @@ setMethod("TextDocCol",
                   # If there is no Load on Demand support
                   # we need to load the corpus into memory at startup
                   if (!object@LoDSupport)
-                      load <- TRUE
-                  doc <- parser(elem, load, as.character(counter))
+                      parserControl$load <- TRUE
+                  doc <- parserControl$parser(elem, parserControl$load, parserControl$language, as.character(counter))
                   if (dbControl$useDb) {
                       dbInsert(db, ID(doc), doc)
                       tdl <- c(tdl, ID(doc))
@@ -104,6 +106,7 @@ setMethod("loadDoc",
               }
           })
 
+# TODO: Check regarding new TextDocCol signature
 setGeneric("tmUpdate", function(object, origin, parser = readPlain, ...) standardGeneric("tmUpdate"))
 # Update is only supported for directories
 # At the moment no other LoD devices are available anyway

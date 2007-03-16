@@ -12,6 +12,7 @@ setClass("TextDocument",
                         ID = "character",
                         Origin = "character",
                         Heading = "character",
+                        Language = "character",
                         LocalMetaData = "list",
                         "VIRTUAL"))
 
@@ -92,6 +93,19 @@ setMethod("Heading", "TextDocument", function(object) object@Heading)
 setGeneric("Heading<-", function(x, value) standardGeneric("Heading<-"))
 setReplaceMethod("Heading", "TextDocument", function(x, value) {
   x@Heading <- value
+  x
+})
+
+if (!isGeneric("Language")) {
+    if (is.function("Language"))
+        fun <- Language
+    else fun <- function(object) standardGeneric("Language")
+    setGeneric("Language", fun)
+}
+setMethod("Language", "TextDocument", function(object) object@Language)
+setGeneric("Language<-", function(x, value) standardGeneric("Language<-"))
+setReplaceMethod("Language", "TextDocument", function(x, value) {
+  x@Language <- value
   x
 })
 

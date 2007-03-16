@@ -24,12 +24,12 @@ weightMatrix <- function(m, weighting = "tf") {
     wm
 }
 
-setGeneric("TermDocMatrix", function(object, weighting = "tf", stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) standardGeneric("TermDocMatrix"))
+setGeneric("TermDocMatrix", function(object, weighting = "tf", stemming = FALSE, minWordLength = 3, minDocFreq = 1, stopwords = NULL) standardGeneric("TermDocMatrix"))
 setMethod("TermDocMatrix",
           signature(object = "TextDocCol"),
-          function(object, weighting = "tf", stemming = FALSE, language = "english",
+          function(object, weighting = "tf", stemming = FALSE,
                    minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
-              tvlist <- lapply(object, textvector, stemming, language, minWordLength, minDocFreq, stopwords)
+              tvlist <- lapply(object, textvector, stemming, minWordLength, minDocFreq, stopwords)
               tm <- as.matrix(xtabs(Freq ~ ., data = do.call("rbind", tvlist)))
               class(tm) <- "matrix"
               tm <- weightMatrix(tm, weighting)
@@ -37,20 +37,23 @@ setMethod("TermDocMatrix",
               new("TermDocMatrix", .Data = tm, Weighting = weighting)
           })
 
-textvector <- function(doc, stemming = FALSE, language = "english", minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
+textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
     txt <- gsub("[^[:alnum:]]+", " ", doc)
     txt <- tolower(txt)
     txt <- unlist(strsplit(txt, " ", fixed = TRUE))
 
     # stopword filtering?
-    if (!is.null(stopwords)) txt = txt[!txt %in% stopwords]
+    if (is.logical(stopwords) && stopwords)
+        txt <- txt[!txt %in% stopwords(Language(doc))]
+    else if (!is.logical(stopwords) && !is.null(stopwords))
+        txt <- txt[!txt %in% stopwords]
 
     # stemming
     if (stemming) {
         txt <- if (require("Rstem"))
-            Rstem::wordStem(txt, language = language)
+            Rstem::wordStem(txt, language = resolveISOCode(Language(doc)))
         else
-            SnowballStemmer(txt, Weka_control(S = language))
+            SnowballStemmer(txt, Weka_control(S = resolveISOCode(Language(doc))))
     }
 
     # tabulate
