@@ -82,14 +82,16 @@ setGeneric("findFreqTerms", function(object, lowfreq, highfreq) standardGeneric(
 setMethod("findFreqTerms",
           signature(object = "TermDocMatrix", lowfreq = "numeric", highfreq = "numeric"),
           function(object, lowfreq, highfreq) {
-              unique(rownames(which(t(Data(object)) >= lowfreq & t(Data(object)) <= highfreq, arr.ind = TRUE)))
+              object <- as(Data(object), "matrix")
+              unique(rownames(which(t(object) >= lowfreq & t(object) <= highfreq, arr.ind = TRUE)))
           })
 
 setGeneric("findAssocs", function(object, term, corlimit) standardGeneric("findAssocs"))
 setMethod("findAssocs",
           signature(object = "TermDocMatrix", term = "character"),
           function(object, term, corlimit) {
-              suppressWarnings(object.cor <- cor(Data(object)))
+              object <- as(Data(object), "matrix")
+              suppressWarnings(object.cor <- cor(object))
               sort(round(object.cor[term, which(object.cor[term,] > corlimit)], 2), decreasing = TRUE)
           })
 setMethod("findAssocs",

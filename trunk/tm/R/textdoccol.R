@@ -106,15 +106,19 @@ setMethod("loadDoc",
               }
           })
 
-# TODO: Check regarding new TextDocCol signature
-setGeneric("tmUpdate", function(object, origin, parser = readPlain, ...) standardGeneric("tmUpdate"))
+setGeneric("tmUpdate", function(object,
+                                origin,
+                                parserControl = list(parser = readPlain, language = "en_US", load = FALSE),
+                                ...) standardGeneric("tmUpdate"))
 # Update is only supported for directories
 # At the moment no other LoD devices are available anyway
 setMethod("tmUpdate",
           signature(object = "TextDocCol", origin = "DirSource"),
-          function(object, origin, parser = readPlain, load = FALSE, ...) {
-              if (inherits(parser, "FunctionGenerator"))
-                  parser <- parser(...)
+          function(object, origin,
+                   parserControl = list(parser = readPlain, language = "en_US", load = FALSE),
+                   ...) {
+              if (inherits(parserControl$parser, "FunctionGenerator"))
+                  parserControl$parser <- parserControl$parser(...)
 
               object.filelist <- unlist(lapply(object, function(x) {as.character(URI(x))[2]}))
               new.files <- setdiff(origin@FileList, object.filelist)
@@ -122,7 +126,7 @@ setMethod("tmUpdate",
               for (filename in new.files) {
                   elem <- list(content = readLines(filename),
                                uri = substitute(file(filename)))
-                  object <- appendElem(object, parser(elem, load, filename))
+                  object <- appendElem(object, parserControl$parser(elem, parserControl$load, parserControl$language, filename))
               }
 
               return(object)
@@ -134,7 +138,18 @@ setMethod("tmMap",
           function(object, FUN, ...) {
               result <- object
               # Note that text corpora are automatically loaded into memory via \code{[[}
-              result@.Data <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
+              if (DBControl(object)[["useDb"]]) {
+                  db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
+                  new <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
+                  ids <- lapply(object, ID)
+                  # Avoidance of explicit loop is probably more efficient
+                  for (i in length(new)) {
+                      db[[ids[i]]] <- new[[i]]
+                  }
+                  dbDisconnect(db)
+              }
+              else
+                  result@.Data <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
               return(result)
           })
 
@@ -215,7 +230,6 @@ setMethod("tmIndex",
                   return(FUN(object, ...)) # TODO: Check that FUN knows about the database
           })
 
-# TODO
 sFilter <- function(object, s, ...) {
     query.df <- DMetaData(object)
     con <- textConnection(s)
@@ -305,7 +319,7 @@ setMethod("appendMeta",
           function(object, cmeta = NULL, dmeta = NULL) {
               object@CMetaData@MetaData <- c(CMetaData(object)@MetaData, cmeta)
               if (!is.null(dmeta)) {
-                  DMetaData(object) <- cbind(DMetaData(object), dmeta)
+                  DMetaData(object) <- cbind(DMetaData(object), eval(dmeta))
               }
               return(object)
           })
@@ -323,18 +337,17 @@ setMethod("removeMeta",
               return(object)
           })
 
-# TODO
 setGeneric("prescindMeta", function(object, meta) standardGeneric("prescindMeta"))
 setMethod("prescindMeta",
           signature(object = "TextDocCol", meta = "character"),
           function(object, meta) {
               for (m in meta) {
-                  if (m %in% c("Author", "DateTimeStamp", "Description", "ID", "Origin", "Heading")) {
+                  if (m %in% c("Author", "DateTimeStamp", "Description", "ID", "Origin", "Heading", "Language")) {
                       local.m <- lapply(object, m)
                       local.m <- lapply(local.m, function(x) if (is.null(x)) return(NA) else return(x))
                       local.m <- unlist(local.m)
-                      object@DMetaData <- cbind(DMetaData(object), data.frame(m = local.m), stringsAsFactors = FALSE)
-                      names(object@DMetaData)[length(object@DMetaData)] <- m
+                      DMetaData(object) <- cbind(DMetaData(object), data.frame(m = local.m), stringsAsFactors = FALSE)
+                      names(DMetaData(object))[length(DMetaData(object))] <- m
                   }
                   else {
                       local.meta <- lapply(object, LocalMetaData)
@@ -344,8 +357,8 @@ setMethod("prescindMeta",
                           local.m <- unlist(local.m)
                       else
                           local.m <- I(local.m)
-                      object@DMetaData <- cbind(DMetaData(object), data.frame(m = local.m), stringsAsFactors = FALSE)
-                      names(object@DMetaData)[length(object@DMetaData)] <- m
+                      DMetaData(object) <- cbind(DMetaData(object), data.frame(m = local.m), stringsAsFactors = FALSE)
+                      names(DMetaData(object))[length(DMetaData(object))] <- m
                   }
               }
               return(object)
@@ -403,7 +416,6 @@ setMethod("[[<-",
               return(object)
           })
 
-# TODO
 # Update \code{NodeID}s of a CMetaData tree
 update_id <- function(object, id = 0, mapping = NULL, left.mapping = NULL, level = 0) {
     # Traversal of (binary) CMetaData tree with setup of \code{NodeID}s
@@ -551,21 +563,51 @@ setMethod("summary",
               }
     })
 
-# TODO
 setGeneric("inspect", function(object) standardGeneric("inspect"))
 setMethod("inspect",
           signature("TextDocCol"),
           function(object) {
               summary(object)
               cat("\n")
-              show(object@.Data)
+              if (DBControl(object)[["useDb"]]) {
+                  db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
+                  show(dbMultiFetch(db, unlist(object)))
+                  dbDisconnect(db)
+              }
+              else
+                  show(object@.Data)
           })
 
-# TODO
 # No metadata is checked
 setGeneric("%IN%", function(x, y) standardGeneric("%IN%"))
 setMethod("%IN%",
           signature(x = "TextDocument", y = "TextDocCol"),
           function(x, y) {
               x %in% y
+          })
+
+setMethod("lapply",
+          signature(X = "TextDocCol"),
+          function(X, FUN, ...) {
+              if (DBControl(X)[["useDb"]]) {
+                  db <- dbInit(DBControl(X)[["dbName"]], DBControl(X)[["dbType"]])
+                  result <- lapply(dbMultiFetch(db, unlist(X)), FUN, ...)
+                  dbDisconnect(db)
+              }
+              else
+                  result <- base::lapply(X, FUN, ...)
+              return(result)
+          })
+
+setMethod("sapply",
+          signature(X = "TextDocCol"),
+          function(X, FUN, ..., simplify = TRUE, USE.NAMES = TRUE) {
+              if (DBControl(X)[["useDb"]]) {
+                  db <- dbInit(DBControl(X)[["dbName"]], DBControl(X)[["dbType"]])
+                  result <- sapply(dbMultiFetch(db, unlist(X)), FUN, ...)
+                  dbDisconnect(db)
+              }
+              else
+                  result <- base::sapply(X, FUN, ...)
+              return(result)
           })

@@ -10,11 +10,11 @@ Methods for function \code{removeMeta} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{
-    \item{object = "TextDocCol", cmeta = NULL, dmeta = NULL}{Returns a text
-      document collection where the \code{cmeta} is removed from the
-      \code{CMetaData} and \code{dmeta} is removed from the \code{DMetaData}.}  
-    \item{object = "TextRepository", cmeta = NULL, dmeta = NULL}{Returns a text
-      repository where \code{cmeta} is removed from the metadata slot of the
+    \item{object = "TextDocCol", cname = NULL, dname = NULL}{Returns a text
+      document collection where the \code{cname} is removed from the
+      \code{CMetaData} and \code{dname} is removed from the \code{DMetaData}.}  
+    \item{object = "TextRepository", cname = NULL, dname = NULL}{Returns a text
+      repository where \code{cname} is removed from the metadata slot of the
       \code{object} text repository.}
   }
 }

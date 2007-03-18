@@ -76,7 +76,11 @@ Plain text files in a directory:
 <<>>=
 # Plain text
 txt <- system.file("texts", "txt", package = "tm")
-(OvidTDC <- TextDocCol(DirSource(txt), load = TRUE))
+#(ovid <- TextDocCol(DirSource(txt),
+#                       parserControl = list(parser = readPlain, language = "en_US", load = TRUE),
+#                       dbControl = list(useDb = TRUE, dbName = "oviddb", dbType = "DB1")))
+(ovid <- TextDocCol(DirSource(txt),
+                       parserControl = list(parser = readPlain, language = "en_US", load = TRUE)))
 @
 
 A single comma separated values file:
@@ -95,10 +99,13 @@ reut21578 <- system.file("texts", "reut21578", package = "tm")
 reut21578XML <- system.file("texts", "reut21578.xml", package = "tm")
 reut21578XMLgz <- system.file("texts", "reut21578.xml.gz", package = "tm")
 
-(reut21578TDC <- TextDocCol(DirSource(reut21578), readReut21578XML))
+(reut21578TDC <- TextDocCol(DirSource(reut21578),
+                            parserControl = list(parser = readReut21578XML, language = "en_US", load = FALSE)))
 
-TextDocCol(ReutersSource(reut21578XML), readReut21578XML)
-TextDocCol(ReutersSource(gzfile(reut21578XMLgz)), readReut21578XML)
+TextDocCol(ReutersSource(reut21578XML),
+           parserControl = list(parser = readReut21578XML, language = "en_US", load = FALSE))
+TextDocCol(ReutersSource(gzfile(reut21578XMLgz)),
+           parserControl = list(parser = readReut21578XML, language = "en_US", load = FALSE))
 @
 
 Analogously for files in the Reuters Corpus Volume 1 format:
@@ -107,8 +114,10 @@ Analogously for files in the Reuters Corpus Volume 1 format:
 rcv1 <- system.file("texts", "rcv1", package = "tm")
 rcv1XML <- system.file("texts", "rcv1.xml", package = "tm")
 
-TextDocCol(DirSource(rcv1), readRCV1, load = TRUE)
-TextDocCol(ReutersSource(rcv1XML), readRCV1)
+TextDocCol(DirSource(rcv1),
+           parserControl = list(parser = readRCV1, language = "en_US", load = TRUE))
+TextDocCol(ReutersSource(rcv1XML),
+           parserControl = list(parser = readRCV1, language = "en_US", load = FALSE))
 @
 
 Or mails from newsgroups (as found in the UCI KDD newsgroup data set):
@@ -116,14 +125,16 @@ Or mails from newsgroups (as found in the UCI KDD newsgroup data set):
 # UCI KDD Newsgroup Mails
 newsgroup <- system.file("texts", "newsgroup", package = "tm")
 
-TextDocCol(DirSource(newsgroup), readNewsgroup, load = TRUE)
+TextDocCol(DirSource(newsgroup),
+           parserControl = list(parser = readNewsgroup, language = "en_US", load = TRUE))
 @
 
 RSS feed as delivered by Gmane for the R mailing list archive:
 <<>>=
 rss <- system.file("texts", "gmane.comp.lang.r.gr.rdf", package = "tm")
 
-TextDocCol(GmaneSource(rss), readGmane)
+TextDocCol(GmaneSource(rss),
+           parserControl = list(parser = readGmane, language = "en_US", load = FALSE))
 @
 
 \section*{Inspecting the Text Document Collection}
@@ -134,9 +145,9 @@ database). \code{summary} gives more details on metadata than
 \code{show}, whereas in order to actually see the content of text
 documents use the command \code{inspect} on a collection.
 <<>>=
-show(OvidTDC)
-summary(OvidTDC)
-inspect(OvidTDC[1:2])
+show(ovid)
+summary(ovid)
+inspect(ovid[1:2])
 @
 
 \section*{Transformations}
@@ -186,15 +197,13 @@ reut21578TDC <- tmMap(reut21578TDC, tmTolower)
 \subsection*{Remove Stopwords}
 Removal of stopwords by:
 <<>>=
-data(stopwordsEn)
-reut21578TDC <- tmMap(reut21578TDC, removeWords, stopwordsEn)
+reut21578TDC <- tmMap(reut21578TDC, removeWords, stopwords("english"))
 @
 
 \subsection*{Stemming}
 Stemming is done by:
 <<>>=
-if (require("Rstem"))
-    tmMap(reut21578TDC, stemDoc)
+tmMap(reut21578TDC, stemDoc)
 @
 
 \section*{Filters}
@@ -290,7 +299,7 @@ for given texts. In this package the class \class{TermDocMatrix}
 handles this for text document collections.
 <<>>=
 tdm <- TermDocMatrix(reut21578TDC)
-tdm[1:8,50:55]
+Data(tdm)[1:8,50:55]
 @
 
 \section*{Operations on Term-Document Matrices}
