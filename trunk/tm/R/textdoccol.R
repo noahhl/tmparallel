@@ -444,24 +444,25 @@ update_id <- function(object, id = 0, mapping = NULL, left.mapping = NULL, level
     return(list(root = set_id(object), left.mapping = left.mapping, right.mapping = mapping))
 }
 
-# TODO
 setMethod("c",
           signature(x = "TextDocCol"),
           function(x, ..., meta = list(merge_date = Sys.time(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
               args <- list(...)
-              if(length(args) == 0)
+              if (length(args) == 0)
                   return(x)
+
+              if (!all(sapply(args, inherits, "TextDocCol")))
+                  stop("not all arguments are text document collections")
+              if (DBControl(x)$useDb == TRUE || any(unlist(sapply(args, DBControl)["useDb", ])))
+                  stop("concatenating text document collections with activated database is not supported")
 
               result <- x
               for (c in args) {
-                  if (!inherits(c, "TextDocCol"))
-                      stop("invalid argument")
                   result <- c2(result, c)
               }
               return(result)
           })
 
-# TODO
 setGeneric("c2", function(x, y, ..., meta = list(merge_date = Sys.time(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) standardGeneric("c2"))
 setMethod("c2",
           signature(x = "TextDocCol", y = "TextDocCol"),
@@ -469,6 +470,9 @@ setMethod("c2",
               object <- x
               # Concatenate data slots
               object@.Data <- c(as(x, "list"), as(y, "list"))
+
+              # Set the DBControl slot
+              object@DBControl <- list(useDb = FALSE, dbName = "", dbType = "DB1")
 
               # Update the CMetaData tree
               cmeta <- new("MetaDataNode", NodeID = 0, MetaData = meta, children = list(CMetaData(x), CMetaData(y)))
@@ -515,7 +519,6 @@ setMethod("c2",
               return(object)
           })
 
-# TODO
 setMethod("c",
           signature(x = "TextDocument"),
           function(x, ..., recursive = TRUE){
@@ -529,7 +532,11 @@ setMethod("c",
                             MetaData = list(create_date = Sys.time(), creator = Sys.getenv("LOGNAME")),
                             children = list())
 
-              return(new("TextDocCol", .Data = list(x, ...), DMetaData = dmeta.df, CMetaData = cmeta.node))
+              return(new("TextDocCol",
+                         .Data = list(x, ...),
+                         DMetaData = dmeta.df,
+                         CMetaData = cmeta.node,
+                         DBControl = list(useDb = FALSE, dbName = "", dbType = "DB1")))
           })
 
 setMethod("length",
