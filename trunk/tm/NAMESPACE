@@ -53,6 +53,7 @@ exportMethods(
 
               # TextDocCol
               "DMetaData",
+              "DMetaData<-",
               "CMetaData",
               "DBControl",
 

@@ -95,7 +95,7 @@ setMethod("findAssocs",
               sort(round(object.cor[term, which(object.cor[term,] > corlimit)], 2), decreasing = TRUE)
           })
 setMethod("findAssocs",
-          signature(object = "Matrix", term = "character"),
+          signature(object = "matrix", term = "character"),
           function(object, term, corlimit) {
               sort(round(object[term, which(object[term,] > corlimit)], 2), decreasing = TRUE)
           })

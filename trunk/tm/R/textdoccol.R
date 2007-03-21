@@ -231,57 +231,22 @@ setMethod("tmIndex",
           })
 
 sFilter <- function(object, s, ...) {
-    query.df <- DMetaData(object)
     con <- textConnection(s)
     tokens <- scan(con, "character")
     close(con)
-    local.meta <- lapply(object, LocalMetaData)
-    local.used.meta <- lapply(local.meta, function(x) names(x) %in% tokens)
-    l.meta <- NULL
-    for (i in 1:length(object)) {
-        l.meta <- c(l.meta, list(local.meta[[i]][local.used.meta[[i]]]))
-    }
-    # Load local meta data from text documents into data frame
-    for (i in 1:length(l.meta)) {
-        l.meta[[i]] <- c(l.meta[[i]], list(author = Author(object[[i]])))
-        l.meta[[i]] <- c(l.meta[[i]], list(datetimestamp = DateTimeStamp(object[[i]])))
-        l.meta[[i]] <- c(l.meta[[i]], list(description = Description(object[[i]])))
-        l.meta[[i]] <- c(l.meta[[i]], list(identifier = ID(object[[i]])))
-        l.meta[[i]] <- c(l.meta[[i]], list(origin = Origin(object[[i]])))
-        l.meta[[i]] <- c(l.meta[[i]], list(heading = Heading(object[[i]])))
-    }
-    for (i in 1:length(l.meta)) {
-        for (j in 1:length(l.meta[[i]])) {
-            m <- l.meta[[i]][[j]]
-            m.name <- names(l.meta[[i]][j])
-            if (!(m.name %in% names(query.df))) {
-                before <- rep(NA, i - 1)
-                after <- rep(NA, length(l.meta) - i)
-                if (length(m) > 1) {
-                    nl <- vector("list", length(l.meta))
-                    nl[1:(i-1)] <- before
-                    nl[i] <- list(m)
-                    nl[(i+1):length(l.meta)] <- after
-                    insert <- data.frame(I(nl), stringsAsFactors = FALSE)
-                }
-                else
-                    insert <- c(before, m, after)
-                query.df <- cbind(query.df, insert, stringsAsFactors = FALSE)
-                names(query.df)[length(query.df)] <- m.name
-            }
-            else {
-                if (is.null(m))
-                    m <- NA
-                if (length(m) > 1) {
-                    rl <- query.df[ , m.name]
-                    rl[i] <- list(m)
-                    query.df[ , m.name] <- data.frame(I(rl), stringsAsFactors = FALSE)
-                }
-                else
-                    query.df[i, m.name] <- m
-            }
-        }
-    }
+    localMetaNames <- unique(names(sapply(object, LocalMetaData)))
+    localMetaTokens <- localMetaNames[localMetaNames %in% tokens]
+    query.df <- DMetaData(prescindMeta(object,
+                                       c("Author", "DateTimeStamp", "Description", "ID",
+                                         "Origin", "Heading", "Language", localMetaTokens)))
+    # Rename to avoid name conflicts
+    names(query.df)[names(query.df) == "Author"] <- "author"
+    names(query.df)[names(query.df) == "DateTimeStamp"] <- "datetimestamp"
+    names(query.df)[names(query.df) == "Description"] <- "description"
+    names(query.df)[names(query.df) == "ID"] <- "identifier"
+    names(query.df)[names(query.df) == "Origin"] <- "origin"
+    names(query.df)[names(query.df) == "Heading"] <- "heading"
+    names(query.df)[names(query.df) == "Language"] <- "language"
     attach(query.df)
     try(result <- rownames(query.df) %in% row.names(query.df[eval(parse(text = s)), ]))
     detach(query.df)
@@ -337,6 +302,7 @@ setMethod("removeMeta",
               return(object)
           })
 
+# WARNING: If dbUse the augmented dataframe is stored (watch out since sFilter calls this method)
 setGeneric("prescindMeta", function(object, meta) standardGeneric("prescindMeta"))
 setMethod("prescindMeta",
           signature(object = "TextDocCol", meta = "character"),
@@ -346,8 +312,8 @@ setMethod("prescindMeta",
                       local.m <- lapply(object, m)
                       local.m <- lapply(local.m, function(x) if (is.null(x)) return(NA) else return(x))
                       local.m <- unlist(local.m)
-                      DMetaData(object) <- cbind(DMetaData(object), data.frame(m = local.m), stringsAsFactors = FALSE)
-                      names(DMetaData(object))[length(DMetaData(object))] <- m
+                      DMetaData(object) <- cbind(DMetaData(object), data.frame(m = local.m, stringsAsFactors = FALSE))
+                      names(DMetaData(object))[which(names(DMetaData(object)) == "m")] <- m
                   }
                   else {
                       local.meta <- lapply(object, LocalMetaData)
@@ -357,8 +323,8 @@ setMethod("prescindMeta",
                           local.m <- unlist(local.m)
                       else
                           local.m <- I(local.m)
-                      DMetaData(object) <- cbind(DMetaData(object), data.frame(m = local.m), stringsAsFactors = FALSE)
-                      names(DMetaData(object))[length(DMetaData(object))] <- m
+                      DMetaData(object) <- cbind(DMetaData(object), data.frame(m = local.m, stringsAsFactors = FALSE))
+                      names(DMetaData(object))[which(names(DMetaData(object)) == "m")] <- m
                   }
               }
               return(object)
