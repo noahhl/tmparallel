@@ -2,13 +2,13 @@
 
 # The "..." are additional arguments for the FunctionGenerator reader
 setGeneric("TextDocCol", function(object,
-                                  readerControl = list(reader = readPlain, language = "en_US", load = FALSE),
+                                  readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE),
                                   dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
                                   ...) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           signature(object = "Source"),
           function(object,
-                   readerControl = list(reader = readPlain, language = "en_US", load = FALSE),
+                   readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE),
                    dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
                    ...) {
               if (attr(readerControl$reader, "FunctionGenerator"))
@@ -108,14 +108,14 @@ setMethod("loadDoc",
 
 setGeneric("tmUpdate", function(object,
                                 origin,
-                                readerControl = list(reader = readPlain, language = "en_US", load = FALSE),
+                                readerControl = list(reader = origin@DefaultReader, language = "en_US", load = FALSE),
                                 ...) standardGeneric("tmUpdate"))
 # Update is only supported for directories
 # At the moment no other LoD devices are available anyway
 setMethod("tmUpdate",
           signature(object = "TextDocCol", origin = "DirSource"),
           function(object, origin,
-                   readerControl = list(reader = readPlain, language = "en_US", load = FALSE),
+                   readerControl = list(reader = origin@DefaultReader, language = "en_US", load = FALSE),
                    ...) {
               if (inherits(readerControl$reader, "FunctionGenerator"))
                   readerControl$reader <- readerControl$reader(...)
