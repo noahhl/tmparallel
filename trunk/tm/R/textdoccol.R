@@ -1,18 +1,18 @@
 # Author: Ingo Feinerer
 
-# The "..." are additional arguments for the FunctionGenerator parser
+# The "..." are additional arguments for the FunctionGenerator reader
 setGeneric("TextDocCol", function(object,
-                                  parserControl = list(parser = readPlain, language = "en_US", load = FALSE),
+                                  readerControl = list(reader = readPlain, language = "en_US", load = FALSE),
                                   dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
                                   ...) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           signature(object = "Source"),
           function(object,
-                   parserControl = list(parser = readPlain, language = "en_US", load = FALSE),
+                   readerControl = list(reader = readPlain, language = "en_US", load = FALSE),
                    dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
                    ...) {
-              if (inherits(parserControl$parser, "FunctionGenerator"))
-                  parserControl$parser <- parserControl$parser(...)
+              if (attr(readerControl$reader, "FunctionGenerator"))
+                  readerControl$reader <- readerControl$reader(...)
 
               if (dbControl$useDb) {
                   if (!dbCreate(dbControl$dbName, dbControl$dbType))
@@ -28,8 +28,8 @@ setMethod("TextDocCol",
                   # If there is no Load on Demand support
                   # we need to load the corpus into memory at startup
                   if (!object@LoDSupport)
-                      parserControl$load <- TRUE
-                  doc <- parserControl$parser(elem, parserControl$load, parserControl$language, as.character(counter))
+                      readerControl$load <- TRUE
+                  doc <- readerControl$reader(elem, readerControl$load, readerControl$language, as.character(counter))
                   if (dbControl$useDb) {
                       dbInsert(db, ID(doc), doc)
                       tdl <- c(tdl, ID(doc))
@@ -108,17 +108,17 @@ setMethod("loadDoc",
 
 setGeneric("tmUpdate", function(object,
                                 origin,
-                                parserControl = list(parser = readPlain, language = "en_US", load = FALSE),
+                                readerControl = list(reader = readPlain, language = "en_US", load = FALSE),
                                 ...) standardGeneric("tmUpdate"))
 # Update is only supported for directories
 # At the moment no other LoD devices are available anyway
 setMethod("tmUpdate",
           signature(object = "TextDocCol", origin = "DirSource"),
           function(object, origin,
-                   parserControl = list(parser = readPlain, language = "en_US", load = FALSE),
+                   readerControl = list(reader = readPlain, language = "en_US", load = FALSE),
                    ...) {
-              if (inherits(parserControl$parser, "FunctionGenerator"))
-                  parserControl$parser <- parserControl$parser(...)
+              if (inherits(readerControl$reader, "FunctionGenerator"))
+                  readerControl$reader <- readerControl$reader(...)
 
               object.filelist <- unlist(lapply(object, function(x) {as.character(URI(x))[2]}))
               new.files <- setdiff(origin@FileList, object.filelist)
@@ -126,7 +126,7 @@ setMethod("tmUpdate",
               for (filename in new.files) {
                   elem <- list(content = readLines(filename),
                                uri = substitute(file(filename)))
-                  object <- appendElem(object, parserControl$parser(elem, parserControl$load, parserControl$language, filename))
+                  object <- appendElem(object, readerControl$reader(elem, readerControl$load, readerControl$language, filename))
               }
 
               return(object)
@@ -197,6 +197,14 @@ setMethod("stemDoc",
               else
                   SnowballStemmer(splittedCorpus, Weka_control(S = language))
               Corpus(object) <- paste(stemmedCorpus, collapse = " ")
+              return(object)
+          })
+
+setGeneric("removePunctuation", function(object, ...) standardGeneric("removePunctuation"))
+setMethod("removePunctuation",
+          signature(object = "PlainTextDocument"),
+          function(object, ...) {
+              Corpus(object) <- gsub("[[:punct:]]+", "", Corpus(object))
               return(object)
           })
 
@@ -530,9 +538,9 @@ setMethod("summary",
                                               "\nThe metadata consists of %d tag-value pairs and a data frame\n"),
                                        length(CMetaData(object)@MetaData)))
                   cat("Available tags are:\n")
-                  cat(names(CMetaData(object)@MetaData), "\n")
+                  cat(strwrap(paste(names(CMetaData(object)@MetaData), collapse = " "), indent = 2, exdent = 2), "\n")
                   cat("Available variables in the data frame are:\n")
-                  cat(names(DMetaData(object)), "\n")
+                  cat(strwrap(paste(names(DMetaData(object)), collapse = " "), indent = 2, exdent = 2), "\n")
               }
     })
 

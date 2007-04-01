@@ -16,7 +16,7 @@ readPlain <- function(...) {
         return(doc)
     }
 }
-class(readPlain) <- "FunctionGenerator"
+attr(readPlain, "FunctionGenerator") <- TRUE
 
 readReut21578XML <- function(...) {
     function(elem, load, language, id) {
@@ -57,7 +57,7 @@ readReut21578XML <- function(...) {
         return(doc)
     }
 }
-class(readReut21578XML) <- "FunctionGenerator"
+attr(readReut21578XML, "FunctionGenerator") <- TRUE
 
 readRCV1 <- function(...) {
     function(elem, load, language, id) {
@@ -85,7 +85,7 @@ readRCV1 <- function(...) {
         return(doc)
     }
 }
-class(readRCV1) <- "FunctionGenerator"
+attr(readRCV1, "FunctionGenerator") <- TRUE
 
 readNewsgroup <- function(...) {
     function(elem, load, language, id) {
@@ -117,7 +117,7 @@ readNewsgroup <- function(...) {
         return(doc)
     }
 }
-class(readNewsgroup) <- "FunctionGenerator"
+attr(readNewsgroup, "FunctionGenerator") <- TRUE
 
 readGmane <- function(...) {
     function(elem, load, language, id) {
@@ -150,7 +150,7 @@ readGmane <- function(...) {
         return(doc)
     }
 }
-class(readGmane) <- "FunctionGenerator"
+attr(readGmane, "FunctionGenerator") <- TRUE
 
 # Converter
 

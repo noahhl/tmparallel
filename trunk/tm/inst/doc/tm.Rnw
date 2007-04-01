@@ -42,17 +42,17 @@ The main structure for managing documents is a so-called text document
 collection (\class{TextDocCol}). Its constructor takes following arguments:
 \begin{itemize}
 \item \code{object}: a \class{Source} object which abstracts the input location
-\item \code{parser}: a parser which constructs a text document from a single element
-  delivered by a source. A parser must have the argument signature \code{(elem,
+\item \code{reader}: a reader which constructs a text document from a single element
+  delivered by a source. A reader must have the argument signature \code{(elem,
     load, id)}. The first argument is the element provided
   from the source, the second indicates whether the user wants to load
   the documents immediately into memory, and the third is a unique
   identification string.
-\item \code{...}: formally if the passed over \code{parser} function is of
+\item \code{...}: formally if the passed over \code{reader} function is of
   class~\class{FunctionGenerator}, it is assumed to be a function
-  generating a parser. This way custom parsers taking various
+  generating a reader. This way custom readers taking various
   parameters (specified in \code{...}) can be built, which in fact
-  must produce a valid parser signature but can access additional
+  must produce a valid reader signature but can access additional
   parameters via lexical scoping (i.e., by the including
   environment).
 \end{itemize}
@@ -77,10 +77,10 @@ Plain text files in a directory:
 # Plain text
 txt <- system.file("texts", "txt", package = "tm")
 #(ovid <- TextDocCol(DirSource(txt),
-#                       parserControl = list(parser = readPlain, language = "en_US", load = TRUE),
+#                       readerControl = list(reader = readPlain, language = "en_US", load = TRUE),
 #                       dbControl = list(useDb = TRUE, dbName = "oviddb", dbType = "DB1")))
 (ovid <- TextDocCol(DirSource(txt),
-                       parserControl = list(parser = readPlain, language = "en_US", load = TRUE)))
+                       readerControl = list(reader = readPlain, language = "en_US", load = TRUE)))
 @
 
 A single comma separated values file:
@@ -100,12 +100,12 @@ reut21578XML <- system.file("texts", "reut21578.xml", package = "tm")
 reut21578XMLgz <- system.file("texts", "reut21578.xml.gz", package = "tm")
 
 (reut21578TDC <- TextDocCol(DirSource(reut21578),
-                            parserControl = list(parser = readReut21578XML, language = "en_US", load = FALSE)))
+                            readerControl = list(reader = readReut21578XML, language = "en_US", load = FALSE)))
 
 TextDocCol(ReutersSource(reut21578XML),
-           parserControl = list(parser = readReut21578XML, language = "en_US", load = FALSE))
+           readerControl = list(reader = readReut21578XML, language = "en_US", load = FALSE))
 TextDocCol(ReutersSource(gzfile(reut21578XMLgz)),
-           parserControl = list(parser = readReut21578XML, language = "en_US", load = FALSE))
+           readerControl = list(reader = readReut21578XML, language = "en_US", load = FALSE))
 @
 
 Analogously for files in the Reuters Corpus Volume 1 format:
@@ -115,9 +115,9 @@ rcv1 <- system.file("texts", "rcv1", package = "tm")
 rcv1XML <- system.file("texts", "rcv1.xml", package = "tm")
 
 TextDocCol(DirSource(rcv1),
-           parserControl = list(parser = readRCV1, language = "en_US", load = TRUE))
+           readerControl = list(reader = readRCV1, language = "en_US", load = TRUE))
 TextDocCol(ReutersSource(rcv1XML),
-           parserControl = list(parser = readRCV1, language = "en_US", load = FALSE))
+           readerControl = list(reader = readRCV1, language = "en_US", load = FALSE))
 @
 
 Or mails from newsgroups (as found in the UCI KDD newsgroup data set):
@@ -126,7 +126,7 @@ Or mails from newsgroups (as found in the UCI KDD newsgroup data set):
 newsgroup <- system.file("texts", "newsgroup", package = "tm")
 
 TextDocCol(DirSource(newsgroup),
-           parserControl = list(parser = readNewsgroup, language = "en_US", load = TRUE))
+           readerControl = list(reader = readNewsgroup, language = "en_US", load = TRUE))
 @
 
 RSS feed as delivered by Gmane for the R mailing list archive:
@@ -134,7 +134,7 @@ RSS feed as delivered by Gmane for the R mailing list archive:
 rss <- system.file("texts", "gmane.comp.lang.r.gr.rdf", package = "tm")
 
 TextDocCol(GmaneSource(rss),
-           parserControl = list(parser = readGmane, language = "en_US", load = FALSE))
+           readerControl = list(reader = readGmane, language = "en_US", load = FALSE))
 @
 
 \section*{Inspecting the Text Document Collection}

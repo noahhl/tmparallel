@@ -194,6 +194,23 @@ setReplaceMethod("Cached", "NewsgroupDocument", function(x, value) {
   x
 })
 
+# Structured text document for sectioned or structured text corpora
+setClass("StructuredTextDocument",
+         representation(URI = "ANY", Cached = "logical"),
+         contains = c("list"))
+
+setMethod("Corpus", "StructuredTextDocument", function(object) object@.Data)
+setReplaceMethod("Corpus", "StructuredTextDocument", function(x, value) {
+    x@.Data <- value
+    x
+})
+setMethod("URI", "StructuredTextDocument", function(object) object@URI)
+setMethod("Cached", "StructuredTextDocument", function(object) object@Cached)
+setReplaceMethod("Cached", "StructuredTextDocument", function(x, value) {
+    x@Cached <- value
+    x
+})
+
 # A node in the metadata tree of a text document collection
 setClass("MetaDataNode",
          representation(NodeID = "numeric",
