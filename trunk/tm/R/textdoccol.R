@@ -42,7 +42,7 @@ setMethod("TextDocCol",
               df <- data.frame(MetaID = rep(0, length(tdl)), stringsAsFactors = FALSE)
               if (dbControl$useDb) {
                   dbInsert(db, "DMetaData", df)
-                  dmeta.df <- data.frame(key = "DMetaData")
+                  dmeta.df <- data.frame(key = "DMetaData", subset = NA)
                   dbDisconnect(db)
               }
               else
@@ -225,7 +225,7 @@ setMethod("tmFilter",
               if (doclevel)
                   return(object[sapply(object, FUN, ..., DMetaData = DMetaData(object))])
               else
-                  return(object[FUN(object, ...)]) # TODO: Check that FUN knows about the database
+                  return(object[FUN(object, ...)])
           })
 
 setGeneric("tmIndex", function(object, ..., FUN = sFilter, doclevel = FALSE) standardGeneric("tmIndex"))
@@ -235,7 +235,7 @@ setMethod("tmIndex",
               if (doclevel)
                   return(sapply(object, FUN, ..., DMetaData = DMetaData(object)))
               else
-                  return(FUN(object, ...)) # TODO: Check that FUN knows about the database
+                  return(FUN(object, ...))
           })
 
 sFilter <- function(object, s, ...) {
@@ -310,7 +310,6 @@ setMethod("removeMeta",
               return(object)
           })
 
-# WARNING: If dbUse the augmented dataframe is stored (watch out since sFilter calls this method)
 setGeneric("prescindMeta", function(object, meta) standardGeneric("prescindMeta"))
 setMethod("prescindMeta",
           signature(object = "TextDocCol", meta = "character"),
@@ -338,7 +337,6 @@ setMethod("prescindMeta",
               return(object)
           })
 
-# WARNING: DMetaData is changed (since both use the same database)
 setMethod("[",
           signature(x = "TextDocCol", i = "ANY", j = "ANY", drop = "ANY"),
           function(x, i, j, ... , drop) {
@@ -347,18 +345,40 @@ setMethod("[",
 
               object <- x
               object@.Data <- x@.Data[i, ..., drop = FALSE]
-              df <- as.data.frame(DMetaData(x)[i, ])
-              names(df) <- names(DMetaData(x))
-              DMetaData(object) <- df
+              if (DBControl(object)[["useDb"]]) {
+                  index <- object@DMetaData[1 , "subset"]
+                  if (is.na(index))
+                      object@DMetaData[1 , "subset"] <- i
+                  else
+                      object@DMetaData[1 , "subset"] <- index[i]
+              }
+              else {
+                  df <- as.data.frame(DMetaData(x)[i, ])
+                  names(df) <- names(DMetaData(x))
+                  DMetaData(object) <- df
+              }
               return(object)
           })
 
-# TODO
 setMethod("[<-",
           signature(x = "TextDocCol", i = "ANY", j = "ANY", value = "ANY"),
           function(x, i, j, ... , value) {
               object <- x
-              object@.Data[i, ...] <- value
+              if (DBControl(object)[["useDb"]]) {
+                  db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
+                  counter <- 1
+                  for (id in object@.Data[i, ...]) {
+                      if (length(value) == 1)
+                          db[[id]] <- value
+                      else {
+                          db[[id]] <- value[[counter]]
+                      }
+                      counter <- counter + 1
+                  }
+                  dbDisconnect(db)
+              }
+              else
+                  object@.Data[i, ...] <- value
               return(object)
           })
 

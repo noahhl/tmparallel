@@ -1,5 +1,8 @@
 2007-04-01  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
+	* R/textdoccol.R: Finished experimental database support. Not yet
+	intensively tested.
+
 	* R/source.R: Now each source has a default reader.
 
 	* R/reader.R: \code{FunctionGenerator} is now an attribute, not a
