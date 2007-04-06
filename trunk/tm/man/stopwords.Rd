@@ -1,13 +1,19 @@
 \name{stopwords}
-\docType{data}
-\alias{stopwordsEn}
-\title{English Stopwords}
+\alias{stopwords}
+\title{Multilingual Stopwords}
 \description{
-  This dataset contains very common words that typically want to be
-  ignored when processing text.
+  Return stopwords in different languages.
 }
 \usage{
-data("stopwords_en")
+stopwords(language = "en")
 }
-\format{A character vector containing 424 English stopwords.}
-\keyword{datasets}
+\arguments{
+  \item{language}{a \code{character} giving the desired language.}
+}
+\details{At the moment supported languages are \code{english},
+  \code{french}, and \code{german}.}
+\value{A character vector containing the requested stopwords.}
+\examples{
+stopwords("english")
+}
+\keyword{file}

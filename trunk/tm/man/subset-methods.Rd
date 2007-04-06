@@ -4,10 +4,10 @@
 \alias{[<--methods}
 \alias{[[-methods}
 \alias{[[<--methods}
-\alias{[,TextDocCol-method}
-\alias{[<-,TextDocCol-method}
-\alias{[[,TextDocCol-method}
-\alias{[[<-,TextDocCol-method}
+\alias{[,TextDocCol,ANY,ANY,ANY-method}
+\alias{[<-,TextDocCol,ANY,ANY,ANY-method}
+\alias{[[,TextDocCol,ANY,ANY-method}
+\alias{[[<-,TextDocCol,ANY,ANY-method}
 \title{Methods for Subset Functions in Package `tm'}
 \description{
   Methods for subset functions \code{[}, \code{[<-}, \code{[[} and

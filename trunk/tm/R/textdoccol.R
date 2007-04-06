@@ -170,6 +170,13 @@ setMethod("asPlain",
 
               return(FUN(xmlRoot(corpus), ...))
           })
+setMethod("asPlain",
+          signature(object = "NewsgroupDocument"),
+          function(object, FUN, ...) {
+              new("PlainTextDocument", .Data = Corpus(object), Cached = TRUE, URI = "", Author = Author(object),
+                  DateTimeStamp = DateTimeStamp(object), Description = Description(object), ID = ID(object),
+                  Origin = Origin(object), Heading = Heading(object), Language = Language(object))
+          })
 
 setGeneric("tmTolower", function(object, ...) standardGeneric("tmTolower"))
 setMethod("tmTolower",

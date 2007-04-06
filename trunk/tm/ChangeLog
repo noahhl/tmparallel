@@ -1,3 +1,10 @@
+2007-04-05  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* man/: Updated parts of the documentation.
+
+	* R/textdoccol.R (asPlain): Added conversion from newsgroup
+	documents to plain text documents.
+
 2007-04-01  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/textdoccol.R: Finished experimental database support. Not yet
@@ -17,7 +24,7 @@
 
 	* R/textdoccol.R (summary): Indent tags. 
 
-	* R/textdocco.R (removePunctuation): Transform method to remove
+	* R/textdoccol.R (removePunctuation): Transform method to remove
 	punctuation marks.
 
 2007-03-21  Ingo Feinerer  <h0125130@wu-wien.ac.at>

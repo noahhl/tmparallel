@@ -11,6 +11,8 @@ Objects can be created by calls of the form \code{new("DirSource", ...)}.
 }
 \section{Slots}{
   \describe{
+    \item{\code{DefaultReader}:}{Object of class \code{function}
+      describing a default reader}
     \item{\code{FileList}:}{Object of class \code{character} giving the
       filelist in the directory}
     \item{\code{LoDSupport}:}{Object of class \code{logical}

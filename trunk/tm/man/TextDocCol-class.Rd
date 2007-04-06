@@ -2,9 +2,13 @@
 \docType{class}
 \alias{TextDocCol-class}
 \alias{CMetaData}
+\alias{DBControl}
 \alias{DMetaData}
+\alias{DMetaData<-}
 \alias{CMetaData,TextDocCol-method}
+\alias{DBControl,TextDocCol-method}
 \alias{DMetaData,TextDocCol-method}
+\alias{DMetaData<-,TextDocCol-method}
 \title{Text document collection}
 \description{
   A class representing a collection of text documents.
@@ -26,6 +30,10 @@
       typically encompasses clustering or classification results which
       basically are metadata for documents but form an own entity (e.g.,
       with its name, the value range, etc.).}
+    \item{\code{DBControl}:}{Object of class \code{list} with three
+      named components: \code{useDb} indicates whether database support
+      is activated, \code{dbName} holds the path to the database
+      storage, and \code{dbType} stores the database type.}
   }
 }
 \section{Extends}{
@@ -38,6 +46,8 @@ Class \code{list}, directly.
       paired list.}
     \item{DMetaData}{\code{signature(object = "TextDocCol")}: returns the
       document specific metadata in form of a data frame.}
+    \item{DBControl}{\code{signature(object = "TextDocCol")}: returns
+      the database configuration settings.}
   }
 }
 \author{Ingo Feinerer}
