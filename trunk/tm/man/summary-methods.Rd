@@ -8,12 +8,15 @@
 Methods for function \code{summary} in package \pkg{tm}.
 }
 \section{Methods}{
-\describe{
-
-\item{object = "TextDocCol"}{Prints a description including information
-  on available metadata tags.}
-
-\item{object = "TextRepository"}{Prints a description including information
-  on available metadata tags.}
-}}
+  \describe{
+    \item{object = "TextDocCol"}{Prints a description including information
+      on available metadata tags.}
+    \item{object = "TextRepository"}{Prints a description including information
+      on available metadata tags.}
+  }
+}
+\examples{
+data("crude")
+summary(crude)
+}
 \keyword{methods}

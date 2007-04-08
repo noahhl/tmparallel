@@ -16,4 +16,9 @@ Methods for function \code{findFreqTerms} in package \pkg{tm}.
     }
   }
 }
+\examples{
+data("crude")
+tdm <- TermDocMatrix(crude)
+findFreqTerms(tdm, 0.5, Inf)
+}
 \keyword{methods}

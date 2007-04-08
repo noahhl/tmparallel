@@ -8,9 +8,14 @@
 Methods for function \code{removeWords} in package \pkg{tm}.
 }
 \section{Methods}{
-\describe{
-
-\item{object = "PlainTextDocument", stopwords = "character"}{Removes all
-words which occur in \code{stopwords} from \code{object} and return the object.}
-}}
+  \describe{
+    \item{object = "PlainTextDocument", stopwords = "character"}{Removes all
+      words which occur in \code{stopwords} from \code{object} and return the object.}
+  }
+}
+\examples{
+data("crude")
+crude[[1]]
+removeWords(crude[[1]], stopwords("english"))
+}
 \keyword{methods}

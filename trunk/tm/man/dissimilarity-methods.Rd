@@ -25,4 +25,10 @@ Methods for function \code{dissimilarity} in package \pkg{tm}.
       \code{dists} from package \pkg{cba} can be passed over.}
   }
 }
+\examples{
+data("crude")
+tdm <- TermDocMatrix(crude)
+dissimilarity(tdm, method = "angular")
+dissimilarity(crude[[1]], crude[[2]], method = "ebinary")
+}
 \keyword{methods}

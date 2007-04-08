@@ -8,9 +8,14 @@
 Methods for function \code{tmTolower} in package \pkg{tm}.
 }
 \section{Methods}{
-\describe{
-
-\item{object = "PlainTextDocument", ...}{Converts all
-words from \code{object} to lower case and return the object.}
-}}
+  \describe{
+    \item{object = "PlainTextDocument", ...}{Converts all
+      words from \code{object} to lower case and return the object.}
+  }
+}
+\examples{
+data("crude")
+crude[[1]]
+tmTolower(crude[[1]])
+}
 \keyword{methods}

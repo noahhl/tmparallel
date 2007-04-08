@@ -13,4 +13,8 @@
       \code{x} occurs in \code{y}.}
   }
 }
+\examples{
+data("crude")
+crude[[1]] \%IN\% crude
+}
 \keyword{methods}

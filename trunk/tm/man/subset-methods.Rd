@@ -17,4 +17,9 @@
   \item{x = "TextDocCol"}{the text document collection to be subsetted
     or modified.}
 }
+\examples{
+data("crude")
+summary(crude[10:15])
+crude[[1]]
+}
 \keyword{methods}

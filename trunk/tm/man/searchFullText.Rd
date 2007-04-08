@@ -14,4 +14,8 @@
       \code{object}'s text corpus.}
   }
 }
+\examples{
+data("crude")
+searchFullText(crude[[1]], "co[m]?pany")
+}
 \keyword{methods}

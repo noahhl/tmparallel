@@ -16,4 +16,8 @@ Methods for function \code{tmMap} in package \pkg{tm}.
       function which returns a \code{TextDocument}.}
   }
 }
+\examples{
+data("crude")
+tmMap(crude, stemDoc)
+}
 \keyword{methods}

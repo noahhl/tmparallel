@@ -15,4 +15,10 @@ Methods for function \code{c} in package \pkg{tm}.
       to a single text document collection.}
   }
 }
+\examples{
+data("acq")
+data("crude")
+summary(c(acq,crude))
+summary(c(acq[[30]],crude[[10]]))
+}
 \keyword{methods}

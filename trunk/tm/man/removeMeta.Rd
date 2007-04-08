@@ -23,4 +23,15 @@ Methods for function \code{removeMeta} in package \pkg{tm}.
   \code{\link{CMetaData}}
   \code{\link{RepoMetaData}}
 }
+\examples{
+data("crude")
+CMetaData(crude)
+DMetaData(crude)
+tdcl <- appendMeta(crude, cmeta = list(created = date()), dmeta = list(numbers = 1:20))
+CMetaData(tdcl)
+DMetaData(tdcl)
+tdcl <- removeMeta(crude, cname = "created", dname = "numbers")
+CMetaData(tdcl)
+DMetaData(tdcl)
+}
 \keyword{methods}

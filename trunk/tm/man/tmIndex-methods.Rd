@@ -21,4 +21,8 @@ Methods for function \code{tmIndex} in package \pkg{tm}.
   \code{\link{sFilter}}
   \code{\link{tmFilter}}
 }
+\examples{
+data("crude")
+tmIndex(crude, FUN = searchFullText, "company", doclevel = TRUE)
+}
 \keyword{methods}

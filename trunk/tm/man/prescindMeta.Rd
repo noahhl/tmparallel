@@ -18,4 +18,9 @@ Methods for function \code{prescindMeta} in package \pkg{tm}.
 \seealso{
   \code{\link{DMetaData}}
 }
+\examples{
+data("crude")
+DMetaData(crude)
+DMetaData(prescindMeta(crude, c("ID", "Heading")))
+}
 \keyword{methods}

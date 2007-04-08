@@ -16,5 +16,10 @@
       document collection.}
     \item{object = "TextRepository"}{Prints some short information on a text
       repository.}
-}}
+  }
+}
+\examples{
+data("crude")
+show(crude[[1]])
+}
 \keyword{methods}

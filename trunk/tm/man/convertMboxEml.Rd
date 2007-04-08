@@ -17,4 +17,8 @@ convertMboxEml(mbox, EmlDir)
   \code{EmlDir} contains the e-mails.
 }
 \author{Ingo Feinerer}
+\examples{
+mbox <- system.file("texts", "gmane.comp.lang.r.general.mbox", package = "tm")
+\dontrun{convertMboxEml(mbox, "emldir/")}
+}
 \keyword{file}

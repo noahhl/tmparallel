@@ -23,4 +23,14 @@ Methods for function \code{appendMeta} in package \pkg{tm}.
   \code{\link{CMetaData}}
   \code{\link{RepoMetaData}}
 }
+\examples{
+data("crude")
+summary(crude)
+CMetaData(crude)
+DMetaData(crude)
+tdcl <- appendMeta(crude, cmeta = list("changed" = date()), dmeta = list("number" = 1:20))
+summary(tdcl)
+CMetaData(tdcl)
+DMetaData(tdcl)
+}
 \keyword{methods}

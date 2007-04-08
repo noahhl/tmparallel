@@ -17,5 +17,11 @@
   An S4 object of class \code{TextRepository} which extends the class
   \code{list} containing text document collections.
 }
+\examples{
+data("crude")
+repo <- TextRepository(crude)
+summary(repo)
+RepoMetaData(repo)
+}
 \author{Ingo Feinerer}
 \keyword{methods}

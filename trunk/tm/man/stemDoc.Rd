@@ -8,9 +8,14 @@
 Methods for function \code{stemDoc} in package \pkg{tm}.
 }
 \section{Methods}{
-\describe{
-
-\item{object = "PlainTextDocument"}{Stems the corpus from \code{object}
-  with Porter's stemming algorithm.}
-}}
+  \describe{
+    \item{object = "PlainTextDocument"}{Stems the corpus from \code{object}
+      with Porter's stemming algorithm.}
+  }
+}
+\examples{
+data("crude")
+crude[[1]]
+stemDoc(crude[[1]])
+}
 \keyword{methods}
