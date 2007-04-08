@@ -42,7 +42,7 @@ setMethod("TextDocCol",
               df <- data.frame(MetaID = rep(0, length(tdl)), stringsAsFactors = FALSE)
               if (dbControl$useDb) {
                   dbInsert(db, "DMetaData", df)
-                  dmeta.df <- data.frame(key = "DMetaData", subset = NA)
+                  dmeta.df <- data.frame(key = "DMetaData", subset = I(list(NA)))
                   dbDisconnect(db)
               }
               else
@@ -353,11 +353,11 @@ setMethod("[",
               object <- x
               object@.Data <- x@.Data[i, ..., drop = FALSE]
               if (DBControl(object)[["useDb"]]) {
-                  index <- object@DMetaData[1 , "subset"]
-                  if (is.na(index))
-                      object@DMetaData[1 , "subset"] <- i
+                  index <- object@DMetaData[[1 , "subset"]]
+                  if (any(is.na(index)))
+                      object@DMetaData[[1 , "subset"]] <- i
                   else
-                      object@DMetaData[1 , "subset"] <- index[i]
+                      object@DMetaData[[1 , "subset"]] <- index[i]
               }
               else {
                   df <- as.data.frame(DMetaData(x)[i, ])
