@@ -140,12 +140,17 @@ setMethod("tmMap",
               # Note that text corpora are automatically loaded into memory via \code{[[}
               if (DBControl(object)[["useDb"]]) {
                   db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
-                  new <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
-                  ids <- lapply(object, ID)
-                  # Avoidance of explicit loop is probably more efficient
-                  for (i in length(new)) {
-                      db[[ids[i]]] <- new[[i]]
+                  i <- 1
+                  for (id in unlist(object)) {
+                      db[[id]] <- FUN(object[[i]], ..., DMetaData = DMetaData(object))
+                      i <- i + 1
                   }
+                  #new <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
+                  #ids <- lapply(object, ID)
+                  # Avoidance of explicit loop is probably more efficient
+                  #for (i in length(new)) {
+                  #    db[[ids[i]]] <- new[[i]]
+                  #}
                   dbDisconnect(db)
               }
               else
