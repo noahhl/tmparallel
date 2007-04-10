@@ -145,12 +145,6 @@ setMethod("tmMap",
                       db[[id]] <- FUN(object[[i]], ..., DMetaData = DMetaData(object))
                       i <- i + 1
                   }
-                  #new <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
-                  #ids <- lapply(object, ID)
-                  # Avoidance of explicit loop is probably more efficient
-                  #for (i in length(new)) {
-                  #    db[[ids[i]]] <- new[[i]]
-                  #}
                   dbDisconnect(db)
               }
               else
@@ -256,9 +250,11 @@ sFilter <- function(object, s, ...) {
     close(con)
     localMetaNames <- unique(names(sapply(object, LocalMetaData)))
     localMetaTokens <- localMetaNames[localMetaNames %in% tokens]
-    query.df <- DMetaData(prescindMeta(object,
-                                       c("Author", "DateTimeStamp", "Description", "ID",
-                                         "Origin", "Heading", "Language", localMetaTokens)))
+    n <- names(DMetaData(object))
+    tags <- c("Author", "DateTimeStamp", "Description", "ID", "Origin", "Heading", "Language", localMetaTokens)
+    query.df <- DMetaData(prescindMeta(object, tags))
+    if (DBControl(object)[["useDb"]])
+        DMetaData(object) <- DMetaData(object)[, setdiff(n, tags), drop = FALSE]
     # Rename to avoid name conflicts
     names(query.df)[names(query.df) == "Author"] <- "author"
     names(query.df)[names(query.df) == "DateTimeStamp"] <- "datetimestamp"
@@ -313,12 +309,10 @@ setGeneric("removeMeta", function(object, cname = NULL, dname = NULL) standardGe
 setMethod("removeMeta",
           signature(object = "TextDocCol"),
           function(object, cname = NULL, dname = NULL) {
-              if (!is.null(cname)) {
+              if (!is.null(cname))
                   object@CMetaData@MetaData <- CMetaData(object)@MetaData[names(CMetaData(object)@MetaData) != cname]
-              }
-              if (!is.null(dname)) {
-                  DMetaData(object) <- DMetaData(object)[names(DMetaData(object)) != dname]
-              }
+              if (!is.null(dname))
+                  DMetaData(object) <- DMetaData(object)[, names(DMetaData(object)) != dname, drop = FALSE]
               return(object)
           })
 
@@ -364,11 +358,8 @@ setMethod("[",
                   else
                       object@DMetaData[[1 , "subset"]] <- index[i]
               }
-              else {
-                  df <- as.data.frame(DMetaData(x)[i, ])
-                  names(df) <- names(DMetaData(x))
-                  DMetaData(object) <- df
-              }
+              else
+                  DMetaData(object) <- DMetaData(x)[i, , drop = FALSE]
               return(object)
           })
 
@@ -596,7 +587,14 @@ setGeneric("%IN%", function(x, y) standardGeneric("%IN%"))
 setMethod("%IN%",
           signature(x = "TextDocument", y = "TextDocCol"),
           function(x, y) {
-              x %in% y
+              if (DBControl(y)[["useDb"]]) {
+                  db <- dbInit(DBControl(y)[["dbName"]], DBControl(y)[["dbType"]])
+                  result <- any(sapply(y, function(x, z) {x %in% Corpus(z)}, x))
+                  dbDisconnect(db)
+              }
+              else
+                  result <- x %in% y
+              return(result)
           })
 
 setMethod("lapply",

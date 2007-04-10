@@ -1,3 +1,10 @@
+2007-04-10  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* Work/testDb.R: Script to test database stuff.
+
+	* R/: Fixed various database related bugs. Seems to be rather
+	useable now, i.e., consider as alpha status for now.
+
 2007-04-08  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/: Fixed some bugs related to database support.
