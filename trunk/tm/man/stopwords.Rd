@@ -10,8 +10,10 @@ stopwords(language = "en")
 \arguments{
   \item{language}{a \code{character} giving the desired language.}
 }
-\details{At the moment supported languages are \code{english},
-  \code{french}, and \code{german}.}
+\details{At the moment supported languages are \code{danish},
+  \code{dutch}, \code{english}, \code{finnish}, \code{french},
+  \code{german}, \code{hungarian}, \code{italian}, \code{norwegian},
+  \code{portuguese}, \code{russian}, \code{spanish}, and \code{swedish}.}
 \value{A character vector containing the requested stopwords.}
 \examples{
 stopwords("english")
