@@ -12,8 +12,9 @@
 \newcommand{\samp}[1]{`\mbox{\texttt{#1}}'}
 \newcommand{\proglang}[1]{\textsf{#1}}
 \newcommand{\set}[1]{\mathcal{#1}}
+\newcommand{\acronym}[1]{\textsc{#1}}
 
-%% \VignetteIndexEntry{Introduction to tm}
+%% \VignetteIndexEntry{Introduction to the tm Package}
 
 \begin{document}
 <<echo=FALSE>>=
@@ -21,7 +22,7 @@ options(width = 75)
 ### for sampling
 set.seed <- 1234
 @
-\title{Introduction to \pkg{tm} --- Text Mining in \proglang{R}}
+\title{Introduction to the \pkg{tm} Package --- Text Mining in \proglang{R}}
 \author{Ingo Feinerer}
 \maketitle
 \sloppy
@@ -41,26 +42,35 @@ library("tm")
 The main structure for managing documents is a so-called text document
 collection (\class{TextDocCol}). Its constructor takes following arguments:
 \begin{itemize}
-\item \code{object}: a \class{Source} object which abstracts the input location
-\item \code{reader}: a reader which constructs a text document from a single element
+\item \code{object}: a \class{Source} object which abstracts the input location.
+\item \code{readerControl}: a list with the named components
+  \code{reader}, \code{language}, \code{load} and optionally
+  \code{...}. A reader constructs a text document from a single element
   delivered by a source. A reader must have the argument signature \code{(elem,
-    load, id)}. The first argument is the element provided
-  from the source, the second indicates whether the user wants to load
-  the documents immediately into memory, and the third is a unique
-  identification string.
-\item \code{...}: formally if the passed over \code{reader} function is of
-  class~\class{FunctionGenerator}, it is assumed to be a function
+    load, language, id)}. The first argument is the element provided
+  from the source, the second gives the text's language, the third
+  indicates whether the user wants to load the documents immediately
+  into memory, and the fourth is a unique identification string.
+  If the passed over \code{reader} function
+  has the attribute~\code{FunctionGenerator}, it is assumed to be a function
   generating a reader. This way custom readers taking various
   parameters (specified in \code{...}) can be built, which in fact
   must produce a valid reader signature but can access additional
   parameters via lexical scoping (i.e., by the including
   environment).
+\item \code{dbControl}: a list with the named components \code{useDb}
+  indicating that database support should be activated, \code{dbName} giving the
+  filename holding the sourced out objects (i.e., the database), and
+  \code{dbType} holding a valid database type as supported by
+  \code{filehash} or \code{filehashSQLite}. Under activated database
+  support the \code{tm} packages tries to keep as few as possible
+  resources in memory under usage of the database.
 \end{itemize}
 
 Available sources are \class{DirSource}, \class{CSVSource},
 \class{GmaneSource} and
 \class{ReutersSource} which handle a directory, a mixed CSV, a Gmane
-mailing list archive RSS feed or a
+mailing list archive \acronym{Rss} feed or a
 mixed Reuters file (mixed means several documents are in a single
 file). Except \class{DirSource}, which is designated
 solely for directories on a file system, all other implemented sources
@@ -69,16 +79,14 @@ file path).
 
 This package ships with several readers (\code{readPlain()}
 (default), \code{readRCV1()}, \code{readReut21578XML()},
-\code{readGmane()} and \code{readNewsgroup()}). The default just
-reads in the whole input file and interprets its content as text.
+\code{readGmane()} and \code{readNewsgroup()}). Each source has a
+default reader which can be overriden. E.g., for \code{Dirsource} the
+default just reads in the whole input files and interprets their
+content as text.
 
 Plain text files in a directory:
 <<>>=
-# Plain text
 txt <- system.file("texts", "txt", package = "tm")
-#(ovid <- TextDocCol(DirSource(txt),
-#                       readerControl = list(reader = readPlain, language = "en_US", load = TRUE),
-#                       dbControl = list(useDb = TRUE, dbName = "oviddb", dbType = "DB1")))
 (ovid <- TextDocCol(DirSource(txt),
                        readerControl = list(reader = readPlain, language = "en_US", load = TRUE)))
 @
@@ -120,7 +128,7 @@ TextDocCol(ReutersSource(rcv1XML),
            readerControl = list(reader = readRCV1, language = "en_US", load = FALSE))
 @
 
-Or mails from newsgroups (as found in the UCI KDD newsgroup data set):
+Or mails from newsgroups (as found in the \acronym{Uci} \acronym{Kdd} newsgroup data set):
 <<>>=
 # UCI KDD Newsgroup Mails
 newsgroup <- system.file("texts", "newsgroup", package = "tm")
@@ -129,7 +137,7 @@ TextDocCol(DirSource(newsgroup),
            readerControl = list(reader = readNewsgroup, language = "en_US", load = TRUE))
 @
 
-RSS feed as delivered by Gmane for the R mailing list archive:
+\acronym{Rss} feed as delivered by Gmane for the \proglang{R} mailing list archive:
 <<>>=
 rss <- system.file("texts", "gmane.comp.lang.r.gr.rdf", package = "tm")
 
@@ -258,8 +266,8 @@ DMetaData(reut21578TDC)
 @
 
 \section*{Operators}
-Most standard operators (\code{[}, \code{[<-}, \code{[[}, \code{[[<-},
-  \code{c}, \code{length}) are available for text document
+Many standard operators and functions (\code{[}, \code{[<-}, \code{[[}, \code{[[<-},
+  \code{c}, \code{length}, \code{lapply}, \code{sapply}) are available for text document
 collections with semantics similar to standard \proglang{R}
 routines.
 E.g., \code{c} concatenates two (or more) text document
@@ -296,14 +304,14 @@ summary(repo[[2]])
 \section*{Creating Term-Document Matrices}
 A common approach in text mining is to create a term-document matrix
 for given texts. In this package the class \class{TermDocMatrix}
-handles this for text document collections.
+handles sparse matrices for text document collections.
 <<>>=
 tdm <- TermDocMatrix(reut21578TDC)
 Data(tdm)[1:8,50:55]
 @
 
 \section*{Operations on Term-Document Matrices}
-Besides the fact that on this matrix a huge amount of \proglang{R}
+Besides the fact that on the \code{Data} part of this matrix a huge amount of \proglang{R}
 functions (like clustering, classifications, etc.) is possible, this
 package brings some shortcuts. Consider we
 want to find those terms that occur at least 5 times:

@@ -2,15 +2,13 @@
 
 # The "..." are additional arguments for the FunctionGenerator reader
 setGeneric("TextDocCol", function(object,
-                                  readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE),
-                                  dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
-                                  ...) standardGeneric("TextDocCol"))
+                                  readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE, ...),
+                                  dbControl = list(useDb = FALSE, dbName = "", dbType = "SQLite")) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           signature(object = "Source"),
           function(object,
-                   readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE),
-                   dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
-                   ...) {
+                   readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE, ...),
+                   dbControl = list(useDb = FALSE, dbName = "", dbType = "SQLite")) {
               if (attr(readerControl$reader, "FunctionGenerator"))
                   readerControl$reader <- readerControl$reader(...)
 
@@ -450,7 +448,7 @@ setMethod("c",
 
               if (!all(sapply(args, inherits, "TextDocCol")))
                   stop("not all arguments are text document collections")
-              if (DBControl(x)$useDb == TRUE || any(unlist(sapply(args, DBControl)["useDb", ])))
+              if (DBControl(x)[["useDb"]] == TRUE || any(unlist(sapply(args, DBControl)["useDb", ])))
                   stop("concatenating text document collections with activated database is not supported")
 
               result <- x
@@ -469,7 +467,7 @@ setMethod("c2",
               object@.Data <- c(as(x, "list"), as(y, "list"))
 
               # Set the DBControl slot
-              object@DBControl <- list(useDb = FALSE, dbName = "", dbType = "DB1")
+              object@DBControl <- list(useDb = FALSE, dbName = "", dbType = "SQLite")
 
               # Update the CMetaData tree
               cmeta <- new("MetaDataNode", NodeID = 0, MetaData = meta, children = list(CMetaData(x), CMetaData(y)))
@@ -533,7 +531,7 @@ setMethod("c",
                          .Data = list(x, ...),
                          DMetaData = dmeta.df,
                          CMetaData = cmeta.node,
-                         DBControl = list(useDb = FALSE, dbName = "", dbType = "DB1")))
+                         DBControl = list(useDb = FALSE, dbName = "", dbType = "SQLite")))
           })
 
 setMethod("length",

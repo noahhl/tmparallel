@@ -19,12 +19,13 @@ readGmane(...)
   which need a lot of configuration options.
 }
 \value{
-  A \code{function} with the signature \code{elem, load, id}:
+  A \code{function} with the signature \code{elem, language, load, id}:
 
   \item{elem}{A \code{list} with the two named elements \code{content}
     and \code{uri}.  The first element must hold the document corpus to
     be read in, the second element must hold a call to the document
     corpus.  The call is evaluated upon a request for load on demand.}
+  \item{language}{A \code{character} giving the text's language.}
   \item{load}{A \code{logical} value indicating whether the document
     corpus should be immediately loaded into memory.}
   \item{id}{A \code{character} representing a unique identification
