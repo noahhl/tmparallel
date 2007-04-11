@@ -21,8 +21,7 @@ dbType = "DB1"))
     necessary (\code{load = FALSE}). This allows to minimize memory
     demands for large document collections. If \code{object} does not
     support load on demand the text corpus is automatically loaded,
-    i.e., this argument is overruled..} \code{...} are optional
-    arguments for the \code{reader}.
+    i.e., this argument is overruled.}
   \item{dbControl}{a list with the named components \code{useDb}
     indicating that database support should be activated, \code{dbName}
     giving the filename holding the sourced out objects (i.e., the
@@ -30,6 +29,7 @@ dbType = "DB1"))
     supported by \pkg{filehash} and \pkg{filehashSQLite}. Under activated database
     support the \code{tm} packages tries to keep as few as possible
     resources in memory under usage of the database.}
+  \item{...}{optional arguments for the \code{reader}.}
 }
 \value{
   An S4 object of class \code{TextDocCol} which extends the class

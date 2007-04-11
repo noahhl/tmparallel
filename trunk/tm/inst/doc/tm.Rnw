@@ -44,8 +44,8 @@ collection (\class{TextDocCol}). Its constructor takes following arguments:
 \begin{itemize}
 \item \code{object}: a \class{Source} object which abstracts the input location.
 \item \code{readerControl}: a list with the named components
-  \code{reader}, \code{language}, \code{load} and optionally
-  \code{...}. A reader constructs a text document from a single element
+  \code{reader}, \code{language}, \code{load}.
+  A reader constructs a text document from a single element
   delivered by a source. A reader must have the argument signature \code{(elem,
     load, language, id)}. The first argument is the element provided
   from the source, the second gives the text's language, the third
@@ -65,6 +65,7 @@ collection (\class{TextDocCol}). Its constructor takes following arguments:
   \code{filehash} or \code{filehashSQLite}. Under activated database
   support the \code{tm} packages tries to keep as few as possible
   resources in memory under usage of the database.
+\item \code{...}: Further arguments to the reader.
 \end{itemize}
 
 Available sources are \class{DirSource}, \class{CSVSource},

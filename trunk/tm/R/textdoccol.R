@@ -2,13 +2,15 @@
 
 # The "..." are additional arguments for the FunctionGenerator reader
 setGeneric("TextDocCol", function(object,
-                                  readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE, ...),
-                                  dbControl = list(useDb = FALSE, dbName = "", dbType = "SQLite")) standardGeneric("TextDocCol"))
+                                  readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE),
+                                  dbControl = list(useDb = FALSE, dbName = "", dbType = "SQLite"),
+                                  ...) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           signature(object = "Source"),
           function(object,
-                   readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE, ...),
-                   dbControl = list(useDb = FALSE, dbName = "", dbType = "SQLite")) {
+                   readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE),
+                   dbControl = list(useDb = FALSE, dbName = "", dbType = "SQLite"),
+                   ...) {
               if (attr(readerControl$reader, "FunctionGenerator"))
                   readerControl$reader <- readerControl$reader(...)
 
