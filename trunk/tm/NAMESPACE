@@ -1,5 +1,5 @@
 import(cba)
-import(filehash)
+import(filehashSQLite)
 import(Matrix)
 import(methods)
 import(Snowball)

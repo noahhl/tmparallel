@@ -7,9 +7,9 @@
   Constructs a text document collection.
 }
 \usage{
-\S4method{TextDocCol}{Source}(object, readerControl(reader = readPlain,
-language = "en_US", load = FALSE, ...), dbControl(dbUse = FALSE, dbName = "",
-dbType = "DB1"))
+\S4method{TextDocCol}{Source}(object, readerControl = list(reader = readPlain,
+language = "en_US", load = FALSE), dbControl = list(dbUse = FALSE, dbName = "",
+dbType = "DB1"), ...)
 }
 \arguments{
   \item{object}{a \code{Source} object.}
