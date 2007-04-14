@@ -22,7 +22,7 @@ options(width = 75)
 ### for sampling
 set.seed <- 1234
 @
-\title{Introduction to the \pkg{tm} Package --- Text Mining in \proglang{R}}
+\title{Introduction to the \pkg{tm} Package\\Text Mining in \proglang{R}}
 \author{Ingo Feinerer}
 \maketitle
 \sloppy
@@ -44,7 +44,7 @@ collection (\class{TextDocCol}). Its constructor takes following arguments:
 \begin{itemize}
 \item \code{object}: a \class{Source} object which abstracts the input location.
 \item \code{readerControl}: a list with the named components
-  \code{reader}, \code{language}, \code{load}.
+  \code{reader}, \code{language}, and \code{load}.
   A reader constructs a text document from a single element
   delivered by a source. A reader must have the argument signature \code{(elem,
     load, language, id)}. The first argument is the element provided
