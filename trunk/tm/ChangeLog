@@ -1,3 +1,8 @@
+2007-04-15  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/resolve.R (resolveISOCode): Added ISO 639-1 codes for
+	languages with available stopwords.
+
 2007-04-14  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* inst/doc/tm.Rnw: Minor corrections in the vignette.
