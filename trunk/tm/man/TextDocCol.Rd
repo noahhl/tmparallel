@@ -9,7 +9,7 @@
 \usage{
 \S4method{TextDocCol}{Source}(object, readerControl = list(reader = object@DefaultReader,
 language = "en_US", load = FALSE), dbControl = list(dbUse = FALSE, dbName = "",
-dbType = "DB1"), ...)
+dbType = "SQLite"), ...)
 }
 \arguments{
   \item{object}{a \code{Source} object.}
