@@ -8,8 +8,7 @@
 }
 \usage{
 \S4method{TermDocMatrix}{TextDocCol}(object, weighting = "tf", stemming
-= FALSE, language = "english", minWordLength = 3, minDocFreq = 1,
-stopwords = NULL)
+= FALSE, minWordLength = 3, minDocFreq = 1, stopwords = NULL)
 }
 \arguments{
   \item{object}{a text document collection}
@@ -23,7 +22,6 @@ stopwords = NULL)
     }
   }
   \item{stemming}{if set, stems words before making the term-document matrix.}
-  \item{language}{the language determines the stemming rules}
   \item{minWordLength}{words smaller than this number are discarded for
     the term-document matrix.}
   \item{minDocFreq}{words that appear less often in documents than this
