@@ -8,7 +8,7 @@
 }
 \usage{
 \S4method{TextDocCol}{Source}(object, readerControl = list(reader = object@DefaultReader,
-language = "en_US", load = FALSE), dbControl = list(dbUse = FALSE, dbName = "",
+language = "en_US", load = FALSE), dbControl = list(useDb = FALSE, dbName = "",
 dbType = "SQLite"), ...)
 }
 \arguments{
