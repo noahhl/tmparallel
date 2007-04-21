@@ -3,13 +3,13 @@
 # The "..." are additional arguments for the FunctionGenerator reader
 setGeneric("TextDocCol", function(object,
                                   readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE),
-                                  dbControl = list(useDb = FALSE, dbName = "", dbType = "SQLite"),
+                                  dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
                                   ...) standardGeneric("TextDocCol"))
 setMethod("TextDocCol",
           signature(object = "Source"),
           function(object,
                    readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE),
-                   dbControl = list(useDb = FALSE, dbName = "", dbType = "SQLite"),
+                   dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
                    ...) {
               if (attr(readerControl$reader, "FunctionGenerator"))
                   readerControl$reader <- readerControl$reader(...)
@@ -469,7 +469,7 @@ setMethod("c2",
               object@.Data <- c(as(x, "list"), as(y, "list"))
 
               # Set the DBControl slot
-              object@DBControl <- list(useDb = FALSE, dbName = "", dbType = "SQLite")
+              object@DBControl <- list(useDb = FALSE, dbName = "", dbType = "DB1")
 
               # Update the CMetaData tree
               cmeta <- new("MetaDataNode", NodeID = 0, MetaData = meta, children = list(CMetaData(x), CMetaData(y)))
@@ -533,7 +533,7 @@ setMethod("c",
                          .Data = list(x, ...),
                          DMetaData = dmeta.df,
                          CMetaData = cmeta.node,
-                         DBControl = list(useDb = FALSE, dbName = "", dbType = "SQLite")))
+                         DBControl = list(useDb = FALSE, dbName = "", dbType = "DB1")))
           })
 
 setMethod("length",

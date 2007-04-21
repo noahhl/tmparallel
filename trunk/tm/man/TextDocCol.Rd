@@ -9,7 +9,7 @@
 \usage{
 \S4method{TextDocCol}{Source}(object, readerControl = list(reader = object@DefaultReader,
 language = "en_US", load = FALSE), dbControl = list(useDb = FALSE, dbName = "",
-dbType = "SQLite"), ...)
+dbType = "DB1"), ...)
 }
 \arguments{
   \item{object}{a \code{Source} object.}
@@ -26,7 +26,7 @@ dbType = "SQLite"), ...)
     indicating that database support should be activated, \code{dbName}
     giving the filename holding the sourced out objects (i.e., the
     database), and \code{dbType} holding a valid database type as
-    supported by \pkg{filehash} and \pkg{filehashSQLite}. Under activated database
+    supported by \pkg{filehash}. Under activated database
     support the \code{tm} packages tries to keep as few as possible
     resources in memory under usage of the database.}
   \item{...}{optional arguments for the \code{reader}.}

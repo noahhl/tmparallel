@@ -1,3 +1,9 @@
+2007-04-21  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* DESCRIPTION: Replaced \pkg{filehashSQLite} with \pkg{filehash}
+	due to ongoing problems. For our purposes the latter is as useful
+	as the replaced package.
+
 2007-04-20  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* man/TextDocCol.Rd: Replaced \code{readPlain} with \code{object@DefaultReader}.
