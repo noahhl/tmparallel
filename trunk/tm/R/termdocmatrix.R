@@ -85,7 +85,7 @@ textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1,
         freqs <- tab
     }
 
-    data.frame(docs = ID(doc), terms, freqs, row.names = NULL)
+    data.frame(docs = ID(doc), terms, freqs, row.names = NULL, stringsAsFactors = FALSE)
 }
 
 setGeneric("findFreqTerms", function(object, lowfreq, highfreq) standardGeneric("findFreqTerms"))
