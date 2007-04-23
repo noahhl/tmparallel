@@ -31,7 +31,11 @@ setMethod("TermDocMatrix",
               tvlist <- lapply(object, textvector, stemming, minWordLength, minDocFreq, stopwords)
               allTerms <- unique(unlist(lapply(tvlist, "[[", "terms")))
 
-              tdm <- Matrix(0, nrow = length(object), ncol = length(allTerms))
+              tdm <- Matrix(0,
+                            nrow = length(object),
+                            ncol = length(allTerms),
+                            dimnames = list(sapply(object, ID), allTerms))
+
               for(i in seq_along(object)) {
                   df <- tvlist[[i]]
                   j <- match(df$terms, allTerms)
