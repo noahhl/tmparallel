@@ -95,7 +95,7 @@ setMethod("loadDoc",
                   mail <- readLines(con)
                   close(con)
                   Cached(object) <- TRUE
-                  for (index in seq(along = mail)) {
+                  for (index in seq_along(mail)) {
                       if (mail[index] == "")
                           break
                   }

@@ -99,7 +99,7 @@ readNewsgroup <- function(...) {
         doc <- if (load) {
             # The header is separated from the body by a blank line.
             # Reference: \url{http://en.wikipedia.org/wiki/E-mail#Internet_e-mail_format}
-            for (index in seq(along = mail)) {
+            for (index in seq_along(mail)) {
                 if (mail[index] == "")
                     break
             }

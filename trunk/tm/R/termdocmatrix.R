@@ -8,20 +8,18 @@ weightMatrix <- function(m, weighting = "tf") {
     type <- match.arg(weighting, c("tf", "tf-idf", "bin", "logical"))
     switch(type,
            "tf" = {
-               wm <- m
+               return(m)
            },
            "tf-idf" = {
-               df <- colSums(((m > 0) * 1))
-               wm <- m * log2(nrow(m) / df)
+               df <- colSums(as(m > 0, "dgCMatrix"))
+               return(m * log2(nrow(m) / df))
            },
            "bin" = {
-               wm <- (m > 0) * 1
+               return(as(m > 0, "dgCMatrix"))
            },
            "logical" = {
-               wm <- m > 0
-           }
-           )
-    wm
+               return(m > 0)
+           })
 }
 
 setGeneric("TermDocMatrix", function(object, weighting = "tf", stemming = FALSE, minWordLength = 3, minDocFreq = 1, stopwords = NULL) standardGeneric("TermDocMatrix"))
@@ -29,24 +27,26 @@ setMethod("TermDocMatrix",
           signature(object = "TextDocCol"),
           function(object, weighting = "tf", stemming = FALSE,
                    minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
-              tvlist <- lapply(object, textvector, stemming, minWordLength, minDocFreq, stopwords)
-              tm <- as.matrix(xtabs(Freq ~ ., data = do.call("rbind", tvlist)))
-              class(tm) <- "matrix"
-              tm <- weightMatrix(tm, weighting)
 
-              new("TermDocMatrix", Data = Matrix(tm), Weighting = weighting)
+              tvlist <- lapply(object, textvector, stemming, minWordLength, minDocFreq, stopwords)
+              allTerms <- unique(unlist(lapply(tvlist, "[[", "terms")))
+
+              tdm <- Matrix(0, nrow = length(object), ncol = length(allTerms))
+              for(i in seq_along(object)) {
+                  df <- tvlist[[i]]
+                  j <- match(df$terms, allTerms)
+                  tdm[i, j] <- df$freqs
+              }
+
+              tdm <- weightMatrix(tdm, weighting)
+
+              new("TermDocMatrix", Data = tdm, Weighting = weighting)
           })
 
 textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
     txt <- gsub("[^[:alnum:]]+", " ", doc)
     txt <- tolower(txt)
     txt <- unlist(strsplit(txt, " ", fixed = TRUE))
-
-    # stopword filtering?
-    if (is.logical(stopwords) && stopwords)
-        txt <- txt[!txt %in% stopwords(Language(doc))]
-    else if (!is.logical(stopwords) && !is.null(stopwords))
-        txt <- txt[!txt %in% stopwords]
 
     # stemming
     if (stemming) {
@@ -56,6 +56,12 @@ textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1,
             SnowballStemmer(txt, Weka_control(S = resolveISOCode(Language(doc))))
     }
 
+    # stopword filtering?
+    if (is.logical(stopwords) && stopwords)
+        txt <- txt[!txt %in% stopwords(Language(doc))]
+    else if (!is.logical(stopwords) && !is.null(stopwords))
+        txt <- txt[!txt %in% stopwords]
+
     # tabulate
     tab <- sort(table(txt), decreasing = TRUE)
 
@@ -63,19 +69,19 @@ textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1,
     tab <- tab[tab >= minDocFreq]
 
     # wordLength filtering?
-    tab <- tab[nchar(names(tab), type="chars") >= minWordLength]
+    tab <- tab[nchar(names(tab), type = "chars") >= minWordLength]
 
     # Is the vector empty?
     if (is.null(names(tab))) {
         terms <- ""
-        Freq <- 0
+        freqs <- 0
     }
     else {
         terms <- names(tab)
-        Freq <- tab
+        freqs <- tab
     }
 
-    data.frame(docs = ID(doc), terms, Freq, row.names = NULL)
+    data.frame(docs = ID(doc), terms, freqs, row.names = NULL)
 }
 
 setGeneric("findFreqTerms", function(object, lowfreq, highfreq) standardGeneric("findFreqTerms"))
