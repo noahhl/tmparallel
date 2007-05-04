@@ -92,8 +92,8 @@ setGeneric("findFreqTerms", function(object, lowfreq, highfreq) standardGeneric(
 setMethod("findFreqTerms",
           signature(object = "TermDocMatrix", lowfreq = "numeric", highfreq = "numeric"),
           function(object, lowfreq, highfreq) {
-              object <- as(Data(object), "matrix")
-              unique(rownames(which(t(object) >= lowfreq & t(object) <= highfreq, arr.ind = TRUE)))
+              m <- as(Data(object), "TsparseMatrix")
+              m@Dimnames[[2]][unique(m@j[m@x >= lowfreq & m@x <= highfreq]) + 1]
           })
 
 setGeneric("findAssocs", function(object, term, corlimit) standardGeneric("findAssocs"))
