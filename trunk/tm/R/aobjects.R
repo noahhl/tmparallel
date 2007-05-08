@@ -197,7 +197,7 @@ setReplaceMethod("Cached", "NewsgroupDocument", function(x, value) {
 # Structured text document for sectioned or structured text corpora
 setClass("StructuredTextDocument",
          representation(URI = "ANY", Cached = "logical"),
-         contains = c("list"))
+         contains = c("list", "TextDocument"))
 
 setMethod("Corpus", "StructuredTextDocument", function(object) object@.Data)
 setReplaceMethod("Corpus", "StructuredTextDocument", function(x, value) {
