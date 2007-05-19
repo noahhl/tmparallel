@@ -85,6 +85,7 @@ exportMethods(
               "searchFullText",
               "findFreqTerms",
               "findAssocs",
+              "removeSparseTerms",
               "appendElem",
               "appendMeta",
               "prescindMeta",

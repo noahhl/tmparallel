@@ -76,7 +76,7 @@ textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1,
     tab <- tab[nchar(names(tab), type = "chars") >= minWordLength]
 
     # Is the vector empty?
-    if (is.null(names(tab))) {
+    if (length(names(tab)) <= 0) {
         terms <- ""
         freqs <- 0
     }
@@ -93,7 +93,7 @@ setMethod("findFreqTerms",
           signature(object = "TermDocMatrix", lowfreq = "numeric", highfreq = "numeric"),
           function(object, lowfreq, highfreq) {
               m <- as(Data(object), "TsparseMatrix")
-              m@Dimnames[[2]][unique(m@j[m@x >= lowfreq & m@x <= highfreq]) + 1]
+              colnames(m)[unique(m@j[m@x >= lowfreq & m@x <= highfreq]) + 1]
           })
 
 setGeneric("findAssocs", function(object, term, corlimit) standardGeneric("findAssocs"))
@@ -108,4 +108,18 @@ setMethod("findAssocs",
           signature(object = "matrix", term = "character"),
           function(object, term, corlimit) {
               sort(round(object[term, which(object[term,] > corlimit)], 2), decreasing = TRUE)
+          })
+
+setGeneric("removeSparseTerms", function(object, sparse) standardGeneric("removeSparseTerms"))
+setMethod("removeSparseTerms",
+          signature(object = "TermDocMatrix", sparse = "numeric"),
+          function(object, sparse) {
+              if ((sparse <= 0) || (sparse >= 1))
+                  warning("invalid sparse factor")
+              else {
+                  m <- as(Data(object), "TsparseMatrix")
+                  t <- table(m@j + 1) > nrow(m) * (1 - sparse)
+                  Data(object) <- m[, as.numeric(names(t[t]))]
+              }
+              return(object)
           })
