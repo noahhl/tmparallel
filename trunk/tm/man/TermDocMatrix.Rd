@@ -31,10 +31,10 @@
     accordance with the documents' language are used.}
 }
 \value{
-  An S4 object of class \code{TermDocMatrix} which extends the class
-  \code{matrix} containing a term-document matrix. The following slots
-  contain useful information:
+  An S4 object of class \code{TermDocMatrix} containing a sparse term-document
+  matrix. The following slots contain useful information:
 
+  \item{Data}{The sparse \code{Matrix}}
   \item{Weighting}{The weighting mode applied to the term-document matrix}
 }
 \examples{
