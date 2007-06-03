@@ -1,3 +1,8 @@
+2007-06-03  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/textdoccol.R (replaceWords): Added method to replace a set of
+	words by a single word. Useful for synonyms.
+
 2007-05-22  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* man/TermDocMatrix.Rd: Fixed documentation on Data slot.

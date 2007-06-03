@@ -222,6 +222,15 @@ setMethod("removeWords",
               return(object)
           })
 
+setGeneric("replaceWords", function(object, words, by, ...) standardGeneric("replaceWords"))
+setMethod("replaceWords",
+          signature(object = "PlainTextDocument", words = "character", by = "character"),
+          function(object, words, by, ...) {
+              pattern <- paste(words, collapse = "|")
+              Corpus(object) <- gsub(pattern, by, Corpus(object))
+              return(object)
+          })
+
 setGeneric("tmFilter", function(object, ..., FUN = sFilter, doclevel = FALSE) standardGeneric("tmFilter"))
 setMethod("tmFilter",
           signature(object = "TextDocCol"),
