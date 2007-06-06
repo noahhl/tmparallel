@@ -81,7 +81,7 @@ file path).
 This package ships with several readers (\code{readPlain()}
 (default), \code{readRCV1()}, \code{readReut21578XML()},
 \code{readGmane()} and \code{readNewsgroup()}). Each source has a
-default reader which can be overriden. E.g., for \code{Dirsource} the
+default reader which can be overridden. E.g., for \code{DirSource} the
 default just reads in the whole input files and interprets their
 content as text.
 

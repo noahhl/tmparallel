@@ -1,3 +1,7 @@
+2007-06-06  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* inst/doc/tm.Rnw: Fixed some typos in vignette.
+
 2007-06-03  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/textdoccol.R (replaceWords): Added method to replace a set of
