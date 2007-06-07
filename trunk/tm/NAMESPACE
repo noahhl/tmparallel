@@ -106,6 +106,8 @@ exportMethods(
 exportClasses("TextDocument",
               "PlainTextDocument",
               "XMLTextDocument",
+              "Reuters21578Document",
+              "RCV1Document",
               "NewsgroupDocument",
               "StructuredTextDocument",
               "TextDocCol",

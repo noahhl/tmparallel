@@ -168,6 +168,30 @@ setMethod("asPlain",
               return(FUN(xmlRoot(corpus), ...))
           })
 setMethod("asPlain",
+          signature(object = "Reuters21578Document"),
+          function(object, FUN, ...) {
+              FUN <- convertReut21578XMLPlain
+              corpus <- Corpus(object)
+
+              # As XMLDocument is no native S4 class, restore valid information
+              class(corpus) <- "XMLDocument"
+              names(corpus) <- c("doc","dtd")
+
+              return(FUN(xmlRoot(corpus), ...))
+          })
+setMethod("asPlain",
+          signature(object = "RCV1Document"),
+          function(object, FUN, ...) {
+              FUN <- convertRCV1Plain
+              corpus <- Corpus(object)
+
+              # As XMLDocument is no native S4 class, restore valid information
+              class(corpus) <- "XMLDocument"
+              names(corpus) <- c("doc","dtd")
+
+              return(FUN(xmlRoot(corpus), ...))
+          })
+setMethod("asPlain",
           signature(object = "NewsgroupDocument"),
           function(object, FUN, ...) {
               new("PlainTextDocument", .Data = Corpus(object), Cached = TRUE, URI = "", Author = Author(object),

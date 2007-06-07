@@ -177,6 +177,14 @@ setReplaceMethod("Cached", "XMLTextDocument", function(x, value) {
     x
 })
 
+# Reuters21578 XML document
+setClass("Reuters21578Document",
+         contains = "XMLTextDocument")
+
+# Reuters RCV1 document
+setClass("RCV1Document",
+         contains = "XMLTextDocument")
+
 # Newsgroup document as found in the Newsgroup dataset of the UCI KDD archive
 setClass("NewsgroupDocument",
          representation(Newsgroup = "character", URI = "ANY", Cached = "logical"),

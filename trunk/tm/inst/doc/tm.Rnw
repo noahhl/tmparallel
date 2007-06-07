@@ -185,10 +185,9 @@ The text document collection \code{reut21578TDC} contains documents
 in XML format. We have no further use for the XML interna and just
 want to work with the text content. This can be done by converting the
 documents to plaintext documents. It is done by the generic
-\code{asPlain} in assistance by a converter function
-\code{convertReut21578XMLPlain} which knows how to actually do it.
+\code{asPlain}.
 <<>>=
-reut21578TDC <- tmMap(reut21578TDC, asPlain, convertReut21578XMLPlain)
+reut21578TDC <- tmMap(reut21578TDC, asPlain)
 @
 
 \subsection*{Eliminating Extra Whitespace}

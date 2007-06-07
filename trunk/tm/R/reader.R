@@ -45,11 +45,11 @@ readReut21578XML <- function(...) {
         topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
 
         doc <- if (load) {
-            new("XMLTextDocument", .Data = tree, URI = elem$uri, Cached = TRUE, Author = author,
+            new("Reuters21578Document", .Data = tree, URI = elem$uri, Cached = TRUE, Author = author,
                 DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
                 Heading = heading, Language = language, LocalMetaData = list(Topics = topics))
         } else {
-            new("XMLTextDocument", URI = elem$uri, Cached = FALSE, Author = author,
+            new("Reuters21578Document", URI = elem$uri, Cached = FALSE, Author = author,
                 DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
                 Heading = heading, Language = language, LocalMetaData = list(Topics = topics))
         }
@@ -73,11 +73,11 @@ readRCV1 <- function(...) {
         heading <- xmlValue(node[["title"]])
 
         doc <- if (load) {
-            new("XMLTextDocument", .Data = tree, URI = elem$uri, Cached = TRUE, Author = "",
+            new("RCV1Document", .Data = tree, URI = elem$uri, Cached = TRUE, Author = "",
                 DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
                 Heading = heading, Language = language)
         } else {
-            new("XMLTextDocument", URI = elem$uri, Cached = FALSE, Author = "",
+            new("RCV1Document", URI = elem$uri, Cached = FALSE, Author = "",
                 DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
                 Heading = heading, Language = language)
         }
