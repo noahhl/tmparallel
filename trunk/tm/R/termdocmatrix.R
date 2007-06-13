@@ -22,13 +22,15 @@ weightMatrix <- function(m, weighting = "tf") {
            })
 }
 
-setGeneric("TermDocMatrix", function(object, weighting = "tf", stemming = FALSE, minWordLength = 3, minDocFreq = 1, stopwords = NULL) standardGeneric("TermDocMatrix"))
+setGeneric("TermDocMatrix",
+           function(object, weighting = "tf", stemming = FALSE, minWordLength = 3,
+                    minDocFreq = 1, stopwords = NULL, dictionary = NULL) standardGeneric("TermDocMatrix"))
 setMethod("TermDocMatrix",
           signature(object = "TextDocCol"),
-          function(object, weighting = "tf", stemming = FALSE,
-                   minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
+          function(object, weighting = "tf", stemming = FALSE, minWordLength = 3,
+                   minDocFreq = 1, stopwords = NULL, dictionary = NULL) {
 
-              tvlist <- lapply(object, textvector, stemming, minWordLength, minDocFreq, stopwords)
+              tvlist <- lapply(object, textvector, stemming, minWordLength, minDocFreq, stopwords, dictionary)
               allTerms <- unique(unlist(lapply(tvlist, "[[", "terms")))
 
               tdm <- Matrix(0,
@@ -47,7 +49,8 @@ setMethod("TermDocMatrix",
               new("TermDocMatrix", Data = tdm, Weighting = weighting)
           })
 
-textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1, stopwords = NULL) {
+textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1,
+                       stopwords = NULL, dictionary = NULL) {
     txt <- gsub("[^[:alnum:]]+", " ", doc)
     txt <- tolower(txt)
     txt <- unlist(strsplit(txt, " ", fixed = TRUE))
@@ -66,8 +69,11 @@ textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1,
     else if (!is.logical(stopwords) && !is.null(stopwords))
         txt <- txt[!txt %in% stopwords]
 
-    # tabulate
-    tab <- sort(table(txt), decreasing = TRUE)
+    # if dictionary is set tabulate against it
+    tab <-  if (is.null(dictionary))
+        sort(table(txt), decreasing = TRUE)
+    else
+        sort(table(factor(txt, levels = dictionary)), decreasing = TRUE)
 
     # with threshold minDocFreq
     tab <- tab[tab >= minDocFreq]
@@ -122,4 +128,11 @@ setMethod("removeSparseTerms",
                   Data(object) <- m[, as.numeric(names(t[t]))]
               }
               return(object)
+          })
+
+setGeneric("createDictionary", function(object) standardGeneric("createDictionary"))
+setMethod("createDictionary",
+          signature(object = "TermDocMatrix"),
+          function(object) {
+              Dictionary(colnames(Data(object)))
           })

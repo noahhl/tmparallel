@@ -8,7 +8,8 @@
 }
 \usage{
 \S4method{TermDocMatrix}{TextDocCol}(object, weighting = "tf", stemming
-= FALSE, minWordLength = 3, minDocFreq = 1, stopwords = NULL)
+= FALSE, minWordLength = 3, minDocFreq = 1, stopwords = NULL, dictionary
+= NULL)
 }
 \arguments{
   \item{object}{a text document collection}
@@ -29,6 +30,9 @@
   \item{stopwords}{either a plain text file with all stopwords or a
     Boolean value. In the latter case the default stopwords in
     accordance with the documents' language are used.}
+  \item{dictionary}{a character vector holding terms to be used as the
+    columns for the term-document matrix. No other terms from
+    \code{object} will be counted.}
 }
 \value{
   An S4 object of class \code{TermDocMatrix} containing a sparse term-document

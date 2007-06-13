@@ -23,6 +23,7 @@ exportMethods(
               "TextDocCol",
               "TextRepository",
               "TermDocMatrix",
+              "Dictionary",
               "DirSource",
               "CSVSource",
               "ReutersSource",
@@ -65,6 +66,9 @@ exportMethods(
               "Data<-",
               "Weighting",
               "Weighting<-",
+
+              # Dictionary
+              "createDictionary",
 
               # Sources
               "stepNext",
@@ -114,6 +118,7 @@ exportClasses("TextDocument",
               "MetaDataNode",
               "TextRepository",
               "TermDocMatrix",
+              "Dictionary",
               "Source",
               "DirSource",
               "CSVSource",
