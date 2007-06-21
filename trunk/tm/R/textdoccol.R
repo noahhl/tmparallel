@@ -220,7 +220,7 @@ setMethod("stemDoc",
           signature(object = "PlainTextDocument"),
           function(object, language = "english", ...) {
               splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
-              stemmedCorpus <- if (require("Rstem"))
+              stemmedCorpus <- if (require("Rstem", quietly = TRUE))
                   Rstem::wordStem(splittedCorpus, language)
               else
                   SnowballStemmer(splittedCorpus, Weka_control(S = language))

@@ -57,7 +57,7 @@ textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1,
 
     # stemming
     if (stemming) {
-        txt <- if (require("Rstem"))
+        txt <- if (require("Rstem", quietly = TRUE))
             Rstem::wordStem(txt, language = resolveISOCode(Language(doc)))
         else
             SnowballStemmer(txt, Weka_control(S = resolveISOCode(Language(doc))))
