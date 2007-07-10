@@ -6,7 +6,3 @@ TODO:
 
 * Avoid as.matrix() call in findAssocs for sparse matrices
   - we need a working cor() function on sparse matrices
-
-* Update vignette to include new features
-  - removeSparseTerms()
-  - Dictionary
