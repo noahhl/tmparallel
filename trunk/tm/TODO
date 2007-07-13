@@ -1,8 +1,7 @@
 TODO:
 
-* Transpose term-document matrix
-  - according to Martin Maechler accessing matrix columns is faster
-  - naming makes more sense (now we have documents as rows and terms as columns)
-
 * Avoid as.matrix() call in findAssocs for sparse matrices
   - we need a working cor() function on sparse matrices
+
+* Clean up TermDocMatrix constructor
+  - avoid the bunch of arguments

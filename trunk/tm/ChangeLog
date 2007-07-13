@@ -1,3 +1,13 @@
+2007-07-13  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* DESCRIPTION: Moved proxy from Depends to Imports to avoid name clashes.
+
+	* inst/stopwords/english.dat: Added the term "yes" to stopwords.
+
+	* R/termdocmatrix.R (dim): dim function for TermDocMatrix.
+
+	* R/preprocess.R (convertMboxEml): Accepts gzipped mboxes.
+
 2007-07-11  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/distmeasure.R (dissimilarity): Replaced dists call from
