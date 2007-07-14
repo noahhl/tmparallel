@@ -169,21 +169,58 @@ readPDF <- function(...) {
         description <- gsub("Subject:[[:space:]]*", "", grep("Subject:", meta, value = TRUE))
         origin <- gsub("Creator:[[:space:]]*", "", grep("Creator:", meta, value = TRUE))
 
-        doc <- if (load) {
-            corpus <- paste(system(paste("pdftotext", as.character(elem$uri[2]), "-"), intern = TRUE), sep = "\n", collapse = "")
-            new("PlainTextDocument", .Data = corpus, URI = elem$uri, Cached = TRUE,
-                Author = author, DateTimeStamp = datetimestamp, Description = description, ID = id,
-                Origin = origin, Heading = heading, Language = language)
-        } else {
-            new("PlainTextDocument", URI = elem$uri, Cached = FALSE,
-                Author = author, DateTimeStamp = datetimestamp, Description = description, ID = id,
-                Origin = origin, Heading = heading, Language = language)
-        }
+        if (!load)
+            warning("load on demand not supported for PDF documents")
 
-        return(doc)
+        corpus <- paste(system(paste("pdftotext", as.character(elem$uri[2]), "-"), intern = TRUE), sep = "\n", collapse = "")
+        new("PlainTextDocument", .Data = corpus, URI = elem$uri, Cached = TRUE,
+            Author = author, DateTimeStamp = datetimestamp, Description = description, ID = id,
+            Origin = origin, Heading = heading, Language = language)
     }
 }
 attr(readPDF, "FunctionGenerator") <- TRUE
+
+readHTML <- function(...) {
+    function(elem, load, language, id) {
+        tree <- xmlTreeParse(elem$content, asText = TRUE)
+        root <- xmlRoot(tree)
+
+        head <- root[["head"]]
+        heading <- xmlValue(head[["title"]])
+
+        meta <- lapply(xmlChildren(head)[names(xmlChildren(head)) == "meta"], xmlAttrs)
+        metaNames <- sapply(meta, "[[", "name")
+        metaContents <- sapply(meta, "[[", "content")
+
+        # See http://dublincore.org/documents/dcmi-terms/ and http://dublincore.org/documents/dcq-html/
+        author <- paste(metaContents[metaNames == "DC.creator"])
+        description <- paste(metaContents[metaNames == "DC.description"])
+        datetimestamp <- as.POSIXct(paste(metaContents[metaNames == "DC.date"]))
+        origin <- paste(metaContents[metaNames == "DC.publisher"])
+        language <- paste(metaContents[metaNames == "DC.language"])
+
+        if (!load)
+            warning("load on demand not supported for StructuredTextDocuments using HTML")
+
+        content <- list("Prologue" = NULL)
+        i <- 1
+        for (child in xmlChildren(root[["body"]])) {
+            if (tolower(xmlName(child)) == "h1") {
+                content <- c(content, structure(list(NULL), names = xmlValue(child)))
+                i <- i + 1
+            }
+            else {
+                # We remove remaining HTML tags
+                content[[i]] <- c(content[[i]], toString(xmlApply(child, xmlValue)))
+            }
+        }
+
+        new("StructuredTextDocument", .Data = content, URI = elem$uri, Cached = TRUE,
+            Author = author, DateTimeStamp = datetimestamp, Description = description, ID = id,
+            Origin = origin, Heading = heading, Language = language)
+    }
+}
+attr(readHTML, "FunctionGenerator") <- TRUE
 
 # Converter
 

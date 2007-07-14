@@ -12,6 +12,7 @@ export(
        "readNewsgroup",
        "readGmane",
        "readPDF",
+       "readHTML",
        "convertReut21578XMLPlain",
        "convertRCV1Plain",
        "convertMboxEml",

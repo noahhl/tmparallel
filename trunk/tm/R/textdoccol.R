@@ -104,6 +104,15 @@ setMethod("loadDoc",
                   return(object)
               }
           })
+setMethod("loadDoc",
+          signature(object = "StructuredTextDocument"),
+          function(object, ...) {
+              if (!Cached(object)) {
+                  warning("load on demand not (yet) supported for StructuredTextDocuments")
+                  return(object)
+              } else
+                  return(object)
+          })
 
 setGeneric("tmUpdate", function(object,
                                 origin,
