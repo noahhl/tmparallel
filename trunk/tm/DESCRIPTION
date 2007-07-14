@@ -1,7 +1,7 @@
 Package: tm
 Title: Text Mining Package
 Version: 0.2-2
-Date: 2007-07-13
+Date: 2007-07-14
 Author: Ingo Feinerer <h0125130@wu-wien.ac.at>
 Maintainer: Ingo Feinerer <h0125130@wu-wien.ac.at>
 Depends: filehash, Matrix, methods, Snowball, XML

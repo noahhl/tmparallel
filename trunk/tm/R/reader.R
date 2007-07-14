@@ -152,6 +152,39 @@ readGmane <- function(...) {
 }
 attr(readGmane, "FunctionGenerator") <- TRUE
 
+readPDF <- function(...) {
+    function(elem, load, language, id) {
+        # pdftotext and pdfinfo give error code 99 when printing version
+        if (system("pdftotext -v 1>&2", ignore.stderr = TRUE) / 256 != 99)
+            stop("pdftotext not found")
+        if (system("pdfinfo -v 1>&2", ignore.stderr = TRUE) / 256 != 99)
+            stop("pdfinfo not found")
+
+        meta <- system(paste("pdfinfo", as.character(elem$uri[2])), intern = TRUE)
+        heading <- gsub("Title:[[:space:]]*", "", grep("Title:", meta, value = TRUE))
+        author <- gsub("Author:[[:space:]]*", "", grep("Author:", meta, value = TRUE))
+        datetimestamp <- as.POSIXct(strptime(gsub("CreationDate:[[:space:]]*", "",
+                                                  grep("CreationDate:", meta, value = TRUE)),
+                                             format = "%a %b %d %H:%M:%S %Y"))
+        description <- gsub("Subject:[[:space:]]*", "", grep("Subject:", meta, value = TRUE))
+        origin <- gsub("Creator:[[:space:]]*", "", grep("Creator:", meta, value = TRUE))
+
+        doc <- if (load) {
+            corpus <- paste(system(paste("pdftotext", as.character(elem$uri[2]), "-"), intern = TRUE), sep = "\n", collapse = "")
+            new("PlainTextDocument", .Data = corpus, URI = elem$uri, Cached = TRUE,
+                Author = author, DateTimeStamp = datetimestamp, Description = description, ID = id,
+                Origin = origin, Heading = heading, Language = language)
+        } else {
+            new("PlainTextDocument", URI = elem$uri, Cached = FALSE,
+                Author = author, DateTimeStamp = datetimestamp, Description = description, ID = id,
+                Origin = origin, Heading = heading, Language = language)
+        }
+
+        return(doc)
+    }
+}
+attr(readPDF, "FunctionGenerator") <- TRUE
+
 # Converter
 
 # Parse a <newsitem></newsitem> element from a well-formed RCV1 XML file
