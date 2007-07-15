@@ -125,7 +125,7 @@ setMethod("tmUpdate",
           function(object, origin,
                    readerControl = list(reader = origin@DefaultReader, language = "en_US", load = FALSE),
                    ...) {
-              if (inherits(readerControl$reader, "FunctionGenerator"))
+              if (attr(readerControl$reader, "FunctionGenerator"))
                   readerControl$reader <- readerControl$reader(...)
 
               object.filelist <- unlist(lapply(object, function(x) {as.character(URI(x))[2]}))
