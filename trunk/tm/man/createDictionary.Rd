@@ -17,6 +17,6 @@ Methods for function \code{createDictionary} in package \pkg{tm}.
 \examples{
 data("crude")
 tdm <- TermDocMatrix(crude)
-createDictionary(tdm)
+(d <- createDictionary(tdm))
 }
 \keyword{methods}
