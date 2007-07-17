@@ -43,7 +43,7 @@
 }
 \examples{
 data("crude")
-TermDocMatrix(crude, weighting = "tf-idf", stopwords = TRUE)
+(tdm <- TermDocMatrix(crude, weighting = "tf-idf", stopwords = TRUE))
 }
 \author{Ingo Feinerer}
 \keyword{methods}

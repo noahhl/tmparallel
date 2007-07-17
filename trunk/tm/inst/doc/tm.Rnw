@@ -392,6 +392,6 @@ Data(tdmD)
 You can also create a dictionary from a term-document matrix via
 \code{createDictionary} holding all terms from the matrix e.g.,
 <<>>=
-createDictionary(tdm)[1:10]
+createDictionary(tdm)[100:110]
 @
 \end{document}

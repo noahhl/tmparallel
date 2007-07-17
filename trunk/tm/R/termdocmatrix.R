@@ -1,7 +1,4 @@
 # Author: Ingo Feinerer
-#
-# Copyright notice:
-# Parts of the preprocessing code were adapted from the \pkg{lsa} package. Special thanks to Fridolin Wild.
 
 # Input matrix has to be in term-frequency format
 weightMatrix <- function(m, weighting = "tf") {
@@ -12,7 +9,7 @@ weightMatrix <- function(m, weighting = "tf") {
            },
            "tf-idf" = {
                df <- colSums(as(m > 0, "dgCMatrix"))
-               return(m * log2(nrow(m) / df))
+               return(t(t(m) * log2(nrow(m) / df)))
            },
            "bin" = {
                return(as(m > 0, "dgCMatrix"))
@@ -25,30 +22,34 @@ weightMatrix <- function(m, weighting = "tf") {
 setGeneric("TermDocMatrix",
            function(object, weighting = "tf", stemming = FALSE, minWordLength = 3,
                     minDocFreq = 1, stopwords = NULL, dictionary = NULL) standardGeneric("TermDocMatrix"))
+# Kudos to Christian Buchta for significantly improving TermDocMatrix's efficiency
 setMethod("TermDocMatrix",
           signature(object = "TextDocCol"),
           function(object, weighting = "tf", stemming = FALSE, minWordLength = 3,
                    minDocFreq = 1, stopwords = NULL, dictionary = NULL) {
 
               tvlist <- lapply(object, textvector, stemming, minWordLength, minDocFreq, stopwords, dictionary)
-              allTerms <- unique(unlist(lapply(tvlist, "[[", "terms")))
+              terms <- lapply(tvlist, "[[", "terms")
+              allTerms <- unique(unlist(terms, use.names = FALSE))
 
-              tdm <- Matrix(0,
-                            nrow = length(object),
-                            ncol = length(allTerms),
-                            dimnames = list(sapply(object, ID), allTerms))
+              i <- lapply(terms, match, allTerms)
+              rm(terms)
+              p <- cumsum(sapply(i, length))
+              i <- unlist(i) - 1L
 
-              for(i in seq_along(object)) {
-                  df <- tvlist[[i]]
-                  j <- match(df$terms, allTerms)
-                  tdm[i, j] <- df$freqs
-              }
+              x <- lapply(tvlist, "[[", "freqs")
+              rm(tvlist)
+              x <- as.numeric(unlist(x, use.names = FALSE))
 
-              tdm <- weightMatrix(tdm, weighting)
+              tdm <- new("dgCMatrix", p = c(0L, p), i = i, x = x,
+                         Dim = c(length(allTerms), length(p)),
+                         Dimnames = list(Terms = allTerms, Docs = sapply(object, ID)))
+              tdm <- weightMatrix(t(tdm), weighting)
 
               new("TermDocMatrix", Data = tdm, Weighting = weighting)
           })
 
+# Parts of this preprocessing code were adapted from the \pkg{lsa} package. Special thanks to Fridolin Wild.
 textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1,
                        stopwords = NULL, dictionary = NULL) {
     txt <- gsub("[^[:alnum:]]+", " ", doc)
@@ -71,9 +72,9 @@ textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1,
 
     # if dictionary is set tabulate against it
     tab <-  if (is.null(dictionary))
-        sort(table(txt), decreasing = TRUE)
+        table(txt)
     else
-        sort(table(factor(txt, levels = dictionary)), decreasing = TRUE)
+        table(factor(txt, levels = dictionary))
 
     # with threshold minDocFreq
     tab <- tab[tab >= minDocFreq]
