@@ -286,7 +286,7 @@ setMethod("tmIndex",
 
 sFilter <- function(object, s, ...) {
     con <- textConnection(s)
-    tokens <- scan(con, "character")
+    tokens <- scan(con, "character", quiet = TRUE)
     close(con)
     localMetaNames <- unique(names(sapply(object, LocalMetaData)))
     localMetaTokens <- localMetaNames[localMetaNames %in% tokens]

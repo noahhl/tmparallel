@@ -1,4 +1,5 @@
 TODO:
 
-* Avoid as.matrix() call in findAssocs for sparse matrices
-  - we need a working cor() function on sparse matrices
+* Avoid as.matrix() calls for sparse matrices
+  - in findAssocs / we need a working cor() function on sparse matrices
+  - in dissimilarity / easy once proxy package supports sparse matrices
