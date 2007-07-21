@@ -91,6 +91,8 @@ exportMethods(
               "tmIndex",
               "searchFullText",
               "dim",
+              "ncol",
+              "nrow",
               "findFreqTerms",
               "findAssocs",
               "removeSparseTerms",

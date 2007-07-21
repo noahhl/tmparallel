@@ -95,10 +95,31 @@ textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1,
     data.frame(docs = ID(doc), terms, freqs, row.names = NULL, stringsAsFactors = FALSE)
 }
 
+setMethod("[",
+          signature(x = "TermDocMatrix", i = "ANY", j = "ANY", drop = "ANY"),
+          function(x, i, j, ..., drop) {
+              # Unfortunately Data(x)[i, j, ..., drop] alone does not work when j is missing
+              if (missing(i)) return(Data(x))
+              if (missing(j)) return(Data(x)[i, j = seq_len(ncol(x)), ..., drop])
+              Data(x)[i, j, ..., drop]
+          })
+
 setMethod("dim",
           signature(x = "TermDocMatrix"),
           function(x) {
               dim(Data(x))
+          })
+
+setMethod("ncol",
+          signature(x = "TermDocMatrix"),
+          function(x) {
+              ncol(Data(x))
+          })
+
+setMethod("nrow",
+          signature(x = "TermDocMatrix"),
+          function(x) {
+              nrow(Data(x))
           })
 
 setGeneric("findFreqTerms", function(object, lowfreq, highfreq) standardGeneric("findFreqTerms"))
