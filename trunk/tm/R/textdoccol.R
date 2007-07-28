@@ -207,6 +207,14 @@ setMethod("asPlain",
                   DateTimeStamp = DateTimeStamp(object), Description = Description(object), ID = ID(object),
                   Origin = Origin(object), Heading = Heading(object), Language = Language(object))
           })
+setMethod("asPlain",
+          signature(object = "StructuredTextDocument"),
+          function(object, FUN, ...) {
+              new("PlainTextDocument", .Data = unlist(Corpus(object)), Cached = TRUE,
+                  URI = "", Author = Author(object), DateTimeStamp = DateTimeStamp(object),
+                  Description = Description(object), ID = ID(object), Origin = Origin(object),
+                  Heading = Heading(object), Language = Language(object))
+          })
 
 setGeneric("tmTolower", function(object, ...) standardGeneric("tmTolower"))
 setMethod("tmTolower",
