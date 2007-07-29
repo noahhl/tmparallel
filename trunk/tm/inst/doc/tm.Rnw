@@ -167,16 +167,11 @@ TextDocCol(DirSource(html),
 @
 
 And for \acronym{Pdf} documents:
-<<keep.source=TRUE>>=
+<<>>=
 pdf <- system.file("texts", "pdf", package = "tm")
 
-if ((system("pdftotext -v 1>&2", ignore.stderr = TRUE) / 256 == 99) &&
-    (system("pdfinfo -v 1>&2", ignore.stderr = TRUE) / 256 == 99)) {
-    TextDocCol(DirSource(pdf),
-               readerControl = list(reader = readPDF,
-                                    language = "en_US",
-                                    load = TRUE))
-}
+TextDocCol(DirSource(pdf),
+           readerControl = list(reader = readPDF, language = "en_US", load = TRUE))
 @
 Note that \code{readPDF()} needs \code{pdftotext} and \code{pdfinfo}
 installed on your system to be able to extract the text and meta

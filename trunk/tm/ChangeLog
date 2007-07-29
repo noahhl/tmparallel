@@ -1,3 +1,8 @@
+2007-07-29  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/reader.R (readPDF): Removed manual checks for pdftotext and
+	pdfinfo. The system call gives a warning anyway.
+
 2007-07-28  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/textdoccol.R (asPlain): Conversion from

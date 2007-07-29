@@ -152,15 +152,10 @@ readGmane <- function(...) {
 }
 attr(readGmane, "FunctionGenerator") <- TRUE
 
+# readPDF needs pdftotext and pdfinfo installed to be able to extract the text and meta information
 readPDF <- function(...) {
     function(elem, load, language, id) {
-        # pdftotext and pdfinfo give error code 99 when printing version
-        if (system("pdftotext -v 1>&2", ignore.stderr = TRUE) / 256 != 99)
-            stop("pdftotext not found")
-        if (system("pdfinfo -v 1>&2", ignore.stderr = TRUE) / 256 != 99)
-            stop("pdfinfo not found")
-
-        meta <- system(paste("pdfinfo", as.character(elem$uri[2])), intern = TRUE)
+        meta <- system(paste("pdfinfo", shQuote(as.character(elem$uri[2]))), intern = TRUE)
         heading <- gsub("Title:[[:space:]]*", "", grep("Title:", meta, value = TRUE))
         author <- gsub("Author:[[:space:]]*", "", grep("Author:", meta, value = TRUE))
         datetimestamp <- as.POSIXct(strptime(gsub("CreationDate:[[:space:]]*", "",
@@ -172,7 +167,7 @@ readPDF <- function(...) {
         if (!load)
             warning("load on demand not supported for PDF documents")
 
-        corpus <- paste(system(paste("pdftotext", as.character(elem$uri[2]), "-"), intern = TRUE), sep = "\n", collapse = "")
+        corpus <- paste(system(paste("pdftotext", shQuote(as.character(elem$uri[2])), "-"), intern = TRUE), sep = "\n", collapse = "")
         new("PlainTextDocument", .Data = corpus, URI = elem$uri, Cached = TRUE,
             Author = author, DateTimeStamp = datetimestamp, Description = description, ID = id,
             Origin = origin, Heading = heading, Language = language)
