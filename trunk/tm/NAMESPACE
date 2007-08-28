@@ -30,6 +30,7 @@ exportMethods(
               "CSVSource",
               "ReutersSource",
               "GmaneSource",
+              "FunctionGenerator",
 
               # TextDocument
               "Corpus",
@@ -128,4 +129,5 @@ exportClasses("TextDocument",
               "DirSource",
               "CSVSource",
               "ReutersSource",
-              "GmaneSource")
+              "GmaneSource",
+              "FunctionGenerator")

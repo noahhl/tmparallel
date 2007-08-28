@@ -2,7 +2,7 @@
 
 # Reader
 
-readPlain <- function(...) {
+readPlain <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
         doc <- if (load) {
             new("PlainTextDocument", .Data = elem$content, URI = elem$uri, Cached = TRUE,
@@ -15,10 +15,9 @@ readPlain <- function(...) {
 
         return(doc)
     }
-}
-attr(readPlain, "FunctionGenerator") <- TRUE
+})
 
-readReut21578XML <- function(...) {
+readReut21578XML <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
         corpus <- paste(elem$content, "\n", collapse = "")
         tree <- xmlTreeParse(corpus, asText = TRUE)
@@ -56,10 +55,9 @@ readReut21578XML <- function(...) {
 
         return(doc)
     }
-}
-attr(readReut21578XML, "FunctionGenerator") <- TRUE
+})
 
-readRCV1 <- function(...) {
+readRCV1 <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
         corpus <- paste(elem$content, "\n", collapse = "")
         tree <- xmlTreeParse(corpus, asText = TRUE)
@@ -84,10 +82,9 @@ readRCV1 <- function(...) {
 
         return(doc)
     }
-}
-attr(readRCV1, "FunctionGenerator") <- TRUE
+})
 
-readNewsgroup <- function(...) {
+readNewsgroup <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
         mail <- elem$content
         author <- gsub("From: ", "", grep("^From:", mail, value = TRUE))
@@ -116,10 +113,9 @@ readNewsgroup <- function(...) {
 
         return(doc)
     }
-}
-attr(readNewsgroup, "FunctionGenerator") <- TRUE
+})
 
-readGmane <- function(...) {
+readGmane <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
         corpus <- paste(elem$content, "\n", collapse = "")
         # Remove namespaces
@@ -149,11 +145,10 @@ readGmane <- function(...) {
 
         return(doc)
     }
-}
-attr(readGmane, "FunctionGenerator") <- TRUE
+})
 
 # readPDF needs pdftotext and pdfinfo installed to be able to extract the text and meta information
-readPDF <- function(...) {
+readPDF <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
         meta <- system(paste("pdfinfo", shQuote(as.character(elem$uri[2]))), intern = TRUE)
         heading <- gsub("Title:[[:space:]]*", "", grep("Title:", meta, value = TRUE))
@@ -172,10 +167,9 @@ readPDF <- function(...) {
             Author = author, DateTimeStamp = datetimestamp, Description = description, ID = id,
             Origin = origin, Heading = heading, Language = language)
     }
-}
-attr(readPDF, "FunctionGenerator") <- TRUE
+})
 
-readHTML <- function(...) {
+readHTML <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
         tree <- xmlTreeParse(elem$content, asText = TRUE)
         root <- xmlRoot(tree)
@@ -214,8 +208,7 @@ readHTML <- function(...) {
             Author = author, DateTimeStamp = datetimestamp, Description = description, ID = id,
             Origin = origin, Heading = heading, Language = language)
     }
-}
-attr(readHTML, "FunctionGenerator") <- TRUE
+})
 
 # Converter
 

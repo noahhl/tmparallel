@@ -11,7 +11,7 @@ setMethod("TextDocCol",
                    readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE),
                    dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
                    ...) {
-              if (attr(readerControl$reader, "FunctionGenerator"))
+              if (is(readerControl$reader, "FunctionGenerator"))
                   readerControl$reader <- readerControl$reader(...)
 
               if (dbControl$useDb) {
@@ -125,7 +125,7 @@ setMethod("tmUpdate",
           function(object, origin,
                    readerControl = list(reader = origin@DefaultReader, language = "en_US", load = FALSE),
                    ...) {
-              if (attr(readerControl$reader, "FunctionGenerator"))
+              if (is(readerControl$reader, "FunctionGenerator"))
                   readerControl$reader <- readerControl$reader(...)
 
               object.filelist <- unlist(lapply(object, function(x) {as.character(URI(x))[2]}))
