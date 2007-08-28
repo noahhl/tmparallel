@@ -1,8 +1,7 @@
 \name{FunctionGenerator}
 \docType{methods}
 \alias{FunctionGenerator}
-\alias{FunctionGenerator,character-method}
-\alias{FunctionGenerator,ANY-method}
+\alias{FunctionGenerator,function-method}
 \title{Function Generator Constructor}
 \description{
   Constructs a function generator object.
