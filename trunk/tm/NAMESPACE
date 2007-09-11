@@ -87,6 +87,7 @@ exportMethods(
               "tmTolower",
               "stemDoc",
               "removeWords",
+              "removePunctuation",
               "replaceWords",
               "tmFilter",
               "tmIndex",

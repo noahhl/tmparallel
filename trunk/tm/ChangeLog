@@ -1,3 +1,7 @@
+2007-09-11  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* man/removePunctuation.Rd: Added documentation. Function also exported to NAMESPACE.
+
 2007-08-28  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/fungen.R: Use S4 class for function generators instead of S3 attributes.
