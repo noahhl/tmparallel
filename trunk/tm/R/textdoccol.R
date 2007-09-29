@@ -216,62 +216,6 @@ setMethod("asPlain",
                   Heading = Heading(object), Language = Language(object))
           })
 
-setGeneric("tmTolower", function(object, ...) standardGeneric("tmTolower"))
-setMethod("tmTolower",
-          signature(object = "PlainTextDocument"),
-          function(object, ...) {
-              Corpus(object) <- tolower(object)
-              return(object)
-          })
-
-setGeneric("stripWhitespace", function(object, ...) standardGeneric("stripWhitespace"))
-setMethod("stripWhitespace",
-          signature(object = "PlainTextDocument"),
-          function(object, ...) {
-              Corpus(object) <- gsub("[[:space:]]+", " ", object)
-              return(object)
-          })
-
-setGeneric("stemDoc", function(object, language = "english", ...) standardGeneric("stemDoc"))
-setMethod("stemDoc",
-          signature(object = "PlainTextDocument"),
-          function(object, language = "english", ...) {
-              splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
-              stemmedCorpus <- if (require("Rstem", quietly = TRUE))
-                  Rstem::wordStem(splittedCorpus, language)
-              else
-                  SnowballStemmer(splittedCorpus, Weka_control(S = language))
-              Corpus(object) <- paste(stemmedCorpus, collapse = " ")
-              return(object)
-          })
-
-setGeneric("removePunctuation", function(object, ...) standardGeneric("removePunctuation"))
-setMethod("removePunctuation",
-          signature(object = "PlainTextDocument"),
-          function(object, ...) {
-              Corpus(object) <- gsub("[[:punct:]]+", "", Corpus(object))
-              return(object)
-          })
-
-setGeneric("removeWords", function(object, stopwords, ...) standardGeneric("removeWords"))
-setMethod("removeWords",
-          signature(object = "PlainTextDocument", stopwords = "character"),
-          function(object, stopwords, ...) {
-              splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
-              noStopwordsCorpus <- splittedCorpus[!splittedCorpus %in% stopwords]
-              Corpus(object) <- paste(noStopwordsCorpus, collapse = " ")
-              return(object)
-          })
-
-setGeneric("replaceWords", function(object, words, by, ...) standardGeneric("replaceWords"))
-setMethod("replaceWords",
-          signature(object = "PlainTextDocument", words = "character", by = "character"),
-          function(object, words, by, ...) {
-              pattern <- paste(words, collapse = "|")
-              Corpus(object) <- gsub(pattern, by, Corpus(object))
-              return(object)
-          })
-
 setGeneric("tmFilter", function(object, ..., FUN = sFilter, doclevel = FALSE) standardGeneric("tmFilter"))
 setMethod("tmFilter",
           signature(object = "TextDocCol"),
