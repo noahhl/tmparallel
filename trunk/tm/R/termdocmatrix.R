@@ -28,7 +28,14 @@ setMethod("TermDocMatrix",
           function(object, weighting = "tf", stemming = FALSE, minWordLength = 3,
                    minDocFreq = 1, stopwords = NULL, dictionary = NULL) {
 
-              tvlist <- lapply(object, textvector, stemming, minWordLength, minDocFreq, stopwords, dictionary)
+              control <- list(stemming = stemming, stopwords = stopwords, dictionary = dictionary,
+                              minDocFreq = minDocFreq, minWordLength = minWordLength)
+              # Rewritten textvector function supports modules for each processing step
+              # E.g., we can use the tokenizer from the openNLP package:
+              # > model <- system.file("opennlp.models", "english", "tokenize", "EnglishTok.bin.gz", package = "openNLPmodels")
+              # > tok <- function(x) tokenize(x, model)
+              # > textvector(doc, control = list(tokenize = tok))
+              tvlist <- lapply(object, textvector, control)
               terms <- lapply(tvlist, "[[", "terms")
               allTerms <- unique(unlist(terms, use.names = FALSE))
 
@@ -49,58 +56,7 @@ setMethod("TermDocMatrix",
               new("TermDocMatrix", Data = tdm, Weighting = weighting)
           })
 
-# Parts of this preprocessing code were adapted from the \pkg{lsa} package. Special thanks to Fridolin Wild.
-textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1,
-                       stopwords = NULL, dictionary = NULL) {
-    txt <- gsub("[^[:alnum:]]+", " ", doc)
-    txt <- tolower(txt)
-    txt <- unlist(strsplit(txt, " ", fixed = TRUE))
-
-    # stemming
-    if (stemming) {
-        txt <- if (require("Rstem", quietly = TRUE))
-            Rstem::wordStem(txt, language = resolveISOCode(Language(doc)))
-        else
-            SnowballStemmer(txt, Weka_control(S = resolveISOCode(Language(doc))))
-    }
-
-    # stopword filtering?
-    if (is.logical(stopwords) && stopwords)
-        txt <- txt[!txt %in% stopwords(Language(doc))]
-    else if (!is.logical(stopwords) && !is.null(stopwords))
-        txt <- txt[!txt %in% stopwords]
-
-    # if dictionary is set tabulate against it
-    tab <-  if (is.null(dictionary))
-        table(txt)
-    else
-        table(factor(txt, levels = dictionary))
-
-    # with threshold minDocFreq
-    tab <- tab[tab >= minDocFreq]
-
-    # wordLength filtering?
-    tab <- tab[nchar(names(tab), type = "chars") >= minWordLength]
-
-    # Is the vector empty?
-    if (length(names(tab)) <= 0) {
-        terms <- ""
-        freqs <- 0
-    }
-    else {
-        terms <- names(tab)
-        freqs <- tab
-    }
-
-    data.frame(docs = ID(doc), terms, freqs, row.names = NULL, stringsAsFactors = FALSE)
-}
-
-# Supports modules for each processing step
-# E.g., we can use the tokenizer from the openNLP package:
-# > model <- system.file("opennlp.models", "english", "tokenize", "EnglishTok.bin.gz", package = "openNLPmodels")
-# > tok <- function(x) tokenize(x, model)
-# > textvectorMod(doc, control = list(tokenize = tok))
-textvectorMod <- function(doc, control = list()) {
+textvector <- function(doc, control = list()) {
     txt <- Corpus(doc)
 
     # Conversion to lower characters
