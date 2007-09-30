@@ -95,6 +95,72 @@ textvector <- function(doc, stemming = FALSE, minWordLength = 3, minDocFreq = 1,
     data.frame(docs = ID(doc), terms, freqs, row.names = NULL, stringsAsFactors = FALSE)
 }
 
+# Supports modules for each processing step
+# E.g., we can use the tokenizer from the openNLP package:
+# > model <- system.file("opennlp.models", "english", "tokenize", "EnglishTok.bin.gz", package = "openNLPmodels")
+# > tok <- function(x) tokenize(x, model)
+# > textvectorMod(doc, control = list(tokenize = tok))
+textvectorMod <- function(doc, control = list()) {
+    txt <- Corpus(doc)
+
+    # Conversion to lower characters
+    tolower <- control$tolower
+    if (is.null(tolower) || tolower)
+        txt <- tolower(txt)
+
+    # Tokenize the corpus
+    tokenize <- control$tokenize
+    if (is.null(tokenize))
+        tokenize <- function(x) unlist(strsplit(gsub("[^[:alnum:]]+", " ", x), " ", fixed = TRUE))
+    txt <- tokenize(txt)
+
+    # Stemming
+    stemming <- control$stemming
+    if (is.logical(stemming) && stemming) {
+        txt <- if (require("Rstem", quietly = TRUE))
+            Rstem::wordStem(txt, language = resolveISOCode(Language(doc)))
+        else
+            SnowballStemmer(txt, Weka_control(S = resolveISOCode(Language(doc))))
+    }
+
+    # Stopword filtering
+    stopwords <- control$stopwords
+    if (is.logical(stopwords) && stopwords)
+        txt <- txt[!txt %in% stopwords(Language(doc))]
+    else if (is.character(stopwords))
+        txt <- txt[!txt %in% stopwords]
+
+    # If dictionary is set tabulate against it
+    dictionary <- control$dictionary
+    tab <-  if (is.null(dictionary))
+        table(txt)
+    else
+        table(factor(txt, levels = dictionary))
+
+    # Ensure minimum document frequency threshold
+    minDocFreq <- control$minDocFreq
+    if (!is.null(minDocFreq))
+        tab <- tab[tab >= minDocFreq]
+
+    # Filter out too short terms
+    minWordLength <- control$minWordLength
+    if (is.null(minWordLength))
+        minWordLength <- 3
+    tab <- tab[nchar(names(tab), type = "chars") >= minWordLength]
+
+    # Handle empty vectors
+    if (length(names(tab)) <= 0) {
+        terms <- ""
+        freqs <- 0
+    }
+    else {
+        terms <- names(tab)
+        freqs <- tab
+    }
+
+    data.frame(docs = ID(doc), terms, freqs, row.names = NULL, stringsAsFactors = FALSE)
+}
+
 setMethod("[",
           signature(x = "TermDocMatrix", i = "ANY", j = "ANY", drop = "ANY"),
           function(x, i, j, ..., drop) {
