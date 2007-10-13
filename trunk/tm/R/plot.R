@@ -17,7 +17,7 @@ plot.TermDocMatrix <- function(x,
     if (weighting) {
         i <- 1
         lw <- round(c[lower.tri(c) & c >= corThreshold] * 10)
-        for (ae in AgEdge(p)) {
+        for (ae in Rgraphviz::AgEdge(p)) {
             lines(ae, lwd = lw[i], len = 1)
             i <- i + 1
         }

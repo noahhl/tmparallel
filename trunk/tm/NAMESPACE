@@ -20,6 +20,8 @@ export(
        "preprocessReut21578XML",
        "stopwords")
 
+S3method("plot", "TermDocMatrix")
+
 exportMethods(
               # Constructors
               "TextDocCol",
@@ -96,8 +98,11 @@ exportMethods(
               "tmIndex",
               "searchFullText",
               "dim",
+              "dimnames",
               "ncol",
+              "colnames",
               "nrow",
+              "rownames",
               "findFreqTerms",
               "findAssocs",
               "removeSparseTerms",
