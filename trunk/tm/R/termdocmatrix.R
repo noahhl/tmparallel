@@ -144,6 +144,24 @@ setMethod("nrow",
               nrow(Data(x))
           })
 
+setMethod("dimnames",
+          signature(x = "TermDocMatrix"),
+          function(x) {
+              dimnames(Data(x))
+          })
+
+setMethod("colnames",
+          signature(x = "TermDocMatrix"),
+          function(x, do.NULL = TRUE, prefix = "col") {
+              colnames(Data(x), do.NULL, prefix)
+          })
+
+setMethod("rownames",
+          signature(x = "TermDocMatrix"),
+          function(x, do.NULL = TRUE, prefix = "row") {
+              rownames(Data(x), do.NULL, prefix)
+          })
+
 setGeneric("findFreqTerms", function(object, lowfreq, highfreq) standardGeneric("findFreqTerms"))
 setMethod("findFreqTerms",
           signature(object = "TermDocMatrix", lowfreq = "numeric", highfreq = "numeric"),
