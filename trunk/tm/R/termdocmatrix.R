@@ -1,24 +1,5 @@
 # Author: Ingo Feinerer
 
-# Input matrix has to be in term-frequency format
-weightMatrix <- function(m, weighting = "tf") {
-    type <- match.arg(weighting, c("tf", "tf-idf", "bin", "logical"))
-    switch(type,
-           "tf" = {
-               return(m)
-           },
-           "tf-idf" = {
-               df <- colSums(as(m > 0, "dgCMatrix"))
-               return(t(t(m) * log2(nrow(m) / df)))
-           },
-           "bin" = {
-               return(as(m > 0, "dgCMatrix"))
-           },
-           "logical" = {
-               return(m > 0)
-           })
-}
-
 setGeneric("TermDocMatrix",
            function(object, weighting = "tf", stemming = FALSE, minWordLength = 3,
                     minDocFreq = 1, stopwords = NULL, dictionary = NULL) standardGeneric("TermDocMatrix"))
@@ -28,13 +9,23 @@ setMethod("TermDocMatrix",
           function(object, weighting = "tf", stemming = FALSE, minWordLength = 3,
                    minDocFreq = 1, stopwords = NULL, dictionary = NULL) {
 
+              # Necessary for deprecated function signature
+              weightFUN <- if (is.function(weighting))
+                  weighting
+              else switch(weighting,
+                          "tf" = weightTf,
+                          "tf-idf" = weightTfIdf,
+                          "bin" = weightBin,
+                          "logical" = weightLogical)
+              # Necessary for deprecated function signature
               control <- list(stemming = stemming, stopwords = stopwords, dictionary = dictionary,
                               minDocFreq = minDocFreq, minWordLength = minWordLength)
-              # Rewritten textvector function supports modules for each processing step
+              # Rewritten termFreq function supports modules for each processing step
               # E.g., we can use the tokenizer from the openNLP package:
               # > model <- system.file("opennlp.models", "english", "tokenize", "EnglishTok.bin.gz", package = "openNLPmodels")
               # > tok <- function(x) tokenize(x, model)
               # > termFreq(doc, control = list(tokenize = tok))
+
               tflist <- lapply(object, termFreq, control)
               terms <- lapply(tflist, names)
               allTerms <- unique(unlist(terms, use.names = FALSE))
@@ -50,9 +41,9 @@ setMethod("TermDocMatrix",
               tdm <- new("dgCMatrix", p = c(0L, p), i = i, x = x,
                          Dim = c(length(allTerms), length(p)),
                          Dimnames = list(Terms = allTerms, Docs = sapply(object, ID)))
-              tdm <- weightMatrix(t(tdm), weighting)
+              tdm <- weightFUN(t(tdm))
 
-              new("TermDocMatrix", Data = tdm, Weighting = weighting)
+              new("TermDocMatrix", Data = tdm, Weighting = weightFUN@Name)
           })
 
 termFreq <- function(doc, control = list()) {

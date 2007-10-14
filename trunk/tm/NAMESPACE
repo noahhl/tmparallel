@@ -18,7 +18,11 @@ export(
        "convertMboxEml",
        "sFilter",
        "preprocessReut21578XML",
-       "stopwords")
+       "stopwords",
+       "weightTf",
+       "weightTfIdf",
+       "weightBin",
+       "weightLogical")
 
 S3method("plot", "TermDocMatrix")
 
@@ -33,6 +37,7 @@ exportMethods(
               "ReutersSource",
               "GmaneSource",
               "FunctionGenerator",
+              "WeightFunction",
 
               # TextDocument
               "Corpus",
@@ -139,4 +144,5 @@ exportClasses("TextDocument",
               "CSVSource",
               "ReutersSource",
               "GmaneSource",
-              "FunctionGenerator")
+              "FunctionGenerator",
+              "WeightFunction")
