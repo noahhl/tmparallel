@@ -34,9 +34,9 @@ setMethod("TermDocMatrix",
               # E.g., we can use the tokenizer from the openNLP package:
               # > model <- system.file("opennlp.models", "english", "tokenize", "EnglishTok.bin.gz", package = "openNLPmodels")
               # > tok <- function(x) tokenize(x, model)
-              # > textvector(doc, control = list(tokenize = tok))
-              tvlist <- lapply(object, textvector, control)
-              terms <- lapply(tvlist, "[[", "terms")
+              # > termFreq(doc, control = list(tokenize = tok))
+              tflist <- lapply(object, termFreq, control)
+              terms <- lapply(tflist, names)
               allTerms <- unique(unlist(terms, use.names = FALSE))
 
               i <- lapply(terms, match, allTerms)
@@ -44,9 +44,8 @@ setMethod("TermDocMatrix",
               p <- cumsum(sapply(i, length))
               i <- unlist(i) - 1L
 
-              x <- lapply(tvlist, "[[", "freqs")
-              rm(tvlist)
-              x <- as.numeric(unlist(x, use.names = FALSE))
+              x <- as.numeric(unlist(tflist, use.names = FALSE))
+              rm(tflist)
 
               tdm <- new("dgCMatrix", p = c(0L, p), i = i, x = x,
                          Dim = c(length(allTerms), length(p)),
@@ -56,7 +55,7 @@ setMethod("TermDocMatrix",
               new("TermDocMatrix", Data = tdm, Weighting = weighting)
           })
 
-textvector <- function(doc, control = list()) {
+termFreq <- function(doc, control = list()) {
     txt <- Corpus(doc)
 
     # Conversion to lower characters
@@ -104,17 +103,8 @@ textvector <- function(doc, control = list()) {
         minWordLength <- 3
     tab <- tab[nchar(names(tab), type = "chars") >= minWordLength]
 
-    # Handle empty vectors
-    if (length(names(tab)) <= 0) {
-        terms <- ""
-        freqs <- 0
-    }
-    else {
-        terms <- names(tab)
-        freqs <- tab
-    }
-
-    data.frame(docs = ID(doc), terms, freqs, row.names = NULL, stringsAsFactors = FALSE)
+    # Return named integer
+    structure(as.integer(tab), names = names(tab))
 }
 
 setMethod("[",
