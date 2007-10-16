@@ -147,6 +147,20 @@ readGmane <- FunctionGenerator(function(...) {
     }
 })
 
+# readDOC needs antiword installed to be able to extract the text
+readDOC <- FunctionGenerator(function(...) {
+    function(elem, load, language, id) {
+        if (!load)
+            warning("load on demand not supported for DOC documents")
+
+        corpus <- paste(system(paste("antiword", shQuote(as.character(elem$uri[2]))), intern = TRUE), sep = "\n", collapse = "")
+
+        new("PlainTextDocument", .Data = corpus, URI = elem$uri, Cached = TRUE,
+            Author = "", DateTimeStamp = Sys.time(), Description = "", ID = id,
+            Origin = "", Heading = "", Language = language)
+    }
+})
+
 # readPDF needs pdftotext and pdfinfo installed to be able to extract the text and meta information
 readPDF <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
