@@ -46,6 +46,37 @@ setMethod("TermDocMatrix",
               new("TermDocMatrix", Data = tdm, Weighting = weightFUN@Name)
           })
 
+setGeneric("TermDocMatrix2",
+           function(object, control = list()) standardGeneric("TermDocMatrix2"))
+# Kudos to Christian Buchta for significantly improving TermDocMatrix's efficiency
+setMethod("TermDocMatrix2",
+          signature(object = "TextDocCol"),
+          function(object, control = list()) {
+
+              weight <- control$weighting
+              if (is.null(weight))
+                  weight <- weightTf
+
+              tflist <- lapply(object, termFreq, control)
+              terms <- lapply(tflist, names)
+              allTerms <- unique(unlist(terms, use.names = FALSE))
+
+              i <- lapply(terms, match, allTerms)
+              rm(terms)
+              p <- cumsum(sapply(i, length))
+              i <- unlist(i) - 1L
+
+              x <- as.numeric(unlist(tflist, use.names = FALSE))
+              rm(tflist)
+
+              tdm <- new("dgCMatrix", p = c(0L, p), i = i, x = x,
+                         Dim = c(length(allTerms), length(p)),
+                         Dimnames = list(Terms = allTerms, Docs = sapply(object, ID)))
+              tdm <- weight(t(tdm))
+
+              new("TermDocMatrix", Data = tdm, Weighting = weight@Name)
+          })
+
 termFreq <- function(doc, control = list()) {
     txt <- Corpus(doc)
 
