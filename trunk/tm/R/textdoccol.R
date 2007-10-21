@@ -261,13 +261,6 @@ sFilter <- function(object, s, ...) {
     return(result)
 }
 
-setGeneric("searchFullText", function(object, pattern, ...) standardGeneric("searchFullText"))
-setMethod("searchFullText",
-          signature(object = "PlainTextDocument", pattern = "character"),
-          function(object, pattern, ...) {
-              return(any(grep(pattern, Corpus(object))))
-          })
-
 setGeneric("appendElem", function(object, data, meta = NULL) standardGeneric("appendElem"))
 setMethod("appendElem",
           signature(object = "TextDocCol", data = "TextDocument"),
