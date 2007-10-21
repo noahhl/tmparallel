@@ -6,6 +6,8 @@ import(Snowball)
 import(XML)
 
 export(
+       "getFilters",
+       "getTransformations",
        "readPlain",
        "readReut21578XML",
        "readRCV1",
@@ -104,6 +106,7 @@ exportMethods(
               "tmFilter",
               "tmIndex",
               "searchFullText",
+              "tmIntersect",
               "dim",
               "dimnames",
               "ncol",
