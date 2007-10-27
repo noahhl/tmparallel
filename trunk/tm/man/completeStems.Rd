@@ -1,0 +1,18 @@
+\name{completeStems}
+\alias{completeStems}
+\title{Complete Stems}
+\description{
+  Heuristically complete stemmed words.
+}
+\usage{
+completeStems(object, words)
+}
+\arguments{
+  \item{object}{a \code{TextDocCol} to be searched for possible completions.}
+  \item{words}{a \code{character} vector of stems to be completed.}
+}
+\value{
+  A character vector with completed \code{words}.
+}
+\author{Ingo Feinerer}
+\keyword{file}

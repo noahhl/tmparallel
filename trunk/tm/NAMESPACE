@@ -6,6 +6,7 @@ import(Snowball)
 import(XML)
 
 export(
+       "completeStems",
        "getFilters",
        "getTransformations",
        "readPlain",
