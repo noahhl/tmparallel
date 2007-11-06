@@ -107,6 +107,10 @@ termFreq <- function(doc, control = list()) {
     else if (is.character(stopwords))
         txt <- txt[!txt %in% stopwords]
 
+    # Check if the document corpus is NULL
+    if (is.null(txt))
+        return(structure(integer(0), names = character(0)))
+
     # If dictionary is set tabulate against it
     dictionary <- control$dictionary
     tab <-  if (is.null(dictionary))
