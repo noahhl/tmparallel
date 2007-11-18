@@ -13,7 +13,7 @@ stopwords <- {
         russian <- readLines(system.file("stopwords", "russian.dat", package = "tm"))
         spanish <- readLines(system.file("stopwords", "spanish.dat", package = "tm"))
         swedish <- readLines(system.file("stopwords", "swedish.dat", package = "tm"))
-        resolved <- resolveISOCode(language)
+        resolved <- tm:::resolveISOCode(language)
         lang <- if (is.null(resolved))
             language
         else
