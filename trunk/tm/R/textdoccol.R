@@ -13,6 +13,12 @@ setMethod("TextDocCol",
                    ...) {
               if (is(readerControl$reader, "FunctionGenerator"))
                   readerControl$reader <- readerControl$reader(...)
+              if (is.null(readerControl$reader))
+                  readerControl$reader <- object@DefaultReader
+              if (is.null(readerControl$language))
+                  readerControl$language = "en_US"
+              if (is.null(readerControl$load))
+                  readerControl$load = FALSE
 
               if (dbControl$useDb) {
                   if (!dbCreate(dbControl$dbName, dbControl$dbType))

@@ -16,6 +16,7 @@ export(
        "readGmane",
        "readPDF",
        "readHTML",
+       "readDOC",
        "convertReut21578XMLPlain",
        "convertRCV1Plain",
        "convertMboxEml",

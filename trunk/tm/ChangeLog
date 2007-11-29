@@ -1,3 +1,10 @@
+2007-11-29  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/textdoccol.R (TextDocCol): Better handling of empty
+	arguments.
+
+	* NAMESPACE: Exported readDOC.
+
 2007-11-18  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/stopwords.R (stopwords): Look up .dat files at every
@@ -559,10 +566,10 @@
 
 2005-12-06  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
-	* Wrote a script for the ModLewis Split for the Reuters-21578 XML
+	*  Wrote a script for the ModLewis Split for the Reuters-21578 XML
 	data set.
 
-	* Finished documentation and reordered directory structure. Now "R
+	*  Finished documentation and reordered directory structure. Now "R
 	CMD check textmin" works without errors.
 
 2005-12-04  Ingo Feinerer  <h0125130@wu-wien.ac.at>
@@ -572,11 +579,11 @@
 
 2005-12-03  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
-	* Updated documentation
+	*  Updated documentation
 
 2005-11-30  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
-	* Wrote R documentation for some classes and methods.
+	*  Wrote R documentation for some classes and methods.
 
 2005-11-19  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
@@ -584,7 +591,7 @@
 	files. See the questionnaire data/Umfrage.csv for such an example.
 	We are now able to import files in Reuters-21578 XML format.
 
-	* Changed class interfaces in various files. Weighting of the text
+	*  Changed class interfaces in various files. Weighting of the text
 	matrix is now possible.
 
 2005-11-08  Ingo Feinerer  <h0125130@wu-wien.ac.at>
@@ -627,4 +634,4 @@
 
 2005-10-02  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
-	* Set up the R Text Mining Package infrastructure.
+	*  Set up the R Text Mining Package infrastructure.
