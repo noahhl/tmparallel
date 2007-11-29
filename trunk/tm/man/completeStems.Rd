@@ -14,5 +14,9 @@ completeStems(object, words)
 \value{
   A character vector with completed \code{words}.
 }
+\examples{
+data("crude")
+completeStems(crude, c("compan", "entit", "suppl"))
+}
 \author{Ingo Feinerer}
 \keyword{file}
