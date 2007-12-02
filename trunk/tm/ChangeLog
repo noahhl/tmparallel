@@ -1,3 +1,13 @@
+2007-12-02  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/stopwords.R (stopwords): Shortened code, removed codetools
+	variable warnings.
+
+	* man/: Documentation for showMeta, added an example for tmMap.
+
+	* inst/doc/tm.Rnw: Updated vignette, comments on MS word reader,
+	some minor typos fixed.
+
 2007-12-01  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/aobjects.R (showMeta): Added method for pretty printing a

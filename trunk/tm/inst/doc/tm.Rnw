@@ -80,7 +80,8 @@ file path).
 
 This package ships with several readers (\code{readPlain()}
 (default), \code{readRCV1()}, \code{readReut21578XML()},
-\code{readGmane()}, \code{readNewsgroup()}, \code{readPDF()}, and \code{readHTML()}).
+\code{readGmane()}, \code{readNewsgroup()}, \code{readPDF()},
+\code{readDOC()} and \code{readHTML()}).
 Each source has a default reader which can be overridden. E.g., for \code{DirSource} the
 default just reads in the whole input files and interprets their
 content as text.
@@ -90,7 +91,7 @@ Plain text files in a directory:
 txt <- system.file("texts", "txt", package = "tm")
 (ovid <- TextDocCol(DirSource(txt),
                     readerControl = list(reader = readPlain,
-                                         language = "en_US",
+                                         language = "la",
                                          load = TRUE)))
 @
 
@@ -176,6 +177,20 @@ TextDocCol(DirSource(pdf),
 Note that \code{readPDF()} needs \code{pdftotext} and \code{pdfinfo}
 installed on your system to be able to extract the text and meta
 information from your \acronym{Pdf}s.
+
+Finally, for \acronym{Ms} Word documents there is the reader function
+\code{readDOC()}. You need \code{antiword} installed on your system to
+be able to extract the text from your Word documents.
+
+\section*{Data Export}
+For the case you have created a text collection via manipulating other
+objects in \proglang{R}, thus do not have the texts already stored,
+and want to save the text documents to disk, you can simply use
+standard \proglang{R} routines for writing out plain text
+documents. E.g.,
+<<eval=false>>=
+lapply(ovid, function(x) writeLines(x, paste(ID(x), ".txt", sep = "")))
+@
 
 \section*{Inspecting the Text Document Collection}
 Custom \code{show} and \code{summary} methods are available, which

@@ -68,6 +68,8 @@ exportMethods(
               "Cached<-",
               "URI",
 
+              "showMeta",
+
               # TextDocCol
               "DMetaData",
               "DMetaData<-",

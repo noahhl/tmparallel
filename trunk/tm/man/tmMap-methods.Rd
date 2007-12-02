@@ -17,14 +17,18 @@ Methods for function \code{tmMap} in package \pkg{tm}.
   }
 }
 \seealso{
-  \code{\link{asPlain}}
-  \code{\link{removeWords}}
-  \code{\link{stemDoc}}
-  \code{\link{stripWhitespace}}
-  \code{\link{tmTolower}}
+  See \code{\link{getTransformations}} for available transformations
+  shipped with \pkg{tm}.
 }
 \examples{
 data("crude")
 tmMap(crude, stemDoc)
+
+headings <- function(object, ...) {
+new("PlainTextDocument", .Data = Heading(object), URI = NULL, Cached =
+TRUE, Author = "", DateTimeStamp = Sys.time(), Description = "", ID =
+ID(object), Origin = "", Heading = "", Language = Language(object))
+}
+inspect(tmMap(crude, headings))
 }
 \keyword{methods}

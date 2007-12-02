@@ -130,7 +130,7 @@ setMethod("showMeta",
               cat("  Heading      :", Heading(object), "\n")
               cat("  Language     :", Language(object), "\n")
               cat("  Origin       :", Origin(object), "\n")
-              cat("  URI          :", URI(object), "\n")
+              cat("  URI          :", as(URI(object), "character"), "\n")
               cat("Dynamic local meta data pairs are:\n")
               show(LocalMetaData(object))
     })
