@@ -25,9 +25,8 @@ data("crude")
 tmMap(crude, stemDoc)
 
 headings <- function(object, ...) {
-new("PlainTextDocument", .Data = Heading(object), URI = NULL, Cached =
-TRUE, Author = "", DateTimeStamp = Sys.time(), Description = "", ID =
-ID(object), Origin = "", Heading = "", Language = Language(object))
+new("PlainTextDocument", Heading(object), Cached = TRUE, DateTimeStamp =
+Sys.time(), ID = ID(object), Language = Language(object))
 }
 inspect(tmMap(crude, headings))
 }
