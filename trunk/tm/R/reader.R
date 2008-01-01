@@ -1,6 +1,9 @@
 # Author: Ingo Feinerer
-
 # Reader
+
+getReaders <- function() {
+    c("readGmane", "readHTML", "readNewsgroup", "readPDF", "readReut21578XML", "readPlain", "readRCV1")
+}
 
 readPlain <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {

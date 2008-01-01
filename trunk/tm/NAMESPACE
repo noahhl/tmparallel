@@ -8,6 +8,7 @@ import(XML)
 export(
        "completeStems",
        "getFilters",
+       "getReaders",
        "getTransformations",
        "readPlain",
        "readReut21578XML",
