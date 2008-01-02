@@ -401,7 +401,7 @@ terms from the dictionary appear in the matrix. This allows to
 restrict the dimension of the matrix a priori and to focus on specific
 terms for distinct text mining contexts, e.g.,
 <<>>=
-tdmD <- TermDocMatrix(reut21578TDC, dictionary = d)
+tdmD <- TermDocMatrix(reut21578TDC, list(dictionary = d))
 Data(tdmD)
 @
 You can also create a dictionary from a term-document matrix via

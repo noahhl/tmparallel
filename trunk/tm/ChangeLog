@@ -1,3 +1,10 @@
+2008-01-02  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/reader.R (getReaders): Returns available reader functions.
+
+	* R/termdocmatrix.R (TermDocMatrix): Set new modular constructor
+	as default.
+
 2007-12-02  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/stopwords.R (stopwords): Shortened code, removed codetools

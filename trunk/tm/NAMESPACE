@@ -37,7 +37,6 @@ exportMethods(
               "TextDocCol",
               "TextRepository",
               "TermDocMatrix",
-              "TermDocMatrix2",
               "Dictionary",
               "DirSource",
               "CSVSource",

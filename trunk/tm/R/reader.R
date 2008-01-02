@@ -2,7 +2,7 @@
 # Reader
 
 getReaders <- function() {
-    c("readGmane", "readHTML", "readNewsgroup", "readPDF", "readReut21578XML", "readPlain", "readRCV1")
+    c("readDOC", "readGmane", "readHTML", "readNewsgroup", "readPDF", "readReut21578XML", "readPlain", "readRCV1")
 }
 
 readPlain <- FunctionGenerator(function(...) {

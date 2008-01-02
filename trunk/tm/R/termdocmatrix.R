@@ -1,55 +1,9 @@
 # Author: Ingo Feinerer
 
 setGeneric("TermDocMatrix",
-           function(object, weighting = "tf", stemming = FALSE, minWordLength = 3,
-                    minDocFreq = 1, stopwords = NULL, dictionary = NULL) standardGeneric("TermDocMatrix"))
+           function(object, control = list()) standardGeneric("TermDocMatrix"))
 # Kudos to Christian Buchta for significantly improving TermDocMatrix's efficiency
 setMethod("TermDocMatrix",
-          signature(object = "TextDocCol"),
-          function(object, weighting = "tf", stemming = FALSE, minWordLength = 3,
-                   minDocFreq = 1, stopwords = NULL, dictionary = NULL) {
-
-              # Necessary for deprecated function signature
-              weightFUN <- if (is.function(weighting))
-                  weighting
-              else switch(weighting,
-                          "tf" = weightTf,
-                          "tf-idf" = weightTfIdf,
-                          "bin" = weightBin,
-                          "logical" = weightLogical)
-              # Necessary for deprecated function signature
-              control <- list(stemming = stemming, stopwords = stopwords, dictionary = dictionary,
-                              minDocFreq = minDocFreq, minWordLength = minWordLength)
-              # Rewritten termFreq function supports modules for each processing step
-              # E.g., we can use the tokenizer from the openNLP package:
-              # > model <- system.file("opennlp.models", "english", "tokenize", "EnglishTok.bin.gz", package = "openNLPmodels")
-              # > tok <- function(x) tokenize(x, model)
-              # > termFreq(doc, control = list(tokenize = tok))
-
-              tflist <- lapply(object, termFreq, control)
-              terms <- lapply(tflist, names)
-              allTerms <- unique(unlist(terms, use.names = FALSE))
-
-              i <- lapply(terms, match, allTerms)
-              rm(terms)
-              p <- cumsum(sapply(i, length))
-              i <- unlist(i) - 1L
-
-              x <- as.numeric(unlist(tflist, use.names = FALSE))
-              rm(tflist)
-
-              tdm <- new("dgCMatrix", p = c(0L, p), i = i, x = x,
-                         Dim = c(length(allTerms), length(p)),
-                         Dimnames = list(Terms = allTerms, Docs = sapply(object, ID)))
-              tdm <- weightFUN(t(tdm))
-
-              new("TermDocMatrix", Data = tdm, Weighting = weightFUN@Name)
-          })
-
-setGeneric("TermDocMatrix2",
-           function(object, control = list()) standardGeneric("TermDocMatrix2"))
-# Kudos to Christian Buchta for significantly improving TermDocMatrix's efficiency
-setMethod("TermDocMatrix2",
           signature(object = "TextDocCol"),
           function(object, control = list()) {
 
