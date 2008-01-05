@@ -52,8 +52,7 @@ setMethod("CSVSource",
           function(object) {
               object <- substitute(file(object))
               con <- eval(object)
-              content <- scan(con, what = "character")
-              close(con)
+              content <- apply(read.csv(con), 1, paste, collapse = " ")
               new("CSVSource", LoDSupport = FALSE, URI = object,
                   Content = content, Position = 0, DefaultReader = readPlain)
           })
@@ -62,8 +61,7 @@ setMethod("CSVSource",
           function(object) {
               object <- substitute(object)
               con <- eval(object)
-              content <- scan(con, what = "character")
-              close(con)
+              content <- apply(read.csv(con), 1, paste, collapse = " ")
               new("CSVSource", LoDSupport = FALSE, URI = object,
                   Content = content, Position = 0, DefaultReader = readPlain)
           })
