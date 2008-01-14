@@ -11,10 +11,10 @@ setMethod("TextDocCol",
                    readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE),
                    dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
                    ...) {
+              if (is.null(readerControl$reader))
+                  readerControl$reader <- object@DefaultReader
               if (is(readerControl$reader, "FunctionGenerator"))
                   readerControl$reader <- readerControl$reader(...)
-              if (is.null(readerControl$reader))
-                  readerControl$reader <- object@DefaultReader(...)
               if (is.null(readerControl$language))
                   readerControl$language = "en_US"
               if (is.null(readerControl$load))
@@ -131,8 +131,14 @@ setMethod("tmUpdate",
           function(object, origin,
                    readerControl = list(reader = origin@DefaultReader, language = "en_US", load = FALSE),
                    ...) {
+              if (is.null(readerControl$reader))
+                  readerControl$reader <- origin@DefaultReader
               if (is(readerControl$reader, "FunctionGenerator"))
                   readerControl$reader <- readerControl$reader(...)
+              if (is.null(readerControl$language))
+                  readerControl$language = "en_US"
+              if (is.null(readerControl$load))
+                  readerControl$load = FALSE
 
               object.filelist <- unlist(lapply(object, function(x) {as.character(URI(x))[2]}))
               new.files <- setdiff(origin@FileList, object.filelist)
