@@ -44,10 +44,10 @@ setMethod("meta",
               }
           })
 
-setGeneric("meta<-", function(object, tag, value, type = NULL) standardGeneric("meta<-"))
+setGeneric("meta<-", function(object, tag, type = NULL, value) standardGeneric("meta<-"))
 setReplaceMethod("meta",
-                 signature(object = "TextRepository"),
-                 function(object, tag, value, type = "indexed") {
+                 signature(object = "TextDocCol"),
+                 function(object, tag, type = "indexed", value) {
                      if ((type != "indexed") && (type != "corpus"))
                          stop("invalid type")
                      if (type == "indexed")
@@ -58,13 +58,13 @@ setReplaceMethod("meta",
                  })
 setReplaceMethod("meta",
                  signature(object = "TextRepository"),
-                 function(object, tag, value, type = NULL) {
+                 function(object, tag, type = NULL, value) {
                      object@RepoMetaData[[tag]] <- value
                      object
 })
 setReplaceMethod("meta",
                  signature(object = "TextDocument"),
-                 function(object, tag, value, type = NULL) {
+                 function(object, tag, type = NULL, value) {
                      object@LocalMetaData[[tag]] <- value
                      object
 })
