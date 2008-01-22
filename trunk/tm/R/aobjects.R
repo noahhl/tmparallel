@@ -117,24 +117,6 @@ if (!isGeneric("LocalMetaData")) {
 }
 setMethod("LocalMetaData", "TextDocument", function(object) object@LocalMetaData)
 
-setGeneric("showMeta", function(object) standardGeneric("showMeta"))
-setMethod("showMeta",
-          signature(object = "TextDocument"),
-          function(object) {
-              cat("Available meta data pairs are:\n")
-              cat("  Author       :", Author(object), "\n")
-              cat("  Cached       :", Cached(object), "\n")
-              cat("  DateTimeStamp:", as(DateTimeStamp(object), "character"), "\n")
-              cat("  Description  :", Description(object), "\n")
-              cat("  ID           :", ID(object), "\n")
-              cat("  Heading      :", Heading(object), "\n")
-              cat("  Language     :", Language(object), "\n")
-              cat("  Origin       :", Origin(object), "\n")
-              cat("  URI          :", as(URI(object), "character"), "\n")
-              cat("Dynamic local meta data pairs are:\n")
-              show(LocalMetaData(object))
-    })
-
 # Inherited text documents
 # Plain text documents
 setClass("PlainTextDocument",
