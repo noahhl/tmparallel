@@ -5,6 +5,6 @@ stopwords <- {
             language
         else
             resolved
-        readLines(system.file("stopwords", paste(lang, ".dat", sep = ""), package = "tm"))
+        readLines(system.file("stopwords", paste(lang, ".dat", sep = ""), package = "tm"), encoding = "UTF-8")
     }
 }
