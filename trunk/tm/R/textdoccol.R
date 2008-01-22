@@ -144,8 +144,9 @@ setMethod("tmUpdate",
               new.files <- setdiff(origin@FileList, object.filelist)
 
               for (filename in new.files) {
-                  elem <- list(content = readLines(filename),
-                               uri = substitute(file(filename)))
+                  encoding <- origin@Encoding
+                  elem <- list(content = readLines(filename, encoding = encoding),
+                               uri = substitute(file(filename, encoding = encoding)))
                   object <- appendElem(object, readerControl$reader(elem, readerControl$load, readerControl$language, filename))
               }
 
