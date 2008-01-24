@@ -5,8 +5,8 @@
 \alias{meta-methods}
 \alias{meta,TextDocument-method}
 \alias{meta<-,TextDocument-method}
-\alias{meta,TextDocCol-method}
-\alias{meta<-,TextDocCol-method}
+\alias{meta,Corpus-method}
+\alias{meta<-,Corpus-method}
 \alias{meta,TextRepository-method}
 \alias{meta<-,TextRepository-method}
 \title{Methods for Function meta in Package `tm'}
@@ -18,7 +18,7 @@ Methods for function \code{meta} in package \pkg{tm}.
     \item{object = "TextDocument"}{If no \code{tag} is given, this
       method pretty prints all \code{object}'s meta data. If \code{tag}
       is provided its value in the meta data is returned.}
-    \item{object = "TextDocCol"}{If no \code{tag} is given, this
+    \item{object = "Corpus"}{If no \code{tag} is given, this
       method investigates the \code{type} argument. \code{type} must be
       either \code{indexed} (default) or \code{corpus}. Former is a
       shortcut for accessing document level meta data

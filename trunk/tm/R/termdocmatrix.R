@@ -4,7 +4,7 @@ setGeneric("TermDocMatrix",
            function(object, control = list()) standardGeneric("TermDocMatrix"))
 # Kudos to Christian Buchta for significantly improving TermDocMatrix's efficiency
 setMethod("TermDocMatrix",
-          signature(object = "TextDocCol"),
+          signature(object = "Corpus"),
           function(object, control = list()) {
 
               weight <- control$weighting
@@ -32,7 +32,7 @@ setMethod("TermDocMatrix",
           })
 
 termFreq <- function(doc, control = list()) {
-    txt <- Corpus(doc)
+    txt <- Content(doc)
 
     # Conversion to lower characters
     tolower <- control$tolower
@@ -61,7 +61,7 @@ termFreq <- function(doc, control = list()) {
     else if (is.character(stopwords))
         txt <- txt[!txt %in% stopwords]
 
-    # Check if the document corpus is NULL
+    # Check if the document content is NULL
     if (is.null(txt))
         return(structure(integer(0), names = character(0)))
 

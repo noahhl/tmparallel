@@ -1,7 +1,7 @@
 library("tm")
 data("crude")
 reut21578 <- system.file("texts", "reut21578", package = "tm")
-r <- TextDocCol(DirSource(reut21578),
+r <- Corpus(DirSource(reut21578),
                 readerControl = list(reader = readReut21578XML, language = "en_US", load = FALSE),
                 dbControl = list(useDb = TRUE, dbName = "~/temp/reutdb", dbType = "DB1"))
 show(r)

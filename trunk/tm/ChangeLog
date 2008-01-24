@@ -1,3 +1,9 @@
+2008-01-24  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/: Renamed TextDocCol to Corpus, and Corpus to Content.
+
+	* DESCRIPTION: Updated Version to 0.3 due to core name changes.
+
 2008-01-22  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/meta.R (meta): New function for consistent access to meta data

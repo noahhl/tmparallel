@@ -1,7 +1,7 @@
 \name{TermDocMatrix}
 \docType{methods}
 \alias{TermDocMatrix}
-\alias{TermDocMatrix,TextDocCol-method}
+\alias{TermDocMatrix,Corpus-method}
 \title{Term-document matrix}
 \description{
   Constructs a term-document matrix.

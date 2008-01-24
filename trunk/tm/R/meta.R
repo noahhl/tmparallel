@@ -2,7 +2,7 @@
 
 setGeneric("meta", function(object, tag = NULL, type = NULL) standardGeneric("meta"))
 setMethod("meta",
-          signature(object = "TextDocCol"),
+          signature(object = "Corpus"),
           function(object, tag = NULL, type = "indexed") {
               if ((type != "indexed") && (type != "corpus"))
                   stop("invalid type")
@@ -46,7 +46,7 @@ setMethod("meta",
 
 setGeneric("meta<-", function(object, tag, type = NULL, value) standardGeneric("meta<-"))
 setReplaceMethod("meta",
-                 signature(object = "TextDocCol"),
+                 signature(object = "Corpus"),
                  function(object, tag, type = "indexed", value) {
                      if ((type != "indexed") && (type != "corpus"))
                          stop("invalid type")

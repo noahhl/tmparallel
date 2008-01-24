@@ -34,7 +34,7 @@ S3method("plot", "TermDocMatrix")
 
 exportMethods(
               # Constructors
-              "TextDocCol",
+              "Corpus",
               "TextRepository",
               "TermDocMatrix",
               "Dictionary",
@@ -46,8 +46,8 @@ exportMethods(
               "WeightFunction",
 
               # TextDocument
-              "Corpus",
-              "Corpus<-",
+              "Content",
+              "Content<-",
               "Author",
               "Author<-",
               "DateTimeStamp",
@@ -71,7 +71,7 @@ exportMethods(
               "meta",
               "meta<-",
 
-              # TextDocCol
+              # Corpus
               "DMetaData",
               "DMetaData<-",
               "CMetaData",
@@ -144,7 +144,7 @@ exportClasses("TextDocument",
               "RCV1Document",
               "NewsgroupDocument",
               "StructuredTextDocument",
-              "TextDocCol",
+              "Corpus",
               "MetaDataNode",
               "TextRepository",
               "TermDocMatrix",

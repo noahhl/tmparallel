@@ -9,7 +9,7 @@ setGeneric("searchFullText", function(object, pattern, ...) standardGeneric("sea
 setMethod("searchFullText",
           signature(object = "PlainTextDocument", pattern = "character"),
           function(object, pattern, ...) {
-              any(grep(pattern, Corpus(object)))
+              any(grep(pattern, Content(object)))
           })
 
 setGeneric("tmIntersect", function(object, words, ...) standardGeneric("tmIntersect"))

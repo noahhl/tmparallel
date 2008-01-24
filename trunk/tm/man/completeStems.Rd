@@ -8,7 +8,7 @@
 completeStems(object, words)
 }
 \arguments{
-  \item{object}{a \code{TextDocCol} to be searched for possible completions.}
+  \item{object}{a \code{Corpus} to be searched for possible completions.}
   \item{words}{a \code{character} vector of stems to be completed.}
 }
 \value{
