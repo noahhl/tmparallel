@@ -12,18 +12,16 @@ setMethod("TermDocMatrix",
                   weight <- weightTf
 
               tflist <- lapply(object, termFreq, control)
-              terms <- lapply(tflist, names)
-              allTerms <- unique(unlist(terms, use.names = FALSE))
+              allTerms <- unique(unlist(lapply(tflist, names), use.names = FALSE))
 
-              i <- lapply(terms, match, allTerms)
-              rm(terms)
+              i <- lapply(tflist, function(x) match(names(x), allTerms)[x > 0])
               p <- cumsum(sapply(i, length))
               i <- unlist(i) - 1L
 
               x <- as.numeric(unlist(tflist, use.names = FALSE))
               rm(tflist)
 
-              tdm <- new("dgCMatrix", p = c(0L, p), i = i, x = x,
+              tdm <- new("dgCMatrix", p = c(0L, p), i = i, x = x[x > 0],
                          Dim = c(length(allTerms), length(p)))
               tdm <- weight(t(tdm))
               tdm@Dimnames <- list(Docs = sapply(object, ID), Terms = allTerms)
