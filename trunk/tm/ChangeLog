@@ -1,3 +1,11 @@
+2008-01-30  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/termdocmatrix.R (TermDocMatrix): Ensure that dimnames are
+	always set correctly.
+
+	* R/textdoccol.R: Set load = TRUE as default for load on demand
+	since in most cases this is the wanted behaviour.
+
 2008-01-24  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/: Renamed TextDocCol to Corpus, and Corpus to Content.

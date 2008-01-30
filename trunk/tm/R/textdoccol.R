@@ -2,13 +2,13 @@
 
 # The "..." are additional arguments for the FunctionGenerator reader
 setGeneric("Corpus", function(object,
-                                  readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE),
+                                  readerControl = list(reader = object@DefaultReader, language = "en_US", load = TRUE),
                                   dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
                                   ...) standardGeneric("Corpus"))
 setMethod("Corpus",
           signature(object = "Source"),
           function(object,
-                   readerControl = list(reader = object@DefaultReader, language = "en_US", load = FALSE),
+                   readerControl = list(reader = object@DefaultReader, language = "en_US", load = TRUE),
                    dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
                    ...) {
               if (is.null(readerControl$reader))
@@ -18,7 +18,7 @@ setMethod("Corpus",
               if (is.null(readerControl$language))
                   readerControl$language = "en_US"
               if (is.null(readerControl$load))
-                  readerControl$load = FALSE
+                  readerControl$load = TRUE
 
               if (dbControl$useDb) {
                   if (!dbCreate(dbControl$dbName, dbControl$dbType))
@@ -122,14 +122,14 @@ setMethod("loadDoc",
 
 setGeneric("tmUpdate", function(object,
                                 origin,
-                                readerControl = list(reader = origin@DefaultReader, language = "en_US", load = FALSE),
+                                readerControl = list(reader = origin@DefaultReader, language = "en_US", load = TRUE),
                                 ...) standardGeneric("tmUpdate"))
 # Update is only supported for directories
 # At the moment no other LoD devices are available anyway
 setMethod("tmUpdate",
           signature(object = "Corpus", origin = "DirSource"),
           function(object, origin,
-                   readerControl = list(reader = origin@DefaultReader, language = "en_US", load = FALSE),
+                   readerControl = list(reader = origin@DefaultReader, language = "en_US", load = TRUE),
                    ...) {
               if (is.null(readerControl$reader))
                   readerControl$reader <- origin@DefaultReader
@@ -138,7 +138,7 @@ setMethod("tmUpdate",
               if (is.null(readerControl$language))
                   readerControl$language = "en_US"
               if (is.null(readerControl$load))
-                  readerControl$load = FALSE
+                  readerControl$load = TRUE
 
               object.filelist <- unlist(lapply(object, function(x) {as.character(URI(x))[2]}))
               new.files <- setdiff(origin@FileList, object.filelist)

@@ -8,7 +8,7 @@
 }
 \usage{
 \S4method{Corpus}{Source}(object, readerControl = list(reader = object@DefaultReader,
-language = "en_US", load = FALSE), dbControl = list(useDb = FALSE, dbName = "",
+language = "en_US", load = TRUE), dbControl = list(useDb = FALSE, dbName = "",
 dbType = "DB1"), ...)
 }
 \arguments{

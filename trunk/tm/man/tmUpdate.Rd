@@ -9,7 +9,7 @@ Methods for function \code{tmUpdate} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{
-    \item{object = "Corpus", origin = "DirSource", readerControl = list(reader = origin@DefaultReader, language = "en\_US", load = FALSE)}{Checks whether
+    \item{object = "Corpus", origin = "DirSource", readerControl = list(reader = origin@DefaultReader, language = "en\_US", load = TRUE)}{Checks whether
       new documents are available in \code{origin}. If, \code{object} is
       updated, i.e., it is augmented with the newly available
       items. \code{readerControl} specifies arguments to read in new

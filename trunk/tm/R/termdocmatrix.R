@@ -24,9 +24,9 @@ setMethod("TermDocMatrix",
               rm(tflist)
 
               tdm <- new("dgCMatrix", p = c(0L, p), i = i, x = x,
-                         Dim = c(length(allTerms), length(p)),
-                         Dimnames = list(Terms = allTerms, Docs = sapply(object, ID)))
+                         Dim = c(length(allTerms), length(p)))
               tdm <- weight(t(tdm))
+              tdm@Dimnames <- list(Docs = sapply(object, ID), Terms = allTerms)
 
               new("TermDocMatrix", Data = tdm, Weighting = weight@Name)
           })
