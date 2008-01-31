@@ -612,3 +612,17 @@ setMethod("sapply",
                   result <- base::sapply(X, FUN, ...)
               return(result)
           })
+
+setGeneric("writeCorpus", function(object, path = ".", filenames = NULL) standardGeneric("writeCorpus"))
+setMethod("writeCorpus",
+          signature(object = "Corpus"),
+          function(object, path = ".", filenames = NULL) {
+              filenames <- file.path(path,
+                                     if (is.null(filenames)) sapply(object, function(x) sprintf("%s.txt", ID(x)))
+                                     else filenames)
+              i <- 1
+              for (o in object) {
+                  writeLines(o, filenames[i])
+                  i <- i + 1
+              }
+          })

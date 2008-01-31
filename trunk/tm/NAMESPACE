@@ -134,6 +134,7 @@ exportMethods(
               "show",
               "summary",
               "inspect",
+              "writeCorpus",
               "%IN%",
               "dissimilarity")
 

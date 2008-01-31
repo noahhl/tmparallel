@@ -1,3 +1,8 @@
+2008-01-31  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/textdoccol.R (writeCorpus): Function for writing a corpus
+	containing plain text documents to disk.
+
 2008-01-30  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/termdocmatrix.R (TermDocMatrix): Ensure that dimnames are
