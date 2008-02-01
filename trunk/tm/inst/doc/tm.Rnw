@@ -192,6 +192,8 @@ documents. E.g.,
 <<eval=false>>=
 lapply(ovid, function(x) writeLines(x, paste(ID(x), ".txt", sep = "")))
 @
+Alternatively there is the function \code{writeCorpus} which
+encapsulates this functionality.
 
 \section*{Inspecting the Text Document Collection}
 Custom \code{show} and \code{summary} methods are available, which
