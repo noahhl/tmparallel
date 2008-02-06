@@ -1,11 +1,11 @@
-\name{completeStems}
-\alias{completeStems}
+\name{stemCompletion}
+\alias{stemCompletion}
 \title{Complete Stems}
 \description{
   Heuristically complete stemmed words.
 }
 \usage{
-completeStems(object, words)
+stemCompletion(object, words)
 }
 \arguments{
   \item{object}{a \code{Corpus} to be searched for possible completions.}
@@ -16,7 +16,7 @@ completeStems(object, words)
 }
 \examples{
 data("crude")
-completeStems(crude, c("compan", "entit", "suppl"))
+stemCompletion(crude, c("compan", "entit", "suppl"))
 }
 \author{Ingo Feinerer}
 \keyword{file}

@@ -6,7 +6,7 @@ import(Snowball)
 import(XML)
 
 export(
-       "completeStems",
+       "stemCompletion",
        "getFilters",
        "getReaders",
        "getTransformations",
