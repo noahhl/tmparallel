@@ -103,6 +103,7 @@ exportMethods(
               "tmTolower",
               "stemDoc",
               "removeCitation",
+              "removeNumbers",
               "removeMultipart",
               "removeSignature",
               "removeWords",

@@ -43,6 +43,10 @@ termFreq <- function(doc, control = list()) {
         tokenize <- function(x) unlist(strsplit(gsub("[^[:alnum:]]+", " ", x), " ", fixed = TRUE))
     txt <- tokenize(txt)
 
+    removeNumbers <- control$removeNumbers
+    if (is.logical(removeNumbers) && removeNumbers)
+        txt <- gsub("[[:digit:]]+", "", txt)
+
     # Stemming
     stemming <- control$stemming
     if (is.logical(stemming) && stemming) {

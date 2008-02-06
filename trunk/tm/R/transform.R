@@ -59,6 +59,14 @@ setMethod("removeCitation",
               return(object)
           })
 
+setGeneric("removeNumbers", function(object, ...) standardGeneric("removeNumbers"))
+setMethod("removeNumbers",
+          signature(object = "PlainTextDocument"),
+          function(object, ...) {
+              Content(object) <- gsub("[[:digit:]]+", "", object)
+              return(object)
+          })
+
 setGeneric("removePunctuation", function(object, ...) standardGeneric("removePunctuation"))
 setMethod("removePunctuation",
           signature(object = "PlainTextDocument"),
