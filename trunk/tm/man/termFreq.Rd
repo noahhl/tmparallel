@@ -16,7 +16,7 @@ termFreq(doc, control = list())
       \item \code{tokenize}: a function tokenizing documents to single
       tokens. Defaults to \code{function(x) unlist(strsplit(gsub("[^[:alnum:]]+", " ", x), " ", fixed = TRUE)}.
       \item \code{removeNumbers}: a Boolean value indicating whether
-      numbers should be removed from \code{doc}.
+      numbers should be removed from \code{doc}. Defaults to \code{FALSE}.
       \item \code{stemming}: a Boolean value indicating whether tokens
       should be stemmed. Defaults to \code{FALSE}.
       \item \code{stopwords}: either a Boolean value indicating stopword
