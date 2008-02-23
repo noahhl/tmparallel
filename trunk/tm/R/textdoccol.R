@@ -218,7 +218,8 @@ setMethod("asPlain",
           function(object, FUN, ...) {
               new("PlainTextDocument", .Data = Content(object), Cached = TRUE, URI = "", Author = Author(object),
                   DateTimeStamp = DateTimeStamp(object), Description = Description(object), ID = ID(object),
-                  Origin = Origin(object), Heading = Heading(object), Language = Language(object))
+                  Origin = Origin(object), Heading = Heading(object), Language = Language(object),
+                  LocalMetaData = LocalMetaData(object))
           })
 setMethod("asPlain",
           signature(object = "StructuredTextDocument"),
@@ -226,7 +227,8 @@ setMethod("asPlain",
               new("PlainTextDocument", .Data = unlist(Content(object)), Cached = TRUE,
                   URI = "", Author = Author(object), DateTimeStamp = DateTimeStamp(object),
                   Description = Description(object), ID = ID(object), Origin = Origin(object),
-                  Heading = Heading(object), Language = Language(object))
+                  Heading = Heading(object), Language = Language(object),
+                  LocalMetaData = LocalMetaData(object))
           })
 
 setGeneric("tmFilter", function(object, ..., FUN = sFilter, doclevel = FALSE) standardGeneric("tmFilter"))
