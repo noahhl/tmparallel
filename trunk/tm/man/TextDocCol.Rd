@@ -15,7 +15,8 @@ dbType = "DB1"), ...)
   \item{object}{a \code{Source} object.}
   \item{readerControl}{a list with the named components \code{reader}
     representing a reading function capable of handling the file format
-    found in \code{object}, \code{language} giving the text's language, and
+    found in \code{object}, \code{language} giving the text's language
+    (preferably in \acronym{Iso} 639-1 format), and
     \code{load} being a logical value indicating whether the text corpus of
     documents should be loaded immediately into memory (\code{load = TRUE}) or loaded when
     necessary (\code{load = FALSE}). This allows to minimize memory
