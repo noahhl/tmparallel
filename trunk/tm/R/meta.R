@@ -51,7 +51,7 @@ setReplaceMethod("meta",
                      if ((type != "indexed") && (type != "corpus"))
                          stop("invalid type")
                      if (type == "indexed")
-                         object@DMetaData[, tag] <- value
+                         DMetaData(object)[, tag] <- value
                      else # (type == "corpus")
                          object@CMetaData@MetaData[[tag]] <- value
                      object
