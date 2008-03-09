@@ -153,10 +153,15 @@ setMethod("tmUpdate",
               return(object)
           })
 
-setGeneric("tmMap", function(object, FUN, ...) standardGeneric("tmMap"))
+setGeneric("tmMap", function(object, FUN, lazy = FALSE, ...) standardGeneric("tmMap"))
+############################################
+# Lazy mapping restrictions (at the moment):
+#   *) No database backend support
+#   *) No function composition
+############################################
 setMethod("tmMap",
           signature(object = "Corpus", FUN = "function"),
-          function(object, FUN, ...) {
+          function(object, FUN, lazy = FALSE, ...) {
               result <- object
               # Note that text corpora are automatically loaded into memory via \code{[[}
               if (DBControl(object)[["useDb"]]) {
@@ -167,10 +172,22 @@ setMethod("tmMap",
                       i <- i + 1
                   }
               }
-              else
-                  result@.Data <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
+              else {
+                  if (lazy)
+                      meta(result, tag = "lazyTmMap", type = "corpus") <- list(fun = FUN, args = ...)
+                  else
+                      result@.Data <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
+              }
               return(result)
           })
+
+# Materialize lazy mappings
+materialize <- function(corpus) {
+    lazyTmMap <- meta(corpus, tag = "lazyTmMap", type = "corpus")
+    if (!is.null(lazyTmMap))
+        corpus@.Data <- lapply(corpus, lazyTmMap$fun, DMetaData = DMetaData(corpus))
+    return(corpus)
+}
 
 setGeneric("asPlain", function(object, FUN, ...) standardGeneric("asPlain"))
 setMethod("asPlain",
@@ -383,6 +400,7 @@ setMethod("[<-",
               return(object)
           })
 
+# ToDo: Implement on-demand materialization of lazy mappings
 setMethod("[[",
           signature(x = "Corpus", i = "ANY", j = "ANY"),
           function(x, i, j, ...) {
