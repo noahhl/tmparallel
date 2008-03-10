@@ -174,7 +174,10 @@ setMethod("tmMap",
               }
               else {
                   if (lazy)
-                      meta(result, tag = "lazyTmMap", type = "corpus") <- list(fun = FUN, args = ...)
+                      meta(result, tag = "lazyTmMap", type = "corpus") <-
+                          list(index = rep(TRUE, length(result)),
+                               fun = FUN,
+                               args = ...)
                   else
                       result@.Data <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
               }
@@ -182,10 +185,17 @@ setMethod("tmMap",
           })
 
 # Materialize lazy mappings
-materialize <- function(corpus) {
+# ToDo: Clean up lazyTmMap markers (for the case that everything is materialized)
+materialize <- function(corpus, range = seq_along(corpus)) {
     lazyTmMap <- meta(corpus, tag = "lazyTmMap", type = "corpus")
-    if (!is.null(lazyTmMap))
-        corpus@.Data <- lapply(corpus, lazyTmMap$fun, DMetaData = DMetaData(corpus))
+    if (!is.null(lazyTmMap)) {
+        for (i in range)
+            if (lazyTmMap$index[i]) {
+                corpus@.Data[[i]] <- lazyTmMap$fun(corpus@.Data[[i]], lazyTmMap$args, DMetaData = DMetaData(corpus))
+                lazyTmMap$index[i] <- FALSE
+            }
+    }
+    meta(corpus, tag = "lazyTmMap", type = "corpus") <- lazyTmMap
     return(corpus)
 }
 
@@ -401,6 +411,10 @@ setMethod("[<-",
           })
 
 # ToDo: Implement on-demand materialization of lazy mappings
+############################################
+# Lazy mapping restrictions (at the moment):
+#   *) No database backend support
+############################################
 setMethod("[[",
           signature(x = "Corpus", i = "ANY", j = "ANY"),
           function(x, i, j, ...) {
@@ -409,10 +423,14 @@ setMethod("[[",
                   result <- dbFetch(db, x@.Data[[i]])
                   return(loadDoc(result))
               }
-              else
+              else {
+                  # ToDo: Ensure that loadDoc is called and cached
+                  .Call("copyCorpus", x, materialize(x, i))
                   return(loadDoc(x@.Data[[i]]))
+              }
           })
 
+# ToDo: Mark set objects as not active for lazy mapping
 setMethod("[[<-",
           signature(x = "Corpus", i = "ANY", j = "ANY", value = "ANY"),
           function(x, i, j, ..., value) {

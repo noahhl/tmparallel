@@ -10,6 +10,7 @@ export(
        "getFilters",
        "getReaders",
        "getTransformations",
+       "materialize",
        "readPlain",
        "readReut21578XML",
        "readRCV1",
@@ -158,3 +159,5 @@ exportClasses("TextDocument",
               "GmaneSource",
               "FunctionGenerator",
               "WeightFunction")
+
+useDynLib("tm")
