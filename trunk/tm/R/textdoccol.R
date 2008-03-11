@@ -153,18 +153,15 @@ setMethod("tmUpdate",
               return(object)
           })
 
-setGeneric("tmMap", function(object, FUN, lazy = FALSE, ...) standardGeneric("tmMap"))
-############################################
-# Lazy mapping restrictions (at the moment):
-#   *) No database backend support
-#   *) No function composition
-############################################
+setGeneric("tmMap", function(object, FUN, ..., lazy = FALSE) standardGeneric("tmMap"))
 setMethod("tmMap",
           signature(object = "Corpus", FUN = "function"),
-          function(object, FUN, lazy = FALSE, ...) {
+          function(object, FUN, ..., lazy = FALSE) {
               result <- object
               # Note that text corpora are automatically loaded into memory via \code{[[}
               if (DBControl(object)[["useDb"]]) {
+                  if (lazy)
+                      warning("lazy mapping is deactived when using database backend")
                   db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
                   i <- 1
                   for (id in unlist(object)) {
@@ -173,11 +170,19 @@ setMethod("tmMap",
                   }
               }
               else {
-                  if (lazy)
-                      meta(result, tag = "lazyTmMap", type = "corpus") <-
-                          list(index = rep(TRUE, length(result)),
-                               fun = FUN,
-                               args = ...)
+                  # Lazy mapping
+                  if (lazy) {
+                      lazyTmMap <- meta(object, tag = "lazyTmMap", type = "corpus")
+                      if (is.null(lazyTmMap)) {
+                          meta(result, tag = "lazyTmMap", type = "corpus") <-
+                              list(index = rep(TRUE, length(result)),
+                                   maps = list(function(x, DMetaData) FUN(x, ..., DMetaData = DMetaData)))
+                      }
+                      else {
+                          lazyTmMap$maps <- c(lazyTmMap$maps, list(function(x, DMetaData) FUN(x, ..., DMetaData = DMetaData)))
+                          meta(result, tag = "lazyTmMap", type = "corpus") <- lazyTmMap
+                      }
+                  }
                   else
                       result@.Data <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
               }
@@ -185,16 +190,21 @@ setMethod("tmMap",
           })
 
 # Materialize lazy mappings
-# ToDo: Clean up lazyTmMap markers (for the case that everything is materialized)
 materialize <- function(corpus, range = seq_along(corpus)) {
     lazyTmMap <- meta(corpus, tag = "lazyTmMap", type = "corpus")
     if (!is.null(lazyTmMap)) {
         for (i in range)
             if (lazyTmMap$index[i]) {
-                corpus@.Data[[i]] <- lazyTmMap$fun(corpus@.Data[[i]], lazyTmMap$args, DMetaData = DMetaData(corpus))
+                res <- loadDoc(corpus@.Data[[i]])
+                for (m in lazyTmMap$maps)
+                    res <- m(res, DMetaData = DMetaData(corpus))
+                corpus@.Data[[i]] <- res
                 lazyTmMap$index[i] <- FALSE
             }
     }
+    # Clean up if everything is materialized
+    if (!any(lazyTmMap$index))
+        lazyTmMap <- NULL
     meta(corpus, tag = "lazyTmMap", type = "corpus") <- lazyTmMap
     return(corpus)
 }
@@ -410,11 +420,6 @@ setMethod("[<-",
               return(object)
           })
 
-# ToDo: Implement on-demand materialization of lazy mappings
-############################################
-# Lazy mapping restrictions (at the moment):
-#   *) No database backend support
-############################################
 setMethod("[[",
           signature(x = "Corpus", i = "ANY", j = "ANY"),
           function(x, i, j, ...) {
@@ -424,13 +429,13 @@ setMethod("[[",
                   return(loadDoc(result))
               }
               else {
-                  # ToDo: Ensure that loadDoc is called and cached
-                  .Call("copyCorpus", x, materialize(x, i))
+                  lazyTmMap <- meta(x, tag = "lazyTmMap", type = "corpus")
+                  if (!is.null(lazyTmMap))
+                      .Call("copyCorpus", x, materialize(x, i))
                   return(loadDoc(x@.Data[[i]]))
               }
           })
 
-# ToDo: Mark set objects as not active for lazy mapping
 setMethod("[[<-",
           signature(x = "Corpus", i = "ANY", j = "ANY", value = "ANY"),
           function(x, i, j, ..., value) {
@@ -440,8 +445,14 @@ setMethod("[[<-",
                   index <- object@.Data[[i]]
                   db[[index]] <- value
               }
-              else
+              else {
+                  # Mark new objects as not active for lazy mapping
+                  lazyTmMap <- meta(object, tag = "lazyTmMap", type = "corpus")
+                  if (!is.null(lazyTmMap))
+                      lazyTmMap$index[i] <- FALSE
+                  # Set the value
                   object@.Data[[i, ...]] <- value
+              }
               return(object)
           })
 
@@ -610,7 +621,7 @@ setMethod("inspect",
                   show(dbMultiFetch(db, unlist(object)))
               }
               else
-                  show(object@.Data)
+                  show(lapply(object, "[[", 1))
           })
 
 # No metadata is checked
@@ -630,12 +641,17 @@ setMethod("%IN%",
 setMethod("lapply",
           signature(X = "Corpus"),
           function(X, FUN, ...) {
+              print("lapply")
               if (DBControl(X)[["useDb"]]) {
                   db <- dbInit(DBControl(X)[["dbName"]], DBControl(X)[["dbType"]])
                   result <- lapply(dbMultiFetch(db, unlist(X)), FUN, ...)
               }
-              else
+              else {
+                  lazyTmMap <- meta(X, tag = "lazyTmMap", type = "corpus")
+                  if (!is.null(lazyTmMap))
+                      .Call("copyCorpus", X, materialize(X))
                   result <- base::lapply(X, FUN, ...)
+              }
               return(result)
           })
 
@@ -646,8 +662,12 @@ setMethod("sapply",
                   db <- dbInit(DBControl(X)[["dbName"]], DBControl(X)[["dbType"]])
                   result <- sapply(dbMultiFetch(db, unlist(X)), FUN, ...)
               }
-              else
+              else {
+                  lazyTmMap <- meta(X, tag = "lazyTmMap", type = "corpus")
+                  if (!is.null(lazyTmMap))
+                      .Call("copyCorpus", X, materialize(X))
                   result <- base::sapply(X, FUN, ...)
+              }
               return(result)
           })
 
