@@ -448,8 +448,10 @@ setMethod("[[<-",
               else {
                   # Mark new objects as not active for lazy mapping
                   lazyTmMap <- meta(object, tag = "lazyTmMap", type = "corpus")
-                  if (!is.null(lazyTmMap))
+                  if (!is.null(lazyTmMap)) {
                       lazyTmMap$index[i] <- FALSE
+                      meta(object, tag = "lazyTmMap", type = "corpus") <- lazyTmMap
+                  }
                   # Set the value
                   object@.Data[[i, ...]] <- value
               }
