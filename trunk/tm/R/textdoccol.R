@@ -168,6 +168,8 @@ setMethod("tmMap",
                       db[[id]] <- FUN(object[[i]], ..., DMetaData = DMetaData(object))
                       i <- i + 1
                   }
+                  # Suggested by Christian Buchta
+                  dbReorganize(db)
               }
               else {
                   # Lazy mapping
@@ -190,17 +192,19 @@ setMethod("tmMap",
           })
 
 # Materialize lazy mappings
+# Improvements by Christian Buchta
 materialize <- function(corpus, range = seq_along(corpus)) {
     lazyTmMap <- meta(corpus, tag = "lazyTmMap", type = "corpus")
     if (!is.null(lazyTmMap)) {
-        for (i in range)
-            if (lazyTmMap$index[i]) {
-                res <- loadDoc(corpus@.Data[[i]])
-                for (m in lazyTmMap$maps)
-                    res <- m(res, DMetaData = DMetaData(corpus))
-                corpus@.Data[[i]] <- res
-                lazyTmMap$index[i] <- FALSE
-            }
+       # Make valid and lazy index
+       idx <- (seq_along(corpus) %in% range) & lazyTmMap$index
+       if (any(idx)) {
+           res <- lapply(corpus@.Data[idx], loadDoc)
+           for (m in lazyTmMap$maps)
+               res <- lapply(res, m, DMetaData = DMetaData(corpus))
+           corpus@.Data[idx] <- res
+           lazyTmMap$index[idx] <- FALSE
+       }
     }
     # Clean up if everything is materialized
     if (!any(lazyTmMap$index))
