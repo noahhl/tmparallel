@@ -153,7 +153,7 @@ Corpus(DirSource(newsgroup),
 @
 
 \acronym{Rss} feed as delivered by Gmane for the \proglang{R} mailing list archive:
-<<>>=
+<<eval=FALSE>>=
 rss <- system.file("texts", "gmane.comp.lang.r.gr.rdf", package = "tm")
 
 Corpus(GmaneSource(rss),
@@ -161,7 +161,7 @@ Corpus(GmaneSource(rss),
 @
 
 For very simple \acronym{Html} documents:
-<<>>=
+<<eval=FALSE>>=
 html <- system.file("texts", "html", package = "tm")
 
 Corpus(DirSource(html),
