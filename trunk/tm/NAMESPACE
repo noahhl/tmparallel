@@ -133,6 +133,7 @@ exportMethods(
               "[[",
               "[[<-",
               "c",
+              "coerce", # for setAs
               "length",
               "show",
               "summary",

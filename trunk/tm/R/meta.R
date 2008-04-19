@@ -4,14 +4,18 @@ setGeneric("meta", function(object, tag = NULL, type = NULL) standardGeneric("me
 setMethod("meta",
           signature(object = "Corpus"),
           function(object, tag = NULL, type = "indexed") {
-              if ((type != "indexed") && (type != "corpus"))
+              if ((type != "indexed") && (type != "corpus") && (type != "local"))
                   stop("invalid type")
               if (is.null(tag) && type == "indexed")
                   return(DMetaData(object))
               if (is.null(tag) && type == "corpus")
                   return(CMetaData(object))
+              if (is.null(tag) && type == "local")
+                  return(invisible(sapply(object, meta)))
               if (type == "indexed")
                   return(DMetaData(object)[tag])
+              if (type == "local")
+                  return(slot(tag, object))
               else # (type == "corpus")
                   return(CMetaData(object)@MetaData[[tag]])
           })
@@ -48,10 +52,13 @@ setGeneric("meta<-", function(object, tag, type = NULL, value) standardGeneric("
 setReplaceMethod("meta",
                  signature(object = "Corpus"),
                  function(object, tag, type = "indexed", value) {
-                     if ((type != "indexed") && (type != "corpus"))
+                     if ((type != "indexed") && (type != "corpus") && (type != "local"))
                          stop("invalid type")
                      if (type == "indexed")
                          DMetaData(object)[, tag] <- value
+                     else if (type == "local")
+                         for (i in seq_along(object))
+                             meta(object[[i]], tag) <- value[[i]]
                      else # (type == "corpus")
                          object@CMetaData@MetaData[[tag]] <- value
                      object
@@ -65,6 +72,9 @@ setReplaceMethod("meta",
 setReplaceMethod("meta",
                  signature(object = "TextDocument"),
                  function(object, tag, type = NULL, value) {
-                     object@LocalMetaData[[tag]] <- value
+                     if (tag %in% c("Author", "DateTimeStamp", "Description", "ID", "Heading", "Language", "Origin"))
+                         slot(object, tag) <- value
+                     else
+                         object@LocalMetaData[[tag]] <- value
                      object
 })

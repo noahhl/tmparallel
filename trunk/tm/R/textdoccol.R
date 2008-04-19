@@ -677,6 +677,28 @@ setMethod("sapply",
               return(result)
           })
 
+setAs("list", "Corpus", function(from) {
+    cmeta.node <- new("MetaDataNode",
+                      NodeID = 0,
+                      MetaData = list(create_date = Sys.time(), creator = Sys.getenv("LOGNAME")),
+                      children = list())
+    data <- list()
+    counter <- 1
+    for (f in from) {
+        doc <- new("PlainTextDocument",
+                   .Data = f, URI = NULL, Cached = TRUE,
+                   Author = "", DateTimeStamp = Sys.time(),
+                   Description = "", ID = as.character(counter),
+                   Origin = "", Heading = "", Language = "en_US")
+        data <- c(data, list(doc))
+        counter <- counter + 1
+    }
+    return(new("Corpus", .Data = data,
+               DMetaData = data.frame(MetaID = rep(0, length(from)), stringsAsFactors = FALSE),
+               CMetaData = cmeta.node,
+               DBControl = dbControl <- list(useDb = FALSE, dbName = "", dbType = "DB1")))
+})
+
 setGeneric("writeCorpus", function(object, path = ".", filenames = NULL) standardGeneric("writeCorpus"))
 setMethod("writeCorpus",
           signature(object = "Corpus"),

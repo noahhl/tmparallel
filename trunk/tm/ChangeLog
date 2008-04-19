@@ -1,3 +1,12 @@
+2008-04-19  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* inst/CITATION: Updated JSS article information.
+
+	* R/textdoccol.R (setAs): Added coerce method from list to
+	corpus.
+
+	* R/meta.R (meta): Improved meta data handling.
+
 2008-03-21  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* R/textdoccol.R (materialize, tmMap): Improvements suggested by

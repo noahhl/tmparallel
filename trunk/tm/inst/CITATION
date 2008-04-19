@@ -35,7 +35,7 @@ citEntry(entry = "Article",
          journal = "Journal of Statistical Software",
          volume = 25,
          number = 5,
-         url = "http://www.jstatsoft.org/vXX/iXX/",
+         url = "http://www.jstatsoft.org/v25/i05/",
          month = "March",
          textVersion = {
              paste("Ingo Feinerer, Kurt Hornik, and David Meyer (2008).",
