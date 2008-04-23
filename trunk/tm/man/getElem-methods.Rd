@@ -6,6 +6,7 @@
 \alias{getElem,CSVSource-method}
 \alias{getElem,ReutersSource-method}
 \alias{getElem,GmaneSource-method}
+\alias{getElem,VectorSource-method}
 \title{Methods for Function getElem in Package `tm'}
 \description{
   Methods for function \code{getElem} in package \pkg{tm}..
@@ -16,6 +17,7 @@
     \item{object = "CSVSource"}{returns the element at current position from the source.}
     \item{object = "ReutersSource"}{returns the element at current position from the source.}
     \item{object = "GmaneSource"}{returns the element at current position from the source.}
+    \item{object = "VectorSource"}{returns the element at current position from the source.}
   }
 }
 \keyword{methods}
