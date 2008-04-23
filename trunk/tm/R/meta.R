@@ -31,21 +31,15 @@ setMethod("meta",
           signature(object = "TextDocument"),
           function(object, tag = NULL, type = NULL) {
               if (is.null(tag)) {
+                  slots <- sort(setdiff(names(getSlots(class(object))), c(".Data", "LocalMetaData")))
                   cat("Available meta data pairs are:\n")
-                  cat("  Author       :", Author(object), "\n")
-                  cat("  Cached       :", Cached(object), "\n")
-                  cat("  DateTimeStamp:", as(DateTimeStamp(object), "character"), "\n")
-                  cat("  Description  :", Description(object), "\n")
-                  cat("  ID           :", ID(object), "\n")
-                  cat("  Heading      :", Heading(object), "\n")
-                  cat("  Language     :", Language(object), "\n")
-                  cat("  Origin       :", Origin(object), "\n")
-                  cat("  URI          :", as(URI(object), "character"), "\n")
+                  for (s in slots)
+                      cat(sprintf("  %-13s: %s\n", s, paste(as(slot(object, s), "character"), collapse = " ")))
                   cat("Dynamic local meta data pairs are:\n")
                   show(LocalMetaData(object))
-              } else {
-                  LocalMetaData(object)[[tag]]
               }
+              else
+                  LocalMetaData(object)[[tag]]
           })
 
 setGeneric("meta<-", function(object, tag, type = NULL, value) standardGeneric("meta<-"))
