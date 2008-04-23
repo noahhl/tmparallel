@@ -627,7 +627,7 @@ setMethod("inspect",
                   show(dbMultiFetch(db, unlist(object)))
               }
               else
-                  show(lapply(object, "[[", 1))
+                  print(noquote(lapply(object, identity)))
           })
 
 # No metadata is checked
