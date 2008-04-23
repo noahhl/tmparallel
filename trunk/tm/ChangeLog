@@ -1,3 +1,10 @@
+2008-04-23  Ingo Feinerer  <h0125130@wu-wien.ac.at>
+
+	* R/transform.R (replacePatterns): Replaced removeWords by
+	replacePatterns. Suggested by Christian Buchta.
+
+	* R/textdoccol.R (inspect): Improved formatting.
+
 2008-04-19  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
 	* inst/CITATION: Updated JSS article information.

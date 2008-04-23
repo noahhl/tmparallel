@@ -110,7 +110,7 @@ exportMethods(
               "removeSignature",
               "removeWords",
               "removePunctuation",
-              "replaceWords",
+              "replacePatterns",
               "tmFilter",
               "tmIndex",
               "searchFullText",
