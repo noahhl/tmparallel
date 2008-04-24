@@ -72,6 +72,8 @@ exportMethods(
 
               "meta",
               "meta<-",
+              "DublinCore",
+              "DublinCore<-",
 
               # Corpus
               "DMetaData",

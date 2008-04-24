@@ -38,8 +38,10 @@ setMethod("meta",
                   cat("Dynamic local meta data pairs are:\n")
                   show(LocalMetaData(object))
               }
-              else
-                  LocalMetaData(object)[[tag]]
+              else {
+                  if (tag %in% names(getSlots(class(object)))) show(slot(object, tag))
+                  else show(LocalMetaData(object)[[tag]])
+              }
           })
 
 setGeneric("meta<-", function(object, tag, type = NULL, value) standardGeneric("meta<-"))
@@ -70,5 +72,57 @@ setReplaceMethod("meta",
                          slot(object, tag) <- value
                      else
                          object@LocalMetaData[[tag]] <- value
+                     object
+})
+
+# Simple Dublin Core to tm meta data mappings
+# http://en.wikipedia.org/wiki/Dublin_core#Simple_Dublin_Core
+DublinCoretm <- function(DCElem) {
+    if (DCElem == "Title") return(list(tag = "Heading", type = "local"))
+    if (DCElem == "Creator") return(list(tag = "Author", type = "local"))
+    if (DCElem == "Description") return(list(tag = "Description", type = "local"))
+    if (DCElem == "Date") return(list(tag = "DateTimeStamp", type = "local"))
+    if (DCElem == "Identifier") return(list(tag = "ID", type = "local"))
+    if (DCElem == "Language") return(list(tag = "Language", type = "local"))
+    # Source -> Origin ?
+
+    if (DCElem == "Subject" || DCElem == "Publisher" || DCElem == "Contributor" ||
+        DCElem == "Type" || DCElem == "Format" || DCElem == "Source" ||
+        DCElem == "Relation" || DCElem == "Coverage" || DCElem == "Rights")
+        return(list(tag = DCElem, type = "extended"))
+
+    stop("invalid simple Dublin Core meta data element")
+}
+
+setGeneric("DublinCore", function(object, tag = NULL) standardGeneric("DublinCore"))
+setMethod("DublinCore",
+          signature(object = "TextDocument"),
+          function(object, tag = NULL) {
+              if (is.null(tag)) {
+                  elements <- c("Title", "Creator", "Subject", "Description", "Publisher",
+                                "Contributor", "Date", "Type", "Format", "Identifier",
+                                "Source", "Language", "Relation", "Coverage", "Rights")
+                  cat("Simple Dublin Core meta data pairs are:\n")
+                  for (e in elements) {
+                      DCtm <- DublinCoretm(e)
+                      DCvalue <- if (DCtm$type == "local") slot(object, DCtm$tag)
+                      else LocalMetaData(object)[[DCtm$tag]]
+                      cat(sprintf("  %-11s: %s\n", e, paste(as(DCvalue, "character"), collapse = " ")))
+                  }
+              }
+              else {
+                  DCtm <- DublinCoretm(tag)
+                  if (DCtm$type == "local") show(slot(object, DCtm$tag))
+                  else show(LocalMetaData(object)[[DCtm$tag]])
+              }
+          })
+
+setGeneric("DublinCore<-", function(object, tag, value) standardGeneric("DublinCore<-"))
+setReplaceMethod("DublinCore",
+                 signature(object = "TextDocument"),
+                 function(object, tag, value) {
+                     DCtm <- DublinCoretm(tag)
+                     if (DCtm$type == "local") slot(object, DCtm$tag) <- value
+                     else object@LocalMetaData[[DCtm$tag]] <- value
                      object
 })
