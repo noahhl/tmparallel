@@ -134,10 +134,10 @@ setMethod("rownames",
               rownames(Data(x), do.NULL, prefix)
           })
 
-setGeneric("findFreqTerms", function(object, lowfreq, highfreq) standardGeneric("findFreqTerms"))
+setGeneric("findFreqTerms", function(object, lowfreq = 0, highfreq = Inf) standardGeneric("findFreqTerms"))
 setMethod("findFreqTerms",
           signature(object = "TermDocMatrix", lowfreq = "numeric", highfreq = "numeric"),
-          function(object, lowfreq, highfreq) {
+          function(object, lowfreq = 0, highfreq = Inf) {
               m <- as(Data(object), "TsparseMatrix")
               colnames(m)[unique(m@j[m@x >= lowfreq & m@x <= highfreq]) + 1]
           })
