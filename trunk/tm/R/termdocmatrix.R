@@ -134,6 +134,12 @@ setMethod("rownames",
               rownames(Data(x), do.NULL, prefix)
           })
 
+setMethod("as.matrix",
+          signature(x = "TermDocMatrix"),
+          function(x) {
+              as.matrix(Data(x))
+          })
+
 setGeneric("findFreqTerms", function(object, lowfreq = 0, highfreq = Inf) standardGeneric("findFreqTerms"))
 setMethod("findFreqTerms",
           signature(object = "TermDocMatrix"),

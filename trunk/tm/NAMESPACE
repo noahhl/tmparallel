@@ -118,6 +118,7 @@ exportMethods(
               "tmIndex",
               "searchFullText",
               "tmIntersect",
+              "as.matrix",
               "dim",
               "dimnames",
               "ncol",
