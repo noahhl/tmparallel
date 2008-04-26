@@ -10,6 +10,7 @@ export(
        "getFilters",
        "getReaders",
        "getTransformations",
+       "makeChunks",
        "materialize",
        "readPlain",
        "readReut21578XML",
