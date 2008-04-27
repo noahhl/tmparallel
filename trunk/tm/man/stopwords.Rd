@@ -8,7 +8,7 @@
 stopwords(language = "en")
 }
 \arguments{
-  \item{language}{a \code{character} giving the desired language.}
+  \item{language}{A \code{character} giving the desired language.}
 }
 \details{At the moment supported languages are \code{danish},
   \code{dutch}, \code{english}, \code{finnish}, \code{french},

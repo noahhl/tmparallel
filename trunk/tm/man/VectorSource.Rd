@@ -11,8 +11,8 @@
 \S4method{VectorSource}{vector}(object, encoding = "UTF-8")
 }
 \arguments{
-  \item{object}{a vector holding the texts.}
-  \item{encoding}{a character giving the encoding of the file.}
+  \item{object}{A vector holding the texts.}
+  \item{encoding}{A character giving the encoding of the file.}
 }
 \value{
   An S4 object of class \code{VectorSource} which extends the class

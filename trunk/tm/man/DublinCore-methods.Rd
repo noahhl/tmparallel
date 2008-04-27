@@ -7,8 +7,8 @@
 \alias{DublinCore<-,TextDocument-method}
 \title{Methods for Function DublinCore in Package `tm'}
 \description{
-  Methods for function \code{DublinCore} in package `tm', which provide
-  a bijective mapping between Simple Dublin Core meta data and `tm' meta
+  Methods for function \code{DublinCore} in package \pkg{tm}, which provide
+  a bijective mapping between Simple Dublin Core meta data and \pkg{tm} meta
   data structures.
 }
 \section{Methods}{

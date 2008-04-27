@@ -2,8 +2,8 @@
 \alias{materialize}
 \title{Materialize Lazy Mappings}
 \description{
-  The function \code{\link{tmMap}} supports so-called lazy mapping, that
-  is mappings which are delayed until the documents' content is
+  The function \code{\link{tmMap}} supports so-called lazy mappings, that
+  are mappings which are delayed until the documents' content is
   accessed. This function triggers the evaluation, i.e., it materializes
   the documents.
 }

@@ -18,7 +18,7 @@ Methods for function \code{meta} in package \pkg{tm}.
     \item{object = "TextDocument", tag = NULL}{If no \code{tag} is given, this
       method pretty prints all \code{object}'s meta data. If \code{tag}
       is provided its value in the meta data is returned.}
-    \item{object = "Corpus", tag = NULL, type = "indexed"}{If no \code{tag} is given, this
+    \item{object = "Corpus", tag = NULL, type = "indexed"}{This
       method investigates the \code{type} argument. \code{type} must be
       either \code{indexed} (default), \code{local}, or \code{corpus}. Former is a
       shortcut for accessing document level meta data
