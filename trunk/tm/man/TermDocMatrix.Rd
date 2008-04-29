@@ -2,6 +2,7 @@
 \docType{methods}
 \alias{TermDocMatrix}
 \alias{TermDocMatrix,Corpus-method}
+\alias{as.matrix,TermDocMatrix-method}
 \title{Term-Document Matrix}
 \description{
   Constructs a term-document matrix.

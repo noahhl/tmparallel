@@ -9,6 +9,7 @@ export(
        "stemCompletion",
        "getFilters",
        "getReaders",
+       "getSources",
        "getTransformations",
        "makeChunks",
        "materialize",

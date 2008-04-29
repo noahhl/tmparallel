@@ -2,6 +2,7 @@
 \docType{methods}
 \alias{Corpus}
 \alias{Corpus,Source-method}
+\alias{coerce,list,Corpus-method}
 \title{Corpus}
 \description{
   Constructs a text document collection (corpus).

@@ -1,5 +1,9 @@
 # Author: Ingo Feinerer
 
+getSources <- function() {
+   c("CSVSource", "DirSource", "GmaneSource", "ReutersSource", "VectorSource")
+}
+
 # Source objects
 
 setClass("Source",
