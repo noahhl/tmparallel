@@ -97,16 +97,6 @@ Corpus(DirSource(newsgroup),
        readerControl = list(reader = readNewsgroup,
                             language = "en_US"))
 @
-or \acronym{Pdf} documents:
-<<PDF,keep.source=TRUE>>=
-pdf <- system.file("texts", "pdf", package = "tm")
-
-Corpus(DirSource(pdf),
-       readerControl = list(reader = readPDF))
-@
-Note that \code{readPDF()} needs \code{pdftotext} and \code{pdfinfo}
-installed on your system to be able to extract the text and meta
-information from your \acronym{Pdf}s.
 
 For simple examples \code{VectorSource} is quite useful, as it can
 create a corpus from simple character vectors, e.g.:
