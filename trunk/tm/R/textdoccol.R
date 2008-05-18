@@ -363,6 +363,7 @@ setMethod("prescindMeta",
               for (m in meta) {
                   if (m %in% c("Author", "DateTimeStamp", "Description", "ID", "Origin", "Heading", "Language")) {
                       local.m <- lapply(object, m)
+                      local.m <- sapply(local.m, paste, collapse = " ")
                       local.m <- lapply(local.m, function(x) if (is.null(x)) return(NA) else return(x))
                       local.m <- unlist(local.m)
                       DMetaData(object) <- cbind(DMetaData(object), data.frame(m = local.m, stringsAsFactors = FALSE))

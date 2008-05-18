@@ -20,6 +20,7 @@ Methods for function \code{tmIndex} in package \pkg{tm}.
 \seealso{
   \code{\link{sFilter}}
   \code{\link{tmFilter}}
+  \code{\link{getFilters}}
 }
 \examples{
 data("crude")
