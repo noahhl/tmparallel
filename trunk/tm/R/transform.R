@@ -104,9 +104,14 @@ setGeneric("removeWords", function(object, stopwords, ...) standardGeneric("remo
 setMethod("removeWords",
           signature(object = "PlainTextDocument", stopwords = "character"),
           function(object, stopwords, ...) {
-              splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
-              noStopwordsCorpus <- splittedCorpus[!splittedCorpus %in% stopwords]
-              Content(object) <- paste(noStopwordsCorpus, collapse = " ")
+              Content(object) <- gsub(paste("([[:blank:]]|^)",
+                                            paste(stopwords, collapse = "([[:blank:]]|$)|([[:blank:]]|^)"),
+                                            "([[:blank:]]|$)", sep = ""),
+                                      " ",
+                                      # Add blank so that adjacent stopwords can be matched
+                                      gsub("([[:blank:]])", "\\1 ", Content(object)))
+              # Remove doubled blanks
+              Content(object) <- gsub("([[:blank:]]) ", "\\1", Content(object))
               return(object)
           })
 
@@ -122,12 +127,13 @@ setGeneric("stemDoc", function(object, language = "english", ...) standardGeneri
 setMethod("stemDoc",
           signature(object = "PlainTextDocument"),
           function(object, language = "english", ...) {
-              splittedCorpus <- unlist(strsplit(object, " ", fixed = TRUE))
-              stemmedCorpus <- if (require("Rstem", quietly = TRUE))
-                  Rstem::wordStem(splittedCorpus, language)
+              stemLine <- if (require("Rstem", quietly = TRUE))
+                  function(x) Rstem::wordStem(x, language)
               else
-                  SnowballStemmer(splittedCorpus, Weka_control(S = language))
-              Content(object) <- paste(stemmedCorpus, collapse = " ")
+                  function(x) SnowballStemmer(x, Weka_control(S = language))
+              Content(object) <- sapply(object,
+                                        function(x) paste(stemLine(unlist(strsplit(x, "[[:blank:]]"))), collapse = " "),
+                                        USE.NAMES = FALSE)
               return(object)
           })
 
