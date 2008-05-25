@@ -9,11 +9,12 @@ Methods for function \code{tmFilter} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{
-    \item{object = "Corpus", FUN = sFilter, doclevel = FALSE}{If
+    \item{object = "Corpus", FUN = searchFullText, doclevel = TRUE}{If
       \code{doclevel} is set, the method applies \code{FUN} onto each element
       of \code{object} and returns the filtered \code{object}; otherwise
-      \code{FUN} is applied to \code{object} itself. Note that meta data
-      (\code{\link{DMetaData}}) is automatically passed to
+      \code{FUN} is applied to \code{object} itself. If \code{FUN} has
+      an attribute \code{doclevel} its value will be automatically used.
+      Note that meta data (\code{\link{DMetaData}}) is automatically passed to
       \code{FUN}. The function \code{FUN} must return a Boolean value.}
   }
 }
@@ -24,6 +25,7 @@ Methods for function \code{tmFilter} in package \pkg{tm}.
 }
 \examples{
 data("crude")
-tmFilter(crude, FUN = searchFullText, "company", doclevel = TRUE)
+attr(searchFullText, "doclevel")
+tmFilter(crude, FUN = searchFullText, "company")
 }
 \keyword{methods}

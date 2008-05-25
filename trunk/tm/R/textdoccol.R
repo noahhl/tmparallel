@@ -272,50 +272,29 @@ setMethod("asPlain",
                   LocalMetaData = LocalMetaData(object))
           })
 
-setGeneric("tmFilter", function(object, ..., FUN = sFilter, doclevel = FALSE) standardGeneric("tmFilter"))
+setGeneric("tmFilter", function(object, ..., FUN = searchFullText, doclevel = TRUE) standardGeneric("tmFilter"))
 setMethod("tmFilter",
           signature(object = "Corpus"),
-          function(object, ..., FUN = sFilter, doclevel = FALSE) {
+          function(object, ..., FUN = searchFullText, doclevel = TRUE) {
+              if (!is.null(attr(FUN, "doclevel")))
+                  doclevel <- attr(FUN, "doclevel")
               if (doclevel)
                   return(object[sapply(object, FUN, ..., DMetaData = DMetaData(object))])
               else
                   return(object[FUN(object, ...)])
           })
 
-setGeneric("tmIndex", function(object, ..., FUN = sFilter, doclevel = FALSE) standardGeneric("tmIndex"))
+setGeneric("tmIndex", function(object, ..., FUN = searchFullText, doclevel = TRUE) standardGeneric("tmIndex"))
 setMethod("tmIndex",
           signature(object = "Corpus"),
-          function(object, ..., FUN = sFilter, doclevel = FALSE) {
+          function(object, ..., FUN = searchFullText, doclevel = TRUE) {
+              if (!is.null(attr(FUN, "doclevel")))
+                  doclevel <- attr(FUN, "doclevel")
               if (doclevel)
                   return(sapply(object, FUN, ..., DMetaData = DMetaData(object)))
               else
                   return(FUN(object, ...))
           })
-
-sFilter <- function(object, s, ...) {
-    con <- textConnection(s)
-    tokens <- scan(con, "character", quiet = TRUE)
-    close(con)
-    localMetaNames <- unique(names(sapply(object, LocalMetaData)))
-    localMetaTokens <- localMetaNames[localMetaNames %in% tokens]
-    n <- names(DMetaData(object))
-    tags <- c("Author", "DateTimeStamp", "Description", "ID", "Origin", "Heading", "Language", localMetaTokens)
-    query.df <- DMetaData(prescindMeta(object, tags))
-    if (DBControl(object)[["useDb"]])
-        DMetaData(object) <- DMetaData(object)[, setdiff(n, tags), drop = FALSE]
-    # Rename to avoid name conflicts
-    names(query.df)[names(query.df) == "Author"] <- "author"
-    names(query.df)[names(query.df) == "DateTimeStamp"] <- "datetimestamp"
-    names(query.df)[names(query.df) == "Description"] <- "description"
-    names(query.df)[names(query.df) == "ID"] <- "identifier"
-    names(query.df)[names(query.df) == "Origin"] <- "origin"
-    names(query.df)[names(query.df) == "Heading"] <- "heading"
-    names(query.df)[names(query.df) == "Language"] <- "language"
-    attach(query.df)
-    try(result <- rownames(query.df) %in% row.names(query.df[eval(parse(text = s)), ]))
-    detach(query.df)
-    return(result)
-}
 
 setGeneric("appendElem", function(object, data, meta = NULL) standardGeneric("appendElem"))
 setMethod("appendElem",
