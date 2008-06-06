@@ -220,7 +220,7 @@ setMethod("asPlain",
               return(object)
           })
 setMethod("asPlain",
-          signature(object = "XMLTextDocument", FUN = "function"),
+          signature(object = "XMLTextDocument"),
           function(object, FUN, ...) {
               corpus <- Content(object)
 
@@ -245,14 +245,7 @@ setMethod("asPlain",
 setMethod("asPlain",
           signature(object = "RCV1Document"),
           function(object, FUN, ...) {
-              FUN <- convertRCV1Plain
-              corpus <- Content(object)
-
-              # As XMLDocument is no native S4 class, restore valid information
-              class(corpus) <- "XMLDocument"
-              names(corpus) <- c("doc","dtd")
-
-              return(FUN(xmlRoot(corpus), ...))
+              return(convertRCV1Plain(object, ...))
           })
 setMethod("asPlain",
           signature(object = "NewsgroupDocument"),
