@@ -175,10 +175,3 @@ setMethod("removeSparseTerms",
               }
               return(object)
           })
-
-setGeneric("createDictionary", function(object) standardGeneric("createDictionary"))
-setMethod("createDictionary",
-          signature(object = "TermDocMatrix"),
-          function(object) {
-              Dictionary(colnames(Data(object)))
-          })

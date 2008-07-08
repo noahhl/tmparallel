@@ -92,9 +92,6 @@ exportMethods(
               "Weighting",
               "Weighting<-",
 
-              # Dictionary
-              "createDictionary",
-
               # Sources
               "stepNext",
               "getElem",
