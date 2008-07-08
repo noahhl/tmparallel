@@ -100,15 +100,15 @@ setMethod("removeSignature",
               return(object)
           })
 
-setGeneric("removeWords", function(object, stopwords, ...) standardGeneric("removeWords"))
+setGeneric("removeWords", function(object, words, ...) standardGeneric("removeWords"))
 setMethod("removeWords",
-          signature(object = "PlainTextDocument", stopwords = "character"),
-          function(object, stopwords, ...) {
+          signature(object = "PlainTextDocument", words = "character"),
+          function(object, words, ...) {
               Content(object) <- gsub(paste("([[:blank:]]|^)",
-                                            paste(stopwords, collapse = "([[:blank:]]|$)|([[:blank:]]|^)"),
+                                            paste(words, collapse = "([[:blank:]]|$)|([[:blank:]]|^)"),
                                             "([[:blank:]]|$)", sep = ""),
                                       " ",
-                                      # Add blank so that adjacent stopwords can be matched
+                                      # Add blank so that adjacent words can be matched
                                       gsub("([[:blank:]])", "\\1 ", Content(object)))
               # Remove doubled blanks
               Content(object) <- gsub("([[:blank:]]) ", "\\1", Content(object))
