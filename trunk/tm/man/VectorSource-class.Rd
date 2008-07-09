@@ -26,5 +26,8 @@ Objects can be created by calls of the form \code{new("VectorSource", ...)}.
 \section{Extends}{
   Class \code{Source}, directly.
 }
+\seealso{
+  \code{\link{VectorSource}}
+}
 \author{Ingo Feinerer}
 \keyword{classes}

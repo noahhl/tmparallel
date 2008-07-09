@@ -15,7 +15,7 @@ Methods for function \code{tmFilter} in package \pkg{tm}.
       \code{FUN} is applied to \code{object} itself. If \code{FUN} has
       an attribute \code{doclevel} its value will be automatically used.
       Note that meta data (\code{\link{DMetaData}}) is automatically passed to
-      \code{FUN}. The function \code{FUN} must return a Boolean value.}
+      \code{FUN}. The function \code{FUN} must return a logical value.}
   }
 }
 \seealso{

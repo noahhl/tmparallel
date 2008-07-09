@@ -13,6 +13,9 @@ Methods for function \code{removeWords} in package \pkg{tm}.
       words which occur in \code{words} from \code{object} and return the object.}
   }
 }
+\seealso{
+  Use \code{\link{getTransformations}} to list available transformation (mapping) functions.
+}
 \examples{
 data("crude")
 crude[[1]]

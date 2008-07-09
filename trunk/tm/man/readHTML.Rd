@@ -37,6 +37,9 @@ readHTML(...)
   The function returns a \code{StructuredTextDocument} representing
   \code{content}.
 }
+\seealso{
+  Use \code{\link{getReaders}} to list available reader functions.
+}
 \examples{
 html <- system.file("texts", "html", package = "tm")
 \dontrun{(Corpus(DirSource(html), readerControl = list(reader = readHTML, load = TRUE)))}

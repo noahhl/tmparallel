@@ -34,5 +34,8 @@ readGmane(...)
   The function returns a \code{NewsgroupDocument} representing
   \code{content}.
 }
+\seealso{
+  Use \code{\link{getReaders}} to list available reader functions.
+}
 \author{Ingo Feinerer}
 \keyword{file}

@@ -34,5 +34,15 @@ readPlain(...)
   The function returns a \code{PlainTextDocument} representing
   \code{content}.
 }
+\seealso{
+  Use \code{\link{getReaders}} to list available reader functions.
+}
+\examples{
+docs <- c("This is a text.", "This another one.")
+vs <- VectorSource(docs)
+elem <- getElem(stepNext(vs))
+(result <- readPlain()(elem, TRUE, "en", "id1"))
+meta(result)
+}
 \author{Ingo Feinerer}
 \keyword{file}

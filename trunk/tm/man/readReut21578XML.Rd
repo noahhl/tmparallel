@@ -33,5 +33,8 @@ readReut21578XML(...)
   The function returns a \code{XMLTextDocument} representing
   \code{content}.
 }
+\seealso{
+  Use \code{\link{getReaders}} to list available reader functions.
+}
 \author{Ingo Feinerer}
 \keyword{file}

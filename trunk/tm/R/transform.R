@@ -1,11 +1,10 @@
 # Author: Ingo Feinerer
 # Transformations
 
-getTransformations <- function() {
-    c("asPlain", "loadDoc", "removeCitation", "removeMultipart",
-      "removePunctuation", "removeSignature", "removeWords",
-      "replaceWords", "stemDoc", "stripWhitespace", "tmTolower")
-}
+getTransformations <- function() { c("asPlain", "loadDoc",
+    "removeCitation", "removeMultipart", "removeNumbers",
+    "removePunctuation", "removeSignature", "removeWords",
+    "replacePatterns", "stemDoc", "stripWhitespace", "tmTolower") }
 
 setGeneric("removeMultipart",
            function(object, ...) standardGeneric("removeMultipart"))

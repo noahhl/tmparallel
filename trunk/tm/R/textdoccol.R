@@ -681,7 +681,7 @@ setMethod("writeCorpus",
                                      else filenames)
               i <- 1
               for (o in object) {
-                  writeLines(o, filenames[i])
+                  writeLines(asPlain(o), filenames[i])
                   i <- i + 1
               }
           })

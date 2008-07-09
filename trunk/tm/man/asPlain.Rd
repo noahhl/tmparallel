@@ -31,6 +31,8 @@ Methods for function \code{asPlain} in package \pkg{tm}.
 \seealso{
   \code{\link{convertReut21578XMLPlain}}
   \code{\link{convertRCV1Plain}}
+
+  Use \code{\link{getTransformations}} to list available transformation (mapping) functions.
 }
 \examples{
 reut21578 <- system.file("texts", "reut21578", package = "tm")

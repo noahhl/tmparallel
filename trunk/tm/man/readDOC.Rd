@@ -37,5 +37,8 @@ readDOC(...)
   The function returns a \code{PlainTextDocument} representing the text
   in \code{content}.
 }
+\seealso{
+  Use \code{\link{getReaders}} to list available reader functions.
+}
 \author{Ingo Feinerer}
 \keyword{file}
