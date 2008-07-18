@@ -620,7 +620,6 @@ setMethod("%IN%",
 setMethod("lapply",
           signature(X = "Corpus"),
           function(X, FUN, ...) {
-              print("lapply")
               if (DBControl(X)[["useDb"]]) {
                   db <- dbInit(DBControl(X)[["dbName"]], DBControl(X)[["dbType"]])
                   result <- lapply(dbMultiFetch(db, unlist(X)), FUN, ...)
