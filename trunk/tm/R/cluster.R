@@ -1,3 +1,3 @@
 clusterAvailable <- function() {
-    require("snow", quietly = TRUE) && require("Rmpi", quietly = TRUE) && !is.null(snow::getMPIcluster())
+    suppressWarnings(require("snow", quietly = TRUE)) && suppressWarnings(require("Rmpi", quietly = TRUE)) && !is.null(snow::getMPIcluster())
 }
