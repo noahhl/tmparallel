@@ -185,8 +185,12 @@ setMethod("tmMap",
                           meta(result, tag = "lazyTmMap", type = "corpus") <- lazyTmMap
                       }
                   }
-                  else
-                      result@.Data <- lapply(object, FUN, ..., DMetaData = DMetaData(object))
+                  else {
+                      result@.Data <- if (clusterAvailable())
+                          parLapply(snow::getMPIcluster(), object, FUN, ..., DMetaData = DMetaData(object))
+                      else
+                          lapply(object, FUN, ..., DMetaData = DMetaData(object))
+                  }
               }
               return(result)
           })
@@ -271,8 +275,12 @@ setMethod("tmFilter",
           function(object, ..., FUN = searchFullText, doclevel = TRUE) {
               if (!is.null(attr(FUN, "doclevel")))
                   doclevel <- attr(FUN, "doclevel")
-              if (doclevel)
-                  return(object[sapply(object, FUN, ..., DMetaData = DMetaData(object))])
+              if (doclevel) {
+                  if (clusterAvailable())
+                      return(object[parSapply(snow::getMPIcluster(), object, FUN, ..., DMetaData = DMetaData(object))])
+                  else
+                      return(object[sapply(object, FUN, ..., DMetaData = DMetaData(object))])
+              }
               else
                   return(object[FUN(object, ...)])
           })
@@ -283,8 +291,12 @@ setMethod("tmIndex",
           function(object, ..., FUN = searchFullText, doclevel = TRUE) {
               if (!is.null(attr(FUN, "doclevel")))
                   doclevel <- attr(FUN, "doclevel")
-              if (doclevel)
-                  return(sapply(object, FUN, ..., DMetaData = DMetaData(object)))
+              if (doclevel) {
+                  if (clusterAvailable())
+                      return(parSapply(snow::getMPIcluster(), object, FUN, ..., DMetaData = DMetaData(object)))
+                  else
+                      return(sapply(object, FUN, ..., DMetaData = DMetaData(object)))
+              }
               else
                   return(FUN(object, ...))
           })

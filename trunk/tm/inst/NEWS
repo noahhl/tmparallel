@@ -1,0 +1,10 @@
+                        Dear Emacs, please make this -*-Text-*- mode!
+
+                CHANGES IN tm VERSION 0.3-2
+
+NEW FEATURES
+
+    o   The functions tmFilter(), tmIndex(), tmMap() and TermDocMatrix()
+        now use a MPI cluster (via the snow and Rmpi packages) if
+        available. Special thanks to Stefan Theussl for his
+        constructive comments.
