@@ -6,5 +6,6 @@ NEW FEATURES
 
     o   The functions tmFilter(), tmIndex(), tmMap() and TermDocMatrix()
         now use a MPI cluster (via the snow and Rmpi packages) if
-        available. Special thanks to Stefan Theussl for his
-        constructive comments.
+        available. Use (de)activateCluster() to manually override
+        cluster usage settings. Special thanks to Stefan Theussl for
+        his constructive comments.
