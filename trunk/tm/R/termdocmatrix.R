@@ -29,7 +29,7 @@ setMethod("TermDocMatrix",
               tdm <- weight(t(tdm))
               tdm@Dimnames <- list(Docs = sapply(object, ID), Terms = allTerms)
 
-              new("TermDocMatrix", Data = tdm, Weighting = weight@Name)
+              new("TermDocMatrix", Data = tdm, Weighting = c(weight@Name, weight@Acronym))
           })
 
 termFreq <- function(doc, control = list()) {

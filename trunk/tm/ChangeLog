@@ -1,3 +1,7 @@
+2008-08-03  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/weight.R: Introduce name abbreviations for weighting functions.
+
 2008-07-24  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/AAA.R (.onLoad, .Last): Start and stop MPI cluster.
