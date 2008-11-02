@@ -10,7 +10,7 @@ NEW FEATURES
         scheme was actually used for your experiments.
 
     o   The functions tmFilter(), tmIndex(), tmMap() and TermDocMatrix()
-        now use a MPI cluster (via the snow and Rmpi packages) if
+        now can use a MPI cluster (via the snow and Rmpi packages) if
         available. Use (de)activateCluster() to manually override
         cluster usage settings. Special thanks to Stefan Theussl for
         his constructive comments.

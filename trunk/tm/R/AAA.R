@@ -1,6 +1,6 @@
 clActive <- local({
-    # Default is to use a cluster if available
-    cla <- TRUE
+    # Default is to NOT use a cluster if available
+    cla <- FALSE
     function(new, ...) {
         if (!missing(new))
             cla <<- new
