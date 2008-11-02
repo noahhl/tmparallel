@@ -1,7 +1,7 @@
 \name{WeightFunction}
 \docType{methods}
 \alias{WeightFunction}
-\alias{WeightFunction,function,character-method}
+\alias{WeightFunction,function,character,character-method}
 \title{Weighting Function Constructor}
 \description{
   Constructs a weighting function for term-document matrices.

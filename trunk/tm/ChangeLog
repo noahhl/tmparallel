@@ -1,3 +1,9 @@
+2008-11-02  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/source.R (getElem): Fix 'no visible binding' warning.
+
+	* man/WeightFunction.Rd: Fix signature.
+
 2008-08-03  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/weight.R: Introduce name abbreviations for weighting functions.

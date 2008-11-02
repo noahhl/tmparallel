@@ -199,7 +199,8 @@ setMethod("getElem",
           signature(object = "ReutersSource"),
           function(object) {
               # Construct a character representation from the XMLNode
-              con <- textConnection("virtual.file", "w")
+              virtual.file <- character(0)
+              con <- textConnection("virtual.file", "w", local = TRUE)
               saveXML(object@Content[[object@Position]], con)
               close(con)
 
@@ -209,7 +210,8 @@ setMethod("getElem",
           signature(object = "GmaneSource"),
           function(object) {
               # Construct a character representation from the XMLNode
-              con <- textConnection("virtual.file", "w")
+              virtual.file <- character(0)
+              con <- textConnection("virtual.file", "w", local = TRUE)
               saveXML(object@Content[[object@Position]], con)
               close(con)
 
