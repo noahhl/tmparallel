@@ -1,3 +1,11 @@
+2008-11-08  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/source.R (Source): Add Length slot.
+
+2008-11-06  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/AAA.R: Unify duplicated .onLoad function.
+
 2008-11-03  Ingo Feinerer  <feinerer@logic.at>
 
 	* DESCRIPTION (Suggests): Added Rmpi.

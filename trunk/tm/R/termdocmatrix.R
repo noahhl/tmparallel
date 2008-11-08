@@ -53,7 +53,7 @@ termFreq <- function(doc, control = list()) {
     # Stemming
     stemming <- control$stemming
     if (is.logical(stemming) && stemming) {
-        txt <- if (require("Rstem", quietly = TRUE))
+        txt <- if (suppressWarnings(require("Rstem", quietly = TRUE)))
             Rstem::wordStem(txt, language = resolveISOCode(Language(doc)))
         else
             SnowballStemmer(txt, Weka_control(S = resolveISOCode(Language(doc))))

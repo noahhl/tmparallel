@@ -14,3 +14,8 @@ NEW FEATURES
         available. Use (de)activateCluster() to manually override
         cluster usage settings. Special thanks to Stefan Theussl for
         his constructive comments.
+
+    o   The Source class receives a new Length slot. It contains the
+        number of elements provided by the source (although there
+        might be rare cases where the number cannot be determined in
+        advance---then it should be set to zero).

@@ -126,7 +126,7 @@ setGeneric("stemDoc", function(object, language = "english", ...) standardGeneri
 setMethod("stemDoc",
           signature(object = "PlainTextDocument"),
           function(object, language = "english", ...) {
-              stemLine <- if (require("Rstem", quietly = TRUE))
+              stemLine <- if (suppressWarnings(require("Rstem", quietly = TRUE)))
                   function(x) Rstem::wordStem(x, language)
               else
                   function(x) SnowballStemmer(x, Weka_control(S = language))

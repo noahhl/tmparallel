@@ -26,7 +26,12 @@ setMethod("Corpus",
                   db <- dbInit(dbControl$dbName, dbControl$dbType)
               }
 
-              tdl <- list()
+              # Allocate memory in advance if length is known
+              tdl <- if (object@Length > 0)
+                  vector("list", as.integer(object@Length))
+              else
+                  list()
+
               counter <- 1
               while (!eoi(object)) {
                   object <- stepNext(object)
@@ -38,10 +43,17 @@ setMethod("Corpus",
                   doc <- readerControl$reader(elem, readerControl$load, readerControl$language, as.character(counter))
                   if (dbControl$useDb) {
                       dbInsert(db, ID(doc), doc)
-                      tdl <- c(tdl, ID(doc))
+                      if (object@Length > 0)
+                          tdl[[counter]] <- ID(doc)
+                      else
+                          tdl <- c(tdl, ID(doc))
                   }
-                  else
-                      tdl <- c(tdl, list(doc))
+                  else {
+                      if (object@Length > 0)
+                          tdl[[counter]] <- doc
+                      else
+                          tdl <- c(tdl, list(doc))
+                  }
                   counter <- counter + 1
               }
 
