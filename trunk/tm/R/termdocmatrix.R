@@ -12,7 +12,7 @@ setMethod("TermDocMatrix",
                   weight <- weightTf
 
               tflist <- if (clusterAvailable())
-                  parLapply(snow::getMPIcluster(), object, termFreq, control)
+                  snow::parLapply(snow::getMPIcluster(), object, termFreq, control)
               else
                   lapply(object, termFreq, control)
               allTerms <- unique(unlist(lapply(tflist, names), use.names = FALSE))

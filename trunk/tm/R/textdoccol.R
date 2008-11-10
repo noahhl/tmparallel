@@ -199,7 +199,7 @@ setMethod("tmMap",
                   }
                   else {
                       result@.Data <- if (clusterAvailable())
-                          parLapply(snow::getMPIcluster(), object, FUN, ..., DMetaData = DMetaData(object))
+                          snow::parLapply(snow::getMPIcluster(), object, FUN, ..., DMetaData = DMetaData(object))
                       else
                           lapply(object, FUN, ..., DMetaData = DMetaData(object))
                   }
@@ -289,7 +289,7 @@ setMethod("tmFilter",
                   doclevel <- attr(FUN, "doclevel")
               if (doclevel) {
                   if (clusterAvailable())
-                      return(object[parSapply(snow::getMPIcluster(), object, FUN, ..., DMetaData = DMetaData(object))])
+                      return(object[snow::parSapply(snow::getMPIcluster(), object, FUN, ..., DMetaData = DMetaData(object))])
                   else
                       return(object[sapply(object, FUN, ..., DMetaData = DMetaData(object))])
               }
@@ -305,7 +305,7 @@ setMethod("tmIndex",
                   doclevel <- attr(FUN, "doclevel")
               if (doclevel) {
                   if (clusterAvailable())
-                      return(parSapply(snow::getMPIcluster(), object, FUN, ..., DMetaData = DMetaData(object)))
+                      return(snow::parSapply(snow::getMPIcluster(), object, FUN, ..., DMetaData = DMetaData(object)))
                   else
                       return(sapply(object, FUN, ..., DMetaData = DMetaData(object)))
               }
