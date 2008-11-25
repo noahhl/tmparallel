@@ -1,3 +1,8 @@
+2008-11-25  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/AAA.R (.onLoad, .Last): Use tryCatch() to handle misconfigured
+	Rmpi installations more gracefully.
+
 2008-11-08  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/source.R (Source): Add Length slot.
