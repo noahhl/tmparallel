@@ -1,3 +1,7 @@
+2008-11-27  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/source.R: Refactoring.
+
 2008-11-25  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/AAA.R (.onLoad, .Last): Use tryCatch() to handle misconfigured

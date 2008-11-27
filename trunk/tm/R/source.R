@@ -151,31 +151,7 @@ setMethod("GmaneSource",
 
 setGeneric("stepNext", function(object) standardGeneric("stepNext"))
 setMethod("stepNext",
-          signature(object = "VectorSource"),
-          function(object) {
-              object@Position <- object@Position + 1
-              object
-          })
-setMethod("stepNext",
-          signature(object = "DirSource"),
-          function(object) {
-              object@Position <- object@Position + 1
-              object
-          })
-setMethod("stepNext",
-          signature(object = "CSVSource"),
-          function(object) {
-              object@Position <- object@Position + 1
-              object
-          })
-setMethod("stepNext",
-          signature(object = "ReutersSource"),
-          function(object) {
-              object@Position <- object@Position + 1
-              object
-          })
-setMethod("stepNext",
-          signature(object = "GmaneSource"),
+          signature(object = "Source"),
           function(object) {
               object@Position <- object@Position + 1
               object
@@ -226,43 +202,13 @@ setMethod("getElem",
           })
 
 setGeneric("eoi", function(object) standardGeneric("eoi"))
-setMethod("eoi",
-          signature(object = "VectorSource"),
-          function(object) {
-              if (length(object@Content) <= object@Position)
-                  return(TRUE)
-              else
-                  return(FALSE)
-          })
-setMethod("eoi",
-          signature(object = "DirSource"),
-          function(object) {
-              if (length(object@FileList) <= object@Position)
-                  return(TRUE)
-              else
-                  return(FALSE)
-          })
-setMethod("eoi",
-          signature(object = "CSVSource"),
-          function(object) {
-              if (length(object@Content) <= object@Position)
-                  return(TRUE)
-              else
-                  return(FALSE)
-          })
-setMethod("eoi",
-          signature(object = "ReutersSource"),
-          function(object) {
-              if (length(object@Content) <= object@Position)
-                  return(TRUE)
-              else
-                  return(FALSE)
-          })
-setMethod("eoi",
-          signature(object = "GmaneSource"),
-          function(object) {
-              if (length(object@Content) <= object@Position)
-                  return(TRUE)
-              else
-                  return(FALSE)
-          })
+setMethod("eoi", signature(object = "VectorSource"),
+          function(object) return(length(object@Content) <= object@Position))
+setMethod("eoi", signature(object = "DirSource"),
+          function(object) return(length(object@FileList) <= object@Position))
+setMethod("eoi", signature(object = "CSVSource"),
+          function(object) return(length(object@Content) <= object@Position))
+setMethod("eoi", signature(object = "ReutersSource"),
+          function(object) return(length(object@Content) <= object@Position))
+setMethod("eoi", signature(object = "GmaneSource"),
+          function(object) return(length(object@Content) <= object@Position))
