@@ -1,7 +1,7 @@
 # Author: Ingo Feinerer
 
 getSources <- function() {
-   c("CSVSource", "DirSource", "GmaneSource", "ReutersSource", "VectorSource")
+   c("CSVSource", "DirSource", "GmaneSource", "ReutersSource", "URISource", "VectorSource")
 }
 
 # Source objects
@@ -17,6 +17,12 @@ setClass("Source",
 # A vector where each component is interpreted as document
 setClass("VectorSource",
          representation(Content = "vector"),
+         contains = c("Source"))
+
+# A single document identified by a Uniform Resource Identifier
+setClass("URISource",
+         representation(URI = "ANY",
+                        Content = "character"),
          contains = c("Source"))
 
 # A directory with files
@@ -63,6 +69,26 @@ setMethod("DirSource",
               files <- d[isdir == FALSE]
               new("DirSource", LoDSupport = TRUE, FileList = files,
                   Position = 0, DefaultReader = readPlain, Encoding = encoding, Length = length(files))
+          })
+
+setGeneric("URISource", function(object, encoding = "UTF-8") standardGeneric("URISource"))
+setMethod("URISource",
+          signature(object = "character"),
+          function(object, encoding = "UTF-8") {
+              object <- substitute(file(object, encoding = encoding))
+              con <- eval(object)
+              new("URISource", LoDSupport = TRUE, URI = object,
+                  Content = readLines(con), Position = 0, DefaultReader = readPlain,
+                  Encoding = encoding, Length = 1)
+          })
+setMethod("URISource",
+          signature(object = "ANY"),
+          function(object, encoding = "UTF-8") {
+              object <- substitute(object)
+              con <- eval(object)
+              new("URISource", LoDSupport = TRUE, URI = object,
+                  Content = readLines(con), Position = 0, DefaultReader = readPlain,
+                  Encoding = encoding, Length = 1)
           })
 
 setGeneric("CSVSource", function(object, encoding = "UTF-8") standardGeneric("CSVSource"))
@@ -172,6 +198,8 @@ setMethod("getElem",
               list(content = readLines(filename, encoding = encoding),
                    uri = substitute(file(filename, encoding = encoding)))
           })
+setMethod("getElem", signature(object = "URISource"),
+          function(object) list(content = object@Content, uri = object@URI))
 setMethod("getElem",
           signature(object = "CSVSource"),
           function(object) {
@@ -206,6 +234,8 @@ setMethod("eoi", signature(object = "VectorSource"),
           function(object) return(length(object@Content) <= object@Position))
 setMethod("eoi", signature(object = "DirSource"),
           function(object) return(length(object@FileList) <= object@Position))
+setMethod("eoi", signature(object = "URISource"),
+          function(object) return(1 <= object@Position))
 setMethod("eoi", signature(object = "CSVSource"),
           function(object) return(length(object@Content) <= object@Position))
 setMethod("eoi", signature(object = "ReutersSource"),

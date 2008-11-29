@@ -10,6 +10,9 @@ NEW FEATURES
         custom methods can be created via overloading stepNext() of
         the subclass.
 
+    o   New URISource class for a single document identified by a
+        Uniform Resource Identifier.
+
                 CHANGES IN tm VERSION 0.3-2
 
 NEW FEATURES

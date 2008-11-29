@@ -1,3 +1,7 @@
+2008-11-29  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/source.R (URISource): New source class for a single document.
+
 2008-11-27  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/source.R: Refactoring.
