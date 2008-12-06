@@ -2,7 +2,7 @@
 \docType{methods}
 \alias{URISource}
 \alias{URISource,character-method}
-\alias{URISource,ANY-method}
+\alias{URISource,connection-method}
 \title{Uniform Resource Identifier Source}
 \description{
   Constructs a Uniform Resource Identifier source.
@@ -12,8 +12,7 @@
 }
 \arguments{
   \item{object}{the Uniform Resource Identifier, i.e., either a
-    character identifying the file or a call which results in a
-    connection.}
+    character identifying the file or a connection.}
   \item{encoding}{a character giving the encoding of the file.}
 }
 \value{
