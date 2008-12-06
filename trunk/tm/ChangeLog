@@ -1,5 +1,7 @@
 2008-12-06  Ingo Feinerer  <feinerer@logic.at>
 
+	* R/source.R (DataframeSource): New source class for data frames.
+
 	* R/source.R: Fixed non-standard call evaluation.
 
 2008-11-29  Ingo Feinerer  <feinerer@logic.at>

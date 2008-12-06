@@ -13,6 +13,14 @@ NEW FEATURES
     o   New URISource class for a single document identified by a
         Uniform Resource Identifier.
 
+    o   New DataframeSource for documents stored in a data frame. Each
+        row is interpreted as a single document.
+
+BUG FIXES
+
+    o   Sources and readers no longer evaluate calls in a non-standard
+        way.
+
                 CHANGES IN tm VERSION 0.3-2
 
 NEW FEATURES
