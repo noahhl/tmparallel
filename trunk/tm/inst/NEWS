@@ -18,6 +18,9 @@ NEW FEATURES
 
 BUG FIXES
 
+    o   Sort row indices in sparse term-document matrices. Kudos to
+        Martin Mächler for his suggestions.
+
     o   Sources and readers no longer evaluate calls in a non-standard
         way.
 

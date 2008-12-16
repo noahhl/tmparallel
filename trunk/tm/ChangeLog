@@ -1,3 +1,7 @@
+2008-12-16  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/termdocmatrix.R (TermDocMatrix): Sort row indices.
+
 2008-12-06  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/source.R (DataframeSource): New source class for data frames.
