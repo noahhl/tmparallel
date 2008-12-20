@@ -18,6 +18,9 @@ NEW FEATURES
 
 BUG FIXES
 
+    o   Fix off-by-one error in convertMboxEml() function. Reported by
+        Angela Bohn.
+
     o   Sort row indices in sparse term-document matrices. Kudos to
         Martin Mächler for his suggestions.
 

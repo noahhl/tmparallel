@@ -1,3 +1,7 @@
+2008-12-20  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/preprocess.R (convertMboxEml): Fix off-by-one error.
+
 2008-12-16  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/termdocmatrix.R (TermDocMatrix): Sort row indices.
