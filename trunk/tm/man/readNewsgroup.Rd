@@ -9,7 +9,8 @@
 readNewsgroup(DateFormat = "%d %B %Y %H:%M:%S", ...)
 }
 \arguments{
-  \item{DateFormat = "%d %B %Y %H:%M:%S", ...}{arguments for the generator function.}
+  \item{DateFormat}{the format of the Date header in the newsgroup document}
+  \item{...}{arguments for the generator function}
 }
 \details{
   Formally this function is a function generator, i.e., it returns a
@@ -36,6 +37,8 @@ readNewsgroup(DateFormat = "%d %B %Y %H:%M:%S", ...)
 }
 \seealso{
   Use \code{\link{getReaders}} to list available reader functions.
+
+  See \code{\link{strptime}} for date format specifications.
 }
 \author{Ingo Feinerer}
 \keyword{file}
