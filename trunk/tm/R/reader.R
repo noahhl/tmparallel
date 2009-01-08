@@ -103,11 +103,12 @@ readRCV1 <- FunctionGenerator(function(...) {
     }
 })
 
-readNewsgroup <- FunctionGenerator(function(...) {
+readNewsgroup <- FunctionGenerator(function(DateFormat = "%d %B %Y %H:%M:%S", ...) {
+    format <- DateFormat
     function(elem, load, language, id) {
         mail <- elem$content
         author <- gsub("From: ", "", grep("^From:", mail, value = TRUE))
-        datetimestamp <- as.POSIXct(strptime(gsub("Date: ", "", grep("^Date:", mail, value = TRUE)), format = "%d %B %Y %H:%M:%S"))
+        datetimestamp <- as.POSIXct(strptime(gsub("Date: ", "", grep("^Date:", mail, value = TRUE)), format = format))
         origin <- gsub("Path: ", "", grep("^Path:", mail, value = TRUE))
         heading <- gsub("Subject: ", "", grep("^Subject:", mail, value = TRUE))
         newsgroup <- gsub("Newsgroups: ", "", grep("^Newsgroups:", mail, value = TRUE))

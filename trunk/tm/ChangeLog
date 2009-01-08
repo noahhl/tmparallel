@@ -1,3 +1,7 @@
+2009-01-08  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/reader.R (readNewsgroup): The date format is now configurable.
+
 2008-12-20  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/preprocess.R (convertMboxEml): Fix off-by-one error.
