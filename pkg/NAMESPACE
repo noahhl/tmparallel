@@ -1,9 +1,5 @@
-import(filehash)
 import(Matrix)
 import(methods)
-import(proxy)
-import(Snowball)
-import(XML)
 
 export(
        "activateCluster",

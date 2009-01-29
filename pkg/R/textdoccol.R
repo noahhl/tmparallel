@@ -20,7 +20,7 @@ setMethod("Corpus",
               if (is.null(readerControl$load))
                   readerControl$load = TRUE
 
-              if (dbControl$useDb) {
+              if (dbControl$useDb && require("filehash")) {
                   if (!dbCreate(dbControl$dbName, dbControl$dbType))
                       stop("error in creating database")
                   db <- dbInit(dbControl$dbName, dbControl$dbType)
@@ -41,7 +41,7 @@ setMethod("Corpus",
                   if (!object@LoDSupport)
                       readerControl$load <- TRUE
                   doc <- readerControl$reader(elem, readerControl$load, readerControl$language, as.character(counter))
-                  if (dbControl$useDb) {
+                  if (dbControl$useDb && require("filehash")) {
                       dbInsert(db, ID(doc), doc)
                       if (object@Length > 0)
                           tdl[[counter]] <- ID(doc)
@@ -58,7 +58,7 @@ setMethod("Corpus",
               }
 
               df <- data.frame(MetaID = rep(0, length(tdl)), stringsAsFactors = FALSE)
-              if (dbControl$useDb) {
+              if (dbControl$useDb && require("filehash")) {
                   dbInsert(db, "DMetaData", df)
                   dmeta.df <- data.frame(key = "DMetaData", subset = I(list(NA)))
               }
@@ -91,7 +91,7 @@ setMethod("loadDoc",
 setMethod("loadDoc",
           signature(object =  "XMLTextDocument"),
           function(object, ...) {
-              if (!Cached(object)) {
+              if (!Cached(object) && require("XML")) {
                   con <- eval(URI(object))
                   corpus <- paste(readLines(con), "\n", collapse = "")
                   close(con)
@@ -171,7 +171,7 @@ setMethod("tmMap",
           function(object, FUN, ..., lazy = FALSE) {
               result <- object
               # Note that text corpora are automatically loaded into memory via \code{[[}
-              if (DBControl(object)[["useDb"]]) {
+              if (DBControl(object)[["useDb"]] && require("filehash")) {
                   if (lazy)
                       warning("lazy mapping is deactived when using database backend")
                   db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
@@ -238,6 +238,8 @@ setMethod("asPlain",
 setMethod("asPlain",
           signature(object = "XMLTextDocument"),
           function(object, FUN, ...) {
+              require("XML")
+
               corpus <- Content(object)
 
               # As XMLDocument is no native S4 class, restore valid information
@@ -249,6 +251,8 @@ setMethod("asPlain",
 setMethod("asPlain",
           signature(object = "Reuters21578Document"),
           function(object, FUN, ...) {
+              require("XML")
+
               FUN <- convertReut21578XMLPlain
               corpus <- Content(object)
 
@@ -317,7 +321,7 @@ setGeneric("appendElem", function(object, data, meta = NULL) standardGeneric("ap
 setMethod("appendElem",
           signature(object = "Corpus", data = "TextDocument"),
           function(object, data, meta = NULL) {
-              if (DBControl(object)[["useDb"]]) {
+              if (DBControl(object)[["useDb"]] && require("filehash")) {
                   db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
                   if (dbExists(db, ID(data)))
                       warning("document with identical ID already exists")
@@ -388,7 +392,7 @@ setMethod("[",
 
               object <- x
               object@.Data <- x@.Data[i, ..., drop = FALSE]
-              if (DBControl(object)[["useDb"]]) {
+              if (DBControl(object)[["useDb"]] && require("filehash")) {
                   index <- object@DMetaData[[1 , "subset"]]
                   if (any(is.na(index)))
                       object@DMetaData[[1 , "subset"]] <- i
@@ -404,7 +408,7 @@ setMethod("[<-",
           signature(x = "Corpus", i = "ANY", j = "ANY", value = "ANY"),
           function(x, i, j, ... , value) {
               object <- x
-              if (DBControl(object)[["useDb"]]) {
+              if (DBControl(object)[["useDb"]] && require("filehash")) {
                   db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
                   counter <- 1
                   for (id in object@.Data[i, ...]) {
@@ -424,7 +428,7 @@ setMethod("[<-",
 setMethod("[[",
           signature(x = "Corpus", i = "ANY", j = "ANY"),
           function(x, i, j, ...) {
-              if (DBControl(x)[["useDb"]]) {
+              if (DBControl(x)[["useDb"]] && require("filehash")) {
                   db <- dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
                   result <- dbFetch(db, x@.Data[[i]])
                   return(loadDoc(result))
@@ -441,7 +445,7 @@ setMethod("[[<-",
           signature(x = "Corpus", i = "ANY", j = "ANY", value = "ANY"),
           function(x, i, j, ..., value) {
               object <- x
-              if (DBControl(object)[["useDb"]]) {
+              if (DBControl(object)[["useDb"]] && require("filehash")) {
                   db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
                   index <- object@.Data[[i]]
                   db[[index]] <- value
@@ -496,7 +500,7 @@ setMethod("c",
 
               if (!all(sapply(args, inherits, "Corpus")))
                   stop("not all arguments are text document collections")
-              if (DBControl(x)[["useDb"]] == TRUE || any(unlist(sapply(args, DBControl)["useDb", ])))
+              if (DBControl(x)[["useDb"]] || any(unlist(sapply(args, DBControl)["useDb", ])))
                   stop("concatenating text document collections with activated database is not supported")
 
               result <- x
@@ -619,7 +623,7 @@ setMethod("inspect",
           function(object) {
               summary(object)
               cat("\n")
-              if (DBControl(object)[["useDb"]]) {
+              if (DBControl(object)[["useDb"]] && require("filehash")) {
                   db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
                   show(dbMultiFetch(db, unlist(object)))
               }
@@ -632,7 +636,7 @@ setGeneric("%IN%", function(x, y) standardGeneric("%IN%"))
 setMethod("%IN%",
           signature(x = "TextDocument", y = "Corpus"),
           function(x, y) {
-              if (DBControl(y)[["useDb"]]) {
+              if (DBControl(y)[["useDb"]] && require("filehash")) {
                   db <- dbInit(DBControl(y)[["dbName"]], DBControl(y)[["dbType"]])
                   result <- any(sapply(y, function(x, z) {x %in% Content(z)}, x))
               }
@@ -644,7 +648,7 @@ setMethod("%IN%",
 setMethod("lapply",
           signature(X = "Corpus"),
           function(X, FUN, ...) {
-              if (DBControl(X)[["useDb"]]) {
+              if (DBControl(X)[["useDb"]] && require("filehash")) {
                   db <- dbInit(DBControl(X)[["dbName"]], DBControl(X)[["dbType"]])
                   result <- lapply(dbMultiFetch(db, unlist(X)), FUN, ...)
               }
@@ -660,7 +664,7 @@ setMethod("lapply",
 setMethod("sapply",
           signature(X = "Corpus"),
           function(X, FUN, ..., simplify = TRUE, USE.NAMES = TRUE) {
-              if (DBControl(X)[["useDb"]]) {
+              if (DBControl(X)[["useDb"]] && require("filehash")) {
                   db <- dbInit(DBControl(X)[["dbName"]], DBControl(X)[["dbType"]])
                   result <- sapply(dbMultiFetch(db, unlist(X)), FUN, ...)
               }

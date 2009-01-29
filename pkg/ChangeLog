@@ -1,3 +1,9 @@
+2009-01-29  Ingo Feinerer  <feinerer@logic.at>
+
+	* DESCRIPTION: Speed up package loading (via moving packages not
+	strictly necessary for normal operation to Suggests instead of
+	Depends).
+
 2009-01-08  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/reader.R (readNewsgroup): The date format is now configurable.

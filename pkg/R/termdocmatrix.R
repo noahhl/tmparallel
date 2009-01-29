@@ -57,8 +57,10 @@ termFreq <- function(doc, control = list()) {
     if (is.logical(stemming) && stemming) {
         txt <- if (suppressWarnings(require("Rstem", quietly = TRUE)))
             Rstem::wordStem(txt, language = resolveISOCode(Language(doc)))
-        else
-            SnowballStemmer(txt, Weka_control(S = resolveISOCode(Language(doc))))
+        else {
+            require("Snowball")
+            Snowball::SnowballStemmer(txt, structure(list(S = resolveISOCode(Language(doc))), class = "Weka_control"))
+        }
     }
 
     # Stopword filtering

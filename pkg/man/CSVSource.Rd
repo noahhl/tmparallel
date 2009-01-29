@@ -2,7 +2,7 @@
 \docType{methods}
 \alias{CSVSource}
 \alias{CSVSource,character-method}
-\alias{CSVSource,connection-method}
+\alias{CSVSource,ANY-method}
 \title{Comma Seperated Value Source}
 \description{
   Constructs a source for a comma separated values file.

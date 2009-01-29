@@ -241,7 +241,7 @@ if (!isGeneric("DMetaData")) {
 }
 setMethod("DMetaData", "Corpus",
           function(object) {
-              if (DBControl(object)[["useDb"]]) {
+              if (DBControl(object)[["useDb"]] && require("filehash")) {
                   db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
                   result <- dbFetch(db, "DMetaData")
                   index <- object@DMetaData[[1, "subset"]]
@@ -255,7 +255,7 @@ setMethod("DMetaData", "Corpus",
 setGeneric("DMetaData<-", function(x, value) standardGeneric("DMetaData<-"))
 setReplaceMethod("DMetaData", "Corpus",
                  function(x, value) {
-                     if (DBControl(x)[["useDb"]]) {
+                     if (DBControl(x)[["useDb"]] && require("filehash")) {
                          db <- dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
                          db[["DMetaData"]] <- value
                          x@DMetaData[[1, "subset"]] <- NA

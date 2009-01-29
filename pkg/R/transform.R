@@ -128,8 +128,10 @@ setMethod("stemDoc",
           function(object, language = "english", ...) {
               stemLine <- if (suppressWarnings(require("Rstem", quietly = TRUE)))
                   function(x) Rstem::wordStem(x, language)
-              else
+              else {
+                  require("Snowball")
                   function(x) SnowballStemmer(x, Weka_control(S = language))
+              }
               Content(object) <- sapply(object,
                                         function(x) paste(stemLine(unlist(strsplit(x, "[[:blank:]]"))), collapse = " "),
                                         USE.NAMES = FALSE)

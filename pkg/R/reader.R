@@ -21,29 +21,31 @@ readPlain <- FunctionGenerator(function(...) {
 
 readReut21578XML <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
+        require("XML")
+
         corpus <- paste(elem$content, "\n", collapse = "")
-        tree <- xmlTreeParse(corpus, asText = TRUE)
-        node <- xmlRoot(tree)
+        tree <- XML::xmlTreeParse(corpus, asText = TRUE)
+        node <- XML::xmlRoot(tree)
 
         # Mask as list to bypass S4 checks
         class(tree) <- "list"
 
         # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
         author <- if (!is.null(node[["TEXT"]][["AUTHOR"]]))
-            xmlValue(node[["TEXT"]][["AUTHOR"]])
+            XML::xmlValue(node[["TEXT"]][["AUTHOR"]])
         else
             ""
 
-        datetimestamp <- as.POSIXct(strptime(xmlValue(node[["DATE"]]), format = "%d-%B-%Y %H:%M:%S"))
-        id <- xmlAttrs(node)[["NEWID"]]
+        datetimestamp <- as.POSIXct(strptime(XML::xmlValue(node[["DATE"]]), format = "%d-%B-%Y %H:%M:%S"))
+        id <- XML::xmlAttrs(node)[["NEWID"]]
 
         # The <TITLE></TITLE> tag is unfortunately NOT obligatory!
         heading <- if (!is.null(node[["TEXT"]][["TITLE"]]))
-            xmlValue(node[["TEXT"]][["TITLE"]])
+            XML::xmlValue(node[["TEXT"]][["TITLE"]])
         else
             ""
 
-        topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
+        topics <- unlist(XML::xmlApply(node[["TOPICS"]], function(x) XML::xmlValue(x)), use.names = FALSE)
 
         doc <- if (load) {
             new("Reuters21578Document", .Data = tree, URI = elem$uri, Cached = TRUE, Author = author,
@@ -61,16 +63,18 @@ readReut21578XML <- FunctionGenerator(function(...) {
 
 readRCV1 <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
+        require("XML")
+
         corpus <- paste(elem$content, "\n", collapse = "")
-        tree <- xmlTreeParse(corpus, asText = TRUE)
-        node <- xmlRoot(tree)
+        tree <- XML::xmlTreeParse(corpus, asText = TRUE)
+        node <- XML::xmlRoot(tree)
 
         # Mask as list to bypass S4 checks
         class(tree) <- "list"
 
-        datetimestamp <- as.POSIXct(xmlAttrs(node)[["date"]])
-        id <- xmlAttrs(node)[["itemid"]]
-        heading <- xmlValue(node[["title"]])
+        datetimestamp <- as.POSIXct(XML::xmlAttrs(node)[["date"]])
+        id <- XML::xmlAttrs(node)[["itemid"]]
+        heading <- XML::xmlValue(node[["title"]])
 
         doc <- if (load) {
             new("RCV1Document", .Data = tree, URI = elem$uri, Cached = TRUE, Author = "",
@@ -86,7 +90,7 @@ readRCV1 <- FunctionGenerator(function(...) {
         if (!is.null(node[["metadata"]])) {
             # Get simple Dublin Core meta data
             dc <- node[["metadata"]][names(node[["metadata"]]) == "dc"]
-            dc <- lapply(dc, xmlAttrs)
+            dc <- lapply(dc, XML::xmlAttrs)
             elements <- sapply(dc, "[[", "element")
             values <- sapply(dc, "[[", "value")
             if ("dc.publisher" %in% elements)
@@ -94,9 +98,9 @@ readRCV1 <- FunctionGenerator(function(...) {
 
             # Get topic codes
             codes <- node[["metadata"]][names(node[["metadata"]]) == "codes"]
-            topics <- codes[sapply(codes, xmlAttrs) == "bip:topics:1.0"]
+            topics <- codes[sapply(codes, XML::xmlAttrs) == "bip:topics:1.0"]
             if (length(topics) > 0)
-                meta(doc, "Topics") <- unlist(xmlApply(topics[[1]], xmlAttrs), use.names = FALSE)
+                meta(doc, "Topics") <- unlist(XML::xmlApply(topics[[1]], XML::xmlAttrs), use.names = FALSE)
         }
 
         return(doc)
@@ -137,22 +141,24 @@ readNewsgroup <- FunctionGenerator(function(DateFormat = "%d %B %Y %H:%M:%S", ..
 
 readGmane <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
+        require("XML")
+
         corpus <- paste(elem$content, "\n", collapse = "")
         # Remove namespaces
         corpus <- gsub("dc:date", "date", corpus)
         corpus <- gsub("dc:creator", "creator", corpus)
-        tree <- xmlTreeParse(corpus, asText = TRUE)
-        node <- xmlRoot(tree)
+        tree <- XML::xmlTreeParse(corpus, asText = TRUE)
+        node <- XML::xmlRoot(tree)
 
-        author <- xmlValue(node[["creator"]])
-        datetimestamp <- as.POSIXct(strptime(xmlValue(node[["date"]]), format = "%Y-%m-%dT%H:%M:%S"))
-        heading <- xmlValue(node[["title"]])
-        id <- xmlValue(node[["link"]])
-        newsgroup <- gsub("[0-9]+", "", xmlValue(node[["link"]]))
+        author <- XML::xmlValue(node[["creator"]])
+        datetimestamp <- as.POSIXct(strptime(XML::xmlValue(node[["date"]]), format = "%Y-%m-%dT%H:%M:%S"))
+        heading <- XML::xmlValue(node[["title"]])
+        id <- XML::xmlValue(node[["link"]])
+        newsgroup <- gsub("[0-9]+", "", XML::xmlValue(node[["link"]]))
         origin <- "Gmane Mailing List Archive"
 
         doc <- if (load) {
-            content <- xmlValue(node[["description"]])
+            content <- XML::xmlValue(node[["description"]])
 
             new("NewsgroupDocument", .Data = content, URI = elem$uri, Cached = TRUE,
                 Author = author, DateTimeStamp = datetimestamp,
@@ -205,13 +211,15 @@ readPDF <- FunctionGenerator(function(...) {
 
 readHTML <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
-        tree <- xmlTreeParse(elem$content, asText = TRUE)
-        root <- xmlRoot(tree)
+        require("XML")
+
+        tree <- XML::xmlTreeParse(elem$content, asText = TRUE)
+        root <- XML::xmlRoot(tree)
 
         head <- root[["head"]]
-        heading <- xmlValue(head[["title"]])
+        heading <- XML::xmlValue(head[["title"]])
 
-        meta <- lapply(xmlChildren(head)[names(xmlChildren(head)) == "meta"], xmlAttrs)
+        meta <- lapply(XML::xmlChildren(head)[names(XML::xmlChildren(head)) == "meta"], XML::xmlAttrs)
         metaNames <- sapply(meta, "[[", "name")
         metaContents <- sapply(meta, "[[", "content")
 
@@ -227,14 +235,14 @@ readHTML <- FunctionGenerator(function(...) {
 
         content <- list("Prologue" = NULL)
         i <- 1
-        for (child in xmlChildren(root[["body"]])) {
-            if (tolower(xmlName(child)) == "h1") {
-                content <- c(content, structure(list(NULL), names = xmlValue(child)))
+        for (child in XML::xmlChildren(root[["body"]])) {
+            if (tolower(XML::xmlName(child)) == "h1") {
+                content <- c(content, structure(list(NULL), names = XML::xmlValue(child)))
                 i <- i + 1
             }
             else {
                 # We remove remaining HTML tags
-                content[[i]] <- c(content[[i]], toString(xmlApply(child, xmlValue)))
+                content[[i]] <- c(content[[i]], toString(XML::xmlApply(child, XML::xmlValue)))
             }
         }
 
@@ -247,11 +255,13 @@ readHTML <- FunctionGenerator(function(...) {
 # Converter
 
 convertRCV1Plain <- function(node, ...) {
+    require("XML")
+
     content <- Content(node)
     # As XMLDocument is no native S4 class, restore valid information
     class(content) <- "XMLDocument"
     names(content) <- c("doc", "dtd")
-    content <- unlist(xmlApply(xmlRoot(content)[["text"]], xmlValue), use.names = FALSE)
+    content <- unlist(XML::xmlApply(XML::xmlRoot(content)[["text"]], XML::xmlValue), use.names = FALSE)
 
     new("PlainTextDocument", .Data = content, Cached = TRUE, URI = NULL,
         Author = Author(node), DateTimeStamp = DateTimeStamp(node),
@@ -262,29 +272,31 @@ convertRCV1Plain <- function(node, ...) {
 
 # Parse a <REUTERS></REUTERS> element from a well-formed Reuters-21578 XML file
 convertReut21578XMLPlain <- function(node, ...) {
+    require("XML")
+
     # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
     if (!is.null(node[["TEXT"]][["AUTHOR"]]))
-        author <- xmlValue(node[["TEXT"]][["AUTHOR"]])
+        author <- XML::xmlValue(node[["TEXT"]][["AUTHOR"]])
     else
         author <- ""
 
-    datetimestamp <- as.POSIXct(strptime(xmlValue(node[["DATE"]]), format = "%d-%B-%Y %H:%M:%S"))
+    datetimestamp <- as.POSIXct(strptime(XML::xmlValue(node[["DATE"]]), format = "%d-%B-%Y %H:%M:%S"))
     description <- ""
-    id <- xmlAttrs(node)[["NEWID"]]
+    id <- XML::xmlAttrs(node)[["NEWID"]]
 
     # The <BODY></BODY> tag is unfortunately NOT obligatory!
     corpus <- if (!is.null(node[["TEXT"]][["BODY"]]))
-        xmlValue(node[["TEXT"]][["BODY"]])
+        XML::xmlValue(node[["TEXT"]][["BODY"]])
     else
         ""
 
     # The <TITLE></TITLE> tag is unfortunately NOT obligatory!
     heading <- if (!is.null(node[["TEXT"]][["TITLE"]]))
-        xmlValue(node[["TEXT"]][["TITLE"]])
+        XML::xmlValue(node[["TEXT"]][["TITLE"]])
     else
         ""
 
-    topics <- unlist(xmlApply(node[["TOPICS"]], function(x) xmlValue(x)), use.names = FALSE)
+    topics <- unlist(XML::xmlApply(node[["TOPICS"]], function(x) XML::xmlValue(x)), use.names = FALSE)
 
     new("PlainTextDocument", .Data = corpus, Cached = TRUE, URI = NULL, Author = author, DateTimeStamp = datetimestamp,
         Description = description, ID = id, Origin = "Reuters-21578 XML", Heading = heading, Language = "en_US",

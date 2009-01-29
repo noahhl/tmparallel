@@ -4,7 +4,7 @@ setGeneric("dissimilarity", function(x, y = NULL, method) standardGeneric("dissi
 setMethod("dissimilarity",
           signature(x = "TermDocMatrix", y = "ANY", method = "character"),
           function(x, y = NULL, method) {
-              # Use the \code{dist} function from the \pkg{proxy} package
+              require("proxy")
               proxy::dist(as(Data(x), "matrix"), y, method)
           })
 setMethod("dissimilarity",

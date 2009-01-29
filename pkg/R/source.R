@@ -83,7 +83,7 @@ setMethod("URISource", signature(object = "character"),
           function(object, encoding = "UTF-8")
               new("URISource", LoDSupport = TRUE, URI = substitute(file(object, encoding = encoding)),
                   Position = 0, DefaultReader = readPlain, Encoding = encoding, Length = 1))
-setMethod("URISource", signature(object = "connection"),
+setMethod("URISource", signature(object = "ANY"),
           function(object, encoding = "UTF-8")
               new("URISource", LoDSupport = TRUE, URI = match.call()$object,
                   Position = 0, DefaultReader = readPlain, Encoding = encoding, Length = 1))
@@ -98,7 +98,7 @@ setMethod("CSVSource",
                   Encoding = encoding, Length = length(content))
           })
 setMethod("CSVSource",
-          signature(object = "connection"),
+          signature(object = "ANY"),
           function(object, encoding = "UTF-8") {
               content <- apply(read.csv(object), 1, paste, collapse = " ")
               new("CSVSource", LoDSupport = FALSE, URI = match.call()$object,
@@ -110,6 +110,8 @@ setGeneric("ReutersSource", function(object, encoding = "UTF-8") standardGeneric
 setMethod("ReutersSource",
           signature(object = "character"),
           function(object, encoding = "UTF-8") {
+              require("XML")
+
               corpus <- paste(readLines(object, encoding = encoding), "\n", collapse = "")
               tree <- xmlTreeParse(corpus, asText = TRUE)
               content <- xmlRoot(tree)$children
@@ -119,8 +121,10 @@ setMethod("ReutersSource",
                   Encoding = encoding, Length = length(content))
           })
 setMethod("ReutersSource",
-          signature(object = "connection"),
+          signature(object = "ANY"),
           function(object, encoding = "UTF-8") {
+              require("XML")
+
               corpus <- paste(readLines(object), "\n", collapse = "")
               tree <- xmlTreeParse(corpus, asText = TRUE)
               content <- xmlRoot(tree)$children
@@ -134,6 +138,8 @@ setGeneric("GmaneSource", function(object, encoding = "UTF-8") standardGeneric("
 setMethod("GmaneSource",
           signature(object = "character"),
           function(object, encoding = "UTF-8") {
+              require("XML")
+
               corpus <- paste(readLines(object, encoding = encoding), "\n", collapse = "")
               tree <- xmlTreeParse(corpus, asText = TRUE)
               content <- xmlRoot(tree)$children
@@ -144,8 +150,10 @@ setMethod("GmaneSource",
                   Encoding = encoding, Length = length(content))
           })
 setMethod("GmaneSource",
-          signature(object = "connection"),
+          signature(object = "ANY"),
           function(object, encoding = "UTF-8") {
+              require("XML")
+
               corpus <- paste(readLines(object), "\n", collapse = "")
               tree <- xmlTreeParse(corpus, asText = TRUE)
               content <- xmlRoot(tree)$children
@@ -187,6 +195,8 @@ setMethod("getElem",
 setMethod("getElem",
           signature(object = "ReutersSource"),
           function(object) {
+              require("XML")
+
               # Construct a character representation from the XMLNode
               virtual.file <- character(0)
               con <- textConnection("virtual.file", "w", local = TRUE)
@@ -198,6 +208,8 @@ setMethod("getElem",
 setMethod("getElem",
           signature(object = "GmaneSource"),
           function(object) {
+              require("XML")
+
               # Construct a character representation from the XMLNode
               virtual.file <- character(0)
               con <- textConnection("virtual.file", "w", local = TRUE)

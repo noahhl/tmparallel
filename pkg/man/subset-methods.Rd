@@ -9,6 +9,8 @@
 \alias{[<-,Corpus,ANY,ANY,ANY-method}
 \alias{[[,Corpus,ANY,ANY-method}
 \alias{[[<-,Corpus,ANY,ANY-method}
+\alias{[[,Corpus-method}
+\alias{[[<-,Corpus-method}
 \title{Methods for Subset Functions in Package `tm'}
 \description{
   Methods for subset functions \code{[}, \code{[<-}, \code{[[} and
