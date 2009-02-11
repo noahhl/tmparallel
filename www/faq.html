@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>tm - Frequently Asked Questions</title>
+    <link rel="stylesheet" type="text/css" href="css/tm.css"/>
+  </head>
+  <body>
+    <!--#include virtual="navigation.html" -->
+    <div id="maincol">
+      <h2>Frequently Asked Questions</h2>
+      <p>
+	This document contains answers to some of the most frequently
+	asked questions about tm.
+      </p>
+      <ol>
+	<li>
+	  <cite>How should I cite tm?</cite>
+	  <p>Please have a look at the output
+	  of <kbd>citation("tm")</kbd> in R. A BibTeX representation
+	  can be obtained via <kbd>toBibtex(citation("tm"))</kbd>. The
+	  output is also available via
+	  the <a href="http://cran.r-project.org/web/packages/tm/CITATION">CRAN
+	  package citation info</a>.
+	  </p>
+	  <p>The preferred way for journal and conference papers is to
+	  cite the <a href="http://www.jstatsoft.org/v25/i05/">JSS
+	  article</a>.</p>
+	</li>
+	<li>
+	  <cite>I want to read in a PDF file using
+	    the <code>readPDF</code> reader. However, the manual says I
+	    need both the tools <kbd>pdftotext</kbd>
+	    and <kbd>pdfinfo</kbd> installed and accessable on my
+	    system. Where can I find and how can I install these
+	    tools?</cite>
+	  <p>
+	    Many linux distributions provide pre-built
+	    packages: <kbd>poppler-utils</kbd>, <kbd>xpdf-utils</kbd>,
+	    or similar. Windows users need to download and
+	    install <a href="http://www.foolabs.com/xpdf/download.html">Xpdf</a>. Ensure
+	    that both programs are included in
+	    your <a href="http://en.wikipedia.org/wiki/Path_(variable)">PATH</a>
+	    variable.
+	  </p>
+	  <p>Windows users might find a
+	  recent <a href="https://stat.ethz.ch/pipermail/r-help/2008-November/179785.html">R-help
+	  thread</a> on this topic useful.
+	  </p>
+	</li>
+	<li>
+	  <cite>When I create a term-document matrix
+	  (<kbd>TermDocMatrix</kbd>) the message <kbd>invalid class
+	  "dgCMatrix" object: row indices are not sorted within
+	  columns</kbd> is displayed.</cite>
+	  <p>
+	    This is a problem in the term-document matrix construction
+	    code which was triggered by a change in the Matrix
+	    package. Please update both
+	    the <a href="http://cran.r-project.org/package=Matrix">Matrix</a>
+	    package and
+	    the <a href="http://cran.r-project.org/package=tm">tm</a>
+	    package to the latest version available
+	    from <a href="http://cran.r-project.org/">CRAN</a> in
+	    order to fix this issue.
+	  </p>
+	</li>
+	<li><cite>Can I
+	use <a href="http://en.wikipedia.org/wiki/Bigram">bigram</a>s instead of single tokens in
+	a term-document matrix?</cite>
+	  <p>
+	    Yes. <a href="http://cran.r-project.org/package=RWeka">RWeka</a>
+	    provides a tokenizer for
+	    arbitrary <a href="http://en.wikipedia.org/wiki/N-gram">n-gram</a>s
+	    which can be directly passed on to the term-document
+	    matrix constructor. E.g.:
+	    <pre>
+<code>
+  library("RWeka")
+  library("tm")
+
+  data("crude")
+
+  BigramTokenizer <- function(x) NGramTokenizer(x, Weka_control(min = 2, max = 2))
+  tdm <- TermDocMatrix(crude, control = list(tokenize = BigramTokenizer))
+
+  tdm[1:10,340:345]
+</code>
+	    </pre>
+	  </p>
+	</li>
+      </ol>
+    </div>
+  </body>
+</html>
