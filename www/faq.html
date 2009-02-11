@@ -73,19 +73,21 @@
 	    arbitrary <a href="http://en.wikipedia.org/wiki/N-gram">n-gram</a>s
 	    which can be directly passed on to the term-document
 	    matrix constructor. E.g.:
-	    <pre>
-<code>
+	    <object>
+	      <pre>
+		<code>
   library("RWeka")
   library("tm")
 
   data("crude")
 
-  BigramTokenizer <- function(x) NGramTokenizer(x, Weka_control(min = 2, max = 2))
-  tdm <- TermDocMatrix(crude, control = list(tokenize = BigramTokenizer))
+  BigramTokenizer &lt;- function(x) NGramTokenizer(x, Weka_control(min = 2, max = 2))
+  tdm &lt;- TermDocMatrix(crude, control = list(tokenize = BigramTokenizer))
 
   tdm[1:10,340:345]
-</code>
-	    </pre>
+		</code>
+	      </pre>
+	    </object>
 	  </p>
 	</li>
       </ol>
