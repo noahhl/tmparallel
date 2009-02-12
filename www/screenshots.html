@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>tm - Screenshots</title>
+    <link rel="stylesheet" type="text/css" href="css/tm.css"/>
+    <link rel="stylesheet" type="text/css" href="css/lightbox.css" media="screen" />
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.pack.js"></script>
+    <script type="text/javascript" src="js/jquery.lightbox.js"></script>
+    <script type="text/javascript">
+                $(document).ready(function(){
+                        $(".lightbox").lightbox();
+                });
+    </script>
+  </head>
+  <body>
+    <!--#include virtual="navigation.html" -->
+    <div id="maincol">
+      <h2>tm - Screenshots</h2>
+      <p>
+	The screenshots show tm and R running
+	in <a href="http://www.gnu.org/software/emacs/">Emacs</a> via
+	the
+	<a href="http://ess.r-project.org/">Emacs Speaks
+	  Statistics</a> extension. In detail you will find pictures
+	of creating a bigram tokenizer and its corresponding
+	term-document matrix, of a principal component analysis for a
+	set of books, and of a plot for the correlations in a
+	term-document matrix.
+      </p>
+      <div style="text-align:center;">
+	<a href="images/BigramTokenizer.png" class="lightbox" rel="tm" title="Bigram Tokenizer">
+	  <img alt="Bigram Tokenizer"
+	       src="images/thumb-BigramTokenizer.png" />
+	</a>
+	<a href="images/PrincipalComponentAnalysis.png" class="lightbox"
+	   rel="tm" title="Principal Component Analysis">
+	  <img alt="Principal Component Analysis"
+	       src="images/thumb-PrincipalComponentAnalysis.png" />
+	</a>
+	<a href="images/TermDocMatrixPlot.png" class="lightbox"
+	   rel="tm" title="Term-Document Matrix">
+	  <img alt="Term-Document Matrix"
+	       src="images/thumb-TermDocMatrixPlot.png" />
+	</a>
+      </div>
+    </div>
+  </body>
+</html>
