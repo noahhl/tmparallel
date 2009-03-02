@@ -1,3 +1,7 @@
+2009-03-02  Ingo Feinerer  <feinerer@logic.at>
+
+	* inst/doc/tm.Rnw: Suppress pointless loading message.
+
 2009-01-29  Ingo Feinerer  <feinerer@logic.at>
 
 	* DESCRIPTION: Speed up package loading (via moving packages not

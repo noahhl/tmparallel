@@ -15,7 +15,7 @@
 %% \VignetteIndexEntry{Introduction to the tm Package}
 
 \begin{document}
-<<Init,echo=FALSE>>=
+<<Init,echo=FALSE,results=hide>>=
 options(width = 60)
 library("tm")
 data("crude")
@@ -132,7 +132,7 @@ encapsulates this functionality.
 \section*{Inspecting Corpora}
 Custom \code{show()} and \code{summary()} methods are available, which
 hide the raw amount of information (consider a collection could
-consists of several thousand documents, like a
+consist of several thousand documents, like a
 database). \code{summary()} gives more details on meta data than
 \code{show()}, whereas the full content of text documents is displayed
 with \code{inspect()} on a collection.
