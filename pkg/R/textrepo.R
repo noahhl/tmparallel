@@ -40,8 +40,8 @@ setMethod("show",
           signature(object = "TextRepository"),
           function(object){
                cat(sprintf(ngettext(length(object),
-                                    "A text repository with %d text document collection\n",
-                                    "A text repository with %d text document collections\n"),
+                                    "A text repository with %d corpus\n",
+                                    "A text repository with %d corpora\n"),
                            length(object)))
     })
 

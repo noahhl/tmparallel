@@ -499,9 +499,9 @@ setMethod("c",
                   return(x)
 
               if (!all(sapply(args, inherits, "Corpus")))
-                  stop("not all arguments are text document collections")
+                  stop("not all arguments are corpora")
               if (DBControl(x)[["useDb"]] || any(unlist(sapply(args, DBControl)["useDb", ])))
-                  stop("concatenating text document collections with activated database is not supported")
+                  stop("concatenating corpora with activated database is not supported")
 
               result <- x
               for (c in args) {
@@ -596,8 +596,8 @@ setMethod("show",
           signature(object = "Corpus"),
           function(object){
               cat(sprintf(ngettext(length(object),
-                                   "A text document collection with %d text document\n",
-                                   "A text document collection with %d text documents\n"),
+                                   "A corpus with %d text document\n",
+                                   "A corpus with %d text documents\n"),
                           length(object)))
     })
 

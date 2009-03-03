@@ -221,13 +221,13 @@ setReplaceMethod("Cached", "StructuredTextDocument", function(x, value) {
     x
 })
 
-# A node in the metadata tree of a text document collection
+# A node in the metadata tree of a corpus
 setClass("MetaDataNode",
          representation(NodeID = "numeric",
                         MetaData = "list",
                         children = "list"))
 
-# Text document collection
+# Corpus (= text document collection)
 setClass("Corpus",
          representation(DMetaData = "data.frame", CMetaData = "MetaDataNode", DBControl = "list"),
          contains = c("list"))
@@ -284,7 +284,7 @@ if (!isGeneric("DBControl")) {
 }
 setMethod("DBControl", "Corpus", function(object) object@DBControl)
 
-# Repository for text document collections
+# Repository for corpora
 setClass("TextRepository",
          representation(RepoMetaData = "list"),
          contains = c("list"))
