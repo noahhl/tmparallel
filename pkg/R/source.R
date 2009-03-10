@@ -67,11 +67,11 @@ DataframeSource<- function(object, encoding = "UTF-8")
     new("DataframeSource", LoDSupport = FALSE, Content = object, Position = 0,
         DefaultReader = readPlain, Encoding = encoding, Length = nrow(object))
 
-setGeneric("DirSource", function(directory, encoding = "UTF-8", recursive = FALSE) standardGeneric("DirSource"))
+setGeneric("DirSource", function(directory, encoding = "UTF-8", pattern = NULL, recursive = FALSE, ignore.case = FALSE) standardGeneric("DirSource"))
 setMethod("DirSource",
           signature(directory = "character"),
-          function(directory, encoding = "UTF-8", recursive = FALSE) {
-              d <- dir(directory, full.names = TRUE, recursive = recursive)
+          function(directory, encoding = "UTF-8", pattern = NULL, recursive = FALSE, ignore.case = FALSE) {
+              d <- dir(directory, full.names = TRUE, pattern = pattern, recursive = recursive, ignore.case = ignore.case)
               isdir <- sapply(d, file.info)["isdir",]
               files <- d[isdir == FALSE]
               new("DirSource", LoDSupport = TRUE, FileList = files,

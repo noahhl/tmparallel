@@ -1,3 +1,8 @@
+2009-03-10  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/source.R (DirSource): Add pattern and ignore.case arguments
+	which are internally passed over to list.files().
+
 2009-03-02  Ingo Feinerer  <feinerer@logic.at>
 
 	* inst/doc/tm.Rnw: Suppress pointless loading message.

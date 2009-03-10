@@ -4,6 +4,12 @@
 
 NEW FEATURES
 
+    o   The DirSource() constructor now accepts the two new (optional)
+        arguments pattern and ignore.case. With pattern one can define
+        a regular expression for selecting only matching files, and
+        ignore.case specifies whether pattern-matching is
+        case-sensitive.
+
     o   The readNewsgroup() reader function can now be configured for
         custom date formats (via the DateFormat argument).
 
