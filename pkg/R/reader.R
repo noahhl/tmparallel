@@ -202,7 +202,10 @@ readPDF <- FunctionGenerator(function(...) {
         if (!load)
             warning("load on demand not supported for PDF documents")
 
-        corpus <- paste(system(paste("pdftotext", shQuote(summary(eval(elem$uri))$description), "-"), intern = TRUE), sep = "\n", collapse = "")
+        corpus <- system(paste("pdftotext",
+                               shQuote(summary(eval(elem$uri))$description),
+                               "-"),
+                         intern = TRUE)
         new("PlainTextDocument", .Data = corpus, URI = elem$uri, Cached = TRUE,
             Author = author, DateTimeStamp = datetimestamp, Description = description, ID = id,
             Origin = origin, Heading = heading, Language = language)
