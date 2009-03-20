@@ -2,9 +2,9 @@
 
 # The "..." are additional arguments for the FunctionGenerator reader
 setGeneric("Corpus", function(object,
-                                  readerControl = list(reader = object@DefaultReader, language = "en_US", load = TRUE),
-                                  dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
-                                  ...) standardGeneric("Corpus"))
+                              readerControl = list(reader = object@DefaultReader, language = "en_US", load = TRUE),
+                              dbControl = list(useDb = FALSE, dbName = "", dbType = "DB1"),
+                              ...) standardGeneric("Corpus"))
 setMethod("Corpus",
           signature(object = "Source"),
           function(object,
@@ -503,11 +503,7 @@ setMethod("c",
               if (DBControl(x)[["useDb"]] || any(unlist(sapply(args, DBControl)["useDb", ])))
                   stop("concatenating corpora with activated database is not supported")
 
-              result <- x
-              for (c in args) {
-                  result <- c2(result, c)
-              }
-              return(result)
+              Reduce(c2, list(x, args))
           })
 
 setGeneric("c2", function(x, y, ..., meta = list(merge_date = Sys.time(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) standardGeneric("c2"))
