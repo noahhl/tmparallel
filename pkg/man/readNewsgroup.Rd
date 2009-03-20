@@ -9,8 +9,8 @@
 readNewsgroup(DateFormat = "\%d \%B \%Y \%H:\%M:\%S", ...)
 }
 \arguments{
-  \item{DateFormat}{the format of the Date header in the newsgroup document}
-  \item{\dots}{arguments for the generator function}
+  \item{DateFormat}{the format of the Date header in the newsgroup document.}
+  \item{\dots}{arguments for the generator function.}
 }
 \details{
   Formally this function is a function generator, i.e., it returns a

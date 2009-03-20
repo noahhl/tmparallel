@@ -163,12 +163,15 @@ readGmane <- FunctionGenerator(function(...) {
 })
 
 # readDOC needs antiword installed to be able to extract the text
-readDOC <- FunctionGenerator(function(...) {
+readDOC <- FunctionGenerator(function(AntiwordOptions = "", ...) {
+    AntiwordOptions <- AntiwordOptions
     function(elem, load, language, id) {
         if (!load)
             warning("load on demand not supported for DOC documents")
 
-        corpus <- paste(system(paste("antiword", shQuote(summary(eval(elem$uri))$description)), intern = TRUE), sep = "\n", collapse = "")
+        corpus <- system(paste("antiword", AntiwordOptions,
+                               shQuote(summary(eval(elem$uri))$description)),
+                         intern = TRUE)
 
         new("PlainTextDocument", .Data = corpus, URI = elem$uri, Cached = TRUE,
             Author = "", DateTimeStamp = Sys.time(), Description = "", ID = id,
@@ -177,9 +180,13 @@ readDOC <- FunctionGenerator(function(...) {
 })
 
 # readPDF needs pdftotext and pdfinfo installed to be able to extract the text and meta information
-readPDF <- FunctionGenerator(function(...) {
+readPDF <- FunctionGenerator(function(PdfinfoOptions = "", PdftotextOptions = "", ...) {
+    PdfinfoOptions <- PdfinfoOptions
+    PdftotextOptions <- PdftotextOptions
     function(elem, load, language, id) {
-        meta <- system(paste("pdfinfo", shQuote(summary(eval(elem$uri))$description)), intern = TRUE)
+        meta <- system(paste("pdfinfo", PdfinfoOptions,
+                             shQuote(summary(eval(elem$uri))$description)),
+                       intern = TRUE)
         heading <- gsub("Title:[[:space:]]*", "", grep("Title:", meta, value = TRUE))
         author <- gsub("Author:[[:space:]]*", "", grep("Author:", meta, value = TRUE))
         datetimestamp <- as.POSIXct(strptime(gsub("CreationDate:[[:space:]]*", "",
@@ -191,7 +198,7 @@ readPDF <- FunctionGenerator(function(...) {
         if (!load)
             warning("load on demand not supported for PDF documents")
 
-        corpus <- system(paste("pdftotext",
+        corpus <- system(paste("pdftotext", PdftotextOptions,
                                shQuote(summary(eval(elem$uri))$description),
                                "-"),
                          intern = TRUE)

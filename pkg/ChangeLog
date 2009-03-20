@@ -1,3 +1,10 @@
+2009-03-20  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/reader.R (readDOC): Options can be passed over to antiword.
+
+	* R/reader.R (readPDF): Options can be passed over to pdfinfo and
+	pdftotext.
+
 2009-03-10  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/source.R (DirSource): Add pattern and ignore.case arguments
