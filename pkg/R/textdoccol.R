@@ -503,7 +503,7 @@ setMethod("c",
               if (DBControl(x)[["useDb"]] || any(unlist(sapply(args, DBControl)["useDb", ])))
                   stop("concatenating corpora with activated database is not supported")
 
-              Reduce(c2, list(x, args))
+              Reduce(c2, base::c(list(x), args))
           })
 
 setGeneric("c2", function(x, y, ..., meta = list(merge_date = Sys.time(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) standardGeneric("c2"))
