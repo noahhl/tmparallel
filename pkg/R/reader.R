@@ -30,22 +30,11 @@ readReut21578XML <- FunctionGenerator(function(...) {
         # Mask as list to bypass S4 checks
         class(tree) <- "list"
 
-        # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
-        author <- if (!is.null(node[["TEXT"]][["AUTHOR"]]))
-            XML::xmlValue(node[["TEXT"]][["AUTHOR"]])
-        else
-            ""
-
+        author <- .xml_value_if_not_null(node[["TEXT"]][["AUTHOR"]], "")
         datetimestamp <- as.POSIXct(strptime(XML::xmlValue(node[["DATE"]]), format = "%d-%B-%Y %H:%M:%S"))
         id <- XML::xmlAttrs(node)[["NEWID"]]
-
-        # The <TITLE></TITLE> tag is unfortunately NOT obligatory!
-        heading <- if (!is.null(node[["TEXT"]][["TITLE"]]))
-            XML::xmlValue(node[["TEXT"]][["TITLE"]])
-        else
-            ""
-
-        topics <- unlist(XML::xmlApply(node[["TOPICS"]], function(x) XML::xmlValue(x)), use.names = FALSE)
+        heading <- .xml_value_if_not_null(node[["TEXT"]][["TITLE"]], "")
+        topics <- unlist(XML::xmlApply(node[["TOPICS"]], XML::xmlValue), use.names = FALSE)
 
         doc <- if (load) {
             new("Reuters21578Document", .Data = tree, URI = elem$uri, Cached = TRUE, Author = author,
@@ -277,29 +266,13 @@ convertRCV1Plain <- function(node, ...) {
 convertReut21578XMLPlain <- function(node, ...) {
     require("XML")
 
-    # The <AUTHOR></AUTHOR> tag is unfortunately NOT obligatory!
-    if (!is.null(node[["TEXT"]][["AUTHOR"]]))
-        author <- XML::xmlValue(node[["TEXT"]][["AUTHOR"]])
-    else
-        author <- ""
-
+    author <- .xml_value_if_not_null(node[["TEXT"]][["AUTHOR"]], "")
     datetimestamp <- as.POSIXct(strptime(XML::xmlValue(node[["DATE"]]), format = "%d-%B-%Y %H:%M:%S"))
     description <- ""
     id <- XML::xmlAttrs(node)[["NEWID"]]
-
-    # The <BODY></BODY> tag is unfortunately NOT obligatory!
-    corpus <- if (!is.null(node[["TEXT"]][["BODY"]]))
-        XML::xmlValue(node[["TEXT"]][["BODY"]])
-    else
-        ""
-
-    # The <TITLE></TITLE> tag is unfortunately NOT obligatory!
-    heading <- if (!is.null(node[["TEXT"]][["TITLE"]]))
-        XML::xmlValue(node[["TEXT"]][["TITLE"]])
-    else
-        ""
-
-    topics <- unlist(XML::xmlApply(node[["TOPICS"]], function(x) XML::xmlValue(x)), use.names = FALSE)
+    corpus <- .xml_value_if_not_null(node[["TEXT"]][["BODY"]], "")
+    heading <- .xml_value_if_not_null(node[["TEXT"]][["TITLE"]], "")
+    topics <- unlist(XML::xmlApply(node[["TOPICS"]], XML::xmlValue), use.names = FALSE)
 
     new("PlainTextDocument", .Data = corpus, Cached = TRUE, URI = NULL, Author = author, DateTimeStamp = datetimestamp,
         Description = description, ID = id, Origin = "Reuters-21578 XML", Heading = heading, Language = "en_US",
