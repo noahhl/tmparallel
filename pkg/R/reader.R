@@ -1,5 +1,5 @@
-# Author: Ingo Feinerer
-# Reader
+## Author: Ingo Feinerer
+## Reader
 
 getReaders <- function()
     c("readDOC", "readGmane", "readHTML", "readNewsgroup", "readPDF", "readReut21578XML", "readPlain", "readRCV1")
@@ -8,11 +8,11 @@ readPlain <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
         doc <- if (load) {
             new("PlainTextDocument", .Data = elem$content, URI = elem$uri, Cached = TRUE,
-                Author = "", DateTimeStamp = Sys.time(), Description = "", ID = id, Origin = "", Heading = "", Language = language)
+                Author = "", DateTimeStamp = as.POSIXlt(Sys.time(), tz = "GMT"), Description = "", ID = id, Origin = "", Heading = "", Language = language)
         }
         else {
             new("PlainTextDocument", URI = elem$uri, Cached = FALSE,
-                Author = "", DateTimeStamp = Sys.time(), Description = "", ID = id, Origin = "", Heading = "", Language = language)
+                Author = "", DateTimeStamp = as.POSIXlt(Sys.time(), tz = "GMT"), Description = "", ID = id, Origin = "", Heading = "", Language = language)
         }
 
         return(doc)
@@ -31,7 +31,9 @@ readReut21578XML <- FunctionGenerator(function(...) {
         class(tree) <- "list"
 
         author <- .xml_value_if_not_null(node[["TEXT"]][["AUTHOR"]], "")
-        datetimestamp <- as.POSIXct(strptime(XML::xmlValue(node[["DATE"]]), format = "%d-%B-%Y %H:%M:%S"))
+        datetimestamp <- strptime(XML::xmlValue(node[["DATE"]]),
+                                  format = "%d-%B-%Y %H:%M:%S",
+                                  tz = "GMT")
         id <- XML::xmlAttrs(node)[["NEWID"]]
         heading <- .xml_value_if_not_null(node[["TEXT"]][["TITLE"]], "")
         topics <- unlist(XML::xmlApply(node[["TOPICS"]], XML::xmlValue), use.names = FALSE)
@@ -61,7 +63,7 @@ readRCV1 <- FunctionGenerator(function(...) {
         # Mask as list to bypass S4 checks
         class(tree) <- "list"
 
-        datetimestamp <- as.POSIXct(XML::xmlAttrs(node)[["date"]])
+        datetimestamp <- as.POSIXlt(XML::xmlAttrs(node)[["date"]], tz = "GMT")
         id <- XML::xmlAttrs(node)[["itemid"]]
         heading <- XML::xmlValue(node[["title"]])
 
@@ -101,7 +103,9 @@ readNewsgroup <- FunctionGenerator(function(DateFormat = "%d %B %Y %H:%M:%S", ..
     function(elem, load, language, id) {
         mail <- elem$content
         author <- gsub("From: ", "", grep("^From:", mail, value = TRUE))
-        datetimestamp <- as.POSIXct(strptime(gsub("Date: ", "", grep("^Date:", mail, value = TRUE)), format = format))
+        datetimestamp <- strptime(gsub("Date: ", "", grep("^Date:", mail, value = TRUE)),
+                                  format = format,
+                                  tz = "GMT")
         origin <- gsub("Path: ", "", grep("^Path:", mail, value = TRUE))
         heading <- gsub("Subject: ", "", grep("^Subject:", mail, value = TRUE))
         newsgroup <- gsub("Newsgroups: ", "", grep("^Newsgroups:", mail, value = TRUE))
@@ -140,7 +144,9 @@ readGmane <- FunctionGenerator(function(...) {
         node <- XML::xmlRoot(tree)
 
         author <- XML::xmlValue(node[["creator"]])
-        datetimestamp <- as.POSIXct(strptime(XML::xmlValue(node[["date"]]), format = "%Y-%m-%dT%H:%M:%S"))
+        datetimestamp <- strptime(XML::xmlValue(node[["date"]]),
+                                  format = "%Y-%m-%dT%H:%M:%S",
+                                  tz = "GMT")
         heading <- XML::xmlValue(node[["title"]])
         id <- XML::xmlValue(node[["link"]])
         newsgroup <- gsub("[0-9]+", "", XML::xmlValue(node[["link"]]))
@@ -174,7 +180,7 @@ readDOC <- FunctionGenerator(function(AntiwordOptions = "", ...) {
                          intern = TRUE)
 
         new("PlainTextDocument", .Data = corpus, URI = elem$uri, Cached = TRUE,
-            Author = "", DateTimeStamp = Sys.time(), Description = "", ID = id,
+            Author = "", DateTimeStamp = as.POSIXlt(Sys.time(), tz = "GMT"), Description = "", ID = id,
             Origin = "", Heading = "", Language = language)
     }
 })
@@ -189,9 +195,10 @@ readPDF <- FunctionGenerator(function(PdfinfoOptions = "", PdftotextOptions = ""
                        intern = TRUE)
         heading <- gsub("Title:[[:space:]]*", "", grep("Title:", meta, value = TRUE))
         author <- gsub("Author:[[:space:]]*", "", grep("Author:", meta, value = TRUE))
-        datetimestamp <- as.POSIXct(strptime(gsub("CreationDate:[[:space:]]*", "",
-                                                  grep("CreationDate:", meta, value = TRUE)),
-                                             format = "%a %b %d %H:%M:%S %Y"))
+        datetimestamp <- strptime(gsub("CreationDate:[[:space:]]*", "",
+                                       grep("CreationDate:", meta, value = TRUE)),
+                                  format = "%a %b %d %H:%M:%S %Y",
+                                  tz = "GMT")
         description <- gsub("Subject:[[:space:]]*", "", grep("Subject:", meta, value = TRUE))
         origin <- gsub("Creator:[[:space:]]*", "", grep("Creator:", meta, value = TRUE))
 
@@ -225,7 +232,7 @@ readHTML <- FunctionGenerator(function(...) {
         # See http://dublincore.org/documents/dcmi-terms/ and http://dublincore.org/documents/dcq-html/
         author <- paste(metaContents[metaNames == "DC.creator"])
         description <- paste(metaContents[metaNames == "DC.description"])
-        datetimestamp <- as.POSIXct(paste(metaContents[metaNames == "DC.date"]))
+        datetimestamp <- as.POSIXlt(paste(metaContents[metaNames == "DC.date"]), tz = "GMT")
         origin <- paste(metaContents[metaNames == "DC.publisher"])
         language <- paste(metaContents[metaNames == "DC.language"])
 
@@ -251,7 +258,7 @@ readHTML <- FunctionGenerator(function(...) {
     }
 })
 
-# Converter
+## Converter
 
 convertRCV1Plain <- function(node, ...) {
     require("XML")
@@ -274,7 +281,9 @@ convertReut21578XMLPlain <- function(node, ...) {
     require("XML")
 
     author <- .xml_value_if_not_null(node[["TEXT"]][["AUTHOR"]], "")
-    datetimestamp <- as.POSIXct(strptime(XML::xmlValue(node[["DATE"]]), format = "%d-%B-%Y %H:%M:%S"))
+    datetimestamp <- strptime(XML::xmlValue(node[["DATE"]]),
+                              format = "%d-%B-%Y %H:%M:%S",
+                              tz = "GMT")
     description <- ""
     id <- XML::xmlAttrs(node)[["NEWID"]]
     corpus <- .xml_value_if_not_null(node[["TEXT"]][["BODY"]], "")

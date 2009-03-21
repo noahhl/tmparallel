@@ -67,7 +67,7 @@ setMethod("Corpus",
 
               cmeta.node <- new("MetaDataNode",
                             NodeID = 0,
-                            MetaData = list(create_date = Sys.time(), creator = Sys.getenv("LOGNAME")),
+                            MetaData = list(create_date = as.POSIXlt(Sys.time(), tz = "GMT"), creator = Sys.getenv("LOGNAME")),
                             children = list())
 
               return(new("Corpus", .Data = tdl, DMetaData = dmeta.df, CMetaData = cmeta.node, DBControl = dbControl))
@@ -493,7 +493,7 @@ update_id <- function(object, id = 0, mapping = NULL, left.mapping = NULL, level
 
 setMethod("c",
           signature(x = "Corpus"),
-          function(x, ..., meta = list(merge_date = Sys.time(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
+          function(x, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
               args <- list(...)
               if (length(args) == 0)
                   return(x)
@@ -506,10 +506,10 @@ setMethod("c",
               Reduce(c2, base::c(list(x), args))
           })
 
-setGeneric("c2", function(x, y, ..., meta = list(merge_date = Sys.time(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) standardGeneric("c2"))
+setGeneric("c2", function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = TRUE) standardGeneric("c2"))
 setMethod("c2",
           signature(x = "Corpus", y = "Corpus"),
-          function(x, y, ..., meta = list(merge_date = Sys.time(), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
+          function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
               object <- x
               # Concatenate data slots
               object@.Data <- c(as(x, "list"), as(y, "list"))
@@ -572,7 +572,7 @@ setMethod("c",
               dmeta.df <- data.frame(MetaID = rep(0, length(list(x, ...))), stringsAsFactors = FALSE)
               cmeta.node <- new("MetaDataNode",
                             NodeID = 0,
-                            MetaData = list(create_date = Sys.time(), creator = Sys.getenv("LOGNAME")),
+                            MetaData = list(create_date = as.POSIXlt(Sys.time(), tz = "GMT"), creator = Sys.getenv("LOGNAME")),
                             children = list())
 
               return(new("Corpus",
@@ -676,14 +676,14 @@ setMethod("sapply",
 setAs("list", "Corpus", function(from) {
     cmeta.node <- new("MetaDataNode",
                       NodeID = 0,
-                      MetaData = list(create_date = Sys.time(), creator = Sys.getenv("LOGNAME")),
+                      MetaData = list(create_date = as.POSIXlt(Sys.time(), tz = "GMT"), creator = Sys.getenv("LOGNAME")),
                       children = list())
     data <- list()
     counter <- 1
     for (f in from) {
         doc <- new("PlainTextDocument",
                    .Data = f, URI = NULL, Cached = TRUE,
-                   Author = "", DateTimeStamp = Sys.time(),
+                   Author = "", DateTimeStamp = as.POSIXlt(Sys.time(), tz = "GMT"),
                    Description = "", ID = as.character(counter),
                    Origin = "", Heading = "", Language = "en_US")
         data <- c(data, list(doc))

@@ -4,7 +4,7 @@
 # Text document
 setClass("TextDocument",
          representation(Author = "character",
-                        DateTimeStamp = "POSIXct",
+                        DateTimeStamp = "POSIXt",
                         Description = "character",
                         ID = "character",
                         Origin = "character",

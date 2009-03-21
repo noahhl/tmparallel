@@ -1,6 +1,6 @@
 # Author: Ingo Feinerer
 
-setGeneric("TextRepository", function(object, meta = list(created = Sys.time())) standardGeneric("TextRepository"))
+setGeneric("TextRepository", function(object, meta = list(created = as.POSIXlt(Sys.time(), tz = "GMT"))) standardGeneric("TextRepository"))
 setMethod("TextRepository",
           signature(object = "Corpus"),
           function(object, meta) {

@@ -1,5 +1,7 @@
 2009-03-21  Ingo Feinerer  <feinerer@logic.at>
 
+	* R/reader.R: Always use UTC time zone.
+
 	* R/AAA.R (.onLoad): No longer try to start a MPI cluster.
 
 2009-03-20  Ingo Feinerer  <feinerer@logic.at>
