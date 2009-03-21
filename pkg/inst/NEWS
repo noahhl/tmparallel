@@ -2,6 +2,12 @@
 
                 CHANGES IN tm VERSION 0.3-4
 
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o   .onLoad() no longer tries to start a MPI cluster (which often
+        failed in misconfigured environments). Use activateCluster()
+        and deactivateCluster() instead.
+
 NEW FEATURES
 
     o   The DirSource() constructor now accepts the two new (optional)
