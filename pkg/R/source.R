@@ -63,7 +63,7 @@ setMethod("VectorSource",
                   DefaultReader = readPlain, Encoding = encoding, Length = length(object))
           })
 
-DataframeSource<- function(object, encoding = "UTF-8")
+DataframeSource <- function(object, encoding = "UTF-8")
     new("DataframeSource", LoDSupport = FALSE, Content = object, Position = 0,
         DefaultReader = readPlain, Encoding = encoding, Length = nrow(object))
 

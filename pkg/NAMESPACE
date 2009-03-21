@@ -12,6 +12,7 @@ export(
        "getTransformations",
        "makeChunks",
        "materialize",
+       "readCustom",
        "readPlain",
        "readReut21578XML",
        "readRCV1",

@@ -2,7 +2,7 @@
 ## Reader
 
 getReaders <- function()
-    c("readDOC", "readGmane", "readHTML", "readNewsgroup", "readPDF", "readReut21578XML", "readPlain", "readRCV1")
+    c("readCustom", "readDOC", "readGmane", "readHTML", "readNewsgroup", "readPDF", "readReut21578XML", "readPlain", "readRCV1")
 
 readPlain <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
@@ -255,6 +255,28 @@ readHTML <- FunctionGenerator(function(...) {
         new("StructuredTextDocument", .Data = content, URI = elem$uri, Cached = TRUE,
             Author = author, DateTimeStamp = datetimestamp, Description = description, ID = id,
             Origin = origin, Heading = heading, Language = language)
+    }
+})
+
+readCustom <- FunctionGenerator(function(mappings = "", ...) {
+    mappings <- mappings
+    function(elem, load, language, id) {
+        if (!load)
+            warning("load on demand not (yet) implemented")
+
+        doc <- new("PlainTextDocument", URI = elem$uri, Cached = TRUE,
+                   Author = "", DateTimeStamp = as.POSIXlt(Sys.time(), tz = "GMT"),
+                   Description = "", ID = id, Origin = "", Heading = "", Language = language)
+
+        for (m in mappings) {
+            if (m[2] %in% slotNames(doc)) {
+                slot(doc, m[2]) <- elem$content[, m[1]]
+            }
+            else
+                doc@LocalMetaData <- c(doc@LocalMetaData, structure(list(m[1]), names = m[2]))
+        }
+
+        doc
     }
 })
 
