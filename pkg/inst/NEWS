@@ -28,6 +28,10 @@ NEW FEATURES
     o   Sources now can be vectorized. This allows faster corpus
         construction.
 
+DEPRECATED & DEFUNCT
+
+    o   CSVSource is defunct (use DataframeSource instead).
+
                 CHANGES IN tm VERSION 0.3-3
 
 NEW FEATURES

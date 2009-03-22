@@ -5,7 +5,6 @@
 \alias{getElem,DataframeSource-method}
 \alias{getElem,DirSource-method}
 \alias{getElem,URISource-method}
-\alias{getElem,CSVSource-method}
 \alias{getElem,ReutersSource-method}
 \alias{getElem,GmaneSource-method}
 \alias{getElem,VectorSource-method}
@@ -17,7 +16,6 @@
   \describe{
     \item{object = "DataframeSource"}{Returns the element at current position from the source.}
     \item{object = "DirSource"}{Returns the element at current position from the source.}
-    \item{object = "CSVSource"}{Returns the element at current position from the source.}
     \item{object = "ReutersSource"}{Returns the element at current position from the source.}
     \item{object = "GmaneSource"}{Returns the element at current position from the source.}
     \item{object = "URISource"}{Returns the element at current position from the source.}

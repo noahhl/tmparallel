@@ -1,7 +1,7 @@
 # Author: Ingo Feinerer
 
 getSources <- function()
-   c("CSVSource", "DataframeSource", "DirSource", "GmaneSource", "ReutersSource", "URISource", "VectorSource")
+   c("DataframeSource", "DirSource", "GmaneSource", "ReutersSource", "URISource", "VectorSource")
 
 # Source objects
 
@@ -39,12 +39,6 @@ setClass("DirSource",
          representation(FileList = "character"),
          contains = c("Source"))
 
-# A single CSV file where each line is interpreted as document
-setClass("CSVSource",
-         representation(URI = "call",
-                        Content = "character"),
-         contains = c("Source"))
-
 # A single XML file consisting of several Reuters documents
 # Works both for Reuters21578XML and RCV1 XML files
 setClass("ReutersSource",
@@ -69,6 +63,10 @@ setMethod("VectorSource",
                   DefaultReader = readPlain, Encoding = encoding, Length = length(object),
                   Vectorized = TRUE)
           })
+
+CSVSource <- function(object, encoding = "UTF-8")
+    .Defunct("DataframeSource", package = "tm",
+             msg = "'CSVSource' is defunct.\nUse 'DataframeSource(read.csv(..., stringsAsFactors = FALSE))' instead.\nSee help(\"Defunct\")")
 
 DataframeSource <- function(object, encoding = "UTF-8")
     new("DataframeSource", LoDSupport = FALSE, Content = object, Position = 0,
@@ -96,24 +94,6 @@ setMethod("URISource", signature(object = "ANY"),
           function(object, encoding = "UTF-8")
               new("URISource", LoDSupport = TRUE, URI = match.call()$object,
                   Position = 0, DefaultReader = readPlain, Encoding = encoding, Length = 1, Vectorized = FALSE))
-
-setGeneric("CSVSource", function(object, encoding = "UTF-8") standardGeneric("CSVSource"))
-setMethod("CSVSource",
-          signature(object = "character"),
-          function(object, encoding = "UTF-8") {
-              content <- apply(read.csv(object, encoding = encoding), 1, paste, collapse = " ")
-              new("CSVSource", LoDSupport = FALSE, URI = substitute(file(object, encoding = encoding)),
-                  Content = content, Position = 0, DefaultReader = readPlain,
-                  Encoding = encoding, Length = length(content), Vectorized = FALSE)
-          })
-setMethod("CSVSource",
-          signature(object = "ANY"),
-          function(object, encoding = "UTF-8") {
-              content <- apply(read.csv(object), 1, paste, collapse = " ")
-              new("CSVSource", LoDSupport = FALSE, URI = match.call()$object,
-                  Content = content, Position = 0, DefaultReader = readPlain,
-                  Encoding = encoding, Length = length(content), Vectorized = FALSE)
-          })
 
 setGeneric("ReutersSource", function(object, encoding = "UTF-8") standardGeneric("ReutersSource"))
 setMethod("ReutersSource",
@@ -196,12 +176,6 @@ setMethod("getElem",
 setMethod("getElem", signature(object = "URISource"),
           function(object) list(content = readLines(eval(object@URI)), uri = object@URI))
 setMethod("getElem",
-          signature(object = "CSVSource"),
-          function(object) {
-              list(content = object@Content[object@Position],
-                   uri = object@URI)
-          })
-setMethod("getElem",
           signature(object = "ReutersSource"),
           function(object) {
               require("XML")
@@ -251,8 +225,6 @@ setMethod("eoi", signature(object = "DirSource"),
           function(object) return(length(object@FileList) <= object@Position))
 setMethod("eoi", signature(object = "URISource"),
           function(object) return(1 <= object@Position))
-setMethod("eoi", signature(object = "CSVSource"),
-          function(object) return(length(object@Content) <= object@Position))
 setMethod("eoi", signature(object = "ReutersSource"),
           function(object) return(length(object@Content) <= object@Position))
 setMethod("eoi", signature(object = "GmaneSource"),
