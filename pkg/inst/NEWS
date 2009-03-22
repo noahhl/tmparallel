@@ -28,6 +28,8 @@ NEW FEATURES
     o   Sources now can be vectorized. This allows faster corpus
         construction.
 
+    o   New XMLSource class for arbitrary XML files.
+
 DEPRECATED & DEFUNCT
 
     o   CSVSource is defunct (use DataframeSource instead).

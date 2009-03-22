@@ -3,9 +3,11 @@ import(methods)
 
 export(
        "activateCluster",
+       "CSVSource", # defunct
        "DataframeSource",
        "deactivateCluster",
        "stemCompletion",
+       "GmaneSource",
        "getFilters",
        "getReaders",
        "getSources",
@@ -21,6 +23,7 @@ export(
        "readPDF",
        "readHTML",
        "readDOC",
+       "ReutersSource",
        "convertReut21578XMLPlain",
        "convertRCV1Plain",
        "convertMboxEml",
@@ -31,7 +34,8 @@ export(
        "weightTf",
        "weightTfIdf",
        "weightBin",
-       "weightLogical")
+       "weightLogical",
+       "XMLSource")
 
 S3method("plot", "TermDocMatrix")
 
@@ -43,9 +47,6 @@ exportMethods(
               "Dictionary",
               "DirSource",
               "VectorSource",
-              "CSVSource", # defunct
-              "ReutersSource",
-              "GmaneSource",
               "URISource",
               "FunctionGenerator",
               "WeightFunction",
@@ -162,10 +163,9 @@ exportClasses("TextDocument",
               "DataframeSource",
               "DirSource",
               "VectorSource",
-              "ReutersSource",
-              "GmaneSource",
               "URISource",
               "FunctionGenerator",
-              "WeightFunction")
+              "WeightFunction",
+              "XMLSource")
 
 useDynLib("tm")

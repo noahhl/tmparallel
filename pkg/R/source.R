@@ -1,9 +1,10 @@
-# Author: Ingo Feinerer
+## Author: Ingo Feinerer
+## Sources
 
 getSources <- function()
    c("DataframeSource", "DirSource", "GmaneSource", "ReutersSource", "URISource", "VectorSource")
 
-# Source objects
+## Class definitions
 
 setClass("Source",
          representation(LoDSupport = "logical",
@@ -19,19 +20,9 @@ setClass("Source",
              TRUE
          })
 
-# A vector where each component is interpreted as document
-setClass("VectorSource",
-         representation(Content = "vector"),
-         contains = c("Source"))
-
 # A data frame where each row is interpreted as document
 setClass("DataframeSource",
          representation(Content = "data.frame"),
-         contains = c("Source"))
-
-# A single document identified by a Uniform Resource Identifier
-setClass("URISource",
-         representation(URI = "call"),
          contains = c("Source"))
 
 # A directory with files
@@ -39,21 +30,23 @@ setClass("DirSource",
          representation(FileList = "character"),
          contains = c("Source"))
 
-# A single XML file consisting of several Reuters documents
-# Works both for Reuters21578XML and RCV1 XML files
-setClass("ReutersSource",
+# A single document identified by a Uniform Resource Identifier
+setClass("URISource",
+         representation(URI = "call"),
+         contains = c("Source"))
+
+# A vector where each component is interpreted as document
+setClass("VectorSource",
+         representation(Content = "vector"),
+         contains = c("Source"))
+
+# XML
+setClass("XMLSource",
          representation(URI = "call",
                         Content = "list"),
          contains = c("Source"))
 
-# A single XML (RDF) file containing Gmane mailing list archive feeds
-setClass("GmaneSource",
-         representation(URI = "call",
-                        Content = "list"),
-         contains = c("Source"))
-
-
-# Methods for Source objects
+## Methods
 
 setGeneric("VectorSource", function(object, encoding = "UTF-8") standardGeneric("VectorSource"))
 setMethod("VectorSource",
@@ -95,63 +88,27 @@ setMethod("URISource", signature(object = "ANY"),
               new("URISource", LoDSupport = TRUE, URI = match.call()$object,
                   Position = 0, DefaultReader = readPlain, Encoding = encoding, Length = 1, Vectorized = FALSE))
 
-setGeneric("ReutersSource", function(object, encoding = "UTF-8") standardGeneric("ReutersSource"))
-setMethod("ReutersSource",
-          signature(object = "character"),
-          function(object, encoding = "UTF-8") {
-              require("XML")
+GmaneSource <- function(object, encoding = "UTF-8")
+    XMLSource(object,
+              function(tree) XML::xmlRoot(tree)$children[names(XML::xmlRoot(tree)$children) == "item"],
+              readGmane, encoding)
 
-              corpus <- paste(readLines(object, encoding = encoding), "\n", collapse = "")
-              tree <- xmlTreeParse(corpus, asText = TRUE)
-              content <- xmlRoot(tree)$children
+ReutersSource <- function(object, encoding = "UTF-8")
+    XMLSource(object, function(tree) XML::xmlRoot(tree)$children, readReut21578XML, encoding)
 
-              new("ReutersSource", LoDSupport = FALSE, URI = substitute(file(object, encoding = encoding)),
-                  Content = content, Position = 0, DefaultReader = readReut21578XML,
-                  Encoding = encoding, Length = length(content), Vectorized = FALSE)
-          })
-setMethod("ReutersSource",
-          signature(object = "ANY"),
-          function(object, encoding = "UTF-8") {
-              require("XML")
+XMLSource <- function(object, parser, reader, encoding = "UTF-8") {
+    require("XML")
 
-              corpus <- paste(readLines(object), "\n", collapse = "")
-              tree <- xmlTreeParse(corpus, asText = TRUE)
-              content <- xmlRoot(tree)$children
+    corpus <- readLines(object, encoding = encoding)
+    tree <- XML::xmlTreeParse(corpus, asText = TRUE)
+    content <- parser(tree)
+    # TODO: Fix the URI mess!
+    uri <- if (is.character(object)) substitute(file(object, encoding = encoding)) else NULL # was match.call()$object instead of NULL but does not work anymore
 
-              new("ReutersSource", LoDSupport = FALSE, URI = match.call()$object,
-                  Content = content, Position = 0, DefaultReader = readReut21578XML,
-                  Encoding = encoding, Length = length(content), Vectorized = FALSE)
-          })
-
-setGeneric("GmaneSource", function(object, encoding = "UTF-8") standardGeneric("GmaneSource"))
-setMethod("GmaneSource",
-          signature(object = "character"),
-          function(object, encoding = "UTF-8") {
-              require("XML")
-
-              corpus <- paste(readLines(object, encoding = encoding), "\n", collapse = "")
-              tree <- xmlTreeParse(corpus, asText = TRUE)
-              content <- xmlRoot(tree)$children
-              content <- content[names(content) == "item"]
-
-              new("GmaneSource", LoDSupport = FALSE, URI = substitute(file(object, encoding = encoding)),
-                  Content = content, Position = 0, DefaultReader = readGmane,
-                  Encoding = encoding, Length = length(content), Vectorized = FALSE)
-          })
-setMethod("GmaneSource",
-          signature(object = "ANY"),
-          function(object, encoding = "UTF-8") {
-              require("XML")
-
-              corpus <- paste(readLines(object), "\n", collapse = "")
-              tree <- xmlTreeParse(corpus, asText = TRUE)
-              content <- xmlRoot(tree)$children
-              content <- content[names(content) == "item"]
-
-              new("GmaneSource", LoDSupport = FALSE, URI = match.call()$object,
-                  Content = content, Position = 0, DefaultReader = readGmane,
-                  Encoding = encoding, Length = length(content), Vectorized = FALSE)
-          })
+    new("XMLSource", LoDSupport = FALSE, URI = uri,
+        Content = content, Position = 0, DefaultReader = reader,
+        Encoding = encoding, Length = length(content), Vectorized = FALSE)
+}
 
 setGeneric("stepNext", function(object) standardGeneric("stepNext"))
 setMethod("stepNext", signature(object = "Source"),
@@ -176,20 +133,7 @@ setMethod("getElem",
 setMethod("getElem", signature(object = "URISource"),
           function(object) list(content = readLines(eval(object@URI)), uri = object@URI))
 setMethod("getElem",
-          signature(object = "ReutersSource"),
-          function(object) {
-              require("XML")
-
-              # Construct a character representation from the XMLNode
-              virtual.file <- character(0)
-              con <- textConnection("virtual.file", "w", local = TRUE)
-              saveXML(object@Content[[object@Position]], con)
-              close(con)
-
-              list(content = virtual.file, uri = object@URI)
-          })
-setMethod("getElem",
-          signature(object = "GmaneSource"),
+          signature(object = "XMLSource"),
           function(object) {
               require("XML")
 
@@ -225,7 +169,5 @@ setMethod("eoi", signature(object = "DirSource"),
           function(object) return(length(object@FileList) <= object@Position))
 setMethod("eoi", signature(object = "URISource"),
           function(object) return(1 <= object@Position))
-setMethod("eoi", signature(object = "ReutersSource"),
-          function(object) return(length(object@Content) <= object@Position))
-setMethod("eoi", signature(object = "GmaneSource"),
+setMethod("eoi", signature(object = "XMLSource"),
           function(object) return(length(object@Content) <= object@Position))

@@ -1,8 +1,8 @@
 2009-03-22  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/source.R (CSVSource): Defunct (use DataframeSource instead).
-
-	* R/source.R (Source): New slot Vectorized.
+	(XMLSource): New XMLSource class for arbitrary XML files.
+	(Source): New slot Vectorized.
 
 2009-03-21  Ingo Feinerer  <feinerer@logic.at>
 
