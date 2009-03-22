@@ -11,7 +11,13 @@ setClass("Source",
                         DefaultReader = "function",
                         Encoding = "character",
                         Length = "numeric",
-                        "VIRTUAL"))
+                        Vectorized = "logical",
+                        "VIRTUAL"),
+         validity = function(object) {
+             if (object@Vectorized && (object@Length <= 0))
+                 return("Vectorized sources must have positive length")
+             TRUE
+         })
 
 # A vector where each component is interpreted as document
 setClass("VectorSource",
@@ -60,12 +66,14 @@ setMethod("VectorSource",
           signature(object = "vector"),
           function(object, encoding = "UTF-8") {
               new("VectorSource", LoDSupport = FALSE, Content = object, Position = 0,
-                  DefaultReader = readPlain, Encoding = encoding, Length = length(object))
+                  DefaultReader = readPlain, Encoding = encoding, Length = length(object),
+                  Vectorized = TRUE)
           })
 
 DataframeSource <- function(object, encoding = "UTF-8")
     new("DataframeSource", LoDSupport = FALSE, Content = object, Position = 0,
-        DefaultReader = readPlain, Encoding = encoding, Length = nrow(object))
+        DefaultReader = readPlain, Encoding = encoding, Length = nrow(object),
+        Vectorized = FALSE)
 
 setGeneric("DirSource", function(directory, encoding = "UTF-8", pattern = NULL, recursive = FALSE, ignore.case = FALSE) standardGeneric("DirSource"))
 setMethod("DirSource",
@@ -74,19 +82,20 @@ setMethod("DirSource",
               d <- dir(directory, full.names = TRUE, pattern = pattern, recursive = recursive, ignore.case = ignore.case)
               isdir <- sapply(d, file.info)["isdir",]
               files <- d[isdir == FALSE]
-              new("DirSource", LoDSupport = TRUE, FileList = files,
-                  Position = 0, DefaultReader = readPlain, Encoding = encoding, Length = length(files))
+              new("DirSource", LoDSupport = TRUE, FileList = files, Position = 0,
+                  DefaultReader = readPlain, Encoding = encoding, Length = length(files),
+                  Vectorized = TRUE)
           })
 
 setGeneric("URISource", function(object, encoding = "UTF-8") standardGeneric("URISource"))
 setMethod("URISource", signature(object = "character"),
           function(object, encoding = "UTF-8")
               new("URISource", LoDSupport = TRUE, URI = substitute(file(object, encoding = encoding)),
-                  Position = 0, DefaultReader = readPlain, Encoding = encoding, Length = 1))
+                  Position = 0, DefaultReader = readPlain, Encoding = encoding, Length = 1, Vectorized = FALSE))
 setMethod("URISource", signature(object = "ANY"),
           function(object, encoding = "UTF-8")
               new("URISource", LoDSupport = TRUE, URI = match.call()$object,
-                  Position = 0, DefaultReader = readPlain, Encoding = encoding, Length = 1))
+                  Position = 0, DefaultReader = readPlain, Encoding = encoding, Length = 1, Vectorized = FALSE))
 
 setGeneric("CSVSource", function(object, encoding = "UTF-8") standardGeneric("CSVSource"))
 setMethod("CSVSource",
@@ -95,7 +104,7 @@ setMethod("CSVSource",
               content <- apply(read.csv(object, encoding = encoding), 1, paste, collapse = " ")
               new("CSVSource", LoDSupport = FALSE, URI = substitute(file(object, encoding = encoding)),
                   Content = content, Position = 0, DefaultReader = readPlain,
-                  Encoding = encoding, Length = length(content))
+                  Encoding = encoding, Length = length(content), Vectorized = FALSE)
           })
 setMethod("CSVSource",
           signature(object = "ANY"),
@@ -103,7 +112,7 @@ setMethod("CSVSource",
               content <- apply(read.csv(object), 1, paste, collapse = " ")
               new("CSVSource", LoDSupport = FALSE, URI = match.call()$object,
                   Content = content, Position = 0, DefaultReader = readPlain,
-                  Encoding = encoding, Length = length(content))
+                  Encoding = encoding, Length = length(content), Vectorized = FALSE)
           })
 
 setGeneric("ReutersSource", function(object, encoding = "UTF-8") standardGeneric("ReutersSource"))
@@ -118,7 +127,7 @@ setMethod("ReutersSource",
 
               new("ReutersSource", LoDSupport = FALSE, URI = substitute(file(object, encoding = encoding)),
                   Content = content, Position = 0, DefaultReader = readReut21578XML,
-                  Encoding = encoding, Length = length(content))
+                  Encoding = encoding, Length = length(content), Vectorized = FALSE)
           })
 setMethod("ReutersSource",
           signature(object = "ANY"),
@@ -131,7 +140,7 @@ setMethod("ReutersSource",
 
               new("ReutersSource", LoDSupport = FALSE, URI = match.call()$object,
                   Content = content, Position = 0, DefaultReader = readReut21578XML,
-                  Encoding = encoding, Length = length(content))
+                  Encoding = encoding, Length = length(content), Vectorized = FALSE)
           })
 
 setGeneric("GmaneSource", function(object, encoding = "UTF-8") standardGeneric("GmaneSource"))
@@ -147,7 +156,7 @@ setMethod("GmaneSource",
 
               new("GmaneSource", LoDSupport = FALSE, URI = substitute(file(object, encoding = encoding)),
                   Content = content, Position = 0, DefaultReader = readGmane,
-                  Encoding = encoding, Length = length(content))
+                  Encoding = encoding, Length = length(content), Vectorized = FALSE)
           })
 setMethod("GmaneSource",
           signature(object = "ANY"),
@@ -161,7 +170,7 @@ setMethod("GmaneSource",
 
               new("GmaneSource", LoDSupport = FALSE, URI = match.call()$object,
                   Content = content, Position = 0, DefaultReader = readGmane,
-                  Encoding = encoding, Length = length(content))
+                  Encoding = encoding, Length = length(content), Vectorized = FALSE)
           })
 
 setGeneric("stepNext", function(object) standardGeneric("stepNext"))
@@ -218,6 +227,20 @@ setMethod("getElem",
 
               list(content = virtual.file, uri = object@URI)
           })
+
+setGeneric("pGetElem", function(object) standardGeneric("pGetElem"))
+setMethod("pGetElem", signature(object = "DirSource"),
+          function(object) {
+              lapply(object@FileList,
+                     function(x) {
+                         filename <- x
+                         encoding <- object@Encoding
+                         list(content = readLines(filename, encoding = encoding),
+                              uri = substitute(file(filename, encoding = encoding)))
+                     })
+          })
+setMethod("pGetElem", signature(object = "VectorSource"),
+          function(object) lapply(object@Content, function(x) list(content = x, uri = NULL)))
 
 setGeneric("eoi", function(object) standardGeneric("eoi"))
 setMethod("eoi", signature(object = "VectorSource"),

@@ -96,6 +96,7 @@ exportMethods(
               # Sources
               "stepNext",
               "getElem",
+              "pGetElem",
               "eoi",
 
               # Functions

@@ -16,9 +16,9 @@ setMethod("Corpus",
               if (is(readerControl$reader, "FunctionGenerator"))
                   readerControl$reader <- readerControl$reader(...)
               if (is.null(readerControl$language))
-                  readerControl$language = "en_US"
-              if (is.null(readerControl$load))
-                  readerControl$load = TRUE
+                  readerControl$language <- "en_US"
+              if (is.null(readerControl$load) || (!object@LoDSupport))
+                  readerControl$load <- TRUE
 
               if (dbControl$useDb && require("filehash")) {
                   if (!dbCreate(dbControl$dbName, dbControl$dbType))
@@ -32,29 +32,33 @@ setMethod("Corpus",
               else
                   list()
 
-              counter <- 1
-              while (!eoi(object)) {
-                  object <- stepNext(object)
-                  elem <- getElem(object)
-                  # If there is no Load on Demand support
-                  # we need to load the corpus into memory at startup
-                  if (!object@LoDSupport)
-                      readerControl$load <- TRUE
-                  doc <- readerControl$reader(elem, readerControl$load, readerControl$language, as.character(counter))
-                  if (dbControl$useDb && require("filehash")) {
-                      dbInsert(db, ID(doc), doc)
-                      if (object@Length > 0)
-                          tdl[[counter]] <- ID(doc)
-                      else
-                          tdl <- c(tdl, ID(doc))
+              if ((!dbControl$useDb) && object@Vectorized)
+                  tdl <- lapply(mapply(c, pGetElem(object), id = seq_len(object@Length), SIMPLIFY = FALSE),
+                                function(x) readerControl$reader(x[c("content", "uri")],
+                                                                 readerControl$load,
+                                                                 readerControl$language,
+                                                                 as.character(x$id)))
+              else {
+                  counter <- 1
+                  while (!eoi(object)) {
+                      object <- stepNext(object)
+                      elem <- getElem(object)
+                      doc <- readerControl$reader(elem, readerControl$load, readerControl$language, as.character(counter))
+                      if (dbControl$useDb && require("filehash")) {
+                          dbInsert(db, ID(doc), doc)
+                          if (object@Length > 0)
+                              tdl[[counter]] <- ID(doc)
+                          else
+                              tdl <- c(tdl, ID(doc))
+                      }
+                      else {
+                          if (object@Length > 0)
+                              tdl[[counter]] <- doc
+                          else
+                              tdl <- c(tdl, list(doc))
+                      }
+                      counter <- counter + 1
                   }
-                  else {
-                      if (object@Length > 0)
-                          tdl[[counter]] <- doc
-                      else
-                          tdl <- c(tdl, list(doc))
-                  }
-                  counter <- counter + 1
               }
 
               df <- data.frame(MetaID = rep(0, length(tdl)), stringsAsFactors = FALSE)
