@@ -71,7 +71,7 @@ readRCV1 <- readXML(spec = list(Author = list("unevaluated", ""),
                     Origin = list("unevaluated", "Reuters Corpus Volume 1 XML"),
                     Publisher = list("attribute", "/newsitem/metadata/dc[@element='dc.publisher']/@value"),
                     Topics = list("attribute", "/newsitem/metadata/codes[@class='bip:topics:1.0']/code/@code")),
-                    doc = new("Reuters21578Document"))
+                    doc = new("RCV1Document"))
 
 readNewsgroup <- FunctionGenerator(function(DateFormat = "%d %B %Y %H:%M:%S", ...) {
     format <- DateFormat
