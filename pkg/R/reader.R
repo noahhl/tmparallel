@@ -8,95 +8,70 @@ readPlain <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
         doc <- if (load) {
             new("PlainTextDocument", .Data = elem$content, URI = elem$uri, Cached = TRUE,
-                Author = "", DateTimeStamp = as.POSIXlt(Sys.time(), tz = "GMT"), Description = "", ID = id, Origin = "", Heading = "", Language = language)
+                Author = "", DateTimeStamp = as.POSIXlt(Sys.time(), tz = "GMT"),
+                Description = "", ID = id, Origin = "", Heading = "", Language = language)
         }
         else {
             new("PlainTextDocument", URI = elem$uri, Cached = FALSE,
-                Author = "", DateTimeStamp = as.POSIXlt(Sys.time(), tz = "GMT"), Description = "", ID = id, Origin = "", Heading = "", Language = language)
+                Author = "", DateTimeStamp = as.POSIXlt(Sys.time(), tz = "GMT"),
+                Description = "", ID = id, Origin = "", Heading = "", Language = language)
         }
 
         return(doc)
     }
 })
 
-readReut21578XML <- FunctionGenerator(function(...) {
+readXML <- FunctionGenerator(function(spec, doc, ...) {
+    spec <- spec
+    doc <- doc
     function(elem, load, language, id) {
         require("XML")
 
-        corpus <- paste(elem$content, "\n", collapse = "")
-        tree <- XML::xmlTreeParse(corpus, asText = TRUE)
-        node <- XML::xmlRoot(tree)
+        tree <- XML::xmlInternalTreeParse(elem$content, asText = TRUE)
+        for (n in names(spec))
+            meta(doc, n) <- .xml_content(tree, spec[[n]])
+        free(tree)
 
-        # Mask as list to bypass S4 checks
-        class(tree) <- "list"
-
-        author <- .xml_value_if_not_null(node[["TEXT"]][["AUTHOR"]], "")
-        datetimestamp <- strptime(XML::xmlValue(node[["DATE"]]),
-                                  format = "%d-%B-%Y %H:%M:%S",
-                                  tz = "GMT")
-        id <- XML::xmlAttrs(node)[["NEWID"]]
-        heading <- .xml_value_if_not_null(node[["TEXT"]][["TITLE"]], "")
-        topics <- unlist(XML::xmlApply(node[["TOPICS"]], XML::xmlValue), use.names = FALSE)
-
-        doc <- if (load) {
-            new("Reuters21578Document", .Data = tree, URI = elem$uri, Cached = TRUE, Author = author,
-                DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
-                Heading = heading, Language = language, LocalMetaData = list(Topics = topics))
-        } else {
-            new("Reuters21578Document", URI = elem$uri, Cached = FALSE, Author = author,
-                DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters-21578 XML",
-                Heading = heading, Language = language, LocalMetaData = list(Topics = topics))
+        if (load) {
+            tree <- XML::xmlTreeParse(elem$content, asText = TRUE)
+            # Mask as list to bypass S4 checks
+            class(tree) <- "list"
+            doc@.Data <- tree
+            doc@Cached <- TRUE
         }
+        else
+            doc@Cached <- FALSE
 
-        return(doc)
+        doc@URI <- elem$uri
+        doc@Language <- language
+
+        doc
     }
 })
 
-readRCV1 <- FunctionGenerator(function(...) {
-    function(elem, load, language, id) {
-        require("XML")
+readReut21578XML <- readXML(spec = list(Author = list("node", "/REUTERS/TEXT/AUTHOR"),
+                            DateTimeStamp = list("function", function(node)
+                                strptime(sapply(XML::getNodeSet(node, "/REUTERS/DATE"), XML::xmlValue),
+                                         format = "%d-%B-%Y %H:%M:%S",
+                                         tz = "GMT")),
+                            Description = list("unevaluated", ""),
+                            Heading = list("node", "/REUTERS/TEXT/TITLE"),
+                            ID = list("attribute", "/REUTERS/@NEWID"),
+                            Origin = list("unevaluated", "Reuters-21578 XML"),
+                            Topics = list("function", function(node)
+                                sapply(XML::getNodeSet(node, "/REUTERS/TOPICS/D"), XML::xmlValue))),
+                            doc = new("Reuters21578Document"))
 
-        corpus <- paste(elem$content, "\n", collapse = "")
-        tree <- XML::xmlTreeParse(corpus, asText = TRUE)
-        node <- XML::xmlRoot(tree)
-
-        # Mask as list to bypass S4 checks
-        class(tree) <- "list"
-
-        datetimestamp <- as.POSIXlt(XML::xmlAttrs(node)[["date"]], tz = "GMT")
-        id <- XML::xmlAttrs(node)[["itemid"]]
-        heading <- XML::xmlValue(node[["title"]])
-
-        doc <- if (load) {
-            new("RCV1Document", .Data = tree, URI = elem$uri, Cached = TRUE, Author = "",
-                DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
-                Heading = heading, Language = language)
-        } else {
-            new("RCV1Document", URI = elem$uri, Cached = FALSE, Author = "",
-                DateTimeStamp = datetimestamp, Description = "", ID = id, Origin = "Reuters Corpus Volume 1 XML",
-                Heading = heading, Language = language)
-        }
-
-        # Extract meta data
-        if (!is.null(node[["metadata"]])) {
-            # Get simple Dublin Core meta data
-            dc <- node[["metadata"]][names(node[["metadata"]]) == "dc"]
-            dc <- lapply(dc, XML::xmlAttrs)
-            elements <- sapply(dc, "[[", "element")
-            values <- sapply(dc, "[[", "value")
-            if ("dc.publisher" %in% elements)
-                DublinCore(doc, "Publisher") <- values[elements == "dc.publisher"]
-
-            # Get topic codes
-            codes <- node[["metadata"]][names(node[["metadata"]]) == "codes"]
-            topics <- codes[sapply(codes, XML::xmlAttrs) == "bip:topics:1.0"]
-            if (length(topics) > 0)
-                meta(doc, "Topics") <- unlist(XML::xmlApply(topics[[1]], XML::xmlAttrs), use.names = FALSE)
-        }
-
-        return(doc)
-    }
-})
+readRCV1 <- readXML(spec = list(Author = list("unevaluated", ""),
+                    DateTimeStamp = list("function", function(node)
+                        as.POSIXlt(as.character(XML::getNodeSet(node, "/newsitem/@date")), tz = "GMT")),
+                    Description = list("unevaluated", ""),
+                    Heading = list("node", "/newsitem/title"),
+                    ID = list("attribute", "/newsitem/@itemid"),
+                    Origin = list("unevaluated", "Reuters Corpus Volume 1 XML"),
+                    Publisher = list("attribute", "/newsitem/metadata/dc[@element='dc.publisher']/@value"),
+                    Topics = list("attribute", "/newsitem/metadata/codes[@class='bip:topics:1.0']/code/@code")),
+                    doc = new("Reuters21578Document"))
 
 readNewsgroup <- FunctionGenerator(function(DateFormat = "%d %B %Y %H:%M:%S", ...) {
     format <- DateFormat

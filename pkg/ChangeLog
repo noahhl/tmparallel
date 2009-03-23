@@ -1,3 +1,7 @@
+2009-03-23  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/reader.R (readXML): New reader for arbitrary XML files.
+
 2009-03-22  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/source.R (CSVSource): Defunct (use DataframeSource instead).

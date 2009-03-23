@@ -23,6 +23,7 @@ export(
        "readPDF",
        "readHTML",
        "readDOC",
+       "readXML",
        "ReutersSource",
        "convertReut21578XMLPlain",
        "convertRCV1Plain",
