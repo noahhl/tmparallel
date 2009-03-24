@@ -4,7 +4,6 @@
 
 .xml_content <- function(doc, spec) {
     type <- spec[[1]]
-
     fun <- switch(type,
                   node = XML::xmlValue,
                   attribute = identity)

@@ -28,26 +28,37 @@ readXML <- FunctionGenerator(function(spec, doc, ...) {
         require("XML")
 
         tree <- XML::xmlInternalTreeParse(elem$content, asText = TRUE)
-        for (n in names(spec))
+        for (n in setdiff(names(spec), ".Data"))
             meta(doc, n) <- .xml_content(tree, spec[[n]])
+        if (load) {
+            doc@.Data <- if (".Data" %in% names(spec))
+                .xml_content(tree, spec[[".Data"]])
+            else
+                structure(XML::xmlTreeParse(elem$content, asText = TRUE), class = "list") # Mask as list to bypass S4 checks
+        }
         free(tree)
 
-        if (load) {
-            tree <- XML::xmlTreeParse(elem$content, asText = TRUE)
-            # Mask as list to bypass S4 checks
-            class(tree) <- "list"
-            doc@.Data <- tree
-            doc@Cached <- TRUE
-        }
-        else
-            doc@Cached <- FALSE
-
+        doc@Cached <- load
         doc@URI <- elem$uri
         doc@Language <- language
 
         doc
     }
 })
+
+readGmane <- readXML(spec = list(Author = list("node", "/item/creator"),
+                     .Data = list("node", "/item/description"),
+                     DateTimeStamp = list("function", function(node)
+                         strptime(sapply(XML::getNodeSet(node, "/item/date"), XML::xmlValue),
+                                  format = "%Y-%m-%dT%H:%M:%S",
+                                  tz = "GMT")),
+                     Description = list("unevaluated", ""),
+                     Heading = list("node", "/item/title"),
+                     ID = list("node", "/item/link"),
+                     Origin = list("unevaluated", "Gmane Mailing List Archive"),
+                     Newsgroup = list("function", function(node)
+                         sapply(XML::getNodeSet(node, "/item/link"), XML::xmlValue))),
+                     doc = new("NewsgroupDocument"))
 
 readReut21578XML <- readXML(spec = list(Author = list("node", "/REUTERS/TEXT/AUTHOR"),
                             DateTimeStamp = list("function", function(node)
@@ -93,42 +104,6 @@ readNewsgroup <- FunctionGenerator(function(DateFormat = "%d %B %Y %H:%M:%S", ..
                     break
             }
             content <- mail[(index + 1):length(mail)]
-
-            new("NewsgroupDocument", .Data = content, URI = elem$uri, Cached = TRUE,
-                Author = author, DateTimeStamp = datetimestamp,
-                Description = "", ID = id, Origin = origin,
-                Heading = heading, Language = language, Newsgroup = newsgroup)
-        } else {
-            new("NewsgroupDocument", URI = elem$uri, Cached = FALSE, Author = author, DateTimeStamp = datetimestamp,
-                Description = "", ID = id, Origin = origin, Heading = heading, Language = language, Newsgroup = newsgroup)
-        }
-
-        return(doc)
-    }
-})
-
-readGmane <- FunctionGenerator(function(...) {
-    function(elem, load, language, id) {
-        require("XML")
-
-        corpus <- paste(elem$content, "\n", collapse = "")
-        # Remove namespaces
-        corpus <- gsub("dc:date", "date", corpus)
-        corpus <- gsub("dc:creator", "creator", corpus)
-        tree <- XML::xmlTreeParse(corpus, asText = TRUE)
-        node <- XML::xmlRoot(tree)
-
-        author <- XML::xmlValue(node[["creator"]])
-        datetimestamp <- strptime(XML::xmlValue(node[["date"]]),
-                                  format = "%Y-%m-%dT%H:%M:%S",
-                                  tz = "GMT")
-        heading <- XML::xmlValue(node[["title"]])
-        id <- XML::xmlValue(node[["link"]])
-        newsgroup <- gsub("[0-9]+", "", XML::xmlValue(node[["link"]]))
-        origin <- "Gmane Mailing List Archive"
-
-        doc <- if (load) {
-            content <- XML::xmlValue(node[["description"]])
 
             new("NewsgroupDocument", .Data = content, URI = elem$uri, Cached = TRUE,
                 Author = author, DateTimeStamp = datetimestamp,

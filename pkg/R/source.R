@@ -90,7 +90,10 @@ setMethod("URISource", signature(object = "ANY"),
 
 GmaneSource <- function(object, encoding = "UTF-8")
     XMLSource(object,
-              function(tree) XML::xmlRoot(tree)$children[names(XML::xmlRoot(tree)$children) == "item"],
+              function(tree) {
+                  root <- XML::xmlRoot(tree)
+                  root$children[names(root$children) == "item"]
+              },
               readGmane, encoding)
 
 ReutersSource <- function(object, encoding = "UTF-8")
