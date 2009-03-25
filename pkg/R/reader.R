@@ -56,8 +56,7 @@ readGmane <- readXML(spec = list(Author = list("node", "/item/creator"),
                      Heading = list("node", "/item/title"),
                      ID = list("node", "/item/link"),
                      Origin = list("unevaluated", "Gmane Mailing List Archive"),
-                     Newsgroup = list("function", function(node)
-                         sapply(XML::getNodeSet(node, "/item/link"), XML::xmlValue))),
+                     Newsgroup = list("node", "/item/link")),
                      doc = new("NewsgroupDocument"))
 
 readReut21578XML <- readXML(spec = list(Author = list("node", "/REUTERS/TEXT/AUTHOR"),
@@ -69,8 +68,7 @@ readReut21578XML <- readXML(spec = list(Author = list("node", "/REUTERS/TEXT/AUT
                             Heading = list("node", "/REUTERS/TEXT/TITLE"),
                             ID = list("attribute", "/REUTERS/@NEWID"),
                             Origin = list("unevaluated", "Reuters-21578 XML"),
-                            Topics = list("function", function(node)
-                                sapply(XML::getNodeSet(node, "/REUTERS/TOPICS/D"), XML::xmlValue))),
+                            Topics = list("node", "/REUTERS/TOPICS/D")),
                             doc = new("Reuters21578Document"))
 
 readRCV1 <- readXML(spec = list(Author = list("unevaluated", ""),
@@ -208,23 +206,18 @@ readHTML <- FunctionGenerator(function(...) {
     }
 })
 
-readCustom <- FunctionGenerator(function(mappings = "", ...) {
+readCustom <- FunctionGenerator(function(mappings, ...) {
     mappings <- mappings
     function(elem, load, language, id) {
-        if (!load)
-            warning("load on demand not (yet) implemented")
-
-        doc <- new("PlainTextDocument", URI = elem$uri, Cached = TRUE,
+        doc <- new("PlainTextDocument", URI = elem$uri, Cached = load,
                    Author = "", DateTimeStamp = as.POSIXlt(Sys.time(), tz = "GMT"),
                    Description = "", ID = id, Origin = "", Heading = "", Language = language)
 
-        for (m in mappings) {
-            if (m[2] %in% slotNames(doc)) {
-                slot(doc, m[2]) <- elem$content[, m[1]]
-            }
-            else
-                doc@LocalMetaData <- c(doc@LocalMetaData, structure(list(m[1]), names = m[2]))
-        }
+        for (n in setdiff(names(mappings), ".Data"))
+            meta(doc, n) <- elem$content[, mappings[[n]]]
+
+        if (load && (".Data" %in% names(mappings)))
+            doc@.Data <- elem$content[, mappings[[".Data"]]]
 
         doc
     }
