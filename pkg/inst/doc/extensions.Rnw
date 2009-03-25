@@ -1,0 +1,67 @@
+\documentclass[a4paper]{article}
+
+\usepackage[margin=2cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[round]{natbib}
+\usepackage{url}
+\DeclareUnicodeCharacter{201C}{"}
+\DeclareUnicodeCharacter{201D}{"}
+
+\newcommand{\strong}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+\newcommand{\pkg}[1]{{\normalfont\fontseries{b}\selectfont #1}}
+\newcommand{\proglang}[1]{\textsf{#1}}
+\newcommand{\acronym}[1]{\textsc{#1}}
+
+%% \VignetteIndexEntry{Extensions}
+
+\begin{document}
+<<Init,echo=FALSE,results=hide>>=
+library("tm")
+library("XML")
+@
+\title{Extensions\\How to Handle Custom File Formats}
+\author{Ingo Feinerer}
+\maketitle
+
+\section*{Introduction}
+A general explanation of \pkg{tm}'s extension mechanism is described
+by~\citet[Sec.~3.3]{Feinerer_etal_2008}.
+
+\section*{Custom General Purpose Readers}
+<<keep.source=TRUE>>=
+df <- data.frame(contents = c("content 1", "content 2", "content 3"),
+                 title    = c("title 1"  , "title 2"  , "title 3"  ),
+                 authors  = c("author 1" , "author 2" , "author 3" ),
+                 stringsAsFactors = FALSE)
+@
+
+<<myReader>>=
+m <- list(.Data = "contents", Heading = "title", Author = "authors")
+myReader <- readCustom(mappings = m)
+@
+
+<<>>=
+(corpus <- Corpus(DataframeSource(df), readerControl = list(reader = myReader)))
+@
+
+<<>>=
+corpus[[1]]
+meta(corpus[[1]])
+@
+
+\section*{Custom XML Sources}
+<<mySource,keep.source=TRUE>>=
+mySource <- function(object, encoding = "UTF-8")
+    XMLSource(object, function(tree) xmlRoot(tree)$children, myXMLReader, encoding)
+@
+
+\section*{Custom XML Readers}
+<<myXMLReader,keep.source=TRUE>>=
+myXMLReader <- readXML(spec = list(),
+                       doc = new("PlainTextDocument"))
+@
+
+\bibliographystyle{abbrvnat}
+\bibliography{references}
+
+\end{document}

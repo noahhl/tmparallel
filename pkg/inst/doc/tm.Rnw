@@ -1,6 +1,8 @@
 \documentclass[a4paper]{article}
 
 \usepackage[utf8]{inputenc}
+\usepackage[margin=2cm]{geometry}
+\usepackage[round]{natbib}
 \usepackage{url}
 \DeclareUnicodeCharacter{201C}{"}
 \DeclareUnicodeCharacter{201D}{"}
@@ -16,7 +18,6 @@
 
 \begin{document}
 <<Init,echo=FALSE,results=hide>>=
-options(width = 60)
 library("tm")
 data("crude")
 @
@@ -28,16 +29,14 @@ data("crude")
 \section*{Introduction}
 This vignette gives a short introduction to text mining in
 \proglang{R} utilizing the text mining framework provided by the
-\pkg{tm} package. We present methods for data import, corpus
-handling, preprocessing, meta data management, and creation of
-term-document matrices. Our focus is on the main
-aspects of getting started with text mining in \proglang{R}---an in-depth
-description of the text mining infrastructure offered by \pkg{tm} was
-published in the \emph{Journal of Statistical Software} and is available at
-\url{http://www.jstatsoft.org/v25/i05}. An introductory article
-on text mining in \proglang{R} was published in \emph{R News},
-8(2):19--22, October 2008, and can be obtained at
-\url{http://CRAN.R-project.org/doc/Rnews/}.
+\pkg{tm} package. We present methods for data import, corpus handling,
+preprocessing, meta data management, and creation of term-document
+matrices. Our focus is on the main aspects of getting started with
+text mining in \proglang{R}---an in-depth description of the text
+mining infrastructure offered by \pkg{tm} was published in the
+\emph{Journal of Statistical Software}~\citep{Feinerer_etal_2008}. An
+introductory article on text mining in \proglang{R} was published in
+\emph{R News}~\citep{Rnews:Feinerer:2008}.
 
 \section*{Data Import}
 The main structure for managing documents in \pkg{tm} is a so-called
@@ -318,4 +317,8 @@ terms for distinct text mining contexts, e.g.,
 tdmD <- TermDocMatrix(reuters, list(dictionary = d))
 Data(tdmD)
 @
+
+\bibliographystyle{abbrvnat}
+\bibliography{references}
+
 \end{document}
