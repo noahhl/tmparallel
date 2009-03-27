@@ -32,6 +32,7 @@ by~\citet[Sec.~3.3]{Feinerer_etal_2008}.
 df <- data.frame(contents = c("content 1", "content 2", "content 3"),
                  title    = c("title 1"  , "title 2"  , "title 3"  ),
                  authors  = c("author 1" , "author 2" , "author 3" ),
+                 topics   = c("topic 1"  , "topic 2"  , "topic 3"  ),
                  stringsAsFactors = FALSE)
 @
 

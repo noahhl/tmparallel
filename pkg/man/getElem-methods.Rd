@@ -8,6 +8,7 @@
 \alias{getElem,ReutersSource-method}
 \alias{getElem,GmaneSource-method}
 \alias{getElem,VectorSource-method}
+\alias{getElem,XMLSource-method}
 \title{Methods for Function getElem in Package `tm'}
 \description{
   Methods for function \code{getElem} in package \pkg{tm}.
@@ -20,6 +21,7 @@
     \item{object = "GmaneSource"}{Returns the element at current position from the source.}
     \item{object = "URISource"}{Returns the element at current position from the source.}
     \item{object = "VectorSource"}{Returns the element at current position from the source.}
+    \item{object = "XMLSource"}{Returns the element at current position from the source.}
   }
 }
 \keyword{methods}

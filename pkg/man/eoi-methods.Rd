@@ -8,6 +8,7 @@
 \alias{eoi,ReutersSource-method}
 \alias{eoi,GmaneSource-method}
 \alias{eoi,VectorSource-method}
+\alias{eoi,XMLSource-method}
 \title{Methods for Function eoi in Package `tm'}
 \description{
   Methods for function \code{eoi} in package \pkg{tm}..
@@ -25,6 +26,8 @@
     \item{object = "GmaneSource"}{returns \code{TRUE} if the last item has
       been reached.}
     \item{object = "VectorSource"}{returns \code{TRUE} if the last item has
+      been reached.}
+    \item{object = "XMLSource"}{returns \code{TRUE} if the last item has
       been reached.}
   }
 }

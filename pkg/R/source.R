@@ -7,11 +7,11 @@ getSources <- function()
 ## Class definitions
 
 setClass("Source",
-         representation(LoDSupport = "logical",
-                        Position = "numeric",
-                        DefaultReader = "function",
+         representation(DefaultReader = "function",
                         Encoding = "character",
                         Length = "numeric",
+                        LoDSupport = "logical",
+                        Position = "numeric",
                         Vectorized = "logical",
                         "VIRTUAL"),
          validity = function(object) {

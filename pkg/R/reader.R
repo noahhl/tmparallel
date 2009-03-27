@@ -206,6 +206,7 @@ readHTML <- FunctionGenerator(function(...) {
     }
 })
 
+# TODO: Abstract access to source elements (i.e., content[i] vs. content[, i])
 readCustom <- FunctionGenerator(function(mappings, ...) {
     mappings <- mappings
     function(elem, load, language, id) {
