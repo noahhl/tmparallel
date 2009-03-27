@@ -237,3 +237,7 @@ setReplaceMethod("Weighting", "TermDocMatrix", function(x, value) {
   x@Weighting <- value
   x
 })
+
+setClass("TermDocumentMatrix",
+         representation(Transpose = "logical", Weighting = "character"),
+         contains = "dgCMatrix")

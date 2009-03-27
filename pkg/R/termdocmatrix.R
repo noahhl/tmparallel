@@ -34,6 +34,46 @@ setMethod("TermDocMatrix",
               new("TermDocMatrix", Data = tdm, Weighting = c(weight@Name, weight@Acronym))
           })
 
+setGeneric("TermDocumentMatrix", function(object, control = list()) standardGeneric("TermDocumentMatrix"))
+setMethod("TermDocumentMatrix",
+          signature(object = "Corpus"),
+          function(object, control = list()) {
+
+              weight <- control$weighting
+              if (is.null(weight))
+                  weight <- weightTf
+
+              tflist <- if (tm:::clusterAvailable())
+                  snow::parLapply(snow::getMPIcluster(), object, termFreq, control)
+              else
+                  lapply(object, termFreq, control)
+
+              tflist <- lapply(tflist, function(x) x[x > 0])
+              allTerms <- sort(unique(unlist(lapply(tflist, names), use.names = FALSE)))
+
+              i <- lapply(tflist, function(x) match(names(x), allTerms))
+              p <- c(0L, cumsum(sapply(i, length)))
+              i <- unlist(i) - 1L
+
+              x <- as.numeric(unlist(tflist, use.names = FALSE))
+              rm(tflist)
+
+              tdm <- new("TermDocumentMatrix", p = p, i = i, x = x,
+                         Dim = c(length(allTerms), length(p) - 1L),
+                         Transpose = FALSE,
+                         Weighting = c(weight@Name, weight@Acronym))
+              #tdm <- weight(t(tdm))
+              tdm@Dimnames <- list(Terms = allTerms, Docs = sapply(object, ID))
+
+              tdm
+          })
+
+DocumentTermMatrix <- function(object, control = list()) {
+    m <- TermDocumentMatrix(object, control)
+    m@Transpose <- TRUE
+    m
+}
+
 termFreq <- function(doc, control = list()) {
     txt <- Content(doc)
 
@@ -96,6 +136,15 @@ termFreq <- function(doc, control = list()) {
     # Return named integer
     structure(as.integer(tab), names = names(tab))
 }
+
+setMethod("[",
+          signature(x = "TermDocumentMatrix", i = "ANY", j = "ANY", drop = "ANY"),
+          function(x, i, j, ..., drop) {
+              dgCMatrix <- as(x, "dgCMatrix")[i, j, ..., drop]
+              for (s in slotNames(dgCMatrix))
+                  x@s <- dgCMatrix@s
+              x
+          })
 
 setMethod("[",
           signature(x = "TermDocMatrix", i = "ANY", j = "ANY", drop = "ANY"),

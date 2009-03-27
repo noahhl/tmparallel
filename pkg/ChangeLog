@@ -1,3 +1,8 @@
+2009-03-27  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/termdocmatrix.R: Start to work on new TermDocumentMatrix and
+	DocumentTermMatrix representations.
+
 2009-03-23  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/reader.R (readXML): New reader for arbitrary XML files.
