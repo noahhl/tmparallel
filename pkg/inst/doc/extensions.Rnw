@@ -71,7 +71,7 @@ additional meta data slots.
 
 So for our data frame we define a possible mappings as follows:
 <<Mapping>>=
-m <- list(.Data = "contents", Heading = "title", Author = "authors")
+m <- list(.Data = "contents", Heading = "title", Author = "authors", Topic = "topics")
 @
 Now we can construct a customized reader by passing over the
 previously defined mapping:
