@@ -12,8 +12,17 @@
 	This document contains answers to some of the most frequently
 	asked questions about tm.
       </p>
+      <hr/>
+      <ol>
+	<li><a href="#Citation">How should I cite tm?</a></li>
+	<li><a href="#PDF">Where can I find the tools to read in a PDF file?</a></li>
+	<li><a href="#Unsorted">Error: Row indices are not sorted within columns</a></li>
+	<li><a href="#Bigrams">Can I use bigrams instead of single tokens in a term-document matrix?</a></li>
+      </ol>
+      <hr/>
       <ol>
 	<li>
+	  <a name="Citation"></a>
 	  <cite>How should I cite tm?</cite>
 	  <p>Please have a look at the output
 	  of <kbd>citation("tm")</kbd> in R. A BibTeX representation
@@ -27,6 +36,7 @@
 	  article</a>.</p>
 	</li>
 	<li>
+	  <a name="PDF"></a>
 	  <cite>I want to read in a PDF file using
 	    the <code>readPDF</code> reader. However, the manual says I
 	    need both the tools <kbd>pdftotext</kbd>
@@ -48,6 +58,7 @@
 	  </p>
 	</li>
 	<li>
+	  <a name="Unsorted"></a>
 	  <cite>When I create a term-document matrix
 	  (<kbd>TermDocMatrix</kbd>) the message <kbd>invalid class
 	  "dgCMatrix" object: row indices are not sorted within
@@ -64,9 +75,10 @@
 	    order to fix this issue.
 	  </p>
 	</li>
-	<li><cite>Can I
-	use <a href="http://en.wikipedia.org/wiki/Bigram">bigram</a>s instead of single tokens in
-	a term-document matrix?</cite>
+	<li>
+	  <a name="Bigrams"></a>
+	  <cite>Can I use <a href="http://en.wikipedia.org/wiki/Bigram">bigram</a>s
+	    instead of single tokens in a term-document matrix?</cite>
 	  <p>
 	    Yes. <a href="http://cran.r-project.org/package=RWeka">RWeka</a>
 	    provides a tokenizer for
