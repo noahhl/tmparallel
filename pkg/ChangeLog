@@ -1,3 +1,7 @@
+2009-03-28  Ingo Feinerer  <feinerer@logic.at>
+
+	* inst/doc/extensions.Rnw: Finished vignette.
+
 2009-03-27  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/termdocmatrix.R: Start to work on new TermDocumentMatrix and
