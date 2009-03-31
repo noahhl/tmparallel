@@ -138,12 +138,19 @@ termFreq <- function(doc, control = list()) {
 }
 
 setMethod("[",
-          signature(x = "TermDocumentMatrix", i = "ANY", j = "ANY", drop = "ANY"),
+          signature(x = "TermDocumentMatrix", drop = "missing"),
           function(x, i, j, ..., drop) {
-              dgCMatrix <- as(x, "dgCMatrix")[i, j, ..., drop]
+              dgCMatrix <- as(x, "dgCMatrix")[i, j, ..., drop = FALSE]
               for (s in slotNames(dgCMatrix))
-                  x@s <- dgCMatrix@s
+                  slot(x, s) <- slot(dgCMatrix, s)
               x
+          })
+
+setMethod("dim",
+          signature(x = "TermDocumentMatrix"),
+          function(x) {
+              dim <- dim(as(x, "dgCMatrix"))
+              if (x@Transpose) rev(dim) else dim
           })
 
 setMethod("[",
