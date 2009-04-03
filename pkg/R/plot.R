@@ -1,14 +1,15 @@
-plot.TermDocMatrix <- function(x,
-                               terms = sample(colnames(x), 20),
-                               corThreshold = 0.7,
-                               weighting = FALSE,
-                               attrs = list(graph = list(rankdir = "BT"),
-                                            node = list(shape = "rectangle",
-                                                        fixedsize = FALSE)),
-                               ...) {
+plot.TermDocumentMatrix <- function(x,
+                                    terms = sample(colnames(x), 20),
+                                    corThreshold = 0.7,
+                                    weighting = FALSE,
+                                    attrs = list(graph = list(rankdir = "BT"),
+                                    node = list(shape = "rectangle",
+                                    fixedsize = FALSE)),
+                                    ...) {
     if (!require("Rgraphviz"))
         stop("could not find (bioconductor.org) Rgraphviz package")
 
+    if (x@Transpose) x <- t(x)
     c <- cor(as.matrix(x[seq_len(nrow(x)), terms]))
     c[c < corThreshold] <- 0
     diag(c) <- 0

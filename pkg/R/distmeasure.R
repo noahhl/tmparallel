@@ -2,15 +2,15 @@
 
 setGeneric("dissimilarity", function(x, y = NULL, method) standardGeneric("dissimilarity"))
 setMethod("dissimilarity",
-          signature(x = "TermDocMatrix", y = "ANY", method = "character"),
+          signature(x = "TermDocumentMatrix", y = "ANY", method = "character"),
           function(x, y = NULL, method) {
               require("proxy")
-              proxy::dist(as(Data(x), "matrix"), y, method)
+              proxy::dist(as(x, "matrix"), y, method)
           })
 setMethod("dissimilarity",
           signature(x = "TextDocument", y = "TextDocument", method = "character"),
           function(x, y = NULL, method) {
-              tdm <- TermDocMatrix(c(x, y))
+              tdm <- DocumentTermMatrix(c(x, y))
               dissim <- dissimilarity(tdm, method = method)
               return(dissim)
           })

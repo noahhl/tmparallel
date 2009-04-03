@@ -6,6 +6,7 @@ export(
        "CSVSource", # defunct
        "DataframeSource",
        "deactivateCluster",
+       "DocumentTermMatrix",
        "stemCompletion",
        "GmaneSource",
        "getFilters",
@@ -31,19 +32,20 @@ export(
        "sFilter",
        "preprocessReut21578XML",
        "stopwords",
+       "TermDocMatrix",
        "termFreq",
        "weightTf",
        "weightTfIdf",
        "weightBin",
        "XMLSource")
 
-S3method("plot", "TermDocMatrix")
+S3method("plot", "TermDocumentMatrix")
 
 exportMethods(
               # Constructors
               "Corpus",
               "TextRepository",
-              "TermDocMatrix",
+              "TermDocumentMatrix",
               "Dictionary",
               "DirSource",
               "VectorSource",
@@ -88,11 +90,8 @@ exportMethods(
               # TextRepository
               "RepoMetaData",
 
-              # TermDocMatrix
-              "Data",
-              "Data<-",
+              # TermDocumentMatrix
               "Weighting",
-              "Weighting<-",
 
               # Sources
               "stepNext",
@@ -157,7 +156,7 @@ exportClasses("TextDocument",
               "Corpus",
               "MetaDataNode",
               "TextRepository",
-              "TermDocMatrix",
+              "TermDocumentMatrix",
               "Dictionary",
               "Source",
               "DataframeSource",

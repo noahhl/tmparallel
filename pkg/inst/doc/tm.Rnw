@@ -259,11 +259,13 @@ crude[[1]] %IN% reuters
 
 \section*{Creating Term-Document Matrices}
 A common approach in text mining is to create a term-document matrix
-from a corpus. In the \pkg{tm} package the class \class{TermDocMatrix}
-handles sparse matrices for text document collections.
+from a corpus. In the \pkg{tm} package the classes
+\class{TermDocumentMatrix} and \class{DocumentTermMatrix} (depending
+on whether you want terms as rows and documents as columns, or vice
+versa) handle sparse matrices for text document collections.
 <<>>=
-tdm <- TermDocMatrix(reuters)
-Data(tdm)[1:5,150:155]
+tdm <- DocumentTermMatrix(reuters)
+summary(tdm[1:5,150:155])
 @
 
 \section*{Operations on Term-Document Matrices}
@@ -307,15 +309,14 @@ implementing such a dictionary concept. It can be created via the
 <<>>=
 (d <- Dictionary(c("dlrs", "crude", "oil")))
 @
-and may be passed over to the \code{TermDocMatrix()} constructor. Then
+and may be passed over to the \code{DocumentTermMatrix()} constructor. Then
 the created matrix is tabulated against the dictionary, i.e., only
 terms from the dictionary appear in the matrix (terms not occurring in
 the document are skipped for performance reasons). This allows to
 restrict the dimension of the matrix a priori and to focus on specific
 terms for distinct text mining contexts, e.g.,
 <<>>=
-tdmD <- TermDocMatrix(reuters, list(dictionary = d))
-Data(tdmD)
+(tdmD <- DocumentTermMatrix(reuters, list(dictionary = d)))
 @
 
 \bibliographystyle{abbrvnat}

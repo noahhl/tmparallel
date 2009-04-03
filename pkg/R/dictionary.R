@@ -10,7 +10,7 @@ setMethod("Dictionary",
               new("Dictionary", .Data = object)
           })
 setMethod("Dictionary",
-          signature(object = "TermDocMatrix"),
+          signature(object = "TermDocumentMatrix"),
           function(object) {
-              new("Dictionary", .Data = colnames(Data(object)))
+              new("Dictionary", .Data = Terms(object))
           })

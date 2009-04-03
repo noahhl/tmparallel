@@ -3,7 +3,8 @@
 	* R/weight.R: Remove weightLogical since it does not return a
 	dgCMatrix.
 
-	* R/termdocmatrix.R: Further work on new TermDocumentMatrix.
+	* R/termdocmatrix.R: Removed TermDocMatrix. Use DocumentTermMatrix
+	or TermDocumentMatrix instead.
 
 2009-03-28  Ingo Feinerer  <feinerer@logic.at>
 

@@ -219,25 +219,9 @@ setGeneric("RepoMetaData", function(object) standardGeneric("RepoMetaData"))
 setMethod("RepoMetaData", "TextRepository", function(object) object@RepoMetaData)
 
 # Term-document matrix
-setClass("TermDocMatrix",
-         representation(Data = "Matrix", Weighting = "character"))
-
-setGeneric("Data", function(object) standardGeneric("Data"))
-setMethod("Data", "TermDocMatrix", function(object) object@Data)
-setGeneric("Data<-", function(x, value) standardGeneric("Data<-"))
-setReplaceMethod("Data", "TermDocMatrix", function(x, value) {
-  x@Data <- value
-  x
-})
-
-setGeneric("Weighting", function(object) standardGeneric("Weighting"))
-setMethod("Weighting", "TermDocMatrix", function(object) object@Weighting)
-setGeneric("Weighting<-", function(x, value) standardGeneric("Weighting<-"))
-setReplaceMethod("Weighting", "TermDocMatrix", function(x, value) {
-  x@Weighting <- value
-  x
-})
-
 setClass("TermDocumentMatrix",
          representation(Transpose = "logical", Weighting = "character"),
          contains = "dgCMatrix")
+
+setGeneric("Weighting", function(object) standardGeneric("Weighting"))
+setMethod("Weighting", "TermDocumentMatrix", function(object) object@Weighting)
