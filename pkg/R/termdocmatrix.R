@@ -62,7 +62,7 @@ setMethod("TermDocumentMatrix",
                          Dim = c(length(allTerms), length(p) - 1L),
                          Transpose = FALSE,
                          Weighting = c(weight@Name, weight@Acronym))
-              #tdm <- weight(t(tdm))
+              tdm <- weight(tdm)
               tdm@Dimnames <- list(Terms = allTerms, Docs = sapply(object, ID))
 
               tdm
@@ -140,7 +140,7 @@ termFreq <- function(doc, control = list()) {
 setMethod("show",
           signature(object = "TermDocumentMatrix"),
           function(object){
-              type <- if (object@Transpose) "DocumentTermMatrix" else "TermDocumentMatrix"
+              type <- if (object@Transpose) "document-term matrix" else "term-document matrix"
               cat(sprintf("A %s\n", type), "\n")
               m <- if(object@Transpose) t(object) else object
               show(as(m, "dgCMatrix"))
@@ -152,6 +152,7 @@ setMethod("summary",
           function(object){
               show(object)
               cat("\nNon-sparse entries :", length(object@x), "\n")
+              cat("Sparse factor      :", 1 - length(object@x)/prod(dim(x)), "\n")
               cat("Maximal term length:", max(nchar(rownames(object), type = "chars")), "\n")
           })
 

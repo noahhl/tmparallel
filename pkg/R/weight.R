@@ -14,8 +14,16 @@ setMethod("WeightFunction",
               new("WeightFunction", .Data = object, Name = name, Acronym = acronym)
           })
 
-# Actual TermDocMatrix weighting functions
+# Actual TermDocumentMatrix weighting functions
 weightTf <- WeightFunction(identity, "term frequency", "tf")
-weightTfIdf <- WeightFunction(function(m) t(t(m) * log2(nrow(m) / colSums(as(m > 0, "dgCMatrix")))), "term frequency - inverse document frequency", "tf-idf")
-weightBin <- WeightFunction(function(m) as(m > 0, "dgCMatrix"), "binary", "bin")
-weightLogical <- WeightFunction(function(m) m > 0, "logical", "logic")
+
+weightTfIdf <-
+    WeightFunction(function(m) {
+        m * log2(ncol(m) / rowSums(weightBin(m)))
+    }, "term frequency - inverse document frequency", "tf-idf")
+
+weightBin <-
+    WeightFunction(function(m) {
+        m@x <- rep(1, length(m@x))
+        m
+    }, "binary", "bin")

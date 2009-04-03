@@ -34,6 +34,8 @@ DEPRECATED & DEFUNCT
 
     o   CSVSource is defunct (use DataframeSource instead).
 
+    o   weightLogical is defunct.
+
                 CHANGES IN tm VERSION 0.3-3
 
 NEW FEATURES
