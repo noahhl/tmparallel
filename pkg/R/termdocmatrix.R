@@ -137,20 +137,91 @@ termFreq <- function(doc, control = list()) {
     structure(as.integer(tab), names = names(tab))
 }
 
-setMethod("[",
-          signature(x = "TermDocumentMatrix", drop = "missing"),
-          function(x, i, j, ..., drop) {
-              dgCMatrix <- as(x, "dgCMatrix")[i, j, ..., drop = FALSE]
-              for (s in slotNames(dgCMatrix))
-                  slot(x, s) <- slot(dgCMatrix, s)
-              x
+setMethod("show",
+          signature(object = "TermDocumentMatrix"),
+          function(object){
+              type <- if (object@Transpose) "DocumentTermMatrix" else "TermDocumentMatrix"
+              cat(sprintf("A %s\n", type), "\n")
+              m <- if(object@Transpose) t(object) else object
+              show(as(m, "dgCMatrix"))
+              cat(sprintf("\nWeighting: %s (%s)\n", object@Weighting[1], object@Weighting[2]))
+    })
+
+setMethod("summary",
+          signature(object = "TermDocumentMatrix"),
+          function(object){
+              show(object)
+              cat("\nNon-sparse entries :", length(object@x), "\n")
+              cat("Maximal term length:", max(nchar(rownames(object), type = "chars")), "\n")
           })
+
+subsetTermDocumentMatrix <- function(x, i, j, ..., drop) {
+    # Swap indices for DocumentTermMatrix
+    if (x@Transpose) {
+        k <- i
+        i <- j
+        j <- k
+    }
+    dgCMatrix <- as(x, "dgCMatrix")[i, j, ..., drop = FALSE]
+    for (s in slotNames(dgCMatrix))
+        slot(x, s) <- slot(dgCMatrix, s)
+    x
+}
+
+setMethod("[", signature(x = "TermDocumentMatrix", i = "index", j = "missing", drop = "missing"),
+          function(x, i, j, ..., drop) subsetTermDocumentMatrix(x, i, j, ..., drop))
+setMethod("[", signature(x = "TermDocumentMatrix", i = "missing", j = "index", drop = "missing"),
+          function(x, i, j, ..., drop) subsetTermDocumentMatrix(x, i, j, ..., drop))
+setMethod("[", signature(x = "TermDocumentMatrix", i = "index", j = "index", drop = "missing"),
+          function(x, i, j, ..., drop) subsetTermDocumentMatrix(x, i, j, ..., drop))
 
 setMethod("dim",
           signature(x = "TermDocumentMatrix"),
           function(x) {
               dim <- dim(as(x, "dgCMatrix"))
               if (x@Transpose) rev(dim) else dim
+          })
+
+setMethod("ncol",
+          signature(x = "TermDocumentMatrix"),
+          function(x) {
+              m <- as(x, "dgCMatrix")
+              if (x@Transpose) nrow(m) else ncol(m)
+          })
+
+setMethod("nrow",
+          signature(x = "TermDocumentMatrix"),
+          function(x) {
+              m <- as(x, "dgCMatrix")
+              if (x@Transpose) ncol(m) else nrow(m)
+          })
+
+setMethod("dimnames",
+          signature(x = "TermDocumentMatrix"),
+          function(x) {
+              dimNames <- dimnames(as(x, "dgCMatrix"))
+              if (x@Transpose) rev(dimNames) else dimNames
+          })
+
+setMethod("colnames",
+          signature(x = "TermDocumentMatrix"),
+          function(x, do.NULL = TRUE, prefix = "col") {
+              m <- as(x, "dgCMatrix")
+              if (x@Transpose) rownames(m) else colnames(m)
+          })
+
+setMethod("rownames",
+          signature(x = "TermDocumentMatrix"),
+          function(x, do.NULL = TRUE, prefix = "row") {
+              m <- as(x, "dgCMatrix")
+              if (x@Transpose) colnames(m) else rownames(m)
+          })
+
+setMethod("as.matrix",
+          signature(x = "TermDocumentMatrix"),
+          function(x) {
+              m <- as(x, "dgCMatrix")
+              m <- if(object@Transpose) t(as.matrix(m)) else as.matrix(m)
           })
 
 setMethod("[",
