@@ -2,7 +2,7 @@
 \docType{methods}
 \alias{dissimilarity}
 \alias{dissimilarity-methods}
-\alias{dissimilarity,TermDocMatrix,ANY,character-method}
+\alias{dissimilarity,TermDocumentMatrix,ANY,character-method}
 \alias{dissimilarity,TextDocument,TextDocument,character-method}
 \title{Methods for Function dissimilarity in Package `tm'}
 \description{
@@ -10,7 +10,7 @@ Methods for function \code{dissimilarity} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{
-    \item{x = "TermDocMatrix", y = "ANY", method = "character"}{Computes the
+    \item{x = "TermDocumentMatrix", y = "ANY", method = "character"}{Computes the
       dissimilarity between the documents in \code{x}
       with the distance measure \code{method}. Any method accepted by
       \code{dist} from package \pkg{proxy} can be passed over.
@@ -27,7 +27,7 @@ Methods for function \code{dissimilarity} in package \pkg{tm}.
 }
 \examples{
 data("crude")
-tdm <- TermDocMatrix(crude)
+tdm <- TermDocumentMatrix(crude)
 dissimilarity(tdm, method = "cosine")
 dissimilarity(crude[[1]], crude[[2]], method = "eJaccard")
 }

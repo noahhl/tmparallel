@@ -5,7 +5,9 @@
 \alias{[[-methods}
 \alias{[[<--methods}
 \alias{[,Corpus,ANY,ANY,ANY-method}
-\alias{[,TermDocMatrix,ANY,ANY,ANY-method}
+\alias{[,TermDocumentMatrix,index,index,missing-method}
+\alias{[,TermDocumentMatrix,index,missing,missing-method}
+\alias{[,TermDocumentMatrix,missing,index,missing-method}
 \alias{[<-,Corpus,ANY,ANY,ANY-method}
 \alias{[[,Corpus,ANY,ANY-method}
 \alias{[[<-,Corpus,ANY,ANY-method}
@@ -19,7 +21,7 @@
 \arguments{
   \item{x = "Corpus"}{The text document collection to be subsetted
     or modified.}
-  \item{x = "TermDocMatrix"}{The term-document matrix to be subsetted.}
+  \item{x = "TermDocumentMatrix"}{The term-document matrix to be subsetted.}
 }
 \examples{
 data("crude")

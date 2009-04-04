@@ -195,14 +195,14 @@ setMethod("rownames",
               if (x@Transpose) colnames(m) else rownames(m)
           })
 
-Docs <- function(x) if (x@Transpose) rowNames(x) else colNames(m)
-Terms <- function(x) if (x@Transpose) colNames(x) else rowNames(m)
+Docs <- function(x) if (x@Transpose) rownames(x) else colnames(x)
+Terms <- function(x) if (x@Transpose) colnames(x) else rownames(x)
 
 setMethod("as.matrix",
           signature(x = "TermDocumentMatrix"),
           function(x) {
               m <- as(x, "dgCMatrix")
-              m <- if(object@Transpose) t(as.matrix(m)) else as.matrix(m)
+              m <- if(x@Transpose) t(as.matrix(m)) else as.matrix(m)
           })
 
 setGeneric("findFreqTerms", function(object, lowfreq = 0, highfreq = Inf) standardGeneric("findFreqTerms"))
@@ -218,8 +218,8 @@ setGeneric("findAssocs", function(object, term, corlimit) standardGeneric("findA
 setMethod("findAssocs",
           signature(object = "TermDocumentMatrix", term = "character"),
           function(object, term, corlimit) {
-              if (object@Transpose) object <- t(object)
-              object <- as(object, "matrix")
+              if (!object@Transpose) object <- t(object)
+              object <- as.matrix(object)
               suppressWarnings(object.cor <- cor(object))
               sort(round(object.cor[term, which(object.cor[term,] > corlimit)], 2), decreasing = TRUE)
           })
