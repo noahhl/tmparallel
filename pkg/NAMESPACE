@@ -32,8 +32,9 @@ export(
        "sFilter",
        "preprocessReut21578XML",
        "stopwords",
-       "TermDocMatrix",
+       "TermDocMatrix", # defunct
        "termFreq",
+       "tmReduce",
        "weightTf",
        "weightTfIdf",
        "weightBin",

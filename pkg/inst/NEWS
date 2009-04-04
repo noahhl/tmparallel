@@ -8,6 +8,10 @@ SIGNIFICANT USER-VISIBLE CHANGES
         failed in misconfigured environments). Use activateCluster()
         and deactivateCluster() instead.
 
+    o   DocumentTermMatrix (the improved reimplementation of defunct
+        TermDocMatrix) now inherits from the dgCMatrix (of package
+        Matrix) class instead of having an explicit Data slot.
+
 NEW FEATURES
 
     o   The DirSource() constructor now accepts the two new (optional)
@@ -30,11 +34,23 @@ NEW FEATURES
 
     o   New XMLSource class for arbitrary XML files.
 
+    o   The new readCustom() reader function allows to create a
+        tailor-made reader configured via mappings.
+
+    o   The new readXML() reader function allows to read in arbitrary
+        XML files which are described with a specification.
+
+    o   The new tmReduce() transformation allows to combine multiple
+        maps into one transformation.
+
 DEPRECATED & DEFUNCT
 
     o   CSVSource is defunct (use DataframeSource instead).
 
     o   weightLogical is defunct.
+
+    o   TermDocMatrix is defunct (use DocumentTermMatrix or
+        TermDocumentMatrix instead).
 
                 CHANGES IN tm VERSION 0.3-3
 

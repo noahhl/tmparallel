@@ -1,6 +1,9 @@
 # Author: Ingo Feinerer
 # Transformations
 
+tmReduce <- function(x, tmFuns, ...)
+    Reduce(function(f, ...) f(...), tmFuns, x, right = TRUE)
+
 getTransformations <- function() { c("asPlain", "loadDoc",
     "removeCitation", "removeMultipart", "removeNumbers",
     "removePunctuation", "removeSignature", "removeWords",

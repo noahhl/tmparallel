@@ -1,7 +1,7 @@
 # Author: Ingo Feinerer
 
 TermDocMatrix <- function(object, control = list()) {
-    .Deprecated("DocumentTermMatrix", package = "tm")
+    .Defunct("DocumentTermMatrix", package = "tm")
 }
 
 setGeneric("TermDocumentMatrix", function(object, control = list()) standardGeneric("TermDocumentMatrix"))
