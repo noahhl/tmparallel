@@ -2,7 +2,7 @@
 \docType{methods}
 \alias{Dictionary}
 \alias{Dictionary,character-method}
-\alias{Dictionary,TermDocMatrix-method}
+\alias{Dictionary,TermDocumentMatrix-method}
 \title{Dictionary}
 \description{
   Constructs a dictionary from a character vector or a term-document matrix.
@@ -20,7 +20,7 @@ Dictionary(object)
 \examples{
 Dictionary(c("some", "tokens"))
 data(crude)
-Dictionary(TermDocMatrix(crude))
+Dictionary(TermDocumentMatrix(crude))
 }
 \author{Ingo Feinerer}
 \keyword{methods}

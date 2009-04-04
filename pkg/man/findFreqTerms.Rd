@@ -2,14 +2,14 @@
 \docType{methods}
 \alias{findFreqTerms}
 \alias{findFreqTerms-methods}
-\alias{findFreqTerms,TermDocMatrix-method}
+\alias{findFreqTerms,TermDocumentMatrix-method}
 \title{Methods for Function findFreqTerms in Package `tm'}
 \description{
 Methods for function \code{findFreqTerms} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{
-    \item{object = "TermDocMatrix", lowfreq = 0, highfreq = Inf}{Return
+    \item{object = "TermDocumentMatrix", lowfreq = 0, highfreq = Inf}{Return
       those terms from \code{object} which occur more or equal often
       than \code{lowfreq} times and less or equal often than
       \code{highfreq} times. This method works for all numeric
@@ -20,7 +20,7 @@ Methods for function \code{findFreqTerms} in package \pkg{tm}.
 }
 \examples{
 data("crude")
-tdm <- TermDocMatrix(crude)
+tdm <- TermDocumentMatrix(crude)
 findFreqTerms(tdm, 2, 3)
 }
 \keyword{methods}

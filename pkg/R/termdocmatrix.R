@@ -121,7 +121,7 @@ setMethod("summary",
           signature(object = "TermDocumentMatrix"),
           function(object){
               show(object)
-              cat(sprintf("\nNon-/sparse entries: %d/%d\n", length(object@x), prod(dim(object))))
+              cat(sprintf("\nNon-/sparse entries: %d/%d\n", length(object@x), prod(dim(object)) - length(object@x)))
               cat(sprintf("Sparsity           : %d%%\n", round((1 - length(object@x)/prod(dim(object))) * 100)))
               terms <- if (object@Transpose) colnames(object) else rownames(object)
               cat("Maximal term length:", max(nchar(terms, type = "chars")), "\n")
@@ -171,8 +171,8 @@ setMethod("nrow",
               if (x@Transpose) ncol(m) else nrow(m)
           })
 
-nDocs <- function(x) if (x@Transpose) nrow(x) else ncol(m)
-nTerms <- function(x) if (x@Transpose) ncol(x) else nrow(m)
+nDocs <- function(x) if (x@Transpose) nrow(x) else ncol(x)
+nTerms <- function(x) if (x@Transpose) ncol(x) else nrow(x)
 
 setMethod("dimnames",
           signature(x = "TermDocumentMatrix"),
