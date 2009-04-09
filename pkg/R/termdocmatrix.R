@@ -59,24 +59,18 @@ termFreq <- function(doc, control = list()) {
     txt <- tokenize(txt)
 
     # Number removal
-    removeNumbers <- control$removeNumbers
-    if (is.logical(removeNumbers) && removeNumbers)
+    if (isTRUE(control$removeNumbers))
         txt <- gsub("[[:digit:]]+", "", txt)
 
     # Stemming
-    stemming <- control$stemming
-    if (is.logical(stemming) && stemming) {
-        txt <- if (suppressWarnings(require("Rstem", quietly = TRUE)))
-            Rstem::wordStem(txt, language = resolveISOCode(Language(doc)))
-        else {
-            require("Snowball")
-            Snowball::SnowballStemmer(txt, structure(list(S = resolveISOCode(Language(doc))), class = "Weka_control"))
-        }
+    if (isTRUE(control$stemming)) {
+        require("Snowball")
+        txt <- Snowball::SnowballStemmer(txt, RWeka::Weka_control(S = resolveISOCode(Language(doc))))
     }
 
     # Stopword filtering
     stopwords <- control$stopwords
-    if (is.logical(stopwords) && stopwords)
+    if (isTRUE(stopwords))
         txt <- txt[!txt %in% stopwords(Language(doc))]
     else if (is.character(stopwords))
         txt <- txt[!txt %in% stopwords]
