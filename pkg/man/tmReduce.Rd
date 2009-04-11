@@ -22,5 +22,7 @@ tmReduce(x, tmFuns, ...)
 \examples{
 data(crude)
 crude[[1]]
-tmMap(crude, FUN = tmReduce, tmFuns = list(tmTolower, removePunctuation, removeNumbers, stripWhitespace))[[1]]
+skipWords <- function(x, ...) removeWords(x, c("it", "the"))
+funs <- list(tmTolower, removePunctuation, skipWords, stripWhitespace)
+tmMap(crude, FUN = tmReduce, tmFuns = funs)[[1]]
 }
