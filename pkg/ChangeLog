@@ -1,3 +1,7 @@
+2009-04-11  Ingo Feinerer  <feinerer@logic.at>
+
+	* inst/doc/tm.Rnw: Fix code/documentation mismatch.
+
 2009-04-04  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/transform.R (tmReduce): Combine multiple maps into one
