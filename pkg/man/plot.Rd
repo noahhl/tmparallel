@@ -6,7 +6,7 @@
 }
 \usage{
 \method{plot}{TermDocumentMatrix}(x,
-     terms = sample(colnames(x), 20),
+     terms = sample(tm:::Terms(x), 20),
      corThreshold = 0.7,
      weighting = FALSE,
      attrs = list(graph = list(rankdir = "BT"),
@@ -35,9 +35,7 @@
 if (require("Rgraphviz")) {
   data(crude)
   tdm <- TermDocumentMatrix(crude)
-  plot(tdm, terms = colnames(tdm)[1:20])
   set.seed(1234)
   plot(tdm, corThreshold = 0.2, weighting = TRUE)
 }
 }
-\keyword{math}
