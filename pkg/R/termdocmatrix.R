@@ -13,7 +13,7 @@ setMethod("TermDocumentMatrix",
               if (is.null(weight))
                   weight <- weightTf
 
-              tflist <- if (tm:::clusterAvailable())
+              tflist <- if (clusterAvailable())
                   snow::parLapply(snow::getMPIcluster(), object, termFreq, control)
               else
                   lapply(object, termFreq, control)
@@ -117,8 +117,7 @@ setMethod("summary",
               show(object)
               cat(sprintf("\nNon-/sparse entries: %d/%d\n", length(object@x), prod(dim(object)) - length(object@x)))
               cat(sprintf("Sparsity           : %d%%\n", round((1 - length(object@x)/prod(dim(object))) * 100)))
-              terms <- if (object@Transpose) colnames(object) else rownames(object)
-              cat("Maximal term length:", max(nchar(terms, type = "chars")), "\n")
+              cat("Maximal term length:", max(nchar(Terms(object), type = "chars")), "\n")
           })
 
 subsetTermDocumentMatrix <- function(x, i, j, ..., drop) {
@@ -165,8 +164,8 @@ setMethod("nrow",
               if (x@Transpose) ncol(m) else nrow(m)
           })
 
-nDocs <- function(x) if (x@Transpose) nrow(x) else ncol(x)
-nTerms <- function(x) if (x@Transpose) ncol(x) else nrow(x)
+nDocs <- function(x) x@Dim[[2]]
+nTerms <- function(x) x@Dim[[1]]
 
 setMethod("dimnames",
           signature(x = "TermDocumentMatrix"),
@@ -189,8 +188,8 @@ setMethod("rownames",
               if (x@Transpose) colnames(m) else rownames(m)
           })
 
-Docs <- function(x) if (x@Transpose) rownames(x) else colnames(x)
-Terms <- function(x) if (x@Transpose) colnames(x) else rownames(x)
+Docs <- function(x) x@Dimnames[[2]]
+Terms <- function(x) x@Dimnames[[1]]
 
 setMethod("as.matrix",
           signature(x = "TermDocumentMatrix"),
@@ -203,19 +202,16 @@ setGeneric("findFreqTerms", function(object, lowfreq = 0, highfreq = Inf) standa
 setMethod("findFreqTerms",
           signature(object = "TermDocumentMatrix"),
           function(object, lowfreq = 0, highfreq = Inf) {
-              if (object@Transpose) object <- t(object)
-              m <- as(object, "TsparseMatrix")
-              colnames(m)[unique(m@j[m@x >= lowfreq & m@x <= highfreq]) + 1]
+              m <- as(as(object, "dgCMatrix"), "TsparseMatrix")
+              Terms(object)[unique(m@i[m@x >= lowfreq & m@x <= highfreq]) + 1]
           })
 
 setGeneric("findAssocs", function(object, term, corlimit) standardGeneric("findAssocs"))
 setMethod("findAssocs",
           signature(object = "TermDocumentMatrix", term = "character"),
           function(object, term, corlimit) {
-              if (!object@Transpose) object <- t(object)
-              object <- as.matrix(object)
-              suppressWarnings(object.cor <- cor(object))
-              sort(round(object.cor[term, which(object.cor[term,] > corlimit)], 2), decreasing = TRUE)
+              suppressWarnings(object.cor <- cor(as.matrix(as(t(object), "dgCMatrix"))))
+              findAssocs(object.cor, term, corlimit)
           })
 setMethod("findAssocs",
           signature(object = "matrix", term = "character"),
@@ -230,14 +226,11 @@ setMethod("removeSparseTerms",
               if ((sparse <= 0) || (sparse >= 1))
                   stop("invalid sparse factor")
               else {
-                  orig <- object
-                  if (orig@Transpose) object <- t(object)
-                  m <- as(object, "TsparseMatrix")
-                  t <- table(m@j + 1) > nrow(m) * (1 - sparse)
-                  m <- as(m[, as.numeric(names(t[t]))], "dgCMatrix")
-                  if (orig@Transpose) m <- t(m)
+                  m <- as(as(object, "dgCMatrix"), "TsparseMatrix")
+                  t <- table(m@i + 1) > ncol(m) * (1 - sparse)
+                  m <- as(m[as.numeric(names(t[t])),], "dgCMatrix")
                   for (s in slotNames(m))
-                      slot(orig, s) <- slot(m, s)
-                  orig
+                      slot(object, s) <- slot(m, s)
+                  object
               }
           })
