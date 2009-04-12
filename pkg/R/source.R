@@ -64,7 +64,7 @@ CSVSource <- function(object, encoding = "UTF-8")
 DataframeSource <- function(object, encoding = "UTF-8")
     new("DataframeSource", LoDSupport = FALSE, Content = object, Position = 0,
         DefaultReader = readPlain, Encoding = encoding, Length = nrow(object),
-        Vectorized = FALSE)
+        Vectorized = TRUE)
 
 setGeneric("DirSource", function(directory, encoding = "UTF-8", pattern = NULL, recursive = FALSE, ignore.case = FALSE) standardGeneric("DirSource"))
 setMethod("DirSource",
@@ -150,6 +150,9 @@ setMethod("getElem",
           })
 
 setGeneric("pGetElem", function(object) standardGeneric("pGetElem"))
+setMethod("pGetElem", signature(object = "DataframeSource"),
+          function(object) lapply(seq_along(object@Content),
+                                  function(x) list(content = object@Content[x,], uri = NULL)))
 setMethod("pGetElem", signature(object = "DirSource"),
           function(object) {
               lapply(object@FileList,
