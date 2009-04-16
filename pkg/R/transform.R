@@ -129,7 +129,6 @@ setGeneric("stemDoc", function(object, language = "english", ...) standardGeneri
 setMethod("stemDoc",
           signature(object = "PlainTextDocument"),
           function(object, language = "english", ...) {
-              require("Snowball")
               stemLine <- function(x) Snowball::SnowballStemmer(x, RWeka::Weka_control(S = language))
               Content(object) <- sapply(object,
                                         function(x) paste(stemLine(unlist(strsplit(x, "[[:blank:]]"))), collapse = " "),

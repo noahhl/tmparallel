@@ -63,10 +63,8 @@ termFreq <- function(doc, control = list()) {
         txt <- gsub("[[:digit:]]+", "", txt)
 
     # Stemming
-    if (isTRUE(control$stemming)) {
-        require("Snowball")
+    if (isTRUE(control$stemming))
         txt <- Snowball::SnowballStemmer(txt, RWeka::Weka_control(S = resolveISOCode(Language(doc))))
-    }
 
     # Stopword filtering
     stopwords <- control$stopwords
