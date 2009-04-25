@@ -6,7 +6,7 @@
 }
 \usage{
 \method{plot}{TermDocumentMatrix}(x,
-     terms = sample(tm:::Terms(x), 20),
+     terms = sample(Terms(x), 20),
      corThreshold = 0.7,
      weighting = FALSE,
      attrs = list(graph = list(rankdir = "BT"),
@@ -15,8 +15,7 @@
      ...)
 }
 \arguments{
-  \item{x}{an \R object inheriting from S4 class
-    \code{\linkS4class{TermDocumentMatrix}}.}
+  \item{x}{A term-document matrix.}
   \item{terms}{Terms to be plotted. Defaults to 20 randomly chosen terms
     of the term-document matrix.}
   \item{corThreshold}{Do not plot correlations below this

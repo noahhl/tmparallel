@@ -1,4 +1,3 @@
-import(Matrix)
 import(methods)
 
 export(
@@ -6,15 +5,23 @@ export(
        "CSVSource", # defunct
        "DataframeSource",
        "deactivateCluster",
+       "Dictionary",
+       "dissimilarity",
+       "Docs",
        "DocumentTermMatrix",
        "stemCompletion",
        "GmaneSource",
+       "findAssocs",
+       "findFreqTerms",
        "getFilters",
        "getReaders",
        "getSources",
        "getTransformations",
+       "inspect",
        "makeChunks",
        "materialize",
+       "nDocs",
+       "nTerms",
        "readCustom",
        "readPlain",
        "readReut21578XML",
@@ -25,6 +32,7 @@ export(
        "readHTML",
        "readDOC",
        "readXML",
+       "removeSparseTerms",
        "ReutersSource",
        "convertReut21578XMLPlain",
        "convertRCV1Plain",
@@ -33,21 +41,42 @@ export(
        "preprocessReut21578XML",
        "stopwords",
        "TermDocMatrix", # defunct
+       "TermDocumentMatrix",
        "termFreq",
+       "Terms",
        "tmReduce",
        "weightTf",
        "weightTfIdf",
        "weightBin",
        "XMLSource")
 
+S3method("Dictionary", "character")
+
+S3method("inspect", "Corpus")
+
+S3method("findAssocs", "matrix")
+
+S3method("dissimilarity", "PlainTextDocument")
+
+S3method("[", "TermDocumentMatrix")
+S3method("as.matrix", "TermDocumentMatrix")
+S3method("colnames", "TermDocumentMatrix")
+S3method("Dictionary", "TermDocumentMatrix")
+S3method("dim", "TermDocumentMatrix")
+S3method("dimnames", "TermDocumentMatrix")
+S3method("dissimilarity", "TermDocumentMatrix")
+S3method("findAssocs", "TermDocumentMatrix")
+S3method("inspect", "TermDocumentMatrix")
+S3method("ncol", "TermDocumentMatrix")
+S3method("nrow", "TermDocumentMatrix")
 S3method("plot", "TermDocumentMatrix")
+S3method("print", "TermDocumentMatrix")
+S3method("rownames", "TermDocumentMatrix")
 
 exportMethods(
               # Constructors
               "Corpus",
               "TextRepository",
-              "TermDocumentMatrix",
-              "Dictionary",
               "DirSource",
               "VectorSource",
               "URISource",
@@ -91,9 +120,6 @@ exportMethods(
               # TextRepository
               "RepoMetaData",
 
-              # TermDocumentMatrix
-              "Weighting",
-
               # Sources
               "stepNext",
               "getElem",
@@ -119,16 +145,7 @@ exportMethods(
               "tmIndex",
               "searchFullText",
               "tmIntersect",
-              "as.matrix",
-              "dim",
-              "dimnames",
-              "ncol",
-              "colnames",
-              "nrow",
-              "rownames",
-              "findFreqTerms",
-              "findAssocs",
-              "removeSparseTerms",
+
               "appendElem",
               "appendMeta",
               "prescindMeta",
@@ -142,10 +159,8 @@ exportMethods(
               "length",
               "show",
               "summary",
-              "inspect",
               "writeCorpus",
-              "%IN%",
-              "dissimilarity")
+              "%IN%")
 
 exportClasses("TextDocument",
               "PlainTextDocument",
@@ -157,7 +172,6 @@ exportClasses("TextDocument",
               "Corpus",
               "MetaDataNode",
               "TextRepository",
-              "TermDocumentMatrix",
               "Dictionary",
               "Source",
               "DataframeSource",

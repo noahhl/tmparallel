@@ -5,12 +5,12 @@
 \alias{[[-methods}
 \alias{[[<--methods}
 \alias{[,Corpus,ANY,ANY,ANY-method}
-\alias{[,TermDocumentMatrix,index,index,missing-method}
-\alias{[,TermDocumentMatrix,index,missing,missing-method}
-\alias{[,TermDocumentMatrix,missing,index,missing-method}
+\alias{[.TermDocumentMatrix}
 \alias{[<-,Corpus,ANY,ANY,ANY-method}
 \alias{[[,Corpus,ANY,ANY-method}
 \alias{[[<-,Corpus,ANY,ANY-method}
+\alias{[,Corpus-method}
+\alias{[<-,Corpus-method}
 \alias{[[,Corpus-method}
 \alias{[[<-,Corpus-method}
 \title{Methods for Subset Functions in Package `tm'}

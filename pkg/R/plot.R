@@ -1,5 +1,5 @@
 plot.TermDocumentMatrix <- function(x,
-                                    terms = sample(tm:::Terms(x), 20),
+                                    terms = sample(Terms(x), 20),
                                     corThreshold = 0.7,
                                     weighting = FALSE,
                                     attrs = list(graph = list(rankdir = "BT"),
@@ -9,8 +9,7 @@ plot.TermDocumentMatrix <- function(x,
     if (!require("Rgraphviz"))
         stop("could not find (bioconductor.org) Rgraphviz package")
 
-    m <- if (!x@Transpose) t(x) else x
-    m <- as.matrix(m)
+    m <- as.matrix.simple_triplet_matrix(t(x))
     c <- cor(m[seq_len(nrow(m)), terms])
     c[c < corThreshold] <- 0
     diag(c) <- 0

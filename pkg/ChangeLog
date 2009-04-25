@@ -1,3 +1,8 @@
+2009-04-26  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/termdocmatrix.R: No longer use Matrix package. This improves
+	package loading significantly.
+
 2009-04-11  Ingo Feinerer  <feinerer@logic.at>
 
 	* inst/doc/tm.Rnw: Fix code/documentation mismatch.

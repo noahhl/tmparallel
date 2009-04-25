@@ -617,19 +617,17 @@ setMethod("summary",
               }
     })
 
-setGeneric("inspect", function(object) standardGeneric("inspect"))
-setMethod("inspect",
-          signature("Corpus"),
-          function(object) {
-              summary(object)
-              cat("\n")
-              if (DBControl(object)[["useDb"]] && require("filehash")) {
-                  db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
-                  show(dbMultiFetch(db, unlist(object)))
-              }
-              else
-                  print(noquote(lapply(object, identity)))
-          })
+inspect <- function(x) UseMethod("inspect", x)
+inspect.Corpus <- function(x) {
+    summary(x)
+    cat("\n")
+    if (DBControl(x)[["useDb"]] && require("filehash")) {
+        db <- dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
+        show(dbMultiFetch(db, unlist(x)))
+    }
+    else
+        print(noquote(lapply(x, identity)))
+}
 
 # No metadata is checked
 setGeneric("%IN%", function(x, y) standardGeneric("%IN%"))

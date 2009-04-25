@@ -35,7 +35,7 @@ setMethod("meta",
                   cat("Available meta data pairs are:\n")
                   for (s in slots)
                       cat(sprintf("  %-13s: %s\n", s, paste(as(slot(object, s), "character"), collapse = " ")))
-                  cat("Dynamic local meta data pairs are:\n")
+                  cat("User-defined local meta data pairs are:\n")
                   show(LocalMetaData(object))
               }
               else {

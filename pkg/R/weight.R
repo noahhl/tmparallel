@@ -17,13 +17,15 @@ setMethod("WeightFunction",
 # Actual TermDocumentMatrix weighting functions
 weightTf <- WeightFunction(identity, "term frequency", "tf")
 
-weightTfIdf <-
-    WeightFunction(function(m) {
-        m * log2(ncol(m) / rowSums(weightBin(m)))
-    }, "term frequency - inverse document frequency", "tf-idf")
+# FIXME
+weightTfIdf <- WeightFunction(function(m) m, "term frequency - inverse document frequency", "tf-idf")
+#weightTfIdf <-
+#    WeightFunction(function(m) {
+#        m * log2(ncol(m) / rowSums(weightBin(m)))
+#    }, "term frequency - inverse document frequency", "tf-idf")
 
 weightBin <-
     WeightFunction(function(m) {
-        m@x <- rep(1, length(m@x))
+        m$v <- rep(1, length(m$v))
         m
     }, "binary", "bin")

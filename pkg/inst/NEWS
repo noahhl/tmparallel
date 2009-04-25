@@ -9,8 +9,7 @@ SIGNIFICANT USER-VISIBLE CHANGES
         and deactivateCluster() instead.
 
     o   DocumentTermMatrix (the improved reimplementation of defunct
-        TermDocMatrix) now inherits from the dgCMatrix (of package
-        Matrix) class instead of having an explicit Data slot.
+        TermDocMatrix) does not use the Matrix package anymore.
 
 NEW FEATURES
 

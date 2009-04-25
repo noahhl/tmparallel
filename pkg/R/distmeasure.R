@@ -1,16 +1,12 @@
 # Author: Ingo Feinerer
 
-setGeneric("dissimilarity", function(x, y = NULL, method) standardGeneric("dissimilarity"))
-setMethod("dissimilarity",
-          signature(x = "TermDocumentMatrix", y = "ANY", method = "character"),
-          function(x, y = NULL, method) {
-              require("proxy")
-              proxy::dist(as(x, "matrix"), y, method)
-          })
-setMethod("dissimilarity",
-          signature(x = "TextDocument", y = "TextDocument", method = "character"),
-          function(x, y = NULL, method) {
-              tdm <- DocumentTermMatrix(c(x, y))
-              dissim <- dissimilarity(tdm, method = method)
-              return(dissim)
-          })
+dissimilarity <- function(x, y = NULL, method) UseMethod("dissimilarity", x)
+
+dissimilarity.TermDocumentMatrix <- function(x, y = NULL, method)
+    proxy::dist(as.matrix.simple_triplet_matrix(t(x)), y, method)
+
+# TODO: Shound work for all objects derived from TextDocument
+dissimilarity.PlainTextDocument <- function(x, y = NULL, method) {
+    tdm <- TermDocumentMatrix(c(x, y))
+    dissimilarity(tdm, method = method)
+}

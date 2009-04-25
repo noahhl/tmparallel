@@ -4,43 +4,35 @@ TermDocMatrix <- function(object, control = list()) {
     .Defunct("DocumentTermMatrix", package = "tm")
 }
 
-setGeneric("TermDocumentMatrix", function(object, control = list()) standardGeneric("TermDocumentMatrix"))
-setMethod("TermDocumentMatrix",
-          signature(object = "Corpus"),
-          function(object, control = list()) {
+TermDocumentMatrix <- function(object, control = list()) {
+    weight <- control$weighting
+    if (is.null(weight))
+        weight <- weightTf
 
-              weight <- control$weighting
-              if (is.null(weight))
-                  weight <- weightTf
+    tflist <- if (clusterAvailable())
+        snow::parLapply(snow::getMPIcluster(), object, termFreq, control)
+    else
+        lapply(object, termFreq, control)
+    tflist <- lapply(tflist, function(x) x[x > 0])
 
-              tflist <- if (clusterAvailable())
-                  snow::parLapply(snow::getMPIcluster(), object, termFreq, control)
-              else
-                  lapply(object, termFreq, control)
+    x <- unlist(tflist)
+    i <- names(x)
+    x <- as.numeric(x)
+    allTerms <- sort(unique(i))
+    i <- match(i, allTerms)
+    j <- rep(seq_along(object), sapply(tflist, length))
+    rm(tflist)
 
-              tflist <- lapply(tflist, function(x) x[x > 0])
-              allTerms <- sort(unique(unlist(lapply(tflist, names), use.names = FALSE)))
-
-              i <- lapply(tflist, function(x) match(names(x), allTerms))
-              p <- c(0L, cumsum(sapply(i, length)))
-              i <- unlist(i) - 1L
-
-              x <- as.numeric(unlist(tflist, use.names = FALSE))
-              rm(tflist)
-
-              tdm <- new("TermDocumentMatrix", p = p, i = i, x = x,
-                         Dim = c(length(allTerms), length(p) - 1L),
-                         Transpose = FALSE,
-                         Weighting = c(weight@Name, weight@Acronym))
-              tdm <- weight(tdm)
-              tdm@Dimnames <- list(Terms = allTerms, Docs = sapply(object, ID))
-
-              tdm
-          })
+    tdm <- structure(list(i = i, j = j, v = x, nrow = length(allTerms), ncol = length(object),
+                          dimnames = list(Terms = allTerms, Docs = sapply(object, ID)),
+                          Transpose = FALSE, Weighting = c(weight@Name, weight@Acronym)),
+                     class = c("TermDocumentMatrix", "simple_triplet_matrix"))
+    weight(tdm)
+}
 
 DocumentTermMatrix <- function(object, control = list()) {
     m <- TermDocumentMatrix(object, control)
-    m@Transpose <- TRUE
+    m$Transpose <- TRUE
     m
 }
 
@@ -55,7 +47,7 @@ termFreq <- function(doc, control = list()) {
     # Tokenize the corpus
     tokenize <- control$tokenize
     if (is.null(tokenize))
-        tokenize <- function(x) unlist(strsplit(gsub("[^[:alnum:]]+", " ", x), " ", fixed = TRUE))
+        tokenize <- RWeka::AlphabeticTokenizer
     txt <- tokenize(txt)
 
     # Number removal
@@ -63,8 +55,11 @@ termFreq <- function(doc, control = list()) {
         txt <- gsub("[[:digit:]]+", "", txt)
 
     # Stemming
-    if (isTRUE(control$stemming))
-        txt <- Snowball::SnowballStemmer(txt, RWeka::Weka_control(S = resolveISOCode(Language(doc))))
+    stemming <- control$stemming
+    if (isTRUE(stemming))
+        stemming <- function(x) Snowball::SnowballStemmer(x, RWeka::Weka_control(S = resolveISOCode(Language(doc))))
+    if (is.function(stemming))
+        txt <- stemming(txt)
 
     # Stopword filtering
     stopwords <- control$stopwords
@@ -99,136 +94,70 @@ termFreq <- function(doc, control = list()) {
     structure(as.integer(tab), names = names(tab))
 }
 
-setMethod("show",
-          signature(object = "TermDocumentMatrix"),
-          function(object){
-              type <- if (object@Transpose) "document-term matrix" else "term-document matrix"
-              cat(sprintf("A %s\n", type), "\n")
-              m <- if(object@Transpose) t(object) else object
-              show(as(m, "dgCMatrix"))
-              cat(sprintf("\nWeighting: %s (%s)\n", object@Weighting[1], object@Weighting[2]))
-    })
-
-setMethod("summary",
-          signature(object = "TermDocumentMatrix"),
-          function(object){
-              show(object)
-              cat(sprintf("\nNon-/sparse entries: %d/%d\n", length(object@x), prod(dim(object)) - length(object@x)))
-              cat(sprintf("Sparsity           : %d%%\n", round((1 - length(object@x)/prod(dim(object))) * 100)))
-              cat("Maximal term length:", max(nchar(Terms(object), type = "chars")), "\n")
-          })
-
-subsetTermDocumentMatrix <- function(x, i, j, ..., drop) {
-    # Swap indices for DocumentTermMatrix
-    if (x@Transpose) {
-        k <- i
-        i <- j
-        j <- k
-    }
-    dgCMatrix <- as(x, "dgCMatrix")
-    if (identical(i, NA)) i <- seq_len(nrow(dgCMatrix))
-    if (identical(j, NA)) j <- seq_len(ncol(dgCMatrix))
-    dgCMatrix <- dgCMatrix[i, j, ..., drop = FALSE]
-    for (s in slotNames(dgCMatrix))
-        slot(x, s) <- slot(dgCMatrix, s)
-    x
+print.TermDocumentMatrix <- function(x, ...) {
+    format <- c("term", "document")
+    if (x$Transpose) format <- rev(format)
+    cat(sprintf("A %s-%s matrix (%d %ss, %d %ss)\n",
+                format[1], format[2], nrow(x), format[1], ncol(x), format[2]))
+    cat(sprintf("\nNon-/sparse entries: %d/%d\n", length(x$v), prod(dim(x)) - length(x$v)))
+    cat(sprintf("Sparsity           : %d%%\n", round((1 - length(x$v)/prod(dim(x))) * 100)))
+    cat("Maximal term length:", max(nchar(Terms(x), type = "chars")), "\n")
+    cat(sprintf("Weighting          : %s (%s)\n", x$Weighting[1], x$Weighting[2]))
 }
 
-setMethod("[", signature(x = "TermDocumentMatrix", i = "index", j = "missing", drop = "missing"),
-          function(x, i, j, ..., drop) subsetTermDocumentMatrix(x, i, NA, ..., drop))
-setMethod("[", signature(x = "TermDocumentMatrix", i = "missing", j = "index", drop = "missing"),
-          function(x, i, j, ..., drop) subsetTermDocumentMatrix(x, NA, j, ..., drop))
-setMethod("[", signature(x = "TermDocumentMatrix", i = "index", j = "index", drop = "missing"),
-          function(x, i, j, ..., drop) subsetTermDocumentMatrix(x, i, j, ..., drop))
+inspect.TermDocumentMatrix <- function(x) {
+    print(x)
+    cat("\n")
+    print(as.matrix(x))
+}
 
-setMethod("dim",
-          signature(x = "TermDocumentMatrix"),
-          function(x) {
-              dim <- dim(as(x, "dgCMatrix"))
-              if (x@Transpose) rev(dim) else dim
-          })
+`[.TermDocumentMatrix` <- function(x, i, j, ..., drop) {
+    m <- if (x$Transpose)
+        `[.simple_triplet_matrix`(x, j, i, ...)
+    else
+        `[.simple_triplet_matrix`(x, i, j, ...)
+    m$Transpose <- x$Transpose
+    m$Weighting <- x$Weighting
+    class(m) <- c("TermDocumentMatrix", "simple_triplet_matrix")
+    m
+}
 
-setMethod("ncol",
-          signature(x = "TermDocumentMatrix"),
-          function(x) {
-              m <- as(x, "dgCMatrix")
-              if (x@Transpose) nrow(m) else ncol(m)
-          })
+dim.TermDocumentMatrix <- function(x) if (x$Transpose) c(x$ncol, x$nrow) else c(x$nrow, x$ncol)
+ncol.TermDocumentMatrix <- function(x) if (x$Transpose) x$nrow else x$ncol
+nrow.TermDocumentMatrix <- function(x) if (x$Transpose) x$ncol else x$nrow
 
-setMethod("nrow",
-          signature(x = "TermDocumentMatrix"),
-          function(x) {
-              m <- as(x, "dgCMatrix")
-              if (x@Transpose) ncol(m) else nrow(m)
-          })
+dimnames.TermDocumentMatrix <- function(x) if (x$Transpose) rev(x$dimnames) else x$dimnames
+colnames.TermDocumentMatrix <- function(x) if (x$Transpose) x$dimnames[[1]] else x$dimnames[[2]]
+rownames.TermDocumentMatrix <- function(x) if (x$Transpose) x$dimnames[[2]] else x$dimnames[[1]]
 
-nDocs <- function(x) x@Dim[[2]]
-nTerms <- function(x) x@Dim[[1]]
+nDocs <- function(x) x$ncol
+nTerms <- function(x) x$nrow
 
-setMethod("dimnames",
-          signature(x = "TermDocumentMatrix"),
-          function(x) {
-              dimNames <- dimnames(as(x, "dgCMatrix"))
-              if (x@Transpose) rev(dimNames) else dimNames
-          })
+Docs <- function(x) x$dimnames[[2]]
+Terms <- function(x) x$dimnames[[1]]
 
-setMethod("colnames",
-          signature(x = "TermDocumentMatrix"),
-          function(x, do.NULL = TRUE, prefix = "col") {
-              m <- as(x, "dgCMatrix")
-              if (x@Transpose) rownames(m) else colnames(m)
-          })
+as.matrix.TermDocumentMatrix <- function(x, ...) {
+    m <- as.matrix.simple_triplet_matrix(x)
+    if (x$Transpose) t(m) else m
+}
 
-setMethod("rownames",
-          signature(x = "TermDocumentMatrix"),
-          function(x, do.NULL = TRUE, prefix = "row") {
-              m <- as(x, "dgCMatrix")
-              if (x@Transpose) colnames(m) else rownames(m)
-          })
+findFreqTerms <- function(object, lowfreq = 0, highfreq = Inf)
+    Terms(object)[unique(object$i[object$v >= lowfreq & object$v <= highfreq])]
 
-Docs <- function(x) x@Dimnames[[2]]
-Terms <- function(x) x@Dimnames[[1]]
+findAssocs <- function(x, term, corlimit) UseMethod("findAssocs", x)
+findAssocs.TermDocumentMatrix <- function(x, term, corlimit) {
+    suppressWarnings(x.cor <- cor(as.matrix.simple_triplet_matrix(t(x))))
+    findAssocs(x.cor, term, corlimit)
+}
+findAssocs.matrix <- function(x, term, corlimit)
+    sort(round(x[term, which(x[term,] > corlimit)], 2), decreasing = TRUE)
 
-setMethod("as.matrix",
-          signature(x = "TermDocumentMatrix"),
-          function(x) {
-              m <- as(x, "dgCMatrix")
-              m <- if(x@Transpose) t(as.matrix(m)) else as.matrix(m)
-          })
-
-setGeneric("findFreqTerms", function(object, lowfreq = 0, highfreq = Inf) standardGeneric("findFreqTerms"))
-setMethod("findFreqTerms",
-          signature(object = "TermDocumentMatrix"),
-          function(object, lowfreq = 0, highfreq = Inf) {
-              m <- as(as(object, "dgCMatrix"), "TsparseMatrix")
-              Terms(object)[unique(m@i[m@x >= lowfreq & m@x <= highfreq]) + 1]
-          })
-
-setGeneric("findAssocs", function(object, term, corlimit) standardGeneric("findAssocs"))
-setMethod("findAssocs",
-          signature(object = "TermDocumentMatrix", term = "character"),
-          function(object, term, corlimit) {
-              suppressWarnings(object.cor <- cor(as.matrix(as(t(object), "dgCMatrix"))))
-              findAssocs(object.cor, term, corlimit)
-          })
-setMethod("findAssocs",
-          signature(object = "matrix", term = "character"),
-          function(object, term, corlimit) {
-              sort(round(object[term, which(object[term,] > corlimit)], 2), decreasing = TRUE)
-          })
-
-setGeneric("removeSparseTerms", function(object, sparse) standardGeneric("removeSparseTerms"))
-setMethod("removeSparseTerms",
-          signature(object = "TermDocumentMatrix", sparse = "numeric"),
-          function(object, sparse) {
-              if ((sparse <= 0) || (sparse >= 1))
-                  stop("invalid sparse factor")
-              else {
-                  m <- as(as(object, "dgCMatrix"), "TsparseMatrix")
-                  t <- table(m@i + 1) > ncol(m) * (1 - sparse)
-                  m <- as(m[as.numeric(names(t[t])),], "dgCMatrix")
-                  for (s in slotNames(m))
-                      slot(object, s) <- slot(m, s)
-                  object
-              }
-          })
+removeSparseTerms <- function(object, sparse) {
+    if ((sparse <= 0) || (sparse >= 1))
+        stop("invalid sparse factor")
+    else {
+        t <- table(object$i) > object$ncol * (1 - sparse)
+        termIndex <- as.numeric(names(t[t]))
+        if (object$Transpose) object[, termIndex] else object[termIndex,]
+    }
+}

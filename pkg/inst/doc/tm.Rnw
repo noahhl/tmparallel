@@ -261,15 +261,15 @@ on whether you want terms as rows and documents as columns, or vice
 versa) handle sparse matrices for text document collections.
 <<>>=
 tdm <- DocumentTermMatrix(reuters)
-summary(tdm[1:5,150:155])
+inspect(tdm[1:5,150:155])
 @
 
 \section*{Operations on Term-Document Matrices}
-Besides the fact that on the \code{Data} part of this matrix a huge
-amount of \proglang{R} functions (like clustering, classifications,
-etc.) is possible, this package brings some shortcuts. Imagine we
-want to find those terms that occur at least five times, then we can use
-the \code{findFreqTerms()} function:
+Besides the fact that on this matrix a huge amount of \proglang{R}
+functions (like clustering, classifications, etc.) can be applied,
+this package brings some shortcuts. Imagine we want to find those
+terms that occur at least five times, then we can use the
+\code{findFreqTerms()} function:
 <<>>=
 findFreqTerms(tdm, 5)
 @
@@ -291,7 +291,7 @@ i.e., terms occurring only in very few documents. Normally, this
 reduces the matrix dramatically without losing significant relations
 inherent to the matrix:
 <<>>=
-removeSparseTerms(tdm, 0.4)
+inspect(removeSparseTerms(tdm, 0.4))
 @
 This function call removes those terms which have at least a 40
 percentage of sparse (i.e., terms occurring 0 times in a document)
@@ -312,7 +312,7 @@ the document are skipped for performance reasons). This allows to
 restrict the dimension of the matrix a priori and to focus on specific
 terms for distinct text mining contexts, e.g.,
 <<>>=
-(tdmD <- DocumentTermMatrix(reuters, list(dictionary = d)))
+inspect(DocumentTermMatrix(reuters, list(dictionary = d)))
 @
 
 \bibliographystyle{abbrvnat}

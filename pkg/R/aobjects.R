@@ -217,11 +217,3 @@ setClass("TextRepository",
 
 setGeneric("RepoMetaData", function(object) standardGeneric("RepoMetaData"))
 setMethod("RepoMetaData", "TextRepository", function(object) object@RepoMetaData)
-
-# Term-document matrix
-setClass("TermDocumentMatrix",
-         representation(Transpose = "logical", Weighting = "character"),
-         contains = "dgCMatrix")
-
-setGeneric("Weighting", function(object) standardGeneric("Weighting"))
-setMethod("Weighting", "TermDocumentMatrix", function(object) object@Weighting)
