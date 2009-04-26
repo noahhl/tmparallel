@@ -622,8 +622,8 @@ inspect.Corpus <- function(x) {
     summary(x)
     cat("\n")
     if (DBControl(x)[["useDb"]] && require("filehash")) {
-        db <- dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
-        show(dbMultiFetch(db, unlist(x)))
+        db <- filehash::dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
+        show(filehash::dbMultiFetch(db, unlist(x)))
     }
     else
         print(noquote(lapply(x, identity)))

@@ -36,7 +36,7 @@ readXML <- FunctionGenerator(function(spec, doc, ...) {
             else
                 structure(XML::xmlTreeParse(elem$content, asText = TRUE), class = "list") # Mask as list to bypass S4 checks
         }
-        free(tree)
+        XML::free(tree)
 
         doc@Cached <- load
         doc@URI <- elem$uri
