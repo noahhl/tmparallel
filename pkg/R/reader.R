@@ -2,7 +2,7 @@
 ## Reader
 
 getReaders <- function()
-    c("readCustom", "readDOC", "readGmane", "readHTML", "readNewsgroup", "readPDF", "readReut21578XML", "readPlain", "readRCV1")
+    c("readDOC", "readGmane", "readHTML", "readNewsgroup", "readPDF", "readReut21578XML", "readPlain", "readRCV1", "readTabular")
 
 readPlain <- FunctionGenerator(function(...) {
     function(elem, load, language, id) {
@@ -206,8 +206,7 @@ readHTML <- FunctionGenerator(function(...) {
     }
 })
 
-# TODO: Abstract access to source elements (i.e., content[i] vs. content[, i])
-readCustom <- FunctionGenerator(function(mappings, ...) {
+readTabular <- FunctionGenerator(function(mappings, ...) {
     mappings <- mappings
     function(elem, load, language, id) {
         doc <- new("PlainTextDocument", URI = elem$uri, Cached = load,

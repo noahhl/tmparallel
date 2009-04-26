@@ -105,8 +105,7 @@ XMLSource <- function(object, parser, reader, encoding = "UTF-8") {
     corpus <- readLines(object, encoding = encoding)
     tree <- XML::xmlTreeParse(corpus, asText = TRUE)
     content <- parser(tree)
-    # TODO: Fix the URI mess!
-    uri <- if (is.character(object)) substitute(file(object, encoding = encoding)) else NULL # was match.call()$object instead of NULL but does not work anymore
+    uri <- if (is.character(object)) substitute(file(object, encoding = encoding)) else NULL
 
     new("XMLSource", LoDSupport = FALSE, URI = uri,
         Content = content, Position = 0, DefaultReader = reader,

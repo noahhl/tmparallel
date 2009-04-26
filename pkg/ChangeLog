@@ -1,7 +1,7 @@
 2009-04-26  Ingo Feinerer  <feinerer@logic.at>
 
-	* R/termdocmatrix.R: No longer use Matrix package. This improves
-	package loading significantly.
+	* R/termdocmatrix.R: No longer use Matrix package. This reduces
+	package start-up time significantly.
 
 2009-04-11  Ingo Feinerer  <feinerer@logic.at>
 
@@ -41,8 +41,8 @@
 
 2009-03-21  Ingo Feinerer  <feinerer@logic.at>
 
-	* R/reader.R (readCustom): Experimental reader which can be
-	customized via user-defined mappings.
+	* R/reader.R (readTabular): Experimental reader for tabular data
+	structures which can be customized via user-defined mappings.
 
 	* R/reader.R: Always use UTC time zone.
 

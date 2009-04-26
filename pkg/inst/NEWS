@@ -33,8 +33,9 @@ NEW FEATURES
 
     o   New XMLSource class for arbitrary XML files.
 
-    o   The new readCustom() reader function allows to create a
-        tailor-made reader configured via mappings.
+    o   The new readTabular() reader function allows to create a custom
+        tailor-made reader configured via mappings from a tabular data
+        structure.
 
     o   The new readXML() reader function allows to read in arbitrary
         XML files which are described with a specification.

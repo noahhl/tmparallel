@@ -1,13 +1,14 @@
-\name{readCustom}
-\alias{readCustom}
+\name{readTabular}
+\alias{readTabular}
 \title{Read In a Text Document}
 \description{
-  Returns a function which reads in a text document with knowledge about
+  Returns a function which reads in a text document from a tabular data
+  structure (like a data frame or a list matrix) with knowledge about
   its internal structure and possible available metadata as specified by
   so-called mappings.
 }
 \usage{
-readCustom(mappings, ...)
+readTabular(mappings, \dots)
 }
 \arguments{
   \item{mappings}{a named \code{list} of \code{character}s. The
@@ -16,7 +17,7 @@ readCustom(mappings, ...)
     \code{.Data} to access the document's content, any valid slot name,
     and characters which are mapped to \code{\link{LocalMetaData}}
     entries.}
-  \item{...}{arguments for the generator function.}
+  \item{\dots}{arguments for the generator function.}
 }
 \details{
   Formally this function is a function generator, i.e., it returns a
@@ -53,7 +54,7 @@ df <- data.frame(contents = c("content 1", "content 2", "content 3"),
                  stringsAsFactors = FALSE)
 m <- list(.Data = "contents", Heading = "title",
           Author = "authors", Topic = "topics")
-myReader <- readCustom(mappings = m)
+myReader <- readTabular(mappings = m)
 ds <- DataframeSource(df)
 elem <- getElem(stepNext(ds))
 (result <- myReader(elem, load = TRUE, language = "en", id = "id1"))

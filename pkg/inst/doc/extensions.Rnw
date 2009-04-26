@@ -38,18 +38,20 @@ on how simpler, more user-friendly, forms of extension mechanisms can
 be applied in \pkg{tm}.
 
 \section*{Custom General Purpose Readers}
-A general situation is that you have gathered together some information
-that suffices to describe documents in a corpus. However, you do not
-have a distinct file format because you extracted the information out
-of various resources. Now you want to use your information to build a
-corpus which is recognized by \pkg{tm}.
+A general situation is that you have gathered together some
+information into a tabular data structure (like a data frame or a list
+matrix) that suffices to describe documents in a corpus. However, you
+do not have a distinct file format because you extracted the
+information out of various resources. Now you want to use your
+information to build a corpus which is recognized by \pkg{tm}.
 
 This can be done in \pkg{tm} by generating a custom reader function
-via \code{readCustom()} that can be configured via so-called
-\emph{mappings}. These mappings describe how your information is
-mapped to the individual slots of text documents in \pkg{tm}.
+for tabular data structures via \code{readTabular()} that can be
+configured via so-called \emph{mappings}. These mappings describe how
+your information in the tabular data structure is mapped to the
+individual slots of text documents in \pkg{tm}.
 
-We assume that your information is put together in a data.frame. E.g.,
+We assume that your information is put together in a data frame. E.g.,
 consider the following example:
 <<keep.source=TRUE>>=
 df <- data.frame(contents = c("content 1", "content 2", "content 3"),
@@ -60,14 +62,14 @@ df <- data.frame(contents = c("content 1", "content 2", "content 3"),
 @
 We want to map \code{contents}, \code{title}, \code{authors}, and
 \code{topics} to the relevant slots of a text
-document. \code{readCustom()} always returns a
+document. \code{readTabular()} always returns a
 \code{PlainTextDocument}, so possible slots are:
 <<>>=
 slotNames("PlainTextDocument")
 @
 The special slot \code{.Data} contains the actual content of the
 document, and \code{LocalMetaData} can be used to model arbitrary
-additional meta data slots.
+additional user-defined meta data slots.
 
 So for our data frame we define a possible mappings as follows:
 <<Mapping>>=
@@ -76,7 +78,7 @@ m <- list(.Data = "contents", Heading = "title", Author = "authors", Topic = "to
 Now we can construct a customized reader by passing over the
 previously defined mapping:
 <<myReader>>=
-myReader <- readCustom(mappings = m)
+myReader <- readTabular(mappings = m)
 @
 
 Finally we can apply our reader function at any place where \pkg{tm}
