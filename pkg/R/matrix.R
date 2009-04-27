@@ -15,24 +15,31 @@ TermDocumentMatrix <- function(object, control = list()) {
         lapply(object, termFreq, control)
     tflist <- lapply(tflist, function(x) x[x > 0])
 
-    x <- unlist(tflist)
-    i <- names(x)
-    x <- as.numeric(x)
+    v <- unlist(tflist)
+    i <- names(v)
+    v <- as.numeric(v)
     allTerms <- sort(unique(i))
     i <- match(i, allTerms)
     j <- rep(seq_along(object), sapply(tflist, length))
     rm(tflist)
 
-    tdm <- structure(list(i = i, j = j, v = x, nrow = length(allTerms), ncol = length(object),
+    tdm <- structure(list(i = i, j = j, v = v, nrow = length(allTerms), ncol = length(object),
                           dimnames = list(Terms = allTerms, Docs = sapply(object, ID)),
-                          Transpose = FALSE, Weighting = c(weight@Name, weight@Acronym)),
+                          Weighting = c(weight@Name, weight@Acronym)),
                      class = c("TermDocumentMatrix", "simple_triplet_matrix"))
     weight(tdm)
 }
 
-DocumentTermMatrix <- function(object, control = list()) {
-    m <- TermDocumentMatrix(object, control)
-    m$Transpose <- TRUE
+DocumentTermMatrix <- function(object, control = list())
+    t(TermDocumentMatrix(object, control))
+
+t.TermDocumentMatrix <- t.DocumentTermMatrix <- function(x) {
+    m <- t.simple_triplet_matrix(x)
+    m$Weighting <- x$Weighting
+    class(m) <- if (inherits(x, "DocumentTermMatrix"))
+        c("TermDocumentMatrix", "simple_triplet_matrix")
+    else
+        c("DocumentTermMatrix", "simple_triplet_matrix")
     m
 }
 
@@ -94,9 +101,9 @@ termFreq <- function(doc, control = list()) {
     structure(as.integer(tab), names = names(tab))
 }
 
-print.TermDocumentMatrix <- function(x, ...) {
+print.TermDocumentMatrix <- print.DocumentTermMatrix <- function(x, ...) {
     format <- c("term", "document")
-    if (x$Transpose) format <- rev(format)
+    if (inherits(x, "DocumentTermMatrix")) format <- rev(format)
     cat(sprintf("A %s-%s matrix (%d %ss, %d %ss)\n",
                 format[1], format[2], nrow(x), format[1], ncol(x), format[2]))
     cat(sprintf("\nNon-/sparse entries: %d/%d\n", length(x$v), prod(dim(x)) - length(x$v)))
@@ -105,48 +112,45 @@ print.TermDocumentMatrix <- function(x, ...) {
     cat(sprintf("Weighting          : %s (%s)\n", x$Weighting[1], x$Weighting[2]))
 }
 
-inspect.TermDocumentMatrix <- function(x) {
+inspect.TermDocumentMatrix <- inspect.DocumentTermMatrix <- function(x) {
     print(x)
     cat("\n")
     print(as.matrix(x))
 }
 
-`[.TermDocumentMatrix` <- function(x, i, j, ..., drop) {
-    m <- if (x$Transpose)
-        `[.simple_triplet_matrix`(x, j, i, ...)
-    else
-        `[.simple_triplet_matrix`(x, i, j, ...)
-    m$Transpose <- x$Transpose
+`[.TermDocumentMatrix` <- `[.DocumentTermMatrix` <- function(x, i, j, ..., drop) {
+    m <- `[.simple_triplet_matrix`(x, i, j, ...)
     m$Weighting <- x$Weighting
-    class(m) <- c("TermDocumentMatrix", "simple_triplet_matrix")
+    class(m) <- if (inherits(x, "DocumentTermMatrix"))
+        c("DocumentTermMatrix", "simple_triplet_matrix")
+    else
+        c("TermDocumentMatrix", "simple_triplet_matrix")
     m
 }
 
-dim.TermDocumentMatrix <- function(x) if (x$Transpose) c(x$ncol, x$nrow) else c(x$nrow, x$ncol)
-ncol.TermDocumentMatrix <- function(x) if (x$Transpose) x$nrow else x$ncol
-nrow.TermDocumentMatrix <- function(x) if (x$Transpose) x$ncol else x$nrow
+dim.TermDocumentMatrix <- dim.DocumentTermMatrix <- function(x) c(x$nrow, x$ncol)
+ncol.TermDocumentMatrix <- ncol.DocumentTermMatrix <- function(x) x$ncol
+nrow.TermDocumentMatrix <- nrow.DocumentTermMatrix <- function(x) x$nrow
 
-dimnames.TermDocumentMatrix <- function(x) if (x$Transpose) rev(x$dimnames) else x$dimnames
-colnames.TermDocumentMatrix <- function(x) if (x$Transpose) x$dimnames[[1]] else x$dimnames[[2]]
-rownames.TermDocumentMatrix <- function(x) if (x$Transpose) x$dimnames[[2]] else x$dimnames[[1]]
+dimnames.TermDocumentMatrix <- dimnames.DocumentTermMatrix <- function(x) x$dimnames
+colnames.TermDocumentMatrix <- colnames.DocumentTermMatrix <- function(x) x$dimnames[[2]]
+rownames.TermDocumentMatrix <- rownames.DocumentTermMatrix <- function(x) x$dimnames[[1]]
 
-nDocs <- function(x) x$ncol
-nTerms <- function(x) x$nrow
+nDocs <- function(x) if (inherits(x, "DocumentTermMatrix")) x$nrow else x$ncol
+nTerms <- function(x) if (inherits(x, "DocumentTermMatrix")) x$ncol else x$nrow
 
-Docs <- function(x) x$dimnames[[2]]
-Terms <- function(x) x$dimnames[[1]]
+Docs <- function(x) if (inherits(x, "DocumentTermMatrix")) x$dimnames[[1]] else x$dimnames[[2]]
+Terms <- function(x) if (inherits(x, "DocumentTermMatrix")) x$dimnames[[2]] else x$dimnames[[1]]
 
-as.matrix.TermDocumentMatrix <- function(x, ...) {
-    m <- as.matrix.simple_triplet_matrix(x)
-    if (x$Transpose) t(m) else m
+findFreqTerms <- function(object, lowfreq = 0, highfreq = Inf) {
+    if (inherits(object, "DocumentTermMatrix")) object <- t(object)
+    Terms(object)[unique(object$i[object$v >= lowfreq & object$v <= highfreq])]
 }
 
-findFreqTerms <- function(object, lowfreq = 0, highfreq = Inf)
-    Terms(object)[unique(object$i[object$v >= lowfreq & object$v <= highfreq])]
-
 findAssocs <- function(x, term, corlimit) UseMethod("findAssocs", x)
-findAssocs.TermDocumentMatrix <- function(x, term, corlimit) {
-    suppressWarnings(x.cor <- cor(as.matrix.simple_triplet_matrix(t(x))))
+findAssocs.TermDocumentMatrix <- function(x, term, corlimit) findAssocs(t(x), term, corlimit)
+findAssocs.DocumentTermMatrix <- function(x, term, corlimit) {
+    suppressWarnings(x.cor <- cor(as.matrix(x)))
     findAssocs(x.cor, term, corlimit)
 }
 findAssocs.matrix <- function(x, term, corlimit)
@@ -156,8 +160,9 @@ removeSparseTerms <- function(object, sparse) {
     if ((sparse <= 0) || (sparse >= 1))
         stop("invalid sparse factor")
     else {
-        t <- table(object$i) > object$ncol * (1 - sparse)
+        m <- if (inherits(object, "DocumentTermMatrix")) t(object) else object
+        t <- table(m$i) > m$ncol * (1 - sparse)
         termIndex <- as.numeric(names(t[t]))
-        if (object$Transpose) object[, termIndex] else object[termIndex,]
+        if (inherits(object, "DocumentTermMatrix")) object[, termIndex] else object[termIndex,]
     }
 }

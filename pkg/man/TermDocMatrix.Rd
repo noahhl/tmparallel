@@ -1,9 +1,7 @@
 \name{TermDocumentMatrix}
-\docType{methods}
 \alias{TermDocMatrix}
 \alias{TermDocumentMatrix}
 \alias{DocumentTermMatrix}
-\alias{as.matrix.TermDocumentMatrix}
 \title{Term-Document Matrix}
 \description{
   Constructs a term-document matrix or a document-term matrix.
@@ -21,11 +19,10 @@ DocumentTermMatrix(object, control = list())
     \code{\link{termFreq}} call.}
 }
 \value{
-  An object of class \code{TermDocumentMatrix} containing a sparse term-document
-  matrix or document-term matrix. The following slots contain useful information:
+  An object of class \code{TermDocumentMatrix} or class
+  \code{DocumentTermMatrix} containing a sparse term-document matrix or
+  document-term matrix. The following slots contain useful information:
 
-  \item{Transpose}{Indicates whether the current instantiation is a
-  term-document matrix (\code{FALSE}) or a document-term matrix (\code{TRUE}).}
   \item{Weighting}{The weighting applied to the matrix.}
 }
 \seealso{

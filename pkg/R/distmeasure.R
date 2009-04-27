@@ -3,7 +3,10 @@
 dissimilarity <- function(x, y = NULL, method) UseMethod("dissimilarity", x)
 
 dissimilarity.TermDocumentMatrix <- function(x, y = NULL, method)
-    proxy::dist(as.matrix.simple_triplet_matrix(t(x)), y, method)
+    proxy::dist(as.matrix(t(x)), y, method)
+
+dissimilarity.DocumentTermMatrix <- function(x, y = NULL, method)
+    proxy::dist(as.matrix(x), y, method)
 
 # TODO: Shound work for all objects derived from TextDocument
 dissimilarity.PlainTextDocument <- function(x, y = NULL, method) {

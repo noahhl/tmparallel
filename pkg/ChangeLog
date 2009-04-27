@@ -1,3 +1,8 @@
+2009-04-27  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/matrix.R: Create two distinct classes for term-document and
+	document-term matrices.
+
 2009-04-26  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/termdocmatrix.R: No longer use Matrix package. This reduces

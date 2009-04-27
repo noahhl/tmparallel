@@ -1,4 +1,4 @@
-plot.TermDocumentMatrix <- function(x,
+plot.TermDocumentMatrix <- plot.DocumentTermMatrix <- function(x,
                                     terms = sample(Terms(x), 20),
                                     corThreshold = 0.7,
                                     weighting = FALSE,
@@ -9,7 +9,8 @@ plot.TermDocumentMatrix <- function(x,
     if (!require("Rgraphviz"))
         stop("could not find (bioconductor.org) Rgraphviz package")
 
-    m <- as.matrix.simple_triplet_matrix(t(x))
+    m <- if (inherits(x, "TermDocumentMatrix")) t(x) else x
+    m <- as.matrix(m)
     c <- cor(m[seq_len(nrow(m)), terms])
     c[c < corThreshold] <- 0
     diag(c) <- 0

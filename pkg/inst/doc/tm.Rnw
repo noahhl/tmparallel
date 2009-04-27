@@ -260,8 +260,8 @@ from a corpus. In the \pkg{tm} package the classes
 on whether you want terms as rows and documents as columns, or vice
 versa) handle sparse matrices for text document collections.
 <<>>=
-tdm <- DocumentTermMatrix(reuters)
-inspect(tdm[1:5,150:155])
+dtm <- DocumentTermMatrix(reuters)
+inspect(dtm[1:5,150:155])
 @
 
 \section*{Operations on Term-Document Matrices}
@@ -271,14 +271,14 @@ this package brings some shortcuts. Imagine we want to find those
 terms that occur at least five times, then we can use the
 \code{findFreqTerms()} function:
 <<>>=
-findFreqTerms(tdm, 5)
+findFreqTerms(dtm, 5)
 @
 Or we want to find associations (i.e., terms which correlate) with at
 least $0.97$ correlation for the term \code{crop}, then we use
 \code{findAssocs()} (we only display ten arbitrary associations
 found):
 <<>>=
-findAssocs(tdm, "crop", 0.97)[31:40]
+findAssocs(dtm, "crop", 0.97)[31:40]
 @
 The function also accepts a matrix as first argument (which does not
 inherit from a term-document matrix). This matrix is then interpreted
@@ -291,7 +291,7 @@ i.e., terms occurring only in very few documents. Normally, this
 reduces the matrix dramatically without losing significant relations
 inherent to the matrix:
 <<>>=
-inspect(removeSparseTerms(tdm, 0.4))
+inspect(removeSparseTerms(dtm, 0.4))
 @
 This function call removes those terms which have at least a 40
 percentage of sparse (i.e., terms occurring 0 times in a document)
