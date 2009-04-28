@@ -150,7 +150,7 @@ setMethod("getElem",
 
 setGeneric("pGetElem", function(object) standardGeneric("pGetElem"))
 setMethod("pGetElem", signature(object = "DataframeSource"),
-          function(object) lapply(seq_along(object@Content),
+          function(object) lapply(seq_len(object@Length),
                                   function(x) list(content = object@Content[x,], uri = NULL)))
 setMethod("pGetElem", signature(object = "DirSource"),
           function(object) {

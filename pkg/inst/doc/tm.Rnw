@@ -45,7 +45,7 @@ can be created via its constructor
 
 \code{object} must be a \class{Source} object which abstracts the
 input location. Available sources provided by \pkg{tm} are
-\class{DirSource}, \class{VectorSource}, \class{CSVSource},
+\class{DirSource}, \class{VectorSource}, \class{DataframeSource},
 \class{GmaneSource} and \class{ReutersSource} which handle a
 directory, a vector interpreting each component as document, \acronym{Csv}
 files, a \acronym{Rss} feed as delivered by the Gmane mailing list
