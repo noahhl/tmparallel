@@ -37,7 +37,7 @@ DocumentTermMatrix(object, control = list())
 data("crude")
 tdm <- TermDocumentMatrix(crude, control = list(weighting = weightTfIdf, stopwords = TRUE))
 dtm <- DocumentTermMatrix(crude, control = list(weighting = weightTfIdf, stopwords = TRUE))
-inspect(tdm[155:160,1:5])
-inspect(dtm[1:5,155:160])
+inspect(tdm[165:170,1:5])
+inspect(dtm[1:5,165:170])
 }
 \author{Ingo Feinerer}

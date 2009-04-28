@@ -1,3 +1,7 @@
+2009-04-28   Ingo Feinerer <feinerer@logic.at>
+
+	* R/weight.R: Adapt tf-idf to new matrix format.
+
 2009-04-27  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/matrix.R: Create two distinct classes for term-document and
