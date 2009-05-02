@@ -16,6 +16,7 @@
       <ol>
 	<li><a href="#Citation">How should I cite tm?</a></li>
 	<li><a href="#PDF">Where can I find the tools to read in a PDF file?</a></li>
+	<li><a href="#Custom">What is the easiest way to handle custom file formats?</a></li>
 	<li><a href="#Unsorted">Error: Row indices are not sorted within columns</a></li>
 	<li><a href="#Bigrams">Can I use bigrams instead of single tokens in a term-document matrix?</a></li>
       </ol>
@@ -58,17 +59,26 @@
 	  </p>
 	</li>
 	<li>
+	  <a name="Custom"></a>
+	  <cite>My documents are stored in file format XYZ. How do I
+	    get the material into tm and construct a corpus from
+	    it?</cite>
+	  <p>
+	    Please have a look at the
+	    vignette <a href="http://cran.r-project.org/web/packages/tm/vignettes/extensions.pdf">Extensions:
+	    How to Handle Custom File Formats</a>.
+	  </p>
+	</li>
+	<li>
 	  <a name="Unsorted"></a>
 	  <cite>When I create a term-document matrix
 	  (<kbd>TermDocMatrix</kbd>) the message <kbd>invalid class
 	  "dgCMatrix" object: row indices are not sorted within
 	  columns</kbd> is displayed.</cite>
 	  <p>
-	    This is a problem in the term-document matrix construction
-	    code which was triggered by a change in the Matrix
-	    package. Please update both
-	    the <a href="http://cran.r-project.org/package=Matrix">Matrix</a>
-	    package and
+	    This was a problem in the term-document matrix
+	    construction code which was triggered by a change in the
+	    Matrix package. Please update
 	    the <a href="http://cran.r-project.org/package=tm">tm</a>
 	    package to the latest version available
 	    from <a href="http://cran.r-project.org/">CRAN</a> in
@@ -92,9 +102,9 @@
   data("crude")
 
   BigramTokenizer &lt;- function(x) NGramTokenizer(x, Weka_control(min = 2, max = 2))
-  tdm &lt;- TermDocMatrix(crude, control = list(tokenize = BigramTokenizer))
+  tdm &lt;- TermDocumentMatrix(crude, control = list(tokenize = BigramTokenizer))
 
-  tdm[1:10,340:345]</code></pre>
+  inspect(tdm[340:345,1:10])</code></pre>
 	</li>
       </ol>
     </div>
