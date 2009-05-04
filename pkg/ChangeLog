@@ -1,3 +1,7 @@
+2009-05-04   Ingo Feinerer <feinerer@logic.at>
+
+	* NAMESPACE: Export some simple_triplet_matrix functions.
+
 2009-04-28   Ingo Feinerer <feinerer@logic.at>
 
 	* R/weight.R: Adapt tf-idf to new matrix format.
