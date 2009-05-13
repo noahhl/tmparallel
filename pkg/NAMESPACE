@@ -2,10 +2,12 @@ import(methods)
 
 export(
        "activateCluster",
+       "Corpus", # alias to SCorpus
        "CSVSource", # defunct
        "DataframeSource",
        "deactivateCluster",
        "Dictionary",
+       "DirSource",
        "dissimilarity",
        "Docs",
        "DocumentTermMatrix",
@@ -38,13 +40,18 @@ export(
        "convertRCV1Plain",
        "convertMboxEml",
        "sFilter",
+       "PCorpus",
+       "prescindMeta",
        "preprocessReut21578XML",
+       "SCorpus",
        "stopwords",
        "TermDocMatrix", # defunct
        "TermDocumentMatrix",
        "termFreq",
        "Terms",
        "tmReduce",
+       "URISource",
+       "VectorSource",
        "weightTf",
        "weightTfIdf",
        "weightBin",
@@ -52,9 +59,13 @@ export(
 
 S3method("Dictionary", "character")
 
-S3method("inspect", "Corpus")
+S3method("inspect", "SCorpus")
+S3method("TermDocumentMatrix", "SCorpus")
 
 S3method("findAssocs", "matrix")
+
+S3method("inspect", "PCorpus")
+S3method("TermDocumentMatrix", "PCorpus")
 
 S3method("dissimilarity", "PlainTextDocument")
 
@@ -90,11 +101,7 @@ S3method("unique", "simple_triplet_matrix")
 
 exportMethods(
               # Constructors
-              "Corpus",
               "TextRepository",
-              "DirSource",
-              "VectorSource",
-              "URISource",
               "FunctionGenerator",
               "WeightFunction",
 
@@ -117,10 +124,6 @@ exportMethods(
               "Language<-",
               "LocalMetaData",
 
-              "Cached",
-              "Cached<-",
-              "URI",
-
               "meta",
               "meta<-",
               "DublinCore",
@@ -142,8 +145,6 @@ exportMethods(
               "eoi",
 
               # Functions
-              "loadDoc",
-              "tmUpdate",
               "tmMap",
               "asPlain",
               "stripWhitespace",
@@ -162,16 +163,12 @@ exportMethods(
               "tmIntersect",
 
               "appendElem",
-              "appendMeta",
-              "prescindMeta",
-              "removeMeta",
               "[",
               "[<-",
               "[[",
               "[[<-",
               "c",
               "coerce", # for setAs
-              "length",
               "show",
               "summary",
               "writeCorpus",
@@ -194,6 +191,8 @@ exportClasses("TextDocument",
               "VectorSource",
               "URISource",
               "FunctionGenerator",
+              "PCorpus",
+              "SCorpus",
               "WeightFunction",
               "XMLSource")
 

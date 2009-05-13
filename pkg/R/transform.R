@@ -4,7 +4,7 @@
 tmReduce <- function(x, tmFuns, ...)
     Reduce(function(f, ...) f(...), tmFuns, x, right = TRUE)
 
-getTransformations <- function() { c("asPlain", "loadDoc",
+getTransformations <- function() { c("asPlain",
     "removeCitation", "removeMultipart", "removeNumbers",
     "removePunctuation", "removeSignature", "removeWords",
     "replacePatterns", "stemDoc", "stripWhitespace", "tmTolower") }

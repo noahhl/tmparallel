@@ -194,7 +194,7 @@ and the string ``\code{COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES
   SALE}'' as their heading (both are meta data slot variables of the
 text document).
 <<>>=
-query <- "identifier == '10' & heading == 'COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE'"
+query <- "id == '10' & heading == 'COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE'"
 tmFilter(reuters, FUN = sFilter, query)
 @
 There is also a full text search filter available (which is default

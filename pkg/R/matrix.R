@@ -4,10 +4,40 @@ TermDocMatrix <- function(object, control = list()) {
     .Defunct("DocumentTermMatrix", package = "tm")
 }
 
-TermDocumentMatrix <- function(object, control = list()) {
+TermDocumentMatrix <- function(object, control = list()) UseMethod("TermDocumentMatrix", object)
+TermDocumentMatrix.PCorpus <- function(object, control = list()) {
     weight <- control$weighting
     if (is.null(weight))
         weight <- weightTf
+
+    tflist <- lapply(object, termFreq, control)
+    tflist <- lapply(tflist, function(x) x[x > 0])
+    names(tflist) <- NULL
+
+    v <- unlist(tflist)
+    i <- names(v)
+    v <- as.numeric(v)
+    allTerms <- sort(unique(i))
+    i <- match(i, allTerms)
+    j <- rep(seq_along(object), sapply(tflist, length))
+    rm(tflist)
+
+    tdm <- structure(list(i = i, j = j, v = v, nrow = length(allTerms), ncol = length(object),
+                          dimnames = list(Terms = allTerms, Docs = sapply(object, ID)),
+                          Weighting = c(weight@Name, weight@Acronym)),
+                     class = c("TermDocumentMatrix", "simple_triplet_matrix"))
+    weight(tdm)
+}
+TermDocumentMatrix.SCorpus <- function(object, control = list()) {
+    weight <- control$weighting
+    if (is.null(weight))
+        weight <- weightTf
+
+    lazyTmMap <- meta(object, tag = "lazyTmMap", type = "corpus")
+    if (!is.null(lazyTmMap))
+        .Call("copyCorpus", object, materialize(object))
+
+    object <- object@.Data
 
     tflist <- if (clusterAvailable())
         snow::parLapply(snow::getMPIcluster(), object, termFreq, control)
@@ -64,7 +94,7 @@ termFreq <- function(doc, control = list()) {
     # Stemming
     stemming <- control$stemming
     if (isTRUE(stemming))
-        stemming <- function(x) Snowball::SnowballStemmer(x, RWeka::Weka_control(S = resolveISOCode(Language(doc))))
+        stemming <- function(x) Snowball::SnowballStemmer(x, RWeka::Weka_control(S = map_ISO_639_2(Language(doc))))
     if (is.function(stemming))
         txt <- stemming(txt)
 

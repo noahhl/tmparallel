@@ -2,7 +2,8 @@
 \docType{methods}
 \alias{tmMap}
 \alias{tmMap-methods}
-\alias{tmMap,Corpus,function-method}
+\alias{tmMap,SCorpus,function-method}
+\alias{tmMap,PCorpus,function-method}
 \title{Methods for Function tmMap in Package `tm'}
 \description{
 Methods for function \code{tmMap} in package \pkg{tm}.
@@ -18,7 +19,7 @@ Methods for function \code{tmMap} in package \pkg{tm}.
       delayed until the documents' content is accessed. Lazy mapping is
       useful when working with large corpora but only a few documents
       are accessed, as it avoids applying the mapping to all elements in
-      the document collection.}
+      the corpus.}
   }
 }
 \seealso{
@@ -28,14 +29,14 @@ Methods for function \code{tmMap} in package \pkg{tm}.
 }
 \note{
 Please be aware that lazy transformations are an experimental feature and
-change R's standard evaluation semantics.
+change \R's standard evaluation semantics.
 }
 \examples{
 data("crude")
 tmMap(crude, stemDoc)
 
 headings <- function(object, ...) {
-new("PlainTextDocument", Heading(object), Cached = TRUE, DateTimeStamp =
+new("PlainTextDocument", Heading(object), DateTimeStamp =
 Sys.time(), ID = ID(object), Language = Language(object))
 }
 inspect(tmMap(crude, headings))
