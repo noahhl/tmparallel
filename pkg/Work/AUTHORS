@@ -1,0 +1,13 @@
+AUTHOR:
+
+Ingo Feinerer		system design, implementation, maintainer
+
+CONTRIBUTORS (alphabetically sorted by lastname):
+
+Christian Buchta	optimization of term-document matrix construction, weighting functions, and lazy transformations
+Bettina Grün		S4 class expertise, profiling
+Kurt Hornik		system design, several bug fixes, CRAN uploads
+Robert Koblischke	optimization of term-document matrix construction, profiling
+David Meyer		system design
+Stefan Theußl		R-Forge tm repository setup
+Fridolin Wild		parts of the initial implementation for term-document matrix construction
