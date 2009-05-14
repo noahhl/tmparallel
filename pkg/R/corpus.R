@@ -1,5 +1,20 @@
 # Author: Ingo Feinerer
 
+FCorpus <- function(object, readerControl = list(language = "eng")) {
+    if (is.null(readerControl$language))
+        readerControl$language <- "eng"
+
+    if (!object@Vectorized)
+        stop("Source is not vectorized")
+
+    tdl <- lapply(mapply(c, pGetElem(object), id = seq_len(object@Length), SIMPLIFY = FALSE),
+                  function(x) readSlim(x[c("content", "uri")],
+                                       readerControl$language,
+                                       as.character(x$id)))
+
+    new("FCorpus", .Data = tdl)
+}
+
 PCorpus <- function(object,
                     readerControl = list(reader = object@DefaultReader, language = "eng"),
                     dbControl = list(dbName = "", dbType = "DB1"),
@@ -90,6 +105,14 @@ SCorpus <- Corpus <- function(object,
 }
 
 setGeneric("tmMap", function(object, FUN, ..., lazy = FALSE) standardGeneric("tmMap"))
+setMethod("tmMap",
+          signature(object = "FCorpus", FUN = "function"),
+          function(object, FUN, ..., lazy = FALSE) {
+              if (lazy)
+                  warning("lazy mapping is deactivated")
+
+              lapply(object, FUN, ..., DMetaData = data.frame())
+          })
 setMethod("tmMap",
           signature(object = "SCorpus", FUN = "function"),
           function(object, FUN, ..., lazy = FALSE) {
@@ -361,7 +384,7 @@ update_id <- function(object, id = 0, mapping = NULL, left.mapping = NULL, level
     return(list(root = set_id(object), left.mapping = left.mapping, right.mapping = mapping))
 }
 
-# TODO: Implement concatenation for PCorpus
+# TODO: Implement concatenation for other corpus types
 setMethod("c",
           signature(x = "Corpus"),
           function(x, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
@@ -475,7 +498,7 @@ inspect.PCorpus <- function(x) {
     db <- filehash::dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
     show(filehash::dbMultiFetch(db, unlist(x)))
 }
-inspect.SCorpus <- function(x) {
+inspect.FCorpus <- inspect.SCorpus <- function(x) {
     summary(x)
     cat("\n")
     print(noquote(lapply(x, identity)))

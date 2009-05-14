@@ -28,7 +28,7 @@ TermDocumentMatrix.PCorpus <- function(object, control = list()) {
                      class = c("TermDocumentMatrix", "simple_triplet_matrix"))
     weight(tdm)
 }
-TermDocumentMatrix.SCorpus <- function(object, control = list()) {
+TermDocumentMatrix.FCorpus <- TermDocumentMatrix.SCorpus <- function(object, control = list()) {
     weight <- control$weighting
     if (is.null(weight))
         weight <- weightTf

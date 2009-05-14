@@ -13,6 +13,7 @@ export(
        "DocumentTermMatrix",
        "stemCompletion",
        "GmaneSource",
+       "FCorpus",
        "findAssocs",
        "findFreqTerms",
        "getFilters",
@@ -58,6 +59,10 @@ export(
        "XMLSource")
 
 S3method("Dictionary", "character")
+
+S3method("TermDocumentMatrix", "FCorpus")
+
+S3method("print", "MinimalDocument")
 
 S3method("inspect", "SCorpus")
 S3method("TermDocumentMatrix", "SCorpus")

@@ -15,6 +15,14 @@ readPlain <- FunctionGenerator(function(...) {
     }
 })
 
+readSlim <- function(elem, language, id) {
+    doc <- as.character(elem$content)
+    class(doc) <- c("MinimalDocument", "character")
+    attr(doc, "ID") <- id
+    attr(doc, "Language") <- language
+    doc
+}
+
 readXML <- FunctionGenerator(function(spec, doc, ...) {
     spec <- spec
     doc <- doc
