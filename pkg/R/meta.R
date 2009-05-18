@@ -42,6 +42,17 @@ setMethod("meta",
                   else LocalMetaData(object)[[tag]]
               }
           })
+setMethod("meta",
+          signature(object = "MinimalDocument"),
+          function(object, tag, type = NULL) {
+              if (missing(tag)) {
+                  cat("Available meta data pairs are:\n")
+                  for (s in c("ID", "Language"))
+                      cat(sprintf("  %-8s: %s\n", s, paste(as(attr(object, s), "character"), collapse = " ")))
+              }
+              else
+                  attr(object, tag)
+          })
 
 setGeneric("meta<-", function(object, tag, type = NULL, value) standardGeneric("meta<-"))
 setReplaceMethod("meta",

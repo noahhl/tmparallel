@@ -60,6 +60,7 @@ export(
 
 S3method("Dictionary", "character")
 
+S3method("inspect", "FCorpus")
 S3method("TermDocumentMatrix", "FCorpus")
 
 S3method("print", "MinimalDocument")

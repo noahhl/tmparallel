@@ -111,7 +111,7 @@ setMethod("tmMap",
               if (lazy)
                   warning("lazy mapping is deactivated")
 
-              lapply(object, FUN, ..., DMetaData = data.frame())
+              new("FCorpus", .Data = lapply(object, FUN, ..., DMetaData = data.frame()))
           })
 setMethod("tmMap",
           signature(object = "SCorpus", FUN = "function"),
@@ -277,6 +277,14 @@ prescindMeta <- function(object, meta) {
 }
 
 setMethod("[",
+          signature(x = "FCorpus", i = "ANY", j = "ANY", drop = "ANY"),
+          function(x, i, j, ... , drop) {
+              if (missing(i)) return(x)
+
+              x@.Data <- x@.Data[i, ..., drop = FALSE]
+              x
+          })
+setMethod("[",
           signature(x = "PCorpus", i = "ANY", j = "ANY", drop = "ANY"),
           function(x, i, j, ... , drop) {
               if (missing(i)) return(x)
@@ -287,7 +295,6 @@ setMethod("[",
               else x@DMetaData[[1 , "subset"]] <- index[i]
               x
           })
-
 setMethod("[",
           signature(x = "SCorpus", i = "ANY", j = "ANY", drop = "ANY"),
           function(x, i, j, ... , drop) {
@@ -381,7 +388,7 @@ update_id <- function(object, id = 0, mapping = NULL, left.mapping = NULL, level
         return(object)
     }
 
-    return(list(root = set_id(object), left.mapping = left.mapping, right.mapping = mapping))
+    list(root = set_id(object), left.mapping = left.mapping, right.mapping = mapping)
 }
 
 # TODO: Implement concatenation for other corpus types
@@ -389,18 +396,20 @@ setMethod("c",
           signature(x = "Corpus"),
           function(x, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
               args <- list(...)
-              if (length(args) == 0)
-                  return(x)
+              if (identical(length(args), 0)) return(x)
 
-              if (!all(sapply(args, inherits, "SCorpus")))
-                  stop("not all arguments are standard corpora")
+              if (!all(sapply(args, inherits, class(x))))
+                  stop("not all arguments are of the same class")
 
               Reduce(c2, base::c(list(x), args))
           })
 
 setGeneric("c2", function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = TRUE) standardGeneric("c2"))
-setMethod("c2",
-          signature(x = "SCorpus", y = "SCorpus"),
+setMethod("c2", signature(x = "FCorpus", y = "FCorpus"),
+          function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
+              new("FCorpus", .Data = c(as(x, "list"), as(y, "list")))
+          })
+setMethod("c2", signature(x = "SCorpus", y = "SCorpus"),
           function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
               object <- x
               # Concatenate data slots
@@ -448,7 +457,7 @@ setMethod("c2",
               y.dmeta.aug <- cbind(DMetaData(y), na.matrix)
               object@DMetaData <- rbind(x.dmeta.aug, y.dmeta.aug)
 
-              return(object)
+              object
           })
 
 setMethod("c",

@@ -87,9 +87,13 @@ setGeneric("Content", function(object) standardGeneric("Content"))
 setMethod("Content", "PlainTextDocument", function(object) object@.Data)
 setMethod("Content", "MinimalDocument", function(object) as.character(object))
 setGeneric("Content<-", function(x, value) standardGeneric("Content<-"))
+setReplaceMethod("Content", "MinimalDocument", function(x, value) {
+    attributes(value) <- attributes(x)
+    value
+})
 setReplaceMethod("Content", "PlainTextDocument", function(x, value) {
-  x@.Data <- value
-  x
+    x@.Data <- value
+    x
 })
 
 # XML text document
