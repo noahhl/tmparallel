@@ -1,3 +1,8 @@
+2009-05-27  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/matrix.R (print.TermDocumentMatrix): Handle empty matrices
+	gracefully.
+
 2009-05-13  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/corpus.R: Make corpus virtual. Implement corpus with standard
