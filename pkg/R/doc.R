@@ -1,8 +1,8 @@
 setMethod("show",
           signature(object = "PlainTextDocument"),
           function(object){
-              print(noquote(Content(object)))
+              cat(noquote(Content(object)), "\n")
     })
 
 print.MinimalDocument <- function(x, ...)
-    print(noquote(as.character(x)))
+    cat(noquote(as.character(x)), "\n")

@@ -1,3 +1,7 @@
+2009-06-12  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/doc.R (show): Pretty print.
+
 2009-05-27  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/matrix.R (print.TermDocumentMatrix): Handle empty matrices
