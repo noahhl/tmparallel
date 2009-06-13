@@ -1,8 +1,17 @@
 # Author: Ingo Feinerer
 
-FCorpus <- function(object, readerControl = list(language = "eng")) {
+prepareReader <- function(readerControl, defaultReader = NULL, ...) {
+    if (is.null(readerControl$reader))
+        readerControl$reader <- defaultReader
+    if (is(readerControl$reader, "FunctionGenerator"))
+        readerControl$reader <- readerControl$reader(...)
     if (is.null(readerControl$language))
         readerControl$language <- "eng"
+    readerControl
+}
+
+FCorpus <- function(object, readerControl = list(language = "eng")) {
+    readerControl <- prepareReader(readerControl, object@DefaultReader, ...)
 
     if (!object@Vectorized)
         stop("Source is not vectorized")
@@ -19,12 +28,7 @@ PCorpus <- function(object,
                     readerControl = list(reader = object@DefaultReader, language = "eng"),
                     dbControl = list(dbName = "", dbType = "DB1"),
                     ...) {
-    if (is.null(readerControl$reader))
-        readerControl$reader <- object@DefaultReader
-    if (is(readerControl$reader, "FunctionGenerator"))
-        readerControl$reader <- readerControl$reader(...)
-    if (is.null(readerControl$language))
-        readerControl$language <- "eng"
+    readerControl <- prepareReader(readerControl, object@DefaultReader, ...)
 
     if (!filehash::dbCreate(dbControl$dbName, dbControl$dbType))
         stop("error in creating database")
@@ -63,12 +67,7 @@ PCorpus <- function(object,
 SCorpus <- Corpus <- function(object,
                     readerControl = list(reader = object@DefaultReader, language = "eng"),
                     ...) {
-    if (is.null(readerControl$reader))
-        readerControl$reader <- object@DefaultReader
-    if (is(readerControl$reader, "FunctionGenerator"))
-        readerControl$reader <- readerControl$reader(...)
-    if (is.null(readerControl$language))
-        readerControl$language <- "eng"
+    readerControl <- prepareReader(readerControl, object@DefaultReader, ...)
 
     # Allocate memory in advance if length is known
     tdl <- if (object@Length > 0)
@@ -391,26 +390,28 @@ update_id <- function(object, id = 0, mapping = NULL, left.mapping = NULL, level
     list(root = set_id(object), left.mapping = left.mapping, right.mapping = mapping)
 }
 
-# TODO: Implement concatenation for other corpus types
 setMethod("c",
           signature(x = "Corpus"),
-          function(x, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
+          function(x, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = FALSE) {
               args <- list(...)
               if (identical(length(args), 0)) return(x)
 
               if (!all(sapply(args, inherits, class(x))))
-                  stop("not all arguments are of the same class")
+                  stop("not all arguments are of the same corpus type")
+
+              if (inherits(x, "PCorpus"))
+                  stop("concatenation of corpora with underlying databases is not supported")
 
               Reduce(c2, base::c(list(x), args))
           })
 
-setGeneric("c2", function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = TRUE) standardGeneric("c2"))
+setGeneric("c2", function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME"))) standardGeneric("c2"))
 setMethod("c2", signature(x = "FCorpus", y = "FCorpus"),
-          function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
+          function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME"))) {
               new("FCorpus", .Data = c(as(x, "list"), as(y, "list")))
           })
 setMethod("c2", signature(x = "SCorpus", y = "SCorpus"),
-          function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), recursive = TRUE) {
+          function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME"))) {
               object <- x
               # Concatenate data slots
               object@.Data <- c(as(x, "list"), as(y, "list"))
@@ -462,7 +463,7 @@ setMethod("c2", signature(x = "SCorpus", y = "SCorpus"),
 
 setMethod("c",
           signature(x = "TextDocument"),
-          function(x, ..., recursive = TRUE){
+          function(x, ..., recursive = FALSE){
               args <- list(...)
               if (identical(length(args), 0)) return(x)
 
@@ -558,15 +559,14 @@ setAs("list", "SCorpus", function(from) {
                       NodeID = 0,
                       MetaData = list(create_date = as.POSIXlt(Sys.time(), tz = "GMT"), creator = Sys.getenv("LOGNAME")),
                       children = list())
-    data <- list()
+    data <- vector("list", length(from))
     counter <- 1
     for (f in from) {
-        doc <- new("PlainTextDocument",
-                   .Data = f,
-                   Author = "", DateTimeStamp = as.POSIXlt(Sys.time(), tz = "GMT"),
-                   Description = "", ID = as.character(counter),
-                   Origin = "", Heading = "", Language = "eng")
-        data <- c(data, list(doc))
+        data[[counter]] <- new("PlainTextDocument",
+                               .Data = f,
+                               DateTimeStamp = as.POSIXlt(Sys.time(), tz = "GMT"),
+                               ID = as.character(counter),
+                               Language = "eng")
         counter <- counter + 1
     }
     new("SCorpus", .Data = data,
