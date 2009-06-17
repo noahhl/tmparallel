@@ -128,9 +128,10 @@ setMethod("replacePatterns", signature(object = "MinimalDocument", patterns = "c
 setGeneric("stemDoc", function(object, language = "english", ...) standardGeneric("stemDoc"))
 .stemDoc <- function(object, language = "english", ...) {
     stemLine <- function(x) Snowball::SnowballStemmer(x, RWeka::Weka_control(S = language))
-    Content(object) <- sapply(object,
-                              function(x) paste(stemLine(unlist(strsplit(x, "[[:blank:]]"))), collapse = " "),
-                              USE.NAMES = FALSE)
+    s <- sapply(object,
+                function(x) paste(stemLine(unlist(strsplit(x, "[[:blank:]]"))), collapse = " "),
+                USE.NAMES = FALSE)
+    Content(object) <- if (is.character(s)) s else ""
     object
 }
 setMethod("stemDoc", signature(object = "PlainTextDocument"), .stemDoc)

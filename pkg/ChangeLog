@@ -1,3 +1,7 @@
+2009-06-17  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/transform.R (stemDoc): Fix character(0) handling.
+
 2009-06-12  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/doc.R (show): Pretty print.
