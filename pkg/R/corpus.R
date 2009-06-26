@@ -140,7 +140,6 @@ setMethod("tmMap",
 setMethod("tmMap",
           signature(object = "PCorpus", FUN = "function"),
           function(object, FUN, ..., lazy = FALSE) {
-              # TODO: When should lazy mapping be conceptually available?
               if (lazy)
                   warning("lazy mapping is deactived when using database backend")
               db <- filehash::dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
@@ -332,7 +331,6 @@ setMethod("[[",
 setMethod("[[",
           signature(x = "SCorpus", i = "ANY", j = "ANY"),
           function(x, i, j, ...) {
-              # TODO: For which corpora should lazy mapping be available?
               lazyTmMap <- meta(x, tag = "lazyTmMap", type = "corpus")
               if (!is.null(lazyTmMap))
                   .Call("copyCorpus", x, materialize(x, i))

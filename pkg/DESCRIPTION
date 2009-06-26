@@ -1,10 +1,10 @@
 Package: tm
 Title: Text Mining Package
 Version: 0.4
-Date: 2009-06-17
+Date: 2009-06-26
 Author: Ingo Feinerer
 Maintainer: Ingo Feinerer <feinerer@logic.at>
-Depends: R (>= 2.7.0), methods
+Depends: R (>= 2.7.0), methods, slam
 Suggests: filehash, proxy, Rgraphviz, Rmpi, RWeka, snow, Snowball, XML
 LazyLoad: yes
 Description: A framework for text mining applications within R.

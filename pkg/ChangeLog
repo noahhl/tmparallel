@@ -1,3 +1,14 @@
+2009-06-26  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/reader.R (readReut21578XMLasPlain): New reader which returns a
+	plain text document instead of an XML document for texts of the
+	Reuters-21578 dataset.
+
+	* R/sparse.R: Removed since the slam package is now available on
+	CRAN.
+
+	* DESCRIPTION (Depends): Add slam package.
+
 2009-06-17  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/transform.R (stemDoc): Fix character(0) handling.

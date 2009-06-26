@@ -93,18 +93,6 @@ S3method("plot", "TermDocumentMatrix")
 S3method("print", "TermDocumentMatrix")
 S3method("t", "TermDocumentMatrix")
 
-S3method("as.matrix", "simple_triplet_matrix")
-S3method("as.simple_triplet_matrix", "matrix")
-S3method("as.simple_triplet_matrix", "simple_triplet_matrix")
-S3method("Ops", "simple_triplet_matrix")
-S3method("c", "simple_triplet_matrix")
-S3method("cbind", "simple_triplet_matrix")
-S3method("dim", "simple_triplet_matrix")
-S3method("dimnames", "simple_triplet_matrix")
-S3method("duplicated", "simple_triplet_matrix")
-S3method("rbind", "simple_triplet_matrix")
-S3method("unique", "simple_triplet_matrix")
-
 exportMethods(
               # Constructors
               "TextRepository",

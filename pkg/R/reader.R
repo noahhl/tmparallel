@@ -2,7 +2,7 @@
 ## Reader
 
 getReaders <- function()
-    c("readDOC", "readGmane", "readHTML", "readNewsgroup", "readPDF", "readReut21578XML", "readPlain", "readRCV1", "readTabular")
+    c("readDOC", "readGmane", "readHTML", "readNewsgroup", "readPDF", "readReut21578XML", "readReut21578XMLasPlain", "readPlain", "readRCV1", "readTabular")
 
 readPlain <- FunctionGenerator(function(...) {
     function(elem, language, id) {
@@ -70,6 +70,19 @@ readReut21578XML <- readXML(spec = list(Author = list("node", "/REUTERS/TEXT/AUT
                             Origin = list("unevaluated", "Reuters-21578 XML"),
                             Topics = list("node", "/REUTERS/TOPICS/D")),
                             doc = new("Reuters21578Document"))
+
+readReut21578XMLasPlain <- readXML(spec = list(Author = list("node", "/REUTERS/TEXT/AUTHOR"),
+                                   .Data = list("node", "/REUTERS/TEXT/BODY"),
+                                   DateTimeStamp = list("function", function(node)
+                                   strptime(sapply(XML::getNodeSet(node, "/REUTERS/DATE"), XML::xmlValue),
+                                            format = "%d-%B-%Y %H:%M:%S",
+                                            tz = "GMT")),
+                                   Description = list("unevaluated", ""),
+                                   Heading = list("node", "/REUTERS/TEXT/TITLE"),
+                                   ID = list("attribute", "/REUTERS/@NEWID"),
+                                   Origin = list("unevaluated", "Reuters-21578 XML"),
+                                   Topics = list("node", "/REUTERS/TOPICS/D")),
+                                   doc = new("PlainTextDocument"))
 
 readRCV1 <- readXML(spec = list(Author = list("unevaluated", ""),
                     DateTimeStamp = list("function", function(node)
