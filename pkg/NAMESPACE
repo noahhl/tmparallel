@@ -27,6 +27,7 @@ export(
        "nTerms",
        "readPlain",
        "readReut21578XML",
+       "readReut21578XMLasPlain",
        "readRCV1",
        "readNewsgroup",
        "readGmane",
