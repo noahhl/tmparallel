@@ -10,19 +10,22 @@ prepareReader <- function(readerControl, defaultReader = NULL, ...) {
     readerControl
 }
 
-FCorpus <- function(object, readerControl = list(language = "eng")) {
-    readerControl <- prepareReader(readerControl, object@DefaultReader, ...)
-
-    if (!object@Vectorized)
-        stop("Source is not vectorized")
-
-    tdl <- lapply(mapply(c, pGetElem(object), id = seq_len(object@Length), SIMPLIFY = FALSE),
-                  function(x) readSlim(x[c("content", "uri")],
-                                       readerControl$language,
-                                       as.character(x$id)))
-
-    new("FCorpus", .Data = tdl)
-}
+## Fast Corpus
+##   - provides a prototype implementation of a more time and memory efficient representation of a corpus
+##   - allows performance tests and comparisons to other corpus types
+#FCorpus <- function(object, readerControl = list(language = "eng")) {
+#    readerControl <- prepareReader(readerControl)
+#
+#    if (!object@Vectorized)
+#        stop("Source is not vectorized")
+#
+#    tdl <- lapply(mapply(c, pGetElem(object), id = seq_len(object@Length), SIMPLIFY = FALSE),
+#                  function(x) readSlim(x[c("content", "uri")],
+#                                       readerControl$language,
+#                                       as.character(x$id)))
+#
+#    new("FCorpus", .Data = tdl)
+#}
 
 PCorpus <- function(object,
                     readerControl = list(reader = object@DefaultReader, language = "eng"),
@@ -104,14 +107,14 @@ SCorpus <- Corpus <- function(object,
 }
 
 setGeneric("tmMap", function(object, FUN, ..., lazy = FALSE) standardGeneric("tmMap"))
-setMethod("tmMap",
-          signature(object = "FCorpus", FUN = "function"),
-          function(object, FUN, ..., lazy = FALSE) {
-              if (lazy)
-                  warning("lazy mapping is deactivated")
-
-              new("FCorpus", .Data = lapply(object, FUN, ..., DMetaData = data.frame()))
-          })
+#setMethod("tmMap",
+#          signature(object = "FCorpus", FUN = "function"),
+#          function(object, FUN, ..., lazy = FALSE) {
+#              if (lazy)
+#                  warning("lazy mapping is deactivated")
+#
+#              new("FCorpus", .Data = lapply(object, FUN, ..., DMetaData = data.frame()))
+#          })
 setMethod("tmMap",
           signature(object = "SCorpus", FUN = "function"),
           function(object, FUN, ..., lazy = FALSE) {
@@ -274,14 +277,14 @@ prescindMeta <- function(object, meta) {
     df
 }
 
-setMethod("[",
-          signature(x = "FCorpus", i = "ANY", j = "ANY", drop = "ANY"),
-          function(x, i, j, ... , drop) {
-              if (missing(i)) return(x)
-
-              x@.Data <- x@.Data[i, ..., drop = FALSE]
-              x
-          })
+#setMethod("[",
+#          signature(x = "FCorpus", i = "ANY", j = "ANY", drop = "ANY"),
+#          function(x, i, j, ... , drop) {
+#              if (missing(i)) return(x)
+#
+#              x@.Data <- x@.Data[i, ..., drop = FALSE]
+#              x
+#          })
 setMethod("[",
           signature(x = "PCorpus", i = "ANY", j = "ANY", drop = "ANY"),
           function(x, i, j, ... , drop) {
@@ -404,10 +407,10 @@ setMethod("c",
           })
 
 setGeneric("c2", function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME"))) standardGeneric("c2"))
-setMethod("c2", signature(x = "FCorpus", y = "FCorpus"),
-          function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME"))) {
-              new("FCorpus", .Data = c(as(x, "list"), as(y, "list")))
-          })
+#setMethod("c2", signature(x = "FCorpus", y = "FCorpus"),
+#          function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME"))) {
+#              new("FCorpus", .Data = c(as(x, "list"), as(y, "list")))
+#          })
 setMethod("c2", signature(x = "SCorpus", y = "SCorpus"),
           function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME"))) {
               object <- x
@@ -506,7 +509,8 @@ inspect.PCorpus <- function(x) {
     db <- filehash::dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
     show(filehash::dbMultiFetch(db, unlist(x)))
 }
-inspect.FCorpus <- inspect.SCorpus <- function(x) {
+#inspect.FCorpus <-
+inspect.SCorpus <- function(x) {
     summary(x)
     cat("\n")
     print(noquote(lapply(x, identity)))

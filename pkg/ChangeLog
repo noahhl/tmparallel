@@ -1,3 +1,7 @@
+2009-06-28  Ingo Feinerer  <feinerer@logic.at>
+
+	* man/: Fix documentation.
+
 2009-06-26  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/reader.R (readReut21578XMLasPlain): New reader which returns a

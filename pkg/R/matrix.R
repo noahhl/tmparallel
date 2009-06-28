@@ -28,7 +28,8 @@ TermDocumentMatrix.PCorpus <- function(object, control = list()) {
                      class = c("TermDocumentMatrix", "simple_triplet_matrix"))
     weight(tdm)
 }
-TermDocumentMatrix.FCorpus <- TermDocumentMatrix.SCorpus <- function(object, control = list()) {
+#TermDocumentMatrix.FCorpus <-
+TermDocumentMatrix.SCorpus <- function(object, control = list()) {
     weight <- control$weighting
     if (is.null(weight))
         weight <- weightTf
@@ -64,7 +65,7 @@ DocumentTermMatrix <- function(object, control = list())
     t(TermDocumentMatrix(object, control))
 
 t.TermDocumentMatrix <- t.DocumentTermMatrix <- function(x) {
-    m <- t.simple_triplet_matrix(x)
+    m <- slam:::t.simple_triplet_matrix(x)
     m$Weighting <- x$Weighting
     class(m) <- if (inherits(x, "DocumentTermMatrix"))
         c("TermDocumentMatrix", "simple_triplet_matrix")
@@ -150,7 +151,7 @@ inspect.TermDocumentMatrix <- inspect.DocumentTermMatrix <- function(x) {
 }
 
 `[.TermDocumentMatrix` <- `[.DocumentTermMatrix` <- function(x, i, j, ..., drop) {
-    m <- `[.simple_triplet_matrix`(x, i, j, ...)
+    m <- slam:::`[.simple_triplet_matrix`(x, i, j, ...)
     m$Weighting <- x$Weighting
     class(m) <- if (inherits(x, "DocumentTermMatrix"))
         c("DocumentTermMatrix", "simple_triplet_matrix")

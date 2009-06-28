@@ -14,7 +14,7 @@ setClass("TextDocument",
                         "VIRTUAL"))
 
 # Minimal document
-setOldClass("MinimalDocument")
+#setOldClass("MinimalDocument")
 
 setGeneric("Author", function(object) standardGeneric("Author"))
 setMethod("Author", "TextDocument", function(object) object@Author)
@@ -42,7 +42,7 @@ setReplaceMethod("Description", "TextDocument", function(x, value) {
 
 setGeneric("ID", function(object) standardGeneric("ID"))
 setMethod("ID", "TextDocument", function(object) object@ID)
-setMethod("ID", "MinimalDocument", function(object) attr(object, "ID"))
+#setMethod("ID", "MinimalDocument", function(object) attr(object, "ID"))
 setGeneric("ID<-", function(x, value) standardGeneric("ID<-"))
 setReplaceMethod("ID", "TextDocument", function(x, value) {
   x@ID <- value
@@ -67,7 +67,7 @@ setReplaceMethod("Heading", "TextDocument", function(x, value) {
 
 setGeneric("Language", function(object) standardGeneric("Language"))
 setMethod("Language", "TextDocument", function(object) object@Language)
-setMethod("Language", "MinimalDocument", function(object) attr(object, "Language"))
+#setMethod("Language", "MinimalDocument", function(object) attr(object, "Language"))
 setGeneric("Language<-", function(x, value) standardGeneric("Language<-"))
 setReplaceMethod("Language", "TextDocument", function(x, value) {
   x@Language <- value
@@ -85,12 +85,12 @@ setClass("PlainTextDocument",
 
 setGeneric("Content", function(object) standardGeneric("Content"))
 setMethod("Content", "PlainTextDocument", function(object) object@.Data)
-setMethod("Content", "MinimalDocument", function(object) as.character(object))
+#setMethod("Content", "MinimalDocument", function(object) as.character(object))
 setGeneric("Content<-", function(x, value) standardGeneric("Content<-"))
-setReplaceMethod("Content", "MinimalDocument", function(x, value) {
-    attributes(value) <- attributes(x)
-    value
-})
+#setReplaceMethod("Content", "MinimalDocument", function(x, value) {
+#    attributes(value) <- attributes(x)
+#    value
+#})
 setReplaceMethod("Content", "PlainTextDocument", function(x, value) {
     x@.Data <- value
     x
@@ -157,7 +157,7 @@ setClass("PCorpus", representation(DBControl = "list"), contains = c("list", "Co
 
 # DMetaData = *MetaData* available for all *D*ocuments
 setGeneric("DMetaData", function(object) standardGeneric("DMetaData"))
-setMethod("DMetaData", "FCorpus", function(object) object@DMetaData)
+#setMethod("DMetaData", "FCorpus", function(object) object@DMetaData)
 setMethod("DMetaData", "SCorpus", function(object) object@DMetaData)
 setMethod("DMetaData", "PCorpus",
           function(object) {

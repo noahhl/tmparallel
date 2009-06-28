@@ -67,7 +67,7 @@ setGeneric("removeNumbers", function(object, ...) standardGeneric("removeNumbers
     object
 }
 setMethod("removeNumbers", signature(object = "PlainTextDocument"), .removeNumbers)
-setMethod("removeNumbers", signature(object = "MinimalDocument"), .removeNumbers)
+#setMethod("removeNumbers", signature(object = "MinimalDocument"), .removeNumbers)
 
 setGeneric("removePunctuation", function(object, ...) standardGeneric("removePunctuation"))
 .removePunctuation <- function(object, ...) {
@@ -75,7 +75,7 @@ setGeneric("removePunctuation", function(object, ...) standardGeneric("removePun
     object
 }
 setMethod("removePunctuation", signature(object = "PlainTextDocument"), .removePunctuation)
-setMethod("removePunctuation", signature(object = "MinimalDocument"), .removePunctuation)
+#setMethod("removePunctuation", signature(object = "MinimalDocument"), .removePunctuation)
 
 setGeneric("removeSignature",
            function(object, ...) standardGeneric("removeSignature"))
@@ -115,7 +115,7 @@ setGeneric("removeWords", function(object, words, ...) standardGeneric("removeWo
     object
 }
 setMethod("removeWords", signature(object = "PlainTextDocument", words = "character"), .removeWords)
-setMethod("removeWords", signature(object = "MinimalDocument", words = "character"), .removeWords)
+#setMethod("removeWords", signature(object = "MinimalDocument", words = "character"), .removeWords)
 
 setGeneric("replacePatterns", function(object, patterns, by, ...) standardGeneric("replacePatterns"))
 .replacePatterns <- function(object, patterns, by, ...) {
@@ -123,7 +123,7 @@ setGeneric("replacePatterns", function(object, patterns, by, ...) standardGeneri
     object
 }
 setMethod("replacePatterns", signature(object = "PlainTextDocument", patterns = "character", by = "character"), .replacePatterns)
-setMethod("replacePatterns", signature(object = "MinimalDocument", patterns = "character", by = "character"), .replacePatterns)
+#setMethod("replacePatterns", signature(object = "MinimalDocument", patterns = "character", by = "character"), .replacePatterns)
 
 setGeneric("stemDoc", function(object, language = "english", ...) standardGeneric("stemDoc"))
 .stemDoc <- function(object, language = "english", ...) {
@@ -135,7 +135,7 @@ setGeneric("stemDoc", function(object, language = "english", ...) standardGeneri
     object
 }
 setMethod("stemDoc", signature(object = "PlainTextDocument"), .stemDoc)
-setMethod("stemDoc", signature(object = "MinimalDocument"), .stemDoc)
+#setMethod("stemDoc", signature(object = "MinimalDocument"), .stemDoc)
 
 setGeneric("stripWhitespace", function(object, ...) standardGeneric("stripWhitespace"))
 .stripWhitespace <- function(object, ...) {
@@ -143,7 +143,7 @@ setGeneric("stripWhitespace", function(object, ...) standardGeneric("stripWhites
     object
 }
 setMethod("stripWhitespace", signature(object = "PlainTextDocument"), .stripWhitespace)
-setMethod("stripWhitespace", signature(object = "MinimalDocument"), .stripWhitespace)
+#setMethod("stripWhitespace", signature(object = "MinimalDocument"), .stripWhitespace)
 
 setGeneric("tmTolower", function(object, ...) standardGeneric("tmTolower"))
 .tmTolower <- function(object, ...) {
@@ -151,4 +151,4 @@ setGeneric("tmTolower", function(object, ...) standardGeneric("tmTolower"))
     object
 }
 setMethod("tmTolower", signature(object = "PlainTextDocument"), .tmTolower)
-setMethod("tmTolower", signature(object = "MinimalDocument"), .tmTolower)
+#setMethod("tmTolower", signature(object = "MinimalDocument"), .tmTolower)

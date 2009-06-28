@@ -17,6 +17,8 @@
 }
 \section{Slots}{
   \describe{
+    \item{\code{.Data}:}{Object of class \code{list} holding keys (the
+      document IDs) in order to access the underlying database entries.}
     \item{\code{CMetaData}:}{Object of class \code{MetaDataNode} containing
       the corpus specific meta data in form of tag-value pairs and information about
       children in form of a binary tree. This information is useful for

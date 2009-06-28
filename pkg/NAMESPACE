@@ -1,4 +1,5 @@
 import(methods)
+import(slam)
 
 export(
        "activateCluster",
@@ -13,7 +14,7 @@ export(
        "DocumentTermMatrix",
        "stemCompletion",
        "GmaneSource",
-       "FCorpus",
+#      "FCorpus",
        "findAssocs",
        "findFreqTerms",
        "getFilters",
@@ -61,10 +62,10 @@ export(
 
 S3method("Dictionary", "character")
 
-S3method("inspect", "FCorpus")
-S3method("TermDocumentMatrix", "FCorpus")
+# S3method("inspect", "FCorpus")
+# S3method("TermDocumentMatrix", "FCorpus")
 
-S3method("print", "MinimalDocument")
+# S3method("print", "MinimalDocument")
 
 S3method("inspect", "SCorpus")
 S3method("TermDocumentMatrix", "SCorpus")
