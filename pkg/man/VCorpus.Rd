@@ -1,12 +1,12 @@
-\name{SCorpus}
+\name{VCorpus}
 \docType{methods}
-\alias{SCorpus}
+\alias{VCorpus}
 \alias{Corpus}
-\alias{SCorpus,Source-method}
-\alias{coerce,list,SCorpus-method}
-\title{Standard Corpus Constructor}
+\alias{VCorpus,Source-method}
+\alias{coerce,list,VCorpus-method}
+\title{Volatile Corpus Constructor}
 \description{
-  Constructs a standard corpus.
+  Constructs a volatile corpus.
 }
 \usage{
 Corpus(object, readerControl = list(reader = object@DefaultReader, language = "eng"), \dots)
@@ -20,7 +20,7 @@ Corpus(object, readerControl = list(reader = object@DefaultReader, language = "e
   \item{...}{Optional arguments for the \code{reader}.}
 }
 \value{
-  An S4 object of class \code{SCorpus} which extends the class
+  An S4 object of class \code{VCorpus} which extends the class
   \code{list} containing a corpus.
 }
 \examples{

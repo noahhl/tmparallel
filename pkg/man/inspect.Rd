@@ -1,6 +1,6 @@
 \name{inspect}
 \alias{inspect}
-\alias{inspect.SCorpus}
+\alias{inspect.VCorpus}
 \alias{inspect.PCorpus}
 \alias{inspect.TermDocumentMatrix}
 \title{Inspect Objects}
@@ -9,7 +9,7 @@
   term-document matrix.
 }
 \usage{
-\method{inspect}{SCorpus}(x)
+\method{inspect}{VCorpus}(x)
 \method{inspect}{PCorpus}(x)
 \method{inspect}{TermDocumentMatrix}(x)
 }

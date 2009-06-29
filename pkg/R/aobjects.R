@@ -147,7 +147,7 @@ setClass("MetaDataNode",
 setClass("Corpus", representation(DMetaData = "data.frame", CMetaData = "MetaDataNode", "VIRTUAL"))
 
 # Standard corpus
-setClass("SCorpus", contains = c("list", "Corpus"))
+setClass("VCorpus", contains = c("list", "Corpus"))
 
 # Fast corpus
 setClass("FCorpus", contains = c("list", "Corpus"))
@@ -158,7 +158,7 @@ setClass("PCorpus", representation(DBControl = "list"), contains = c("list", "Co
 # DMetaData = *MetaData* available for all *D*ocuments
 setGeneric("DMetaData", function(object) standardGeneric("DMetaData"))
 #setMethod("DMetaData", "FCorpus", function(object) object@DMetaData)
-setMethod("DMetaData", "SCorpus", function(object) object@DMetaData)
+setMethod("DMetaData", "VCorpus", function(object) object@DMetaData)
 setMethod("DMetaData", "PCorpus",
           function(object) {
               db <- filehash::dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
@@ -169,7 +169,7 @@ setMethod("DMetaData", "PCorpus",
               result
           })
 setGeneric("DMetaData<-", function(x, value) standardGeneric("DMetaData<-"))
-setReplaceMethod("DMetaData", "SCorpus", function(x, value) {
+setReplaceMethod("DMetaData", "VCorpus", function(x, value) {
   x@DMetaData <- value
   x
 })

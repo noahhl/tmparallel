@@ -67,7 +67,7 @@ PCorpus <- function(object,
 }
 
 # The "..." are additional arguments for the FunctionGenerator reader
-SCorpus <- Corpus <- function(object,
+VCorpus <- Corpus <- function(object,
                     readerControl = list(reader = object@DefaultReader, language = "eng"),
                     ...) {
     readerControl <- prepareReader(readerControl, object@DefaultReader, ...)
@@ -103,7 +103,7 @@ SCorpus <- Corpus <- function(object,
                       MetaData = list(create_date = as.POSIXlt(Sys.time(), tz = "GMT"), creator = Sys.getenv("LOGNAME")),
                       children = list())
 
-    new("SCorpus", .Data = tdl, DMetaData = df, CMetaData = cmeta.node)
+    new("VCorpus", .Data = tdl, DMetaData = df, CMetaData = cmeta.node)
 }
 
 setGeneric("tmMap", function(object, FUN, ..., lazy = FALSE) standardGeneric("tmMap"))
@@ -116,7 +116,7 @@ setGeneric("tmMap", function(object, FUN, ..., lazy = FALSE) standardGeneric("tm
 #              new("FCorpus", .Data = lapply(object, FUN, ..., DMetaData = data.frame()))
 #          })
 setMethod("tmMap",
-          signature(object = "SCorpus", FUN = "function"),
+          signature(object = "VCorpus", FUN = "function"),
           function(object, FUN, ..., lazy = FALSE) {
               result <- object
               # Lazy mapping
@@ -297,7 +297,7 @@ setMethod("[",
               x
           })
 setMethod("[",
-          signature(x = "SCorpus", i = "ANY", j = "ANY", drop = "ANY"),
+          signature(x = "VCorpus", i = "ANY", j = "ANY", drop = "ANY"),
           function(x, i, j, ... , drop) {
               if (missing(i)) return(x)
 
@@ -319,7 +319,7 @@ setMethod("[<-",
               x
           })
 setMethod("[<-",
-          signature(x = "SCorpus", i = "ANY", j = "ANY", value = "ANY"),
+          signature(x = "VCorpus", i = "ANY", j = "ANY", value = "ANY"),
           function(x, i, j, ... , value) {
               x@.Data[i, ...] <- value
               x
@@ -332,7 +332,7 @@ setMethod("[[",
               filehash::dbFetch(db, x@.Data[[i]])
           })
 setMethod("[[",
-          signature(x = "SCorpus", i = "ANY", j = "ANY"),
+          signature(x = "VCorpus", i = "ANY", j = "ANY"),
           function(x, i, j, ...) {
               lazyTmMap <- meta(x, tag = "lazyTmMap", type = "corpus")
               if (!is.null(lazyTmMap))
@@ -349,7 +349,7 @@ setMethod("[[<-",
               x
           })
 setMethod("[[<-",
-          signature(x = "SCorpus", i = "ANY", j = "ANY", value = "ANY"),
+          signature(x = "VCorpus", i = "ANY", j = "ANY", value = "ANY"),
           function(x, i, j, ..., value) {
               # Mark new objects as not active for lazy mapping
               lazyTmMap <- meta(x, tag = "lazyTmMap", type = "corpus")
@@ -411,7 +411,7 @@ setGeneric("c2", function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.tim
 #          function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME"))) {
 #              new("FCorpus", .Data = c(as(x, "list"), as(y, "list")))
 #          })
-setMethod("c2", signature(x = "SCorpus", y = "SCorpus"),
+setMethod("c2", signature(x = "VCorpus", y = "VCorpus"),
           function(x, y, ..., meta = list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME"))) {
               object <- x
               # Concatenate data slots
@@ -474,7 +474,7 @@ setMethod("c",
                             MetaData = list(create_date = as.POSIXlt(Sys.time(), tz = "GMT"), creator = Sys.getenv("LOGNAME")),
                             children = list())
 
-              new("SCorpus", .Data = list(x, ...), DMetaData = dmeta.df, CMetaData = cmeta.node)
+              new("VCorpus", .Data = list(x, ...), DMetaData = dmeta.df, CMetaData = cmeta.node)
           })
 
 setMethod("show",
@@ -510,7 +510,7 @@ inspect.PCorpus <- function(x) {
     show(filehash::dbMultiFetch(db, unlist(x)))
 }
 #inspect.FCorpus <-
-inspect.SCorpus <- function(x) {
+inspect.VCorpus <- function(x) {
     summary(x)
     cat("\n")
     print(noquote(lapply(x, identity)))
@@ -523,11 +523,11 @@ setMethod("%IN%", signature(x = "TextDocument", y = "PCorpus"),
               db <- filehash::dbInit(DBControl(y)[["dbName"]], DBControl(y)[["dbType"]])
               any(sapply(y, function(x, z) {x %in% Content(z)}, x))
           })
-setMethod("%IN%", signature(x = "TextDocument", y = "SCorpus"),
+setMethod("%IN%", signature(x = "TextDocument", y = "VCorpus"),
           function(x, y) x %in% y)
 
 setMethod("lapply",
-          signature(X = "SCorpus"),
+          signature(X = "VCorpus"),
           function(X, FUN, ...) {
               lazyTmMap <- meta(X, tag = "lazyTmMap", type = "corpus")
               if (!is.null(lazyTmMap))
@@ -542,7 +542,7 @@ setMethod("lapply",
           })
 
 setMethod("sapply",
-          signature(X = "SCorpus"),
+          signature(X = "VCorpus"),
           function(X, FUN, ..., simplify = TRUE, USE.NAMES = TRUE) {
               lazyTmMap <- meta(X, tag = "lazyTmMap", type = "corpus")
               if (!is.null(lazyTmMap))
@@ -556,7 +556,7 @@ setMethod("sapply",
               sapply(filehash::dbMultiFetch(db, unlist(X)), FUN, ...)
           })
 
-setAs("list", "SCorpus", function(from) {
+setAs("list", "VCorpus", function(from) {
     cmeta.node <- new("MetaDataNode",
                       NodeID = 0,
                       MetaData = list(create_date = as.POSIXlt(Sys.time(), tz = "GMT"), creator = Sys.getenv("LOGNAME")),
@@ -571,7 +571,7 @@ setAs("list", "SCorpus", function(from) {
                                Language = "eng")
         counter <- counter + 1
     }
-    new("SCorpus", .Data = data,
+    new("VCorpus", .Data = data,
         DMetaData = data.frame(MetaID = rep(0, length(from)), stringsAsFactors = FALSE),
         CMetaData = cmeta.node)
 })

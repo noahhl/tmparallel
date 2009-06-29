@@ -29,7 +29,7 @@ TermDocumentMatrix.PCorpus <- function(object, control = list()) {
     weight(tdm)
 }
 #TermDocumentMatrix.FCorpus <-
-TermDocumentMatrix.SCorpus <- function(object, control = list()) {
+TermDocumentMatrix.VCorpus <- function(object, control = list()) {
     weight <- control$weighting
     if (is.null(weight))
         weight <- weightTf

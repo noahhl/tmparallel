@@ -2,7 +2,7 @@
 \docType{methods}
 \alias{tmMap}
 \alias{tmMap-methods}
-\alias{tmMap,SCorpus,function-method}
+\alias{tmMap,VCorpus,function-method}
 \alias{tmMap,PCorpus,function-method}
 \title{Methods for Function tmMap in Package `tm'}
 \description{

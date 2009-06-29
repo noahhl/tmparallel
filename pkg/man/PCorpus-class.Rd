@@ -49,7 +49,8 @@ Class \code{list}, directly.
 }
 \author{Ingo Feinerer}
 \seealso{
-  \code{\link{MetaDataNode-class}}
+  \code{\linkS4class{MetaDataNode}}
   \code{\link{PCorpus}}
+  \code{\linkS4class{VCorpus}}
 }
 \keyword{classes}

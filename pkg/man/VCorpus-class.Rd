@@ -1,17 +1,24 @@
-\name{SCorpus-class}
+\name{VCorpus-class}
 \docType{class}
-\alias{SCorpus-class}
-\alias{CMetaData,SCorpus-method}
-\alias{DMetaData,SCorpus-method}
-\alias{DMetaData<-,SCorpus-method}
-\title{Standard Corpus}
+\alias{VCorpus-class}
+\alias{CMetaData,VCorpus-method}
+\alias{DMetaData,VCorpus-method}
+\alias{DMetaData<-,VCorpus-method}
+\title{Volatile Corpus}
 \description{
-  A class representing a standard corpus.
+  A class representing a volatile corpus.
+}
+\details{
+  Volatile means that a corpus is fully kept in memory and thus all
+  changes only affect the corresponding \R object.
+
+  In contrast there is also a corpus implementation available providing
+  a permanent semantics (see \code{\linkS4class{PCorpus}}).
 }
 \section{Objects from the Class}{
   Objects can be created by calls of the form
-  \code{new("SCorpus",...)} or by calling the function
-  \code{SCorpus}.
+  \code{new("VCorpus",...)} or by calling the function
+  \code{VCorpus}.
 }
 \section{Slots}{
   \describe{
@@ -33,16 +40,17 @@ Class \code{list}, directly.
 }
 \section{Methods}{
   \describe{
-    \item{CMetaData}{\code{signature(object = "SCorpus")}: Returns the
+    \item{CMetaData}{\code{signature(object = "VCorpus")}: Returns the
       corpus specific metadata in form of a tag-value
       paired list.}
-    \item{DMetaData}{\code{signature(object = "SCorpus")}: Returns the
+    \item{DMetaData}{\code{signature(object = "VCorpus")}: Returns the
       document specific metadata in form of a data frame.}
   }
 }
 \author{Ingo Feinerer}
 \seealso{
-  \code{\link{MetaDataNode-class}}
-  \code{\link{SCorpus}}
+  \code{\linkS4class{MetaDataNode}}
+  \code{\link{VCorpus}}
+  \code{\linkS4class{PCorpus}}
 }
 \keyword{classes}

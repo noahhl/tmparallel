@@ -3,7 +3,7 @@ import(slam)
 
 export(
        "activateCluster",
-       "Corpus", # alias to SCorpus
+       "Corpus", # alias to VCorpus
        "CSVSource", # defunct
        "DataframeSource",
        "deactivateCluster",
@@ -46,7 +46,7 @@ export(
        "PCorpus",
        "prescindMeta",
        "preprocessReut21578XML",
-       "SCorpus",
+       "VCorpus",
        "stopwords",
        "TermDocMatrix", # defunct
        "TermDocumentMatrix",
@@ -67,8 +67,8 @@ S3method("Dictionary", "character")
 
 # S3method("print", "MinimalDocument")
 
-S3method("inspect", "SCorpus")
-S3method("TermDocumentMatrix", "SCorpus")
+S3method("inspect", "VCorpus")
+S3method("TermDocumentMatrix", "VCorpus")
 
 S3method("findAssocs", "matrix")
 
@@ -188,7 +188,7 @@ exportClasses("TextDocument",
               "URISource",
               "FunctionGenerator",
               "PCorpus",
-              "SCorpus",
+              "VCorpus",
               "WeightFunction",
               "XMLSource")
 

@@ -2,7 +2,7 @@
 \alias{\%IN\%}
 \docType{methods}
 \alias{\%IN\%-methods}
-\alias{\%IN\%,TextDocument,SCorpus-method}
+\alias{\%IN\%,TextDocument,VCorpus-method}
 \alias{\%IN\%,TextDocument,PCorpus-method}
 \title{Methods for Function \%IN\% in Package `tm'}
 \description{
