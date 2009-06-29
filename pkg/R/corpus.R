@@ -250,7 +250,6 @@ setMethod("tmIndex",
                   return(FUN(object, ...))
           })
 
-# TODO: Replace with c(Corpus, TextDocument)?
 setGeneric("appendElem", function(object, data, meta = NULL) standardGeneric("appendElem"))
 setMethod("appendElem",
           signature(object = "Corpus", data = "TextDocument"),
