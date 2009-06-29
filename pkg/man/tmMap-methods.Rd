@@ -13,7 +13,7 @@ Methods for function \code{tmMap} in package \pkg{tm}.
     \item{object = "Corpus", FUN, ..., lazy = FALSE}{Applies \code{FUN} onto each element
       of \code{object}. Note that document specific metadata (i.e.,
       \code{DMetaData(object)} is automatically passed to
-      \code{FUN} as argument \code{DMetaData}. \code{FUN} must be a
+      \code{FUN} as argument \code{DMetaData}). \code{FUN} must be a
       function which returns a \code{TextDocument}. If \code{lazy} is
       set, so-called lazy mapping is activated, i.e., mappings are
       delayed until the documents' content is accessed. Lazy mapping is
