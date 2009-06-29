@@ -40,8 +40,17 @@ introductory article on text mining in \proglang{R} was published in
 \section*{Data Import}
 The main structure for managing documents in \pkg{tm} is a so-called
 \class{Corpus}, representing a collection of text documents. A corpus
-can be created via its constructor
-\code{Corpus(object, readerControl, dbControl)}.
+is an abstract concept (modelled via a virtual class), and there can
+exist several implementations in parallel. The default implementation
+is the so-called \class{VCorpus} (short for \emph{V}olatile
+\emph{Corpus}) which realizes a semantics as known from most
+\proglang{R} objects: corpora are \proglang{R} objects held fully in
+memory. Such a volatile corpus can be created via the constructor
+\code{Corpus(object, readerControl)}. Another implementation is the
+\class{PCorpus} which implements a \emph{P}ermanent \emph{Corpus}
+semantics, i.e., the documents are physically located on a disk, and
+its changes are reflected to all \proglang{R} objects associated with
+it.
 
 \code{object} must be a \class{Source} object which abstracts the
 input location. Available sources provided by \pkg{tm} are
@@ -57,37 +66,35 @@ can take connections as input (a character string is interpreted as
 file path). \code{getSources()} lists available sources, and the
 user can create his own sources.
 
-\code{readerControl} has to be a list with the named components
-\code{reader}, \code{language}, and \code{load}. The first component
-\code{reader} constructs a text document from elements delivered by a
-source. The \pkg{tm} package ships with several readers (\code{readPlain()}
-(default), \code{readRCV1()}, \code{readReut21578XML()},
-\code{readGmane()}, \code{readNewsgroup()}, \code{readPDF()},
-\code{readDOC()} and \code{readHTML()}). See \code{getReaders()} for
-an up-to-date list of available readers. Each source has a default
-reader which can be overridden. E.g., for \code{DirSource} the default
-just reads in the input files and interprets their content as
-text. The second component \code{language} sets the texts' language,
-the third component \code{load} can activate lazy document loading,
-i.e., whether documents should be immediately loaded into memory or
-not.
+For the corpus constructor, \code{readerControl} has to be a list with
+the named components \code{reader} and \code{language}. The first
+component \code{reader} constructs a text document from elements
+delivered by a source. The \pkg{tm} package ships with several readers
+(e.g., \code{readPlain()}, \code{readRCV1()},
+\code{readReut21578XMLasPlain()}, \code{readGmane()},
+\code{readNewsgroup()}, \code{readPDF()}, \code{readDOC()},
+\ldots). See \code{getReaders()} for an up-to-date list of available
+readers. Each source has a default reader which can be
+overridden. E.g., for \code{DirSource} the default just reads in the
+input files and interprets their content as text. Finally, the second
+component \code{language} sets the texts' language (preferably using
+\acronym{ISO} 639-2 codes).
 
-Finally \code{dbControl} has to be a list with the named components
-\code{useDb} indicating that database support should be activated,
-\code{dbName} giving the filename holding the sourced out objects
-(i.e., the database), and  \code{dbType} holding a valid database type
-as supported by package \pkg{filehash}. Activated database support reduces
-the memory demand, however, access gets slower since each operation
-is limited by the hard disk's read and write capabilities.
+In case of a permanent corpus, \code{dbControl} has to be a list with
+the named components \code{dbName} giving the filename holding the
+sourced out objects (i.e., the database), and \code{dbType} holding a
+valid database type as supported by package \pkg{filehash}. Activated
+database support reduces the memory demand, however, access gets
+slower since each operation is limited by the hard disk's read and
+write capabilities.
 
 So e.g., plain text files in the directory \code{txt} containing Latin
-(\code{la}) texts by the Roman poet \emph{Ovid} can be read in with
+(\code{lat}) texts by the Roman poet \emph{Ovid} can be read in with
 following code:
 <<Ovid,keep.source=TRUE>>=
 txt <- system.file("texts", "txt", package = "tm")
 (ovid <- Corpus(DirSource(txt),
-                readerControl = list(reader = readPlain,
-                                     language = "la")))
+                readerControl = list(language = "lat")))
 @
 Another example could be mails from newsgroups (as found in the
 \acronym{Uci} \acronym{Kdd} newsgroup data set):
@@ -129,11 +136,10 @@ encapsulates this functionality.
 
 \section*{Inspecting Corpora}
 Custom \code{show()} and \code{summary()} methods are available, which
-hide the raw amount of information (consider a collection could
-consist of several thousand documents, like a
-database). \code{summary()} gives more details on meta data than
-\code{show()}, whereas the full content of text documents is displayed
-with \code{inspect()} on a collection.
+hide the raw amount of information (consider a corpus could consist of
+several thousand documents, like a database). \code{summary()} gives
+more details on meta data than \code{show()}, whereas the full content
+of text documents is displayed with \code{inspect()}.
 <<>>=
 inspect(ovid[1:2])
 @
@@ -157,6 +163,9 @@ generic \code{asPlain()}.
 <<>>=
 reuters <- tmMap(reuters, asPlain)
 @
+Note that alternatively we could have read in the files with the
+\code{readReut21578XMLasPlain} reader which already returns a plain
+text document in the first place.
 
 \subsection*{Eliminating Extra Whitespace}
 Extra whitespace is eliminated by:
