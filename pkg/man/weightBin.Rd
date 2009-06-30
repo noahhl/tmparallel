@@ -8,7 +8,7 @@
 weightBin(m)
 }
 \arguments{
-  \item{m}{A \code{\linkS4class{TermDocumentMatrix}} in term frequency format.}
+  \item{m}{A \code{\link{TermDocumentMatrix}} in term frequency format.}
 }
 \details{
   Formally this function is a \code{WeightingFunction} with the additional
