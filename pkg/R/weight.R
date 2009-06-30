@@ -21,7 +21,7 @@ weightTfIdf <-
     WeightFunction(function(m) {
         isDTM <- inherits(m, "DocumentTermMatrix")
         if (isDTM) m <- t(m)
-        m <- m * log2(m$ncol / rowSums(m > 0))
+        m <- m * log2(nDocs(m) / rowSums(m > 0))
         if (isDTM) t(m) else m
     }, "term frequency - inverse document frequency", "tf-idf")
 
