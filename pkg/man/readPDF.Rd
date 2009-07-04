@@ -20,7 +20,7 @@ readPDF(PdfinfoOptions = "", PdftotextOptions = "", \dots)
   \code{pdfinfo} or \code{pdftotext}) via lexical scoping.
 
   Note that this PDF reader needs both the tools \code{pdftotext} and
-  \code{pdfinfo} installed and accessable on your system.
+  \code{pdfinfo} installed and accessible on your system.
 }
 \value{
   A \code{function} with the signature \code{elem, language, id}:

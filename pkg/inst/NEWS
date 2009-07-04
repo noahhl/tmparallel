@@ -4,7 +4,7 @@
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
-    o   The reader function readNewsgroup is renamed to readMail.
+    o   The reader function readNewsgroup() is renamed to readMail().
 
                 CHANGES IN tm VERSION 0.4
 

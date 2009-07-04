@@ -19,7 +19,7 @@ readDOC(AntiwordOptions = "", ...)
   \code{antiword}) via lexical scoping.
 
   Note that this MS Word reader needs the tool \code{antiword} installed
-  and accessable on your system.
+  and accessible on your system.
 }
 \value{
   A \code{function} with the signature \code{elem, language, id}:
