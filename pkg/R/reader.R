@@ -2,7 +2,7 @@
 ## Reader
 
 getReaders <- function()
-    c("readDOC", "readGmane", "readHTML", "readNewsgroup", "readPDF", "readReut21578XML", "readReut21578XMLasPlain", "readPlain", "readRCV1", "readTabular")
+    c("readDOC", "readGmane", "readHTML", "readMail", "readPDF", "readReut21578XML", "readReut21578XMLasPlain", "readPlain", "readRCV1", "readTabular")
 
 readPlain <- FunctionGenerator(function(...) {
     function(elem, language, id) {
@@ -55,9 +55,8 @@ readGmane <- readXML(spec = list(Author = list("node", "/item/creator"),
                      Description = list("unevaluated", ""),
                      Heading = list("node", "/item/title"),
                      ID = list("node", "/item/link"),
-                     Origin = list("unevaluated", "Gmane Mailing List Archive"),
-                     Newsgroup = list("node", "/item/link")),
-                     doc = new("NewsgroupDocument"))
+                     Origin = list("unevaluated", "Gmane Mailing List Archive")),
+                     doc = new("PlainTextDocument"))
 
 readReut21578XML <- readXML(spec = list(Author = list("node", "/REUTERS/TEXT/AUTHOR"),
                             DateTimeStamp = list("function", function(node)
@@ -95,7 +94,7 @@ readRCV1 <- readXML(spec = list(Author = list("unevaluated", ""),
                     Topics = list("attribute", "/newsitem/metadata/codes[@class='bip:topics:1.0']/code/@code")),
                     doc = new("RCV1Document"))
 
-readNewsgroup <- FunctionGenerator(function(DateFormat = "%d %B %Y %H:%M:%S", ...) {
+readMail <- FunctionGenerator(function(DateFormat = "%d %B %Y %H:%M:%S", ...) {
     format <- DateFormat
     function(elem, language, id) {
         mail <- elem$content
@@ -103,9 +102,9 @@ readNewsgroup <- FunctionGenerator(function(DateFormat = "%d %B %Y %H:%M:%S", ..
         datetimestamp <- strptime(gsub("Date: ", "", grep("^Date:", mail, value = TRUE)),
                                   format = format,
                                   tz = "GMT")
-        origin <- gsub("Path: ", "", grep("^Path:", mail, value = TRUE))
+        mid <- gsub("Message-ID: ", "", grep("^Message-ID:", mail, value = TRUE))
+        origin <- gsub("Newsgroups: ", "", grep("^Newsgroups:", mail, value = TRUE))
         heading <- gsub("Subject: ", "", grep("^Subject:", mail, value = TRUE))
-        newsgroup <- gsub("Newsgroups: ", "", grep("^Newsgroups:", mail, value = TRUE))
 
         # The header is separated from the body by a blank line.
         # Reference: \url{http://en.wikipedia.org/wiki/E-mail#Internet_e-mail_format}
@@ -113,17 +112,18 @@ readNewsgroup <- FunctionGenerator(function(DateFormat = "%d %B %Y %H:%M:%S", ..
             if (mail[index] == "")
                 break
         }
+        header <- mail[1:index]
         content <- mail[(index + 1):length(mail)]
 
-        doc <- new("NewsgroupDocument")
+        doc <- new("MailDocument")
         slot(doc, ".Data", check = FALSE) <- content
         slot(doc, "Author", check = FALSE) <- author
         slot(doc, "DateTimeStamp", check = FALSE) <- datetimestamp
-        slot(doc, "ID", check = FALSE) <- id
+        slot(doc, "ID", check = FALSE) <- if (length(mid)) mid else id
         slot(doc, "Origin", check = FALSE) <- origin
         slot(doc, "Heading", check = FALSE) <- heading
         slot(doc, "Language", check = FALSE) <- language
-        slot(doc, "Newsgroup", check = FALSE) <- newsgroup
+        slot(doc, "Header", check = FALSE) <- header
         doc
     }
 })

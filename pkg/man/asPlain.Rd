@@ -2,7 +2,7 @@
 \docType{methods}
 \alias{asPlain}
 \alias{asPlain-methods}
-\alias{asPlain,NewsgroupDocument-method}
+\alias{asPlain,MailDocument-method}
 \alias{asPlain,PlainTextDocument-method}
 \alias{asPlain,XMLTextDocument-method}
 \alias{asPlain,Reuters21578Document-method}
@@ -14,8 +14,8 @@ Methods for function \code{asPlain} in package \pkg{tm}.
 }
 \section{Methods}{
   \describe{
-    \item{object = "NewsgroupDocument"}{Converts \code{object} to a plain
-    text document.}
+    \item{object = "MailDocument"}{Converts \code{object} to a plain
+      text document.}
     \item{object = "PlainTextDocument"}{Returns \code{object}.}
     \item{object = "XMLTextDocument", FUN}{Converts \code{object} to a
       \code{PlainTextDocument} by applying \code{FUN} on the XML root node

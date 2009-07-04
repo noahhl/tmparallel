@@ -68,7 +68,7 @@ to be a list with the named components \code{reader} and
 \code{language}. The first component \code{reader} constructs a text
 document from elements delivered by a source. The \pkg{tm} package
 ships with several readers (e.g., \code{readPlain()},
-\code{readGmane()}, \code{readNewsgroup()}, \code{readRCV1()},
+\code{readGmane()}, \code{readMail()}, \code{readRCV1()},
 \code{readReut21578XMLasPlain()}, \code{readPDF()}, \code{readDOC()},
 \ldots). See \code{getReaders()} for an up-to-date list of available
 readers. Each source has a default reader which can be
@@ -93,13 +93,13 @@ txt <- system.file("texts", "txt", package = "tm")
 (ovid <- Corpus(DirSource(txt),
                 readerControl = list(language = "lat")))
 @
-Another example could be mails from newsgroups (as found in the
+Another example could be mails from newsgroups (e.g., as found in the
 \acronym{UCI} \acronym{KDD} newsgroup data set):
 <<Mails,keep.source=TRUE>>=
 newsgroup <- system.file("texts", "newsgroup", package = "tm")
 
 Corpus(DirSource(newsgroup),
-       readerControl = list(reader = readNewsgroup,
+       readerControl = list(reader = readMail,
                             language = "eng"))
 @
 

@@ -211,14 +211,8 @@ setMethod("asPlain",
           })
 setMethod("asPlain", signature(object = "RCV1Document"),
           function(object, FUN, ...) convertRCV1Plain(object, ...))
-setMethod("asPlain",
-          signature(object = "NewsgroupDocument"),
-          function(object, FUN, ...) {
-              new("PlainTextDocument", .Data = Content(object), Author = Author(object),
-                  DateTimeStamp = DateTimeStamp(object), Description = Description(object), ID = ID(object),
-                  Origin = Origin(object), Heading = Heading(object), Language = Language(object),
-                  LocalMetaData = LocalMetaData(object))
-          })
+setMethod("asPlain", signature(object = "MailDocument"),
+          function(object, FUN, ...) as(object, "PlainTextDocument"))
 setMethod("asPlain",
           signature(object = "StructuredTextDocument"),
           function(object, FUN, ...) {

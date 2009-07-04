@@ -1,6 +1,6 @@
 \name{readGmane}
 \alias{readGmane}
-\title{Read In A Newsgroup Document}
+\title{Read In a Gmane RSS feed}
 \description{
   Read in a RSS feed as returned by Gmane for mailing lists.
 }
@@ -17,7 +17,7 @@ readGmane(elem, language, id)
     string for the returned text document.}
 }
 \value{
-  A \code{NewsgroupDocument}.
+  A \code{MailDocument}.
 }
 \seealso{
   Use \code{\link{getReaders}} to list available reader functions.

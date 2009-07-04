@@ -116,16 +116,10 @@ setClass("Reuters21578Document",
 setClass("RCV1Document",
          contains = "XMLTextDocument")
 
-# Newsgroup document as found in the Newsgroup dataset of the UCI KDD archive
-setClass("NewsgroupDocument",
-         representation(Newsgroup = "character"),
-         contains = c("character", "TextDocument"))
-
-setMethod("Content", "NewsgroupDocument", function(object) object@.Data)
-setReplaceMethod("Content", "NewsgroupDocument", function(x, value) {
-    x@.Data <- value
-    x
-})
+# E-mail document
+setClass("MailDocument",
+         representation(Header = "character"),
+         contains = c("PlainTextDocument"))
 
 # Structured text document for sectioned or structured text corpora
 setClass("StructuredTextDocument",
