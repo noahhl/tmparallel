@@ -3,6 +3,7 @@ import(slam)
 
 export(
        "activateCluster",
+       "convert_UTF_8",
        "Corpus", # alias to VCorpus
        "CSVSource", # defunct
        "DataframeSource",
