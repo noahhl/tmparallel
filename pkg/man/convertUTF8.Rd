@@ -1,6 +1,6 @@
 \name{convert_UTF_8}
 \alias{convert_UTF_8}
-\title{Convert document encoding to UTF-8}
+\title{Convert Document Encoding to UTF-8}
 \description{
   Converts the encoding of a text document to UTF-8.
 }

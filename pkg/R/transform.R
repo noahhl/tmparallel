@@ -9,7 +9,7 @@ getTransformations <- function()
     "removePunctuation", "removeWords", "replacePatterns", "stemDoc",
     "stripWhitespace", "tmTolower")
 
-convert_UTF_8 <- function(x, from = "", sub = NA...) {
+convert_UTF_8 <- function(x, from = "", sub = NA, ...) {
     Content(x) <- iconv(x, from = from, to = "UTF-8", sub = sub)
     x
 }
