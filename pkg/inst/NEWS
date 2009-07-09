@@ -30,6 +30,11 @@ SIGNIFICANT USER-VISIBLE CHANGES
     o   Reader functions no longer have a load argument for lazy
         loading.
 
+BUG FIXES
+
+    o   weightTfIdf() no longer applies a binary weighting to an input
+        matrix in term frequency format (which happened only in 0.3-4).
+
                 CHANGES IN tm VERSION 0.3-4
 
 SIGNIFICANT USER-VISIBLE CHANGES
