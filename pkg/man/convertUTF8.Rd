@@ -5,13 +5,14 @@
   Converts the encoding of a text document to UTF-8.
 }
 \usage{
-convert_UTF_8(x, from = "", sub = NA)
+convert_UTF_8(x, from = "", sub = NA, \dots)
 }
 \arguments{
   \item{x}{A text document.}
   \item{from}{A character string describing the current encoding.}
   \item{sub}{A character string.  If not 'NA' it is used to replace any
     non-convertible bytes in the input.}
+  \item{\dots}{Additional arguments.}
 }
 \value{
   The text document \code{x} converted to UTF-8 encoding.
@@ -22,6 +23,8 @@ convert_UTF_8(x, from = "", sub = NA)
 }
 \seealso{
   \code{\link{iconv}}
+
+  Use \code{\link{getTransformations}} to list available transformation (mapping) functions.
 }
 \examples{
 data("crude")
