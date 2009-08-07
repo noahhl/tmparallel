@@ -31,26 +31,3 @@ preprocessReut21578XML <- function(ReutersDir, ReutersOapfDir, fixEnc = TRUE) {
                  })
     }
 }
-
-convertMboxEml <- function(mbox, EmlDir) {
-    dir.create(EmlDir, recursive = TRUE)
-    content <- readLines(mbox)
-    counter <- start <- end <- 1
-    needWrite <- FALSE
-    for (i in seq_along(content)) {
-        if (length(grep("^From ", content[i])) > 0) {
-            end <- i - 1
-            if (needWrite && start <= end) {
-                con <- file(paste(EmlDir, counter, sep = ""))
-                writeLines(content[start:end], con)
-                close(con)
-                needWrite <- FALSE
-                counter <- counter + 1
-            }
-            start <- i
-            needWrite <- TRUE
-        }
-    }
-    if (needWrite)
-        writeLines(content[start:length(content)], file(paste(EmlDir, counter, sep = "")))
-}

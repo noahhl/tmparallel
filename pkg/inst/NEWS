@@ -6,6 +6,9 @@ SIGNIFICANT USER-VISIBLE CHANGES
 
     o   The reader function readNewsgroup() is renamed to readMail().
 
+    o   Mail handling functionality is factored out to the
+        tm.plugin.mail package.
+
                 CHANGES IN tm VERSION 0.4
 
 SIGNIFICANT USER-VISIBLE CHANGES

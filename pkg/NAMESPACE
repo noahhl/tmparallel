@@ -1,8 +1,7 @@
 import(methods)
 import(slam)
 
-export(
-       "activateCluster",
+export("activateCluster",
        "convert_UTF_8",
        "Corpus", # alias to VCorpus
        "CSVSource", # defunct
@@ -42,7 +41,6 @@ export(
        "ReutersSource",
        "convertReut21578XMLPlain",
        "convertRCV1Plain",
-       "convertMboxEml",
        "sFilter",
        "PCorpus",
        "prescindMeta",

@@ -5,9 +5,10 @@
 
 2009-07-03  Ingo Feinerer  <feinerer@logic.at>
 
-	* R/transform.R: Move removeCitation, removeMultipart, and
-	removeSignature to the tau package since they are mainly utility
-	functions (for handling e-mails) and not very framework specific.
+	* R/transform.R: Move convertMboxEml, removeCitation,
+	removeMultipart, and removeSignature to the tm.plugin.mail package
+	since they are mainly utility functions (for handling e-mails) and
+	not very framework specific.
 
 2009-06-28  Ingo Feinerer  <feinerer@logic.at>
 
