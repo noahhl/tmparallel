@@ -116,11 +116,6 @@ setClass("Reuters21578Document",
 setClass("RCV1Document",
          contains = "XMLTextDocument")
 
-# E-mail document
-setClass("MailDocument",
-         representation(Header = "character"),
-         contains = c("PlainTextDocument"))
-
 # Structured text document for sectioned or structured text corpora
 setClass("StructuredTextDocument",
          contains = c("list", "TextDocument"))

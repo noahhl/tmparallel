@@ -2,7 +2,7 @@
 ## Reader
 
 getReaders <- function()
-    c("readDOC", "readGmane", "readHTML", "readMail", "readPDF", "readReut21578XML", "readReut21578XMLasPlain", "readPlain", "readRCV1", "readTabular")
+    c("readDOC", "readGmane", "readHTML", "readPDF", "readReut21578XML", "readReut21578XMLasPlain", "readPlain", "readRCV1", "readTabular")
 
 readPlain <- FunctionGenerator(function(...) {
     function(elem, language, id) {
@@ -93,40 +93,6 @@ readRCV1 <- readXML(spec = list(Author = list("unevaluated", ""),
                     Publisher = list("attribute", "/newsitem/metadata/dc[@element='dc.publisher']/@value"),
                     Topics = list("attribute", "/newsitem/metadata/codes[@class='bip:topics:1.0']/code/@code")),
                     doc = new("RCV1Document"))
-
-readMail <- FunctionGenerator(function(DateFormat = "%d %B %Y %H:%M:%S", ...) {
-    format <- DateFormat
-    function(elem, language, id) {
-        mail <- elem$content
-        author <- gsub("From: ", "", grep("^From:", mail, value = TRUE))
-        datetimestamp <- strptime(gsub("Date: ", "", grep("^Date:", mail, value = TRUE)),
-                                  format = format,
-                                  tz = "GMT")
-        mid <- gsub("Message-ID: ", "", grep("^Message-ID:", mail, value = TRUE))
-        origin <- gsub("Newsgroups: ", "", grep("^Newsgroups:", mail, value = TRUE))
-        heading <- gsub("Subject: ", "", grep("^Subject:", mail, value = TRUE))
-
-        # The header is separated from the body by a blank line.
-        # Reference: \url{http://en.wikipedia.org/wiki/E-mail#Internet_e-mail_format}
-        for (index in seq_along(mail)) {
-            if (mail[index] == "")
-                break
-        }
-        header <- mail[1:index]
-        content <- mail[(index + 1):length(mail)]
-
-        doc <- new("MailDocument")
-        slot(doc, ".Data", check = FALSE) <- content
-        slot(doc, "Author", check = FALSE) <- author
-        slot(doc, "DateTimeStamp", check = FALSE) <- datetimestamp
-        slot(doc, "ID", check = FALSE) <- if (length(mid)) mid else id
-        slot(doc, "Origin", check = FALSE) <- origin
-        slot(doc, "Heading", check = FALSE) <- heading
-        slot(doc, "Language", check = FALSE) <- language
-        slot(doc, "Header", check = FALSE) <- header
-        doc
-    }
-})
 
 # readDOC needs antiword installed to be able to extract the text
 readDOC <- FunctionGenerator(function(AntiwordOptions = "", ...) {

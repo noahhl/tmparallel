@@ -1,3 +1,7 @@
+2009-08-11  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/reader.R (readMail): Moved to tm.plugin.mail package.
+
 2009-07-04  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/reader.R (readNewsgroup): Rename to readMail as newsgroup

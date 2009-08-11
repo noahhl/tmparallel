@@ -211,8 +211,6 @@ setMethod("asPlain",
           })
 setMethod("asPlain", signature(object = "RCV1Document"),
           function(object, FUN, ...) convertRCV1Plain(object, ...))
-setMethod("asPlain", signature(object = "MailDocument"),
-          function(object, FUN, ...) as(object, "PlainTextDocument"))
 setMethod("asPlain",
           signature(object = "StructuredTextDocument"),
           function(object, FUN, ...) {
@@ -249,10 +247,10 @@ setMethod("appendElem",
           signature(object = "Corpus", data = "TextDocument"),
           function(object, data, meta = NULL) {
               if (DBControl(object)[["useDb"]] && require("filehash")) {
-                  db <- dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
-                  if (dbExists(db, ID(data)))
+                  db <- filehash::dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
+                  if (filehash::dbExists(db, ID(data)))
                       warning("document with identical ID already exists")
-                  dbInsert(db, ID(data), data)
+                  filehash::dbInsert(db, ID(data), data)
                   object@.Data[[length(object)+1]] <- ID(data)
               }
               else
