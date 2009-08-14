@@ -242,23 +242,6 @@ setMethod("tmIndex",
                   return(FUN(object, ...))
           })
 
-setGeneric("appendElem", function(object, data, meta = NULL) standardGeneric("appendElem"))
-setMethod("appendElem",
-          signature(object = "Corpus", data = "TextDocument"),
-          function(object, data, meta = NULL) {
-              if (DBControl(object)[["useDb"]] && require("filehash")) {
-                  db <- filehash::dbInit(DBControl(object)[["dbName"]], DBControl(object)[["dbType"]])
-                  if (filehash::dbExists(db, ID(data)))
-                      warning("document with identical ID already exists")
-                  filehash::dbInsert(db, ID(data), data)
-                  object@.Data[[length(object)+1]] <- ID(data)
-              }
-              else
-                  object@.Data[[length(object)+1]] <- data
-              DMetaData(object) <- rbind(DMetaData(object), c(MetaID = CMetaData(object)@NodeID, meta))
-              return(object)
-          })
-
 prescindMeta <- function(object, meta) {
     df <- DMetaData(object)
 
