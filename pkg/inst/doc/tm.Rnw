@@ -136,19 +136,19 @@ inspect(ovid[1:2])
 Once we have a corpus we typically want to modify the documents in it,
 e.g., stemming, stopword removal, et cetera. In \pkg{tm}, all this
 functionality is subsumed into the concept of
-\emph{transformation}s. Transformations are done via the \code{tmMap}
+\emph{transformation}s. Transformations are done via the \code{tm\_map}
 function which applies a function to all elements of the
 corpus. Basically, all transformations work on single text documents
-and \code{tmMap} just applies them to all documents in a corpus.
+and \code{tm\_map} just applies them to all documents in a corpus.
 
 \subsection*{Converting to Plain Text Documents}
 The corpus \code{reuters} contains documents
 in \acronym{XML} format. We have no further use for the \acronym{XML}
 interna and just want to work with the text content. This can be done
 by converting the documents to plain text documents. It is done by the
-generic \code{asPlain()}.
+generic \code{as.PlainTextDocument()}.
 <<>>=
-reuters <- tmMap(reuters, asPlain)
+reuters <- tm_map(reuters, as.PlainTextDocument)
 @
 Note that alternatively we could have read in the files with the
 \code{readReut21578XMLasPlain} reader which already returns a plain
@@ -157,30 +157,30 @@ text document in the first place.
 \subsection*{Eliminating Extra Whitespace}
 Extra whitespace is eliminated by:
 <<>>=
-reuters <- tmMap(reuters, stripWhitespace)
+reuters <- tm_map(reuters, stripWhitespace)
 @
 
 \subsection*{Convert to Lower Case}
 Conversion to lower case by:
 <<>>=
-reuters <- tmMap(reuters, tmTolower)
+reuters <- tm_map(reuters, tm_tolower)
 @
 
 \subsection*{Remove Stopwords}
 Removal of stopwords by:
 <<>>=
-reuters <- tmMap(reuters, removeWords, stopwords("english"))
+reuters <- tm_map(reuters, removeWords, stopwords("english"))
 @
 
 \subsection*{Stemming}
 Stemming is done by:
 <<>>=
-tmMap(reuters, stemDoc)
+tm_map(reuters, stemDocument)
 @
 
 \section*{Filters}
 Often it is of special interest to filter out documents satisfying
-given properties. For this purpose the function \code{tmFilter} is
+given properties. For this purpose the function \code{tm\_filter} is
 designed. It is possible to write custom filter functions, but for
 most cases \code{sFilter} does its job: it integrates a minimal query
 language to filter meta data. Statements in this query language are
@@ -191,13 +191,13 @@ and the string ``\code{COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES
 text document).
 <<>>=
 query <- "id == '10' & heading == 'COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE'"
-tmFilter(reuters, FUN = sFilter, query)
+tm_filter(reuters, FUN = sFilter, query)
 @
 There is also a full text search filter available (which is default
 when no explicit filter function \code{FUN} is specified) accepting
 regular expressions:
 <<>>=
-tmFilter(reuters, pattern = "partnership")
+tm_filter(reuters, pattern = "partnership")
 @
 
 \section*{Meta Data Management}

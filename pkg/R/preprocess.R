@@ -21,9 +21,8 @@ preprocessReut21578XML <- function(ReutersDir, ReutersOapfDir, fixEnc = TRUE) {
         tree <- XML::xmlTreeParse(f)
         XML::xmlApply(XML::xmlRoot(tree),
                  function(article) {
-                     output.file <- paste(ReutersOapfDir, "reut-",
-                                          gsub(" ", "0", format(counter, width = 5)),
-                                          ".xml", sep = "")
+                     output.file <- file.path(ReutersOapfDir,
+                                              sprintf("reut-%s.xml", formatC(counter, width = 5, flag = "0")))
                      counter <<- counter + 1
                      con <- file(output.file, "w")
                      XML::saveXML(article, file = con)

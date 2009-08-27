@@ -5,31 +5,7 @@ TermDocMatrix <- function(object, control = list()) {
 }
 
 TermDocumentMatrix <- function(object, control = list()) UseMethod("TermDocumentMatrix", object)
-TermDocumentMatrix.PCorpus <- function(object, control = list()) {
-    weight <- control$weighting
-    if (is.null(weight))
-        weight <- weightTf
-
-    tflist <- lapply(object, termFreq, control)
-    tflist <- lapply(tflist, function(x) x[x > 0])
-    names(tflist) <- NULL
-
-    v <- unlist(tflist)
-    i <- names(v)
-    v <- as.numeric(v)
-    allTerms <- sort(unique(i))
-    i <- match(i, allTerms)
-    j <- rep(seq_along(object), sapply(tflist, length))
-    rm(tflist)
-
-    tdm <- structure(list(i = i, j = j, v = v, nrow = length(allTerms), ncol = length(object),
-                          dimnames = list(Terms = allTerms, Docs = sapply(object, ID)),
-                          Weighting = c(weight@Name, weight@Acronym)),
-                     class = c("TermDocumentMatrix", "simple_triplet_matrix"))
-    weight(tdm)
-}
-#TermDocumentMatrix.FCorpus <-
-TermDocumentMatrix.VCorpus <- function(object, control = list()) {
+TermDocumentMatrix.PCorpus <- TermDocumentMatrix.VCorpus <- function(object, control = list()) {
     weight <- control$weighting
     if (is.null(weight))
         weight <- weightTf
@@ -37,8 +13,6 @@ TermDocumentMatrix.VCorpus <- function(object, control = list()) {
     lazyTmMap <- meta(object, tag = "lazyTmMap", type = "corpus")
     if (!is.null(lazyTmMap))
         .Call("copyCorpus", object, materialize(object))
-
-    object <- object@.Data
 
     tflist <- if (clusterAvailable())
         snow::parLapply(snow::getMPIcluster(), object, termFreq, control)
@@ -52,11 +26,10 @@ TermDocumentMatrix.VCorpus <- function(object, control = list()) {
     allTerms <- sort(unique(i))
     i <- match(i, allTerms)
     j <- rep(seq_along(object), sapply(tflist, length))
-    rm(tflist)
 
     tdm <- structure(list(i = i, j = j, v = v, nrow = length(allTerms), ncol = length(object),
-                          dimnames = list(Terms = allTerms, Docs = sapply(object, ID)),
-                          Weighting = c(weight@Name, weight@Acronym)),
+                          dimnames = list(Terms = allTerms, Docs = unlist(lapply(object, ID))),
+                          Weighting = c(attr(weight, "Name"), attr(weight, "Acronym"))),
                      class = c("TermDocumentMatrix", "simple_triplet_matrix"))
     weight(tdm)
 }

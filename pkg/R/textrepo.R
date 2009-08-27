@@ -1,37 +1,26 @@
 # Author: Ingo Feinerer
 
-setGeneric("TextRepository", function(object, meta = list(created = as.POSIXlt(Sys.time(), tz = "GMT"))) standardGeneric("TextRepository"))
-setMethod("TextRepository",
-          signature(object = "Corpus"),
-          function(object, meta) {
-              return(new("TextRepository", .Data = list(object), RepoMetaData = meta))
-          })
+TextRepository <- function(x, meta = list(created = as.POSIXlt(Sys.time(), tz = "GMT"))) {
+    x <- structure(list(x), class = c("TextRepository", "list"))
+    attr(x, "RepoMetaData") <- meta
+    x
+}
 
-setMethod("length",
-          signature(x = "TextRepository"),
-          function(x){
-              return(length(as(x, "list")))
-    })
+print.TextRepository <- function(x) {
+    cat(sprintf(ngettext(length(x),
+                         "A text repository with %d corpus\n",
+                         "A text repository with %d corpora\n"),
+                length(x)))
+}
 
-setMethod("show",
-          signature(object = "TextRepository"),
-          function(object){
-               cat(sprintf(ngettext(length(object),
-                                    "A text repository with %d corpus\n",
-                                    "A text repository with %d corpora\n"),
-                           length(object)))
-    })
-
-setMethod("summary",
-          signature(object = "TextRepository"),
-          function(object){
-              show(object)
-              if (length(RepoMetaData(object)) > 0) {
-                  cat(sprintf(ngettext(length(RepoMetaData(object)),
-                                              "\nThe repository metadata consists of %d tag-value pair\n",
-                                              "\nThe repository metadata consists of %d tag-value pairs\n"),
-                                       length(RepoMetaData(object))))
-                  cat("Available tags are:\n")
-                  cat(names(RepoMetaData(object)), "\n")
-              }
-    })
+summary.TextRepository <- function(x) {
+    print(x)
+    if (length(RepoMetaData(x)) > 0) {
+        cat(sprintf(ngettext(length(RepoMetaData(x)),
+                             "\nThe repository metadata consists of %d tag-value pair\n",
+                             "\nThe repository metadata consists of %d tag-value pairs\n"),
+                    length(RepoMetaData(x))))
+        cat("Available tags are:\n")
+        cat(names(RepoMetaData(x)), "\n")
+    }
+}

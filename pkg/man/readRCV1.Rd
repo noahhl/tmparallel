@@ -22,4 +22,9 @@ readRCV1(elem, language, id)
 \seealso{
   Use \code{\link{getReaders}} to list available reader functions.
 }
+\examples{
+f <- system.file("texts", "rcv1", "rcv1_2286.xml", package = "tm")
+rcv1 <- readRCV1(elem = list(content = readLines(f)), language = "eng", id = "id1")
+meta(rcv1)
+}
 \author{Ingo Feinerer}

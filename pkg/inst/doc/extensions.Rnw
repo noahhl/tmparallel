@@ -61,9 +61,9 @@ df <- data.frame(contents = c("content 1", "content 2", "content 3"),
 We want to map \code{contents}, \code{title}, \code{authors}, and
 \code{topics} to the relevant slots of a text
 document. \code{readTabular()} always returns a
-\code{PlainTextDocument}, so possible slots are:
+\code{PlainTextDocument}, so possible attributes are:
 <<>>=
-slotNames("PlainTextDocument")
+attributes("PlainTextDocument")
 @
 The special slot \code{.Data} contains the actual content of the
 document, and \code{LocalMetaData} can be used to model arbitrary
@@ -159,7 +159,7 @@ myXMLReader <- readXML(
                 ID = list("function", function(x) tempfile()),
                 Origin = list("unevaluated", "My private bibliography"),
                 Type = list("node", "/document/type")),
-    doc = new("PlainTextDocument"))
+    doc = PlainTextDocument())
 @
 
 Formally, \code{readXML()} is the relevant function which constructs

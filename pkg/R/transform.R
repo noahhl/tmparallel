@@ -1,82 +1,118 @@
 # Author: Ingo Feinerer
 # Transformations
 
-tmReduce <- function(x, tmFuns, ...)
-    Reduce(function(f, ...) f(...), tmFuns, x, right = TRUE)
+tm_map <- function(x, FUN, ..., lazy = FALSE) UseMethod("tm_map", x)
+tm_map.VCorpus <- function(x, FUN, ..., lazy = FALSE) {
+    result <- x
+    # Lazy mapping
+    if (lazy) {
+        lazyTmMap <- meta(x, tag = "lazyTmMap", type = "corpus")
+        if (is.null(lazyTmMap)) {
+            meta(result, tag = "lazyTmMap", type = "corpus") <-
+                list(index = rep(TRUE, length(result)),
+                     maps = list(function(x, DMetaData) FUN(x, ..., DMetaData = DMetaData)))
+        }
+        else {
+            lazyTmMap$maps <- c(lazyTmMap$maps, list(function(x, DMetaData) FUN(x, ..., DMetaData = DMetaData)))
+            meta(result, tag = "lazyTmMap", type = "corpus") <- lazyTmMap
+        }
+    }
+    else {
+        Content(result) <- if (clusterAvailable())
+            snow::parLapply(snow::getMPIcluster(), x, FUN, ..., DMetaData = DMetaData(x))
+        else
+            lapply(x, FUN, ..., DMetaData = DMetaData(x))
+    }
+    result
+}
+tm_map.PCorpus <- function(x, FUN, ..., lazy = FALSE) {
+    if (lazy)
+        warning("lazy mapping is deactived when using database backend")
+    db <- filehash::dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
+    i <- 1
+    for (id in unlist(x)) {
+        db[[id]] <- FUN(x[[i]], ..., DMetaData = DMetaData(x))
+        i <- i + 1
+    }
+    # Suggested by Christian Buchta
+    filehash::dbReorganize(db)
 
-getTransformations <- function()
-    c("asPlain", "convert_UTF_8", "removeNumbers",
-    "removePunctuation", "removeWords", "replacePatterns", "stemDoc",
-    "stripWhitespace", "tmTolower")
-
-convert_UTF_8 <- function(x, from = "", sub = NA, ...) {
-    Content(x) <- iconv(x, from = from, to = "UTF-8", sub = sub)
     x
 }
 
-setGeneric("removeNumbers", function(object, ...) standardGeneric("removeNumbers"))
-.removeNumbers <- function(object, ...) {
-    Content(object) <- gsub("[[:digit:]]+", "", object)
-    object
+# Materialize lazy mappings
+# Improvements by Christian Buchta
+# TODO: Fix S4 usage (both in R as in C)
+materialize <- function(corpus, range = seq_along(corpus)) {
+    lazyTmMap <- meta(corpus, tag = "lazyTmMap", type = "corpus")
+    if (!is.null(lazyTmMap)) {
+       # Make valid and lazy index
+       idx <- (seq_along(corpus) %in% range) & lazyTmMap$index
+       if (any(idx)) {
+           res <- corpus@.Data[idx]
+           for (m in lazyTmMap$maps)
+               res <- lapply(res, m, DMetaData = DMetaData(corpus))
+           corpus@.Data[idx] <- res
+           lazyTmMap$index[idx] <- FALSE
+       }
+    }
+    # Clean up if everything is materialized
+    if (!any(lazyTmMap$index))
+        lazyTmMap <- NULL
+    meta(corpus, tag = "lazyTmMap", type = "corpus") <- lazyTmMap
+    corpus
 }
-setMethod("removeNumbers", signature(object = "PlainTextDocument"), .removeNumbers)
-#setMethod("removeNumbers", signature(object = "MinimalDocument"), .removeNumbers)
 
-setGeneric("removePunctuation", function(object, ...) standardGeneric("removePunctuation"))
-.removePunctuation <- function(object, ...) {
-    Content(object) <- gsub("[[:punct:]]+", "", Content(object))
-    object
+tm_reduce <- function(x, tmFuns, ...)
+    Reduce(function(f, ...) f(...), tmFuns, x, right = TRUE)
+
+getTransformations <- function()
+    c("as.PlainTextDocument", "convert_UTF_8", "removeNumbers", "removePunctuation",
+      "removeWords", "stemDocument", "stripWhitespace", "tm_tolower")
+
+as.PlainTextDocument <- function(x, FUN, ...) UseMethod("as.PlainTextDocument", x)
+as.PlainTextDocument.RCV1Document <- function(x, FUN, ...) {
+    Content(x) <- unlist(XML::xmlApply(XML::xmlRoot(x)[["text"]], XML::xmlValue), use.names = FALSE)
+    class(x) <- c("PlainTextDocument", "TextDocument", "character")
+    x
 }
-setMethod("removePunctuation", signature(object = "PlainTextDocument"), .removePunctuation)
-#setMethod("removePunctuation", signature(object = "MinimalDocument"), .removePunctuation)
+as.PlainTextDocument.Reuters21578Document <- function(x, FUN, ...) {
+    Content(x) <- unlist(XML::xmlApply(XML::xmlRoot(x)[["TEXT"]], XML::xmlValue), use.names = FALSE)
+    class(x) <- c("PlainTextDocument", "TextDocument", "character")
+    x
+}
 
-setGeneric("removeWords", function(object, words, ...) standardGeneric("removeWords"))
-.removeWords <- function(object, words, ...) {
-    Content(object) <- gsub(paste("([[:blank:]]|^)",
-                                  paste(words, collapse = "([[:blank:]]|$)|([[:blank:]]|^)"),
-                                  "([[:blank:]]|$)", sep = ""),
-                            " ",
-                            # Add blank so that adjacent words can be matched
-                            gsub("([[:blank:]])", "\\1 ", Content(object)))
+convert_UTF_8 <- function(x, from = "", sub = NA, ...)
+    iconv(x, from = from, to = "UTF-8", sub = sub)
+
+removeNumbers <- function(x, ...) UseMethod("removeNumbers", x)
+removeNumbers.PlainTextDocument <- function(x, ...) gsub("[[:digit:]]+", "", x)
+
+removePunctuation <- function(x, ...) UseMethod("removePunctuation", x)
+removePunctuation.PlainTextDocument <- function(x, ...)  gsub("[[:punct:]]+", "", x)
+
+removeWords <- function(x, words, ...) UseMethod("removeWords", x)
+removeWords.PlainTextDocument <- function(x, words, ...) {
+    x <- gsub(paste("([[:blank:]]|^)",
+                    paste(words, collapse = "([[:blank:]]|$)|([[:blank:]]|^)"),
+                    "([[:blank:]]|$)", sep = ""),
+              " ",
+              # Add blank so that adjacent words can be matched
+              gsub("([[:blank:]])", "\\1 ", x))
     # Remove doubled blanks
-    Content(object) <- gsub("([[:blank:]]) ", "\\1", Content(object))
-    object
+    gsub("([[:blank:]]) ", "\\1", x)
 }
-setMethod("removeWords", signature(object = "PlainTextDocument", words = "character"), .removeWords)
-#setMethod("removeWords", signature(object = "MinimalDocument", words = "character"), .removeWords)
 
-setGeneric("replacePatterns", function(object, patterns, by, ...) standardGeneric("replacePatterns"))
-.replacePatterns <- function(object, patterns, by, ...) {
-    Content(object) <- gsub(patterns, by, Content(object))
-    object
-}
-setMethod("replacePatterns", signature(object = "PlainTextDocument", patterns = "character", by = "character"), .replacePatterns)
-#setMethod("replacePatterns", signature(object = "MinimalDocument", patterns = "character", by = "character"), .replacePatterns)
-
-setGeneric("stemDoc", function(object, language = "english", ...) standardGeneric("stemDoc"))
-.stemDoc <- function(object, language = "english", ...) {
+stemDocument <- function(x, language = "english", ...) UseMethod("stemDocument", x)
+stemDocument.PlainTextDocument <- function(x, language = "english", ...) {
     stemLine <- function(x) Snowball::SnowballStemmer(x, RWeka::Weka_control(S = language))
-    s <- sapply(object,
-                function(x) paste(stemLine(unlist(strsplit(x, "[[:blank:]]"))), collapse = " "),
-                USE.NAMES = FALSE)
-    Content(object) <- if (is.character(s)) s else ""
-    object
+    s <- unlist(lapply(x, function(x) paste(stemLine(unlist(strsplit(x, "[[:blank:]]"))), collapse = " ")))
+    Content(x) <- if (is.character(s)) s else ""
+    x
 }
-setMethod("stemDoc", signature(object = "PlainTextDocument"), .stemDoc)
-#setMethod("stemDoc", signature(object = "MinimalDocument"), .stemDoc)
 
-setGeneric("stripWhitespace", function(object, ...) standardGeneric("stripWhitespace"))
-.stripWhitespace <- function(object, ...) {
-    Content(object) <- gsub("[[:space:]]+", " ", object)
-    object
-}
-setMethod("stripWhitespace", signature(object = "PlainTextDocument"), .stripWhitespace)
-#setMethod("stripWhitespace", signature(object = "MinimalDocument"), .stripWhitespace)
+stripWhitespace <- function(x, ...) UseMethod("stripWhitespace", x)
+stripWhitespace.PlainTextDocument <- function(x, ...)  gsub("[[:space:]]+", " ", x)
 
-setGeneric("tmTolower", function(object, ...) standardGeneric("tmTolower"))
-.tmTolower <- function(object, ...) {
-    Content(object) <- tolower(object)
-    object
-}
-setMethod("tmTolower", signature(object = "PlainTextDocument"), .tmTolower)
-#setMethod("tmTolower", signature(object = "MinimalDocument"), .tmTolower)
+tm_tolower <- function(x, ...) UseMethod("tm_tolower", x)
+tm_tolower.PlainTextDocument <- function(x, ...) tolower(x)

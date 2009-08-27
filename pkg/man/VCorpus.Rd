@@ -25,6 +25,6 @@ Corpus(object, readerControl = list(reader = object@DefaultReader, language = "e
 }
 \examples{
 reut21578 <- system.file("texts", "reut21578", package = "tm")
-Corpus(DirSource(reut21578), readerControl = list(reader = readReut21578XML))
+(r <- Corpus(DirSource(reut21578), readerControl = list(reader = readReut21578XMLasPlain)))
 }
 \author{Ingo Feinerer}
