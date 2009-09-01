@@ -11,15 +11,13 @@ prepareReader <- function(readerControl, defaultReader = NULL, ...) {
 }
 
 # Node ID, actual meta data, and possibly other nodes as children
-.MetaDataNode <- function(node = 0, meta = list(create_date = as.POSIXlt(Sys.time(), tz = "GMT"), creator = Sys.getenv("LOGNAME")), children = NULL) {
-    attr(node, "MetaData") <- meta
-    attr(node, "Children") <- children
-    class(node) <- c("MetaDataNode", "numeric")
-    node
+.MetaDataNode <- function(nodeid = 0, meta = list(create_date = as.POSIXlt(Sys.time(), tz = "GMT"), creator = Sys.getenv("LOGNAME")), children = NULL) {
+    structure(list(NodeID = nodeid, MetaData = meta, Children = children),
+              class = "MetaDataNode")
 }
 
 print.MetaDataNode <- function(x, ...)
-    print(attr(x, "MetaData"))
+    print(x$MetaData)
 
 .PCorpus <- function(x, cmeta, dmeta, dbcontrol) {
     attr(x, "CMetaData") <- cmeta
@@ -83,10 +81,10 @@ VCorpus <- Corpus <- function(x,
         list()
 
     if (x$Vectorized)
-        tdl <- lapply(mapply(c, pGetElem(x), id = seq_len(x$Length), SIMPLIFY = FALSE),
-                      function(x) readerControl$reader(x[c("content", "uri")],
-                                                       readerControl$language,
-                                                       as.character(x$id)))
+        mapply(function(x, id) readerControl$reader(x, readerControl$language, id),
+               pGetElem(x),
+               id = as.character(seq_len(x$Length)),
+               SIMPLIFY = FALSE)
     else {
         counter <- 1
         while (!eoi(x)) {

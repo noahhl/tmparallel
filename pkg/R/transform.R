@@ -1,37 +1,55 @@
 # Author: Ingo Feinerer
 # Transformations
 
-tm_map <- function(x, FUN, ..., lazy = FALSE) UseMethod("tm_map", x)
-tm_map.VCorpus <- function(x, FUN, ..., lazy = FALSE) {
+tm_map <- function(x, FUN, ..., useMeta = FALSE, lazy = FALSE) UseMethod("tm_map", x)
+tm_map.VCorpus <- function(x, FUN, ..., useMeta = FALSE, lazy = FALSE) {
     result <- x
     # Lazy mapping
     if (lazy) {
         lazyTmMap <- meta(x, tag = "lazyTmMap", type = "corpus")
+        local_fun <- local({
+            useMeta <- useMeta
+            function(x, ..., DMetaData) {
+                if (useMeta)
+                    FUN(x, ..., DMetaData = DMetaData)
+                else
+                    FUN(x, ...)
+            }
+        })
         if (is.null(lazyTmMap)) {
             meta(result, tag = "lazyTmMap", type = "corpus") <-
-                list(index = rep(TRUE, length(result)),
-                     maps = list(function(x, DMetaData) FUN(x, ..., DMetaData = DMetaData)))
+                list(index = rep(TRUE, length(result)), maps = list(local_fun))
         }
         else {
-            lazyTmMap$maps <- c(lazyTmMap$maps, list(function(x, DMetaData) FUN(x, ..., DMetaData = DMetaData)))
+            lazyTmMap$maps <- c(lazyTmMap$maps, list(local_fun))
             meta(result, tag = "lazyTmMap", type = "corpus") <- lazyTmMap
         }
     }
     else {
-        Content(result) <- if (clusterAvailable())
-            snow::parLapply(snow::getMPIcluster(), x, FUN, ..., DMetaData = DMetaData(x))
-        else
-            lapply(x, FUN, ..., DMetaData = DMetaData(x))
+        Content(result) <- if (clusterAvailable()) {
+            if (useMeta)
+                snow::parLapply(snow::getMPIcluster(), x, FUN, ..., DMetaData = DMetaData(x))
+            else
+                snow::parLapply(snow::getMPIcluster(), x, FUN, ...)
+        } else {
+            if (useMeta)
+                lapply(x, FUN, ..., DMetaData = DMetaData(x))
+            else
+                lapply(x, FUN, ...)
+        }
     }
     result
 }
-tm_map.PCorpus <- function(x, FUN, ..., lazy = FALSE) {
+tm_map.PCorpus <- function(x, FUN, ..., useMeta = FALSE, lazy = FALSE) {
     if (lazy)
         warning("lazy mapping is deactived when using database backend")
     db <- filehash::dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
     i <- 1
     for (id in unlist(x)) {
-        db[[id]] <- FUN(x[[i]], ..., DMetaData = DMetaData(x))
+        db[[id]] <- if (useMeta)
+            FUN(x[[i]], ..., DMetaData = DMetaData(x))
+        else
+            FUN(x[[i]], ...)
         i <- i + 1
     }
     # Suggested by Christian Buchta
@@ -49,10 +67,10 @@ materialize <- function(corpus, range = seq_along(corpus)) {
        # Make valid and lazy index
        idx <- (seq_along(corpus) %in% range) & lazyTmMap$index
        if (any(idx)) {
-           res <- corpus@.Data[idx]
+           res <- unclass(corpus)[idx]
            for (m in lazyTmMap$maps)
                res <- lapply(res, m, DMetaData = DMetaData(corpus))
-           corpus@.Data[idx] <- res
+           corpus[idx] <- res
            lazyTmMap$index[idx] <- FALSE
        }
     }
@@ -68,7 +86,7 @@ tm_reduce <- function(x, tmFuns, ...)
 
 getTransformations <- function()
     c("as.PlainTextDocument", "convert_UTF_8", "removeNumbers", "removePunctuation",
-      "removeWords", "stemDocument", "stripWhitespace", "tm_tolower")
+      "removeWords", "stemDocument", "stripWhitespace")
 
 as.PlainTextDocument <- function(x, FUN, ...) UseMethod("as.PlainTextDocument", x)
 as.PlainTextDocument.RCV1Document <- function(x, FUN, ...) {
@@ -113,6 +131,3 @@ stemDocument.PlainTextDocument <- function(x, language = "english", ...) {
 
 stripWhitespace <- function(x, ...) UseMethod("stripWhitespace", x)
 stripWhitespace.PlainTextDocument <- function(x, ...)  gsub("[[:space:]]+", " ", x)
-
-tm_tolower <- function(x, ...) UseMethod("tm_tolower", x)
-tm_tolower.PlainTextDocument <- function(x, ...) tolower(x)

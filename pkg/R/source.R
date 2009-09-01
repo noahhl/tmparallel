@@ -66,8 +66,6 @@ ReutersSource <- function(x, encoding = "UTF-8")
 
 # XML
 XMLSource <- function(x, parser, reader, encoding = "UTF-8") {
-    require("XML")
-
     corpus <- readLines(x, encoding = encoding)
     tree <- XML::xmlTreeParse(corpus, asText = TRUE)
     content <- parser(tree)
@@ -95,12 +93,10 @@ getElem.DirSource <- function(x) {
 getElem.URISource <- function(x) list(content = readLines(eval(x$URI)), uri = x$URI)
 getElem.VectorSource <- function(x) list(content = x$Content[x$Position], uri = match.call()$x)
 getElem.XMLSource <- function(x) {
-    require("XML")
-
     # Construct a character representation from the XMLNode
     virtual.file <- character(0)
     con <- textConnection("virtual.file", "w", local = TRUE)
-    saveXML(x$Content[[x$Position]], con)
+    XML::saveXML(x$Content[[x$Position]], con)
     close(con)
 
     list(content = virtual.file, uri = x$URI)

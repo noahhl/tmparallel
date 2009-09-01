@@ -87,7 +87,6 @@ export("activateCluster",
        "tm_intersect",
        "tm_map",
        "tm_reduce",
-       "tm_tolower",
        "URISource",
        "VCorpus",
        "VectorSource",
@@ -152,7 +151,6 @@ S3method("searchFullText", "PlainTextDocument")
 S3method("stemDocument", "PlainTextDocument")
 S3method("stripWhitespace", "PlainTextDocument")
 S3method("tm_intersect", "PlainTextDocument")
-S3method("tm_tolower", "PlainTextDocument")
 
 S3method("as.PlainTextDocument", "RCV1Document")
 
