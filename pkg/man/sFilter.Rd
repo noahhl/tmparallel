@@ -5,13 +5,12 @@
   Filter meta data by special statements.
 }
 \usage{
-sFilter(object, s, ...)
+sFilter(x, s, \dots)
 }
 \arguments{
-  \item{object}{A \code{Corpus} to be the filter applied to.}
-  \item{s}{A statement of format \code{"tag1 == 'expr1' & tag2 ==
-      'expr2' & ..."}.}
-  \item{...}{Arguments passed over by calling functions.}
+  \item{x}{A \code{Corpus}.}
+  \item{s}{A statement of format \code{"tag1 == 'expr1' & tag2 == 'expr2' & ..."}.}
+  \item{\dots}{Arguments passed over by calling functions.}
 }
 \details{
   The statement \code{s} models a simple query language. It consists of
@@ -33,10 +32,7 @@ sFilter(object, s, ...)
   Use \code{\link{getFilters}} to list available filter functions.
 }
 \examples{
-## Load example dataset
 data("crude")
-
-## Statement Filter returning TRUE for document with ID 127 and heading DIAMOND ...
 sFilter(crude, "id == '127' & heading == 'DIAMOND SHAMROCK (DIA) CUTS CRUDE PRICES'")
 }
 \author{Ingo Feinerer}

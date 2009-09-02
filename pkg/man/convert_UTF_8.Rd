@@ -1,21 +1,21 @@
 \name{convert_UTF_8}
 \alias{convert_UTF_8}
-\title{Convert Document Encoding to UTF-8}
+\title{Convert Encoding to UTF-8}
 \description{
-  Converts the encoding of a text document to UTF-8.
+  Convert the encoding of a character or text document to UTF-8.
 }
 \usage{
 convert_UTF_8(x, from = "", sub = NA, \dots)
 }
 \arguments{
-  \item{x}{A text document.}
+  \item{x}{A character or text document.}
   \item{from}{A character string describing the current encoding.}
-  \item{sub}{A character string.  If not 'NA' it is used to replace any
+  \item{sub}{A character string. If not 'NA' it is used to replace any
     non-convertible bytes in the input.}
   \item{\dots}{Additional arguments.}
 }
 \value{
-  The text document \code{x} converted to UTF-8 encoding.
+  The character or text document \code{x} converted to UTF-8 encoding.
 }
 \details{
   This function internally uses \code{\link{iconv}} for conversion, and

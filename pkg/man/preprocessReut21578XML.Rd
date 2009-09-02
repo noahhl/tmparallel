@@ -6,17 +6,17 @@
   encodings and copying each text document into a separate file.
 }
 \usage{
-preprocessReut21578XML(ReutersDir, ReutersOapfDir, fixEnc = TRUE)
+preprocessReut21578XML(input, output, fixEnc = TRUE)
 }
 \arguments{
-  \item{ReutersDir}{a character describing the input directory.}
-  \item{ReutersOapfDir}{a character describing the output directory.}
-  \item{fixEnc}{a logical value indicating whether a invalid UTF-8
+  \item{input}{A character describing the input directory.}
+  \item{output}{A character describing the output directory.}
+  \item{fixEnc}{A logical value indicating whether an invalid UTF-8
     encoding in the Reuters21578 XML dataset should be corrected.}
 }
 \value{
   No explicit return value. As a side product the directory
-  \code{ReutersOapfDir} contains the corrected dataset.
+  \code{output} contains the corrected dataset.
 }
 \references{
   Lewis, David (1997) \emph{Reuters-21578 Text Categorization
@@ -27,4 +27,3 @@ preprocessReut21578XML(ReutersDir, ReutersOapfDir, fixEnc = TRUE)
   \url{http://modnlp.berlios.de/reuters21578.html}
 }
 \author{Ingo Feinerer}
-\keyword{file}

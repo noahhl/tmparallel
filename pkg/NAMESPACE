@@ -1,8 +1,7 @@
 import(methods)
 import(slam)
 
-export("activateCluster",
-       "as.PlainTextDocument",
+export("as.PlainTextDocument",
        "Author",
        "CMetaData",
        "convert_UTF_8",
@@ -13,7 +12,6 @@ export("activateCluster",
        "DataframeSource",
        "DateTimeStamp",
        "DBControl",
-       "deactivateCluster",
        "Description",
        "Dictionary",
        "DirSource",
@@ -36,7 +34,6 @@ export("activateCluster",
        "getSources",
        "getTransformations",
        "ID",
-       "%IN%",
        "inspect",
        "Language",
        "LocalMetaData",
@@ -87,6 +84,8 @@ export("activateCluster",
        "tm_intersect",
        "tm_map",
        "tm_reduce",
+       "tm_startCluster",
+       "tm_stopCluster",
        "URISource",
        "VCorpus",
        "VectorSource",
@@ -135,7 +134,6 @@ S3method("[[", "PCorpus")
 S3method("[[<-", "PCorpus")
 S3method("DMetaData", "PCorpus")
 S3method("DMetaData<-", "PCorpus")
-S3method("%IN%", "PCorpus")
 S3method("inspect", "PCorpus")
 S3method("TermDocumentMatrix", "PCorpus")
 S3method("tm_map", "PCorpus")
@@ -184,7 +182,6 @@ S3method("[[", "VCorpus")
 S3method("[[<-", "VCorpus")
 S3method("DMetaData", "VCorpus")
 S3method("DMetaData<-", "VCorpus")
-S3method("%IN%", "VCorpus")
 S3method("inspect", "VCorpus")
 S3method("TermDocumentMatrix", "VCorpus")
 S3method("tm_map", "VCorpus")

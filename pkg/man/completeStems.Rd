@@ -8,10 +8,10 @@
 stemCompletion(object, words, type = c("prevalent", "first"))
 }
 \arguments{
-  \item{object}{a \code{Corpus} to be searched for possible completions.}
-  \item{words}{a \code{character} vector of stems to be completed.}
-  \item{type}{a \code{character} naming the heuristics to be
-    used. \code{prevalent} is default and takes the most frequent match as
+  \item{object}{A \code{Corpus} to be searched for possible completions.}
+  \item{words}{A \code{character} vector of stems to be completed.}
+  \item{type}{A \code{character} naming the heuristics to be
+    used: \code{prevalent} is default and takes the most frequent match as
     completion, whereas \code{first} takes the first found completion.}
 }
 \value{
@@ -22,4 +22,3 @@ data("crude")
 stemCompletion(crude, c("compan", "entit", "suppl"))
 }
 \author{Ingo Feinerer}
-\keyword{file}

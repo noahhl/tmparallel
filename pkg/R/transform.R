@@ -103,13 +103,13 @@ as.PlainTextDocument.Reuters21578Document <- function(x, FUN, ...) {
 convert_UTF_8 <- function(x, from = "", sub = NA, ...)
     iconv(x, from = from, to = "UTF-8", sub = sub)
 
-removeNumbers <- function(x, ...) UseMethod("removeNumbers", x)
-removeNumbers.PlainTextDocument <- function(x, ...) gsub("[[:digit:]]+", "", x)
+removeNumbers <- function(x) UseMethod("removeNumbers", x)
+removeNumbers.PlainTextDocument <- function(x) gsub("[[:digit:]]+", "", x)
 
-removePunctuation <- function(x, ...) UseMethod("removePunctuation", x)
-removePunctuation.PlainTextDocument <- function(x, ...)  gsub("[[:punct:]]+", "", x)
+removePunctuation <- function(x) UseMethod("removePunctuation", x)
+removePunctuation.PlainTextDocument <- function(x)  gsub("[[:punct:]]+", "", x)
 
-removeWords <- function(x, words, ...) UseMethod("removeWords", x)
+removeWords <- function(x, words) UseMethod("removeWords", x)
 removeWords.PlainTextDocument <- function(x, words, ...) {
     x <- gsub(paste("([[:blank:]]|^)",
                     paste(words, collapse = "([[:blank:]]|$)|([[:blank:]]|^)"),
@@ -121,13 +121,13 @@ removeWords.PlainTextDocument <- function(x, words, ...) {
     gsub("([[:blank:]]) ", "\\1", x)
 }
 
-stemDocument <- function(x, language = "english", ...) UseMethod("stemDocument", x)
-stemDocument.PlainTextDocument <- function(x, language = "english", ...) {
+stemDocument <- function(x, language = "english") UseMethod("stemDocument", x)
+stemDocument.PlainTextDocument <- function(x, language = "english") {
     stemLine <- function(x) Snowball::SnowballStemmer(x, RWeka::Weka_control(S = language))
     s <- unlist(lapply(x, function(x) paste(stemLine(unlist(strsplit(x, "[[:blank:]]"))), collapse = " ")))
     Content(x) <- if (is.character(s)) s else ""
     x
 }
 
-stripWhitespace <- function(x, ...) UseMethod("stripWhitespace", x)
-stripWhitespace.PlainTextDocument <- function(x, ...)  gsub("[[:space:]]+", " ", x)
+stripWhitespace <- function(x) UseMethod("stripWhitespace", x)
+stripWhitespace.PlainTextDocument <- function(x)  gsub("[[:space:]]+", " ", x)

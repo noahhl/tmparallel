@@ -81,10 +81,10 @@ VCorpus <- Corpus <- function(x,
         list()
 
     if (x$Vectorized)
-        mapply(function(x, id) readerControl$reader(x, readerControl$language, id),
-               pGetElem(x),
-               id = as.character(seq_len(x$Length)),
-               SIMPLIFY = FALSE)
+        tdl <- mapply(function(x, id) readerControl$reader(x, readerControl$language, id),
+                      pGetElem(x),
+                      id = as.character(seq_len(x$Length)),
+                      SIMPLIFY = FALSE)
     else {
         counter <- 1
         while (!eoi(x)) {
@@ -306,14 +306,6 @@ inspect.VCorpus <- function(x) {
     cat("\n")
     print(noquote(lapply(x, identity)))
 }
-
-# No metadata is checked
-`%IN%` <- function(x, y) UseMethod("%IN%", y)
-`%IN%.PCorpus` <- function(x, y) {
-    db <- filehash::dbInit(DBControl(y)[["dbName"]], DBControl(y)[["dbType"]])
-    any(unlist(lapply(y, function(x, z) {x %in% Content(z)}, x)))
-}
-`%IN%.VCorpus` <- function(x, y) x %in% y
 
 lapply.PCorpus <- function(X, FUN, ...) {
     db <- filehash::dbInit(DBControl(X)[["dbName"]], DBControl(X)[["dbType"]])
