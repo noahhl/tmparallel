@@ -20,6 +20,6 @@ readGmane(elem, language, id)
   A \code{MailDocument}.
 }
 \seealso{
-  Use \code{\link{getReaders}} to list available reader functions.
+  \code{\link{getReaders}} to list available reader functions.
 }
 \author{Ingo Feinerer}

@@ -13,19 +13,20 @@ PlainTextDocument(x = character(0), author = character(0), datetimestamp = as.PO
     content.}
   \item{author}{Object of class \code{character} containing
     the author names.}
-  \item{datetimestamp}{Object of class \code{character} containing the
+  \item{datetimestamp}{Object of class \code{POSIXlt} containing the
     date and time when the document was written.}
-  \item{\code{Description}:}{Object of class \code{character} containing
+  \item{description}{Object of class \code{character} containing
     additional text information.}
-  \item{\code{ID}:}{Object of class \code{integer} containing
-    an identifier.}
-  \item{\code{Origin}:}{Object of class \code{character} containing
-    information on the source and origin of the text.}
-  \item{\code{Heading}:}{Object of class \code{character} containing
+  \item{heading}{Object of class \code{character} containing
     the title or a short heading.}
-  \item{\code{Language}:}{Object of class \code{character} containing
-    the language of the text.}
-  \item{\code{LocalMetaData}:}{Object of class \code{list} containing
-    the local meta data in form of tag-value pairs.}
+  \item{id}{Object of class \code{character} containing
+    an identifier.}
+  \item{origin}{Object of class \code{character} containing
+    information on the source and origin of the text.}
+  \item{language}{Object of class \code{character} containing
+    the language of the text (preferably in \acronym{ISO} 639-2
+    format).}
+  \item{localmetadata}{Object of class \code{list} containing
+    local meta data in form of tag-value pairs.}
 }
 \author{Ingo Feinerer}

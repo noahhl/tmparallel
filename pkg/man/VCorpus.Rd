@@ -2,6 +2,7 @@
 \alias{VCorpus}
 \alias{Corpus}
 \alias{CMetaData}
+\alias{CMetaData.Corpus}
 \alias{DMetaData}
 \alias{DMetaData.VCorpus}
 \alias{DMetaData<-}
@@ -14,11 +15,11 @@
 Corpus(x, readerControl = list(reader = x$DefaultReader, language = "eng"), \dots)
 VCorpus(x, readerControl = list(reader = x$DefaultReader, language = "eng"), \dots)
 \method{DMetaData}{VCorpus}(x)
-\method{`DMetaData<-`}{VCorpus}(x, value)
 \method{CMetaData}{Corpus}(x)
 }
 \arguments{
-  \item{x}{A \code{Source} object.}
+  \item{x}{A \code{\link{source}} object for \code{Corpus} and
+    \code{VCorpus}, and a corpus for the other functions.}
   \item{readerControl}{A list with the named components \code{reader}
     representing a reading function capable of handling the file format
     found in \code{x}, and \code{language} giving the text's language

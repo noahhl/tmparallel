@@ -47,7 +47,7 @@ DirSource <- function(directory, encoding = "UTF-8", pattern = NULL, recursive =
 
 # A single document identified by a Uniform Resource Identifier
 URISource <- function(x, encoding = "UTF-8") {
-    s <- .Source(readPlain, encoding, 1, TRUE, 0, TRUE)
+    s <- .Source(readPlain, encoding, 1, TRUE, 0, FALSE)
     s$URI <- match.call()$x
     class(s) = c("URISource", "Source")
     s

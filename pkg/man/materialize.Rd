@@ -22,6 +22,6 @@ materialize(corpus, range = seq_along(corpus))
 \seealso{\code{\link{tm_map}}}
 \examples{
 data("crude")
-x <- tmMap(crude, stemDoc, lazy = TRUE)
+x <- tm_map(crude, stemDocument, lazy = TRUE)
 x <- materialize(x)
 }

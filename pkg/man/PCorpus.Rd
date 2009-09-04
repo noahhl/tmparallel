@@ -1,19 +1,21 @@
 \name{PCorpus}
 \docType{methods}
 \alias{PCorpus}
+\alias{DBControl}
 \alias{DMetaData.PCorpus}
 \alias{DMetaData<-.PCorpus}
 \title{Permanent Corpus Constructor}
 \description{
-  Constructs a permanent corpus.
+  Construct a permanent corpus.
 }
 \usage{
 PCorpus(x, readerControl = list(reader = x$DefaultReader, language = "eng"), dbControl = list(dbName = "", dbType = "DB1"), \dots)
+DBControl(x)
 \method{DMetaData}{PCorpus}(x)
-\method{DMetaData<-}{PCorpus}(x, value)
 }
 \arguments{
-  \item{x}{A \code{Source} x.}
+  \item{x}{A \code{\link{source}} object for \code{PCorpus}, and a
+    corpus for the other functions.}
   \item{readerControl}{A list with the named components \code{reader}
     representing a reading function capable of handling the file format
     found in \code{x}, and \code{language} giving the text's language

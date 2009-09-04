@@ -1,4 +1,3 @@
-import(methods)
 import(slam)
 
 export("as.PlainTextDocument",
@@ -73,7 +72,6 @@ export("as.PlainTextDocument",
        "stemDocument",
        "stopwords",
        "stripWhitespace",
-       "summary",
        "TermDocMatrix", # defunct
        "TermDocumentMatrix",
        "termFreq",

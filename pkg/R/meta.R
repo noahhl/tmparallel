@@ -1,5 +1,38 @@
 # Author: Ingo Feinerer
 
+# CMetaData = *MetaData* describing only the Document *C*ollection itself
+CMetaData <- function(x) UseMethod("CMetaData", x)
+CMetaData.Corpus <- function(x) attr(x, "CMetaData")
+
+# Node ID, actual meta data, and possibly other nodes as children
+.MetaDataNode <- function(nodeid = 0, meta = list(create_date = as.POSIXlt(Sys.time(), tz = "GMT"), creator = Sys.getenv("LOGNAME")), children = NULL) {
+    structure(list(NodeID = nodeid, MetaData = meta, Children = children),
+              class = "MetaDataNode")
+}
+print.MetaDataNode <- function(x, ...) print(x$MetaData)
+
+DMetaData <- function(x) UseMethod("DMetaData", x)
+DMetaData.VCorpus <- function(x) attr(x, "DMetaData")
+DMetaData.PCorpus <- function(x) {
+    db <- filehash::dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
+    result <- filehash::dbFetch(db, "DMetaData")
+    index <- attr(x, "DMetaData")[[1, "subset"]]
+    if (!any(is.na(index)))
+        result <- result[index, , drop = FALSE]
+    result
+}
+`DMetaData<-` <- function(x, value) UseMethod("DMetaData<-", x)
+`DMetaData<-.PCorpus` <- function(x, value) {
+    db <- filehash::dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
+    db[["DMetaData"]] <- value
+    attr(x, "DMetaData")[[1, "subset"]] <- NA
+    x
+}
+`DMetaData<-.VCorpus` <- function(x, value) {
+    attr(x, "DMetaData") <- value
+    x
+}
+
 meta <- function(x, tag, type = NULL) UseMethod("meta", x)
 meta.Corpus <- function(x, tag, type = c("indexed", "corpus", "local")) {
     type <- match.arg(type)

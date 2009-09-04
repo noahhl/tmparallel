@@ -1,12 +1,12 @@
-\name{RCV1Document}
-\alias{RCV1Document}
-\title{RCV1 Text Document}
+\name{Reuters21578Document}
+\alias{Reuters21578Document}
+\title{Reuters-21578 Text Document}
 \description{
-  Construct an object representing a RCV1 XML text document with meta
-  information.
+  Construct an object representing a Reuters-21578 XML text document
+  with meta information.
 }
 \usage{
-RCV1Document(x, author = character(0), datetimestamp = as.POSIXlt(Sys.time(), tz = "GMT"), description = character(0), heading = character(0), id = character(0), origin = character(0), language = character(0), localmetadata = list())
+Reuters21578Document(x, author = character(0), datetimestamp = as.POSIXlt(Sys.time(), tz = "GMT"), description = character(0), heading = character(0), id = character(0), origin = character(0), language = character(0), localmetadata = list())
 }
 \arguments{
   \item{x}{Object of class \code{list} containing the content.}
@@ -29,6 +29,13 @@ RCV1Document(x, author = character(0), datetimestamp = as.POSIXlt(Sys.time(), tz
     local meta data in form of tag-value pairs.}
 }
 \seealso{
-  \code{\link{PlainTextDocument}} and \code{\link{Reuters21578Document}}
+  \code{\link{PlainTextDocument}} and \code{\link{RCV1Document}}
+}
+\references{
+  Lewis, David (1997) \emph{Reuters-21578 Text Categorization Collection Distribution 1.0}.
+  \url{http://kdd.ics.uci.edu/databases/reuters21578/reuters21578.html}
+
+  Luz, Saturnino \emph{XML-encoded version of Reuters-21578}.
+  \url{http://modnlp.berlios.de/reuters21578.html}
 }
 \author{Ingo Feinerer}

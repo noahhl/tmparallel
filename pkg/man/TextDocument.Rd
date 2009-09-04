@@ -26,23 +26,23 @@
       the author names.}
     \item{\code{DateTimeStamp}}{Object of class \code{POSIXlt} containing the
       date and time when the document was written.}
-    \item{\code{Description}:}{Object of class \code{character} containing
+    \item{\code{Description}}{Object of class \code{character} containing
       additional text information.}
-    \item{\code{ID}:}{Object of class \code{character} containing
+    \item{\code{ID}}{Object of class \code{character} containing
       an identifier.}
-    \item{\code{Origin}:}{Object of class \code{character} containing
+    \item{\code{Origin}}{Object of class \code{character} containing
       information on the source and origin of the text.}
-    \item{\code{Heading}:}{Object of class \code{character} containing
+    \item{\code{Heading}}{Object of class \code{character} containing
       the title or a short heading.}
-    \item{\code{Language}:}{Object of class \code{character} containing
+    \item{\code{Language}}{Object of class \code{character} containing
       the language of the text.}
-    \item{\code{LocalMetaData}:}{Object of class \code{list} containing
+    \item{\code{LocalMetaData}}{Object of class \code{list} containing
       additional meta data in form of tag-value pairs which is local to
       each individual text document.}
   }
 }
 \seealso{
-  \code{\link{meta}} and \code{\link{DublinCore}} provide a unified
-  interface for meta data management.
+  \code{\link{meta}} and \code{\link{DublinCore}} which provide a
+  unified interface for meta data management.
 }
 \author{Ingo Feinerer}

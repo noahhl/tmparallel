@@ -1,18 +1,22 @@
 \name{Source}
 \alias{Source}
+\alias{eoi}
 \alias{eoi.DataframeSource}
 \alias{eoi.DirSource}
 \alias{eoi.URISource}
 \alias{eoi.VectorSource}
 \alias{eoi.XMLSource}
+\alias{getElem}
 \alias{getElem.DataframeSource}
 \alias{getElem.DirSource}
 \alias{getElem.URISource}
 \alias{getElem.VectorSource}
 \alias{getElem.XMLSource}
+\alias{pGetElem}
 \alias{pGetElem.DataframeSource}
 \alias{pGetElem.DirSource}
 \alias{pGetElem.VectorSource}
+\alias{stepNext}
 \alias{stepNext.Source}
 \title{Access Sources}
 \description{

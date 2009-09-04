@@ -12,6 +12,29 @@
     attr(doc, "Origin") <- origin
     doc
 }
+Content <- function(x) UseMethod("Content", x)
+`Content<-` <- function(x, value) UseMethod("Content<-", x)
+`Content<-.default` <- function(x, value) {
+    attrs <- attributes(x)
+    x <- value
+    attributes(x) <- attrs
+    x
+}
+`Content<-.XMLDocument` <- function(x, value) {
+    attrs <- attributes(x)
+    x <- value
+    attributes(x) <- attrs
+    attr(x, "names") <- attr(value, "names")
+    x
+}
+Author <- function(x) attr(x, "Author")
+DateTimeStamp <- function(x) attr(x, "DateTimeStamp")
+Description <- function(x) attr(x, "Description")
+Heading <- function(x) attr(x, "Heading")
+ID <- function(x) attr(x, "ID")
+Language <- function(x) attr(x, "Language")
+LocalMetaData <- function(x) attr(x, "LocalMetaData")
+Origin <- function(x) attr(x, "Origin")
 
 PlainTextDocument <-
     function(x = character(0), author = character(0), datetimestamp = as.POSIXlt(Sys.time(), tz = "GMT"),
@@ -22,10 +45,16 @@ PlainTextDocument <-
     class(doc) <- c("PlainTextDocument", "TextDocument", "character")
     doc
 }
-
 print.PlainTextDocument <- function(x, ...) {
     cat(noquote(as.character(x)), sep = "\n")
     invisible(x)
+}
+Content.PlainTextDocument <- function(x) as.character(x)
+`Content<-.PlainTextDocument` <- function(x, value) {
+    attrs <- attributes(x)
+    x <- as.character(value)
+    attributes(x) <- attrs
+    x
 }
 
 RCV1Document <-

@@ -2,15 +2,14 @@
 \alias{sFilter}
 \title{Statement Filter}
 \description{
-  Filter meta data by special statements.
+  Filter meta data by user-defined statements.
 }
 \usage{
-sFilter(x, s, \dots)
+sFilter(x, s)
 }
 \arguments{
   \item{x}{A \code{Corpus}.}
   \item{s}{A statement of format \code{"tag1 == 'expr1' & tag2 == 'expr2' & ..."}.}
-  \item{\dots}{Arguments passed over by calling functions.}
 }
 \details{
   The statement \code{s} models a simple query language. It consists of
@@ -29,7 +28,7 @@ sFilter(x, s, \dots)
   statement.
 }
 \seealso{
-  Use \code{\link{getFilters}} to list available filter functions.
+  \code{\link{getFilters}} to list available filter functions.
 }
 \examples{
 data("crude")

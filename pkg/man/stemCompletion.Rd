@@ -5,10 +5,10 @@
   Heuristically complete stemmed words.
 }
 \usage{
-stemCompletion(object, words, type = c("prevalent", "first"))
+stemCompletion(x, words, type = c("prevalent", "first"))
 }
 \arguments{
-  \item{object}{A \code{Corpus} to be searched for possible completions.}
+  \item{x}{A \code{Corpus} to be searched for possible completions.}
   \item{words}{A \code{character} vector of stems to be completed.}
   \item{type}{A \code{character} naming the heuristics to be
     used: \code{prevalent} is default and takes the most frequent match as

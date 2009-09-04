@@ -163,7 +163,7 @@ reuters <- tm_map(reuters, stripWhitespace)
 \subsection*{Convert to Lower Case}
 Conversion to lower case by:
 <<>>=
-reuters <- tm_map(reuters, tm_tolower)
+reuters <- tm_map(reuters, tolower)
 @
 
 \subsection*{Remove Stopwords}
@@ -240,13 +240,6 @@ standard \proglang{R} routines. E.g., \code{c()} concatenates two (or
 more) corpora. Applied to several text documents it
 returns a corpus. The meta data is automatically updated, if corpora
 are concatenated (i.e., merged).
-
-There is also a custom element-of operator---it checks whether a text
-document is already in a corpus (meta data is not checked):
-<<>>=
-reuters[[1]] %IN% reuters
-crude[[1]] %IN% reuters
-@
 
 \section*{Creating Term-Document Matrices}
 A common approach in text mining is to create a term-document matrix

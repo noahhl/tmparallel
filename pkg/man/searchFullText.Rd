@@ -8,12 +8,16 @@
 \usage{
 \method{searchFullText}{PlainTextDocument}(x, pattern)
 }
+\arguments{
+  \item{x}{A text document.}
+  \item{pattern}{A regular expression as accepted by \code{\link{gsub}}.}
+}
 \value{
   \code{TRUE} if the regular expression \code{pattern} matches in
   \code{x}, otherwise \code{FALSE}.
 }
 \seealso{
-  Use \code{\link{getFilters}} to list available filter functions.
+  \code{\link{getFilters}} to list available filter functions.
 }
 \examples{
 data("crude")

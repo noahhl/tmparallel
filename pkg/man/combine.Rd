@@ -1,6 +1,6 @@
-\name{tm_c}
-\alias{c.Corpus-method}
-\alias{c.TextDocument-method}
+\name{tm_combine}
+\alias{c.Corpus}
+\alias{c.TextDocument}
 \title{Combine Corpora and Documents}
 \description{
   Combine serveral corpora into a single one or combine multiple
@@ -9,6 +9,12 @@
 \usage{
 \method{c}{Corpus}(x, \dots, recursive = FALSE)
 \method{c}{TextDocument}(x, \dots, recursive = FALSE)
+}
+\arguments{
+  \item{x}{A corpus or a text document.}
+  \item{\dots}{Corpora or text documents.}
+  \item{recursive}{Logical. Provided by generic function definition but
+    not used.}
 }
 \details{
   Meta data from input objects (corpora or documents) is preserved

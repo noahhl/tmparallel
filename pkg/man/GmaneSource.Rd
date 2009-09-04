@@ -10,7 +10,7 @@ GmaneSource(x, encoding = "UTF-8")
 }
 \arguments{
   \item{x}{Either a character identifying the file or a connection.}
-  \item{encoding}{A character giving the encoding of the file.}
+  \item{encoding}{A character giving the encoding of \code{x}.}
 }
 \value{
   An object of class \code{GmaneSource} which extends the class

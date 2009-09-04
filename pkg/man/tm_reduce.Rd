@@ -5,7 +5,7 @@
 Fold multiple transformations (mappings) into a single one.
 }
 \usage{
-tmReduce(x, tmFuns, \dots)
+tm_reduce(x, tmFuns, \dots)
 }
 \arguments{
   \item{x}{A corpus.}
@@ -17,9 +17,9 @@ tmReduce(x, tmFuns, \dots)
 }
 \author{Ingo Feinerer}
 \seealso{
-  \code{Reduce}
-  
-  Use \code{\link{getTransformations}} to list available transformation (mapping) functions.
+  \code{Reduce} for \R's internal folding/accumulation mechanism, and
+  \code{\link{getTransformations}} to list available transformation
+  (mapping) functions.
 }
 \examples{
 data(crude)

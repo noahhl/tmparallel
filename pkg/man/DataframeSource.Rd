@@ -10,7 +10,7 @@ DataframeSource(x, encoding = "UTF-8")
 }
 \arguments{
   \item{x}{A data frame holding the texts.}
-  \item{encoding}{A character giving the encoding of the file.}
+  \item{encoding}{A character giving the encoding of \code{x}.}
 }
 \value{
   An object of class \code{DataframeSource} which extends the class

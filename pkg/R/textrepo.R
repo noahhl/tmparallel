@@ -6,21 +6,24 @@ TextRepository <- function(x, meta = list(created = as.POSIXlt(Sys.time(), tz = 
     x
 }
 
-print.TextRepository <- function(x) {
+RepoMetaData <- function(x) attr(x, "RepoMetaData")
+
+print.TextRepository <- function(x, ...) {
     cat(sprintf(ngettext(length(x),
                          "A text repository with %d corpus\n",
                          "A text repository with %d corpora\n"),
                 length(x)))
+    invisible(x)
 }
 
-summary.TextRepository <- function(x) {
-    print(x)
-    if (length(RepoMetaData(x)) > 0) {
-        cat(sprintf(ngettext(length(RepoMetaData(x)),
+summary.TextRepository <- function(object, ...) {
+    print(object)
+    if (length(RepoMetaData(object)) > 0) {
+        cat(sprintf(ngettext(length(RepoMetaData(object)),
                              "\nThe repository metadata consists of %d tag-value pair\n",
                              "\nThe repository metadata consists of %d tag-value pairs\n"),
-                    length(RepoMetaData(x))))
+                    length(RepoMetaData(object))))
         cat("Available tags are:\n")
-        cat(names(RepoMetaData(x)), "\n")
+        cat(names(RepoMetaData(object)), "\n")
     }
 }

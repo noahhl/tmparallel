@@ -88,13 +88,14 @@ getTransformations <- function()
     c("as.PlainTextDocument", "convert_UTF_8", "removeNumbers", "removePunctuation",
       "removeWords", "stemDocument", "stripWhitespace")
 
-as.PlainTextDocument <- function(x, FUN, ...) UseMethod("as.PlainTextDocument", x)
-as.PlainTextDocument.RCV1Document <- function(x, FUN, ...) {
+as.PlainTextDocument <- function(x) UseMethod("as.PlainTextDocument", x)
+as.PlainTextDocument.PlainTextDocument <- identity
+as.PlainTextDocument.RCV1Document <- function(x) {
     Content(x) <- unlist(XML::xmlApply(XML::xmlRoot(x)[["text"]], XML::xmlValue), use.names = FALSE)
     class(x) <- c("PlainTextDocument", "TextDocument", "character")
     x
 }
-as.PlainTextDocument.Reuters21578Document <- function(x, FUN, ...) {
+as.PlainTextDocument.Reuters21578Document <- function(x) {
     Content(x) <- unlist(XML::xmlApply(XML::xmlRoot(x)[["TEXT"]], XML::xmlValue), use.names = FALSE)
     class(x) <- c("PlainTextDocument", "TextDocument", "character")
     x
@@ -110,7 +111,7 @@ removePunctuation <- function(x) UseMethod("removePunctuation", x)
 removePunctuation.PlainTextDocument <- function(x)  gsub("[[:punct:]]+", "", x)
 
 removeWords <- function(x, words) UseMethod("removeWords", x)
-removeWords.PlainTextDocument <- function(x, words, ...) {
+removeWords.PlainTextDocument <- function(x, words) {
     x <- gsub(paste("([[:blank:]]|^)",
                     paste(words, collapse = "([[:blank:]]|$)|([[:blank:]]|^)"),
                     "([[:blank:]]|$)", sep = ""),

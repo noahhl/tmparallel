@@ -4,6 +4,16 @@
 getReaders <- function()
     c("readDOC", "readGmane", "readPDF", "readReut21578XML", "readReut21578XMLasPlain", "readPlain", "readRCV1", "readTabular")
 
+prepareReader <- function(readerControl, defaultReader = NULL, ...) {
+    if (is.null(readerControl$reader))
+        readerControl$reader <- defaultReader
+    if (inherits(readerControl$reader, "FunctionGenerator"))
+        readerControl$reader <- readerControl$reader(...)
+    if (is.null(readerControl$language))
+        readerControl$language <- "eng"
+    readerControl
+}
+
 readPlain <- FunctionGenerator(function(...) {
     function(elem, language, id) PlainTextDocument(elem$content, id = id, language = language)
 })
@@ -13,11 +23,11 @@ readXML <- FunctionGenerator(function(spec, doc, ...) {
     doc <- doc
     function(elem, language, id) {
         tree <- XML::xmlInternalTreeParse(elem$content, asText = TRUE)
-        Content(doc) <- if (".Data" %in% names(spec))
-            .xml_content(tree, spec[[".Data"]])
+        Content(doc) <- if ("Content" %in% names(spec))
+            .xml_content(tree, spec[["Content"]])
         else
             XML::xmlTreeParse(elem$content, asText = TRUE)
-        for (n in setdiff(names(spec), ".Data"))
+        for (n in setdiff(names(spec), "Content"))
             meta(doc, n) <- .xml_content(tree, spec[[n]])
         XML::free(tree)
         attr(doc, "Language") <- language
@@ -26,7 +36,7 @@ readXML <- FunctionGenerator(function(spec, doc, ...) {
 })
 
 readGmane <- readXML(spec = list(Author = list("node", "/item/creator"),
-                     .Data = list("node", "/item/description"),
+                     Content = list("node", "/item/description"),
                      DateTimeStamp = list("function", function(node)
                      strptime(sapply(XML::getNodeSet(node, "/item/date"), XML::xmlValue),
                               format = "%Y-%m-%dT%H:%M:%S",
@@ -50,7 +60,7 @@ readReut21578XML <- readXML(spec = list(Author = list("node", "/REUTERS/TEXT/AUT
                             doc = Reuters21578Document())
 
 readReut21578XMLasPlain <- readXML(spec = list(Author = list("node", "/REUTERS/TEXT/AUTHOR"),
-                                   .Data = list("node", "/REUTERS/TEXT/BODY"),
+                                   Content = list("node", "/REUTERS/TEXT/BODY"),
                                    DateTimeStamp = list("function", function(node)
                                    strptime(sapply(XML::getNodeSet(node, "/REUTERS/DATE"), XML::xmlValue),
                                             format = "%d-%B-%Y %H:%M:%S",
@@ -106,10 +116,10 @@ readTabular <- FunctionGenerator(function(mappings, ...) {
     mappings <- mappings
     function(elem, language, id) {
         doc <- PlainTextDocument(id = id, language = language)
-        for (n in setdiff(names(mappings), ".Data"))
+        for (n in setdiff(names(mappings), "Content"))
             meta(doc, n) <- elem$content[, mappings[[n]]]
-        if (".Data" %in% names(mappings))
-            Content(doc) <- elem$content[, mappings[[".Data"]]]
+        if ("Content" %in% names(mappings))
+            Content(doc) <- elem$content[, mappings[["Content"]]]
         doc
     }
 })

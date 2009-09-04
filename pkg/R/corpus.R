@@ -1,24 +1,5 @@
 # Author: Ingo Feinerer
 
-prepareReader <- function(readerControl, defaultReader = NULL, ...) {
-    if (is.null(readerControl$reader))
-        readerControl$reader <- defaultReader
-    if (inherits(readerControl$reader, "FunctionGenerator"))
-        readerControl$reader <- readerControl$reader(...)
-    if (is.null(readerControl$language))
-        readerControl$language <- "eng"
-    readerControl
-}
-
-# Node ID, actual meta data, and possibly other nodes as children
-.MetaDataNode <- function(nodeid = 0, meta = list(create_date = as.POSIXlt(Sys.time(), tz = "GMT"), creator = Sys.getenv("LOGNAME")), children = NULL) {
-    structure(list(NodeID = nodeid, MetaData = meta, Children = children),
-              class = "MetaDataNode")
-}
-
-print.MetaDataNode <- function(x, ...)
-    print(x$MetaData)
-
 .PCorpus <- function(x, cmeta, dmeta, dbcontrol) {
     attr(x, "CMetaData") <- cmeta
     attr(x, "DMetaData") <- dmeta
@@ -26,6 +7,7 @@ print.MetaDataNode <- function(x, ...)
     class(x) <- c("PCorpus", "Corpus", "list")
     x
 }
+DBControl <- function(x) attr(x, "DBControl")
 
 PCorpus <- function(x,
                     readerControl = list(reader = x$DefaultReader, language = "eng"),
@@ -171,27 +153,24 @@ VCorpus <- Corpus <- function(x,
 update_id <- function(x, id = 0, mapping = NULL, left.mapping = NULL, level = 0) {
     # Traversal of (binary) CMetaData tree with setup of \code{NodeID}s
     set_id <- function(x) {
-        attrs <- attributes(x)
-        x <- id
-        attributes(x) <- attrs
+        x$NodeID <- id
         id <<- id + 1
         level <<- level + 1
-        if (length(attr(x, "Children")) > 0) {
-            mapping <<- cbind(mapping, c(as.numeric(attr(x, "Children")[[1]]), id))
-            left <- set_id(attr(x, "Children")[[1]])
+        if (length(x$Children) > 0) {
+            mapping <<- cbind(mapping, c(x$Children[[1]]$NodeID, id))
+            left <- set_id(x$Children[[1]])
             if (level == 1) {
                 left.mapping <<- mapping
                 mapping <<- NULL
             }
-            mapping <<- cbind(mapping, c(as.numeric(attr(x, "Children")[[2]]), id))
-            right <- set_id(attr(x, "Children")[[2]])
+            mapping <<- cbind(mapping, c(x$Children[[2]]$NodeID, id))
+            right <- set_id(x$Children[[2]])
 
-            attr(x, "Children") <- list(left, right)
+            x$Children <- list(left, right)
         }
         level <<- level - 1
         x
     }
-
     list(root = set_id(x), left.mapping = left.mapping, right.mapping = mapping)
 }
 
@@ -280,17 +259,17 @@ print.Corpus <- function(x, ...) {
     invisible(x)
 }
 
-summary.Corpus <- function(x, ...) {
-    print(x)
-    if (length(DMetaData(x)) > 0) {
-        cat(sprintf(ngettext(length(attr(CMetaData(x), "MetaData")),
+summary.Corpus <- function(object, ...) {
+    print(object)
+    if (length(DMetaData(object)) > 0) {
+        cat(sprintf(ngettext(length(attr(CMetaData(object), "MetaData")),
                              "\nThe metadata consists of %d tag-value pair and a data frame\n",
                              "\nThe metadata consists of %d tag-value pairs and a data frame\n"),
-                    length(attr(CMetaData(x), "MetaData"))))
+                    length(CMetaData(object)$MetaData)))
         cat("Available tags are:\n")
-        cat(strwrap(paste(names(attr(CMetaData(x), "MetaData")), collapse = " "), indent = 2, exdent = 2), "\n")
+        cat(strwrap(paste(names(CMetaData(object)$MetaData), collapse = " "), indent = 2, exdent = 2), "\n")
         cat("Available variables in the data frame are:\n")
-        cat(strwrap(paste(names(DMetaData(x)), collapse = " "), indent = 2, exdent = 2), "\n")
+        cat(strwrap(paste(names(DMetaData(object)), collapse = " "), indent = 2, exdent = 2), "\n")
     }
 }
 
