@@ -18,7 +18,7 @@ VCorpus(x, readerControl = list(reader = x$DefaultReader, language = "eng"), \do
 \method{CMetaData}{Corpus}(x)
 }
 \arguments{
-  \item{x}{A \code{\link{source}} object for \code{Corpus} and
+  \item{x}{A \code{\link{Source}} object for \code{Corpus} and
     \code{VCorpus}, and a corpus for the other functions.}
   \item{readerControl}{A list with the named components \code{reader}
     representing a reading function capable of handling the file format
