@@ -8,7 +8,7 @@
 XMLSource(x, parser, reader, encoding = "UTF-8")
 }
 \arguments{
-  \item{x}{Either a \code{character} identifying the file or a
+  \item{x}{Either a \code{character} identifying a file or a
     \code{connection}.}
   \item{parser}{A \code{function} accepting an XML tree (as delivered by
     \code{xmlTreeParse} in package \pkg{XML}) as input and returning a

@@ -43,7 +43,7 @@
   \item{x}{A source.}
 }
 \details{
-  The virtual class source is implemented as a \code{list} with
+  The class \code{Source} is implemented as a \code{list} with
   following components:
   \describe{
     \item{\code{DefaultReader}}{Object of class \code{function}
