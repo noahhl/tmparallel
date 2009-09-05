@@ -5,24 +5,24 @@
   Return a function which reads in a text document from a tabular data
   structure (like a data frame or a list matrix) with knowledge about
   its internal structure and possible available metadata as specified by
-  so-called mappings.
+  a so-called mapping.
 }
 \usage{
-readTabular(mappings, \dots)
+readTabular(mapping, \dots)
 }
 \arguments{
-  \item{mappings}{A named \code{list} of \code{character}s. The
-    constructed reader will map each character entry to a slot or meta
-    datum corresponding to the named list entry. Valid names include
-    \code{Content} to access the document's content, any valid attribute
-    name, and characters which are mapped to \code{\link{LocalMetaData}}
-    entries.}
+  \item{mapping}{A named \code{list} of \code{character}s. The
+    constructed reader will map each character entry to the content or
+    meta datum of the text document as specified by the named list
+    entry. Valid names include \code{Content} to access the document's
+    content, any valid attribute name, and characters which are mapped
+    to \code{\link{LocalMetaData}} entries.}
   \item{\dots}{Arguments for the generator function.}
 }
 \details{
   Formally this function is a function generator, i.e., it returns a
   function (which reads in a text document) with a well-defined
-  signature, but can access passed over arguments (e.g., the mappings)
+  signature, but can access passed over arguments (e.g., the mapping)
   via lexical scoping.
 }
 \value{
@@ -52,7 +52,7 @@ df <- data.frame(contents = c("content 1", "content 2", "content 3"),
                  stringsAsFactors = FALSE)
 m <- list(Content = "contents", Heading = "title",
           Author = "authors", Topic = "topics")
-myReader <- readTabular(mappings = m)
+myReader <- readTabular(mapping = m)
 ds <- DataframeSource(df)
 elem <- getElem(stepNext(ds))
 (result <- myReader(elem, language = "en", id = "id1"))

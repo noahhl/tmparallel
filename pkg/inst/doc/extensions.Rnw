@@ -45,7 +45,7 @@ information to build a corpus which is recognized by \pkg{tm}.
 
 This can be done in \pkg{tm} by generating a custom reader function
 for tabular data structures via \code{readTabular()} that can be
-configured via so-called \emph{mappings}. These mappings describe how
+configured via a so-called \emph{mapping}. A mapping describes how
 your information in the tabular data structure is mapped to the
 individual attributes of text documents in \pkg{tm}.
 
@@ -80,7 +80,7 @@ m <- list(Content = "contents", Heading = "title",
 Now we can construct a customized reader by passing over the
 previously defined mapping:
 <<myReader>>=
-myReader <- readTabular(mappings = m)
+myReader <- readTabular(mapping = m)
 @
 
 Finally we can apply our reader function at any place where \pkg{tm}

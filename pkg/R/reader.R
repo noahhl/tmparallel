@@ -112,14 +112,14 @@ readPDF <- FunctionGenerator(function(PdfinfoOptions = "", PdftotextOptions = ""
      }
 })
 
-readTabular <- FunctionGenerator(function(mappings, ...) {
-    mappings <- mappings
+readTabular <- FunctionGenerator(function(mapping, ...) {
+    mapping <- mapping
     function(elem, language, id) {
         doc <- PlainTextDocument(id = id, language = language)
-        for (n in setdiff(names(mappings), "Content"))
-            meta(doc, n) <- elem$content[, mappings[[n]]]
-        if ("Content" %in% names(mappings))
-            Content(doc) <- elem$content[, mappings[["Content"]]]
+        for (n in setdiff(names(mapping), "Content"))
+            meta(doc, n) <- elem$content[, mapping[[n]]]
+        if ("Content" %in% names(mapping))
+            Content(doc) <- elem$content[, mapping[["Content"]]]
         doc
     }
 })
