@@ -3,7 +3,7 @@
 \alias{tm_filter.Corpus}
 \alias{tm_index}
 \alias{tm_index.Corpus}
-\title{Filter and Index Functios on Corpora}
+\title{Filter and Index Functions on Corpora}
 \description{
   Interface to apply filter and index functions to corpora.
 }

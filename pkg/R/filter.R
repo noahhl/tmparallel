@@ -26,7 +26,7 @@ tm_index.Corpus <- function(x, ..., FUN = searchFullText, doclevel = TRUE, useMe
         return(FUN(x, ...))
 }
 
-getFilters <- function() c("searchFullText", "sFilter", "tmIntersect")
+getFilters <- function() c("searchFullText", "sFilter", "tm_intersect")
 
 searchFullText <- function(x, pattern) UseMethod("searchFullText", x)
 searchFullText.PlainTextDocument <- function(x, pattern) any(grep(pattern, x))

@@ -60,7 +60,6 @@ tm_map.PCorpus <- function(x, FUN, ..., useMeta = FALSE, lazy = FALSE) {
 
 # Materialize lazy mappings
 # Improvements by Christian Buchta
-# TODO: Fix S4 usage (both in R as in C)
 materialize <- function(corpus, range = seq_along(corpus)) {
     lazyTmMap <- meta(corpus, tag = "lazyTmMap", type = "corpus")
     if (!is.null(lazyTmMap)) {
