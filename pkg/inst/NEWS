@@ -7,8 +7,25 @@ SIGNIFICANT USER-VISIBLE CHANGES
     o   All classes, functions, and generics are reimplemented using
         the S3 class system.
 
+    o   Following functions have been renamed:
+
+          activateCluster()   to tm_startCluster()     ,
+          asPlain()           to as.PlainTextDocument(),
+          deactivateCluster() to tm_stopCluster()      ,
+          tmFilter()          to tm_filter()           ,
+          tmIndex()           to tm_index()            ,
+          tmIntersect()       to tm_intersect()        , and
+          tmMap()             to tm_map()              .
+
     o   Mail handling functionality is factored out to the
         tm.plugin.mail package.
+
+DEPRECATED & DEFUNCT
+
+    o   Following functions have been removed:
+
+          tmTolower()         (use tolower() instead), and
+          replacePatterns()   (use gsub()    instead).
 
                 CHANGES IN tm VERSION 0.4
 
