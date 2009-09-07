@@ -3,7 +3,7 @@
 \alias{GmaneSource}
 \title{Gmane Source}
 \description{
-  Constructs a source for a Gmane mailing list RSS feed.
+  Construct a source for a Gmane mailing list \acronym{RSS} feed.
 }
 \usage{
 GmaneSource(x, encoding = "UTF-8")
@@ -14,6 +14,6 @@ GmaneSource(x, encoding = "UTF-8")
 }
 \value{
   An object of class \code{GmaneSource} which extends the class
-  \code{Source} representing a Gmane mailing list RSS feed.
+  \code{Source} representing a Gmane mailing list \acronym{RSS} feed.
 }
 \author{Ingo Feinerer}

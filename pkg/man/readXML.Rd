@@ -2,8 +2,8 @@
 \alias{readXML}
 \title{Read In an XML Document}
 \description{
-  Return a function which reads in an XML document. The structure of
-  the XML document can be described with a so-called specification.
+  Return a function which reads in an \acronym{XML} document. The structure of
+  the \acronym{XML} document can be described with a so-called specification.
 }
 \usage{
 readXML(spec, doc, \dots)
@@ -21,14 +21,14 @@ readXML(spec, doc, \dots)
     specification entry. Valid combinations are:
     \describe{
       \item{type = "node", spec = "XPathExpression"}{The XPath
-	expression \code{spec} extracts information from an XML node.}
+	expression \code{spec} extracts information from an \acronym{XML} node.}
       \item{type = "attribute", spec = "XPathExpression"}{The XPath
 	expression \code{spec} extracts information from an attribute of
-	an XML node.}
+	an \acronym{XML} node.}
       \item{type = "function", spec = function(tree) \dots}{The function
 	\code{spec} is called, passing over a tree representation (as
 	delivered by \code{xmlInternalTreeParse} from package \pkg{XML})
-	of the read in XML document as first argument.}
+	of the read in \acronym{XML} document as first argument.}
       \item{type = "unevaluated", spec = "String"}{The character vector
 	\code{spec} is returned without modification.}
     }
@@ -52,7 +52,7 @@ readXML(spec, doc, \dots)
   \item{id}{A \code{character} vector representing a unique identification
     string for the returned text document.}
   The function returns \code{doc} augmented by the parsed information
-  out of the XML file as described by \code{spec}.
+  out of the \acronym{XML} file as described by \code{spec}.
 }
 \seealso{
   Vignette 'Extensions: How to Handle Custom File Formats'.

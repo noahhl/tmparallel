@@ -35,7 +35,7 @@ Reuters21578Document(x, author = character(0), datetimestamp = as.POSIXlt(Sys.ti
   Lewis, David (1997) \emph{Reuters-21578 Text Categorization Collection Distribution 1.0}.
   \url{http://kdd.ics.uci.edu/databases/reuters21578/reuters21578.html}
 
-  Luz, Saturnino \emph{XML-encoded version of Reuters-21578}.
+  Luz, Saturnino \emph{\acronym{XML}-encoded version of Reuters-21578}.
   \url{http://modnlp.berlios.de/reuters21578.html}
 }
 \author{Ingo Feinerer}

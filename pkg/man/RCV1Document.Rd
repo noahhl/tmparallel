@@ -31,4 +31,10 @@ RCV1Document(x, author = character(0), datetimestamp = as.POSIXlt(Sys.time(), tz
 \seealso{
   \code{\link{PlainTextDocument}} and \code{\link{Reuters21578Document}}
 }
+\references{
+  Lewis, D. D.; Yang, Y.; Rose, T.; and Li, F (2004).
+  RCV1: A New Benchmark Collection for Text Categorization Research.
+  \emph{Journal of Machine Learning Research}, \bold{5}, 361--397.
+  \url{http://www.jmlr.org/papers/volume5/lewis04a/lewis04a.pdf}
+}
 \author{Ingo Feinerer}
