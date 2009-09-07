@@ -6,7 +6,7 @@ CONTRIBUTORS (alphabetically sorted by lastname):
 
 Christian Buchta	optimization of term-document matrix construction, weighting functions, and lazy transformations
 Bettina Grün		S4 class expertise, profiling
-Kurt Hornik		system design, several bug fixes, CRAN uploads
+Kurt Hornik		system design, several bug fixes, CRAN uploads, profiling
 Robert Koblischke	optimization of term-document matrix construction, profiling
 David Meyer		system design
 Stefan Theußl		R-Forge tm repository setup

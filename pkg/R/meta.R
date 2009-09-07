@@ -41,7 +41,7 @@ meta.Corpus <- function(x, tag, type = c("indexed", "corpus", "local")) {
     if (missing(tag) && identical(type, "corpus"))
         return(CMetaData(x))
     if (identical(type, "corpus"))
-        return(attr(CMetaData(x), "MetaData")[[tag]])
+        return(CMetaData(x)$MetaData[[tag]])
     if (missing(tag) && identical(type, "local"))
         return(invisible(lapply(x, meta)))
     if (identical(type, "local"))
@@ -81,7 +81,7 @@ meta.TextRepository <- function(x, tag, type = NULL) {
         for (i in seq_along(x))
             meta(x[[i]], tag) <- value[[i]]
     else # (type == "corpus")
-        attr(attr(x, "CMetaData"), "MetaData")[[tag]] <- value
+        attr(x, "CMetaData")$MetaData[[tag]] <- value
     x
 }
 `meta<-.TextDocument` <- function(x, tag, type = NULL, value) {

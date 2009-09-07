@@ -13,8 +13,8 @@ re <- Corpus(DirSource(reut21578), readerControl = list(reader = readReut21578XM
 rc <- Corpus(DirSource(rcv1), readerControl = list(reader = readRCV1))
 
 # Lazy transformations
-acq <- tmMap(acq, stemDoc, lazy = TRUE)
-meta(acq, type = "corpus")
+acq <- tm_map(acq, stemDocument, lazy = TRUE)
+CMetaData(acq)
 acq[[1]]
 acq[[17]]
-meta(acq, type = "corpus")
+CMetaData(acq)
