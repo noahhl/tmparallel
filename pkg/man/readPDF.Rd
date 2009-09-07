@@ -38,8 +38,9 @@ readPDF(PdfinfoOptions = "", PdftotextOptions = "", \dots)
   \code{\link{getReaders}} to list available reader functions.
 }
 \examples{
+f <- system.file("doc", "tm.pdf", package = "tm")
 f <- system.file("texts", "pdf", "pdfarchiving.pdf", package = "tm")
 pdf <- readPDF(PdftotextOptions = "-layout")(elem = list(uri = f), language = "eng", id = "id1")
-meta(pdf)
+pdf[1:13]
 }
 \author{Ingo Feinerer}
