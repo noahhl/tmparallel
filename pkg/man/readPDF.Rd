@@ -39,7 +39,6 @@ readPDF(PdfinfoOptions = "", PdftotextOptions = "", \dots)
 }
 \examples{
 f <- system.file("doc", "tm.pdf", package = "tm")
-f <- system.file("texts", "pdf", "pdfarchiving.pdf", package = "tm")
 pdf <- readPDF(PdftotextOptions = "-layout")(elem = list(uri = f), language = "eng", id = "id1")
 pdf[1:13]
 }
