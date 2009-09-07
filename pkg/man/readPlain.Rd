@@ -20,15 +20,13 @@ readPlain(\dots)
 }
 \value{
   A \code{function} with the signature \code{elem, language, id}:
-  \describe{
-    \item{elem}{A \code{list} with the two named elements \code{content}
-      and \code{uri}. The first element must hold the document to
-      be read in, the second element must hold a call to extract this
-      document. The call is evaluated upon a request for load on demand.}
-    \item{language}{A \code{character} vector giving the text's language.}
-    \item{id}{A \code{character} vector representing a unique identification
-      string for the returned text document.}
-  }
+  \item{elem}{A \code{list} with the two named elements \code{content}
+    and \code{uri}. The first element must hold the document to
+    be read in, the second element must hold a call to extract this
+    document. The call is evaluated upon a request for load on demand.}
+  \item{language}{A \code{character} vector giving the text's language.}
+  \item{id}{A \code{character} vector representing a unique identification
+    string for the returned text document.}
   The function returns a \code{PlainTextDocument} representing
   \code{content}.
 }

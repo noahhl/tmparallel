@@ -19,7 +19,7 @@ readReut21578XMLasPlain(elem, language, id)
     string for the returned text document.}
 }
 \value{
-   An \code{Reuters21578Document} for \code{readReut21578XML}, or a
+   A \code{Reuters21578Document} for \code{readReut21578XML}, or a
    \code{PlainTextDocument} for \code{readReut21578XMLasPlain}.
 }
 \references{
