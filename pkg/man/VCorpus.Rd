@@ -53,7 +53,7 @@ VCorpus(x, readerControl = list(reader = x$DefaultReader, language = "eng"), \do
   }
 }
 \examples{
-reut21578 <- system.file("texts", "reut21578", package = "tm")
+reut21578 <- system.file("texts", "crude", package = "tm")
 (r <- Corpus(DirSource(reut21578), readerControl = list(reader = readReut21578XMLasPlain)))
 }
 \author{Ingo Feinerer}

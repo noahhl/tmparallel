@@ -19,7 +19,7 @@
   \code{\link{getTransformations}} to list available transformation (mapping) functions.
 }
 \examples{
-reut21578 <- system.file("texts", "reut21578", package = "tm")
+reut21578 <- system.file("texts", "crude", package = "tm")
 r <- Corpus(DirSource(reut21578), readerControl = list(reader = readReut21578XML))
 r[[1]]
 as.PlainTextDocument(r[[1]])

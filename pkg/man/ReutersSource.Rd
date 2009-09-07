@@ -24,7 +24,7 @@ ReutersSource(x, encoding = "UTF-8")
   \url{http://modnlp.berlios.de/reuters21578.html}
 }
 \examples{
-reuters21578 <- system.file("texts", "reut21578.xml", package = "tm")
+reuters21578 <- system.file("texts", "reuters-21578.xml", package = "tm")
 rs <- ReutersSource(reuters21578)
 inspect(Corpus(rs)[1:2])
 }

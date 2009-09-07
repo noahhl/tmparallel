@@ -17,7 +17,7 @@ readRCV1(elem, language, id)
     string for the returned text document.}
 }
 \value{
-  An \code{XMLTextDocument}.
+  An \code{RCV1Document}.
 }
 \seealso{
   Use \code{\link{getReaders}} to list available reader functions.
