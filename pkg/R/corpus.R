@@ -87,21 +87,15 @@ VCorpus <- Corpus <- function(x,
 
 `[.PCorpus` <- function(x, i) {
     if (missing(i)) return(x)
-    cmeta <- CMetaData(x)
     index <- attr(x, "DMetaData")[[1 , "subset"]]
     attr(x, "DMetaData")[[1 , "subset"]] <- if (is.numeric(index)) index[i] else i
     dmeta <- attr(x, "DMetaData")
-    dbcontrol <- DBControl(x)
-    class(x) <- "list"
-    .PCorpus(x[i, drop = FALSE], cmeta, dmeta, dbcontrol)
+    .PCorpus(NextMethod("["), CMetaData(x), dmeta, DBControl(x))
 }
 
 `[.VCorpus` <- function(x, i) {
     if (missing(i)) return(x)
-    cmeta <- CMetaData(x)
-    dmeta <- DMetaData(x)[i, , drop = FALSE]
-    class(x) <- "list"
-    .VCorpus(x[i, drop = FALSE], cmeta, dmeta)
+    .VCorpus(NextMethod("["), CMetaData(x), DMetaData(x)[i, , drop = FALSE])
 }
 
 `[<-.PCorpus` <- function(x, i, value) {
@@ -117,15 +111,13 @@ VCorpus <- Corpus <- function(x,
 
 `[[.PCorpus` <-  function(x, i) {
     db <- filehash::dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
-    class(x) <- "list"
-    filehash::dbFetch(db, x[[i]])
+    filehash::dbFetch(db, NextMethod("[["))
 }
 `[[.VCorpus` <-  function(x, i) {
     lazyTmMap <- meta(x, tag = "lazyTmMap", type = "corpus")
     if (!is.null(lazyTmMap))
         .Call("copyCorpus", x, materialize(x, i))
-    class(x) <- "list"
-    x[[i]]
+    NextMethod("[[")
 }
 
 `[[<-.PCorpus` <-  function(x, i, value) {
@@ -143,10 +135,9 @@ VCorpus <- Corpus <- function(x,
     }
     # Set the value
     cl <- class(x)
-    class(x) <- "list"
-    x[[i]] <- value
-    class(x) <- cl
-    x
+    y <- NextMethod("[[<-")
+    class(y) <- cl
+    y
 }
 
 # Update \code{NodeID}s of a CMetaData tree
