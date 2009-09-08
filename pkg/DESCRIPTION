@@ -8,5 +8,5 @@ Depends: R (>= 2.7.0)
 Imports: slam (>= 0.1-1)
 Suggests: filehash, proxy, Rgraphviz, Rmpi, RWeka, snow, Snowball, XML
 Description: A framework for text mining applications within R.
-License: GPL (>= 2) | file LICENCE
+License: GPL (>= 2)
 URL: http://tm.r-forge.r-project.org/
