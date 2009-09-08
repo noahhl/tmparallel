@@ -54,14 +54,18 @@ DublinCore(x, tag = NULL)
   Simple Dublin Core meta data is only available locally at each
   document:
   \describe{
-    \item{object = "TextDocument", tag = NULL}{Returns or sets the
+    \item{x = "TextDocument", tag = NULL}{Returns or sets the
       Simple Dublin Core meta datum named \code{tag} for
-      \code{object}. \code{tag} must be a valid Simple Dublin Core
+      \code{x}. \code{tag} must be a valid Simple Dublin Core
       element name (i.e, Title, Creator, Subject, Description,
       Publisher, Contributor, Date, Type, Format, Identifier, Source,
       Language, Relation, Coverage, or Rights) or \code{NULL}. For the
       latter all Dublin Core meta data are printed.}
   }
+}
+\references{
+  Dublin Core Metadata Initiative.
+  \url{http://dublincore.org/}
 }
 \examples{
 data("crude")

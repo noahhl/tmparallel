@@ -140,9 +140,9 @@ VCorpus <- Corpus <- function(x,
     y
 }
 
-# Update \code{NodeID}s of a CMetaData tree
-update_id <- function(x, id = 0, mapping = NULL, left.mapping = NULL, level = 0) {
-    # Traversal of (binary) CMetaData tree with setup of \code{NodeID}s
+# Update NodeIDs of a CMetaData tree
+.update_id <- function(x, id = 0, mapping = NULL, left.mapping = NULL, level = 0) {
+    # Traversal of (binary) CMetaData tree with setup of NodeIDs
     set_id <- function(x) {
         x$NodeID <- id
         id <<- id + 1
@@ -165,20 +165,26 @@ update_id <- function(x, id = 0, mapping = NULL, left.mapping = NULL, level = 0)
     list(root = set_id(x), left.mapping = left.mapping, right.mapping = mapping)
 }
 
-c2 <- function(x, y, ...) {
-    # Update the CMetaData tree
-    cmeta <- .MetaDataNode(0, list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), list(CMetaData(x), CMetaData(y)))
-    update.struct <- update_id(cmeta)
-
-    new <- .VCorpus(c(unclass(x), unclass(y)), update.struct$root, NULL)
-
-    # Find indices to be updated for the left tree
+# Find indices to be updated for a CMetaData tree
+.find_indices <- function(x) {
     indices.mapping <- NULL
     for (m in levels(as.factor(DMetaData(x)$MetaID))) {
         indices <- (DMetaData(x)$MetaID == m)
         indices.mapping <- c(indices.mapping, list(m = indices))
         names(indices.mapping)[length(indices.mapping)] <- m
     }
+    indices.mapping
+}
+
+c2 <- function(x, y, ...) {
+    # Update the CMetaData tree
+    cmeta <- .MetaDataNode(0, list(merge_date = as.POSIXlt(Sys.time(), tz = "GMT"), merger = Sys.getenv("LOGNAME")), list(CMetaData(x), CMetaData(y)))
+    update.struct <- .update_id(cmeta)
+
+    new <- .VCorpus(c(unclass(x), unclass(y)), update.struct$root, NULL)
+
+    # Find indices to be updated for the left tree
+    indices.mapping <- .find_indices(x)
 
     # Update the DMetaData data frames for the left tree
     for (i in 1:ncol(update.struct$left.mapping)) {
@@ -187,12 +193,7 @@ c2 <- function(x, y, ...) {
     }
 
     # Find indices to be updated for the right tree
-    indices.mapping <- NULL
-    for (m in levels(as.factor(DMetaData(y)$MetaID))) {
-        indices <- (DMetaData(y)$MetaID == m)
-        indices.mapping <- c(indices.mapping, list(m = indices))
-        names(indices.mapping)[length(indices.mapping)] <- m
-    }
+    indices.mapping <- .find_indices(y)
 
     # Update the DMetaData data frames for the right tree
     for (i in 1:ncol(update.struct$right.mapping)) {

@@ -43,12 +43,18 @@ is an abstract concept, and there can exist several implementations in
 parallel. The default implementation is the so-called \class{VCorpus}
 (short for \emph{Volatile Corpus}) which realizes a semantics as known
 from most \proglang{R} objects: corpora are \proglang{R} objects held
-fully in memory. Such a volatile corpus can be created via the
-constructor \code{Corpus(x, readerControl)}. Another
-implementation is the \class{PCorpus} which implements a
-\emph{Permanent Corpus} semantics, i.e., the documents are physically
-located on a disk, and its changes are reflected to all \proglang{R}
-objects associated with it.
+fully in memory. We denote this as volatile since once the
+\proglang{R} object is destroyed, the whole corpus is gone. Such a
+volatile corpus can be created via the constructor \code{Corpus(x,
+  readerControl)}. Another implementation is the \class{PCorpus} which
+implements a \emph{Permanent Corpus} semantics, i.e., the documents
+are physically stored outside of \proglang{R} (e.g., in a database),
+corresponding \proglang{R} objects are basically only pointers to
+external structures, and changes to the underlying corpus are
+reflected to all \proglang{R} objects associated with it. Compared to
+the volatile corpus the corpus encapsulated by a permanent corpus
+object is not destroyed if the corresponding \proglang{R} object is
+released.
 
 Within the corpus constructor, \code{x} must be a \class{Source}
 object which abstracts the input location. \pkg{tm} provides a set of
@@ -60,7 +66,7 @@ which is designed solely for directories on a file system, and
 \class{VectorSource}, which only accepts (character) vectors, most
 other implemented sources can take connections as input (a character
 string is interpreted as file path). \code{getSources()} lists
-available sources, and the user can create his own sources.
+available sources, and users can create their own sources.
 
 The second argument \code{readerControl} of the corpus constructor has
 to be a list with the named components \code{reader} and
@@ -133,10 +139,10 @@ inspect(ovid[1:2])
 Once we have a corpus we typically want to modify the documents in it,
 e.g., stemming, stopword removal, et cetera. In \pkg{tm}, all this
 functionality is subsumed into the concept of a
-\emph{transformation}. Transformations are done via the \code{tm\_map}
+\emph{transformation}. Transformations are done via the \code{tm\_map()}
 function which applies (maps) a function to all elements of the
 corpus. Basically, all transformations work on single text documents
-and \code{tm\_map} just applies them to all documents in a corpus.
+and \code{tm\_map()} just applies them to all documents in a corpus.
 
 \subsection*{Converting to Plain Text Documents}
 The corpus \code{reuters} contains documents
@@ -207,12 +213,15 @@ tm_filter(reuters, pattern = "company")
 Meta data is used to annotate text documents or whole corpora with
 additional information. The easiest way to accomplish this with
 \pkg{tm} is to use the \code{meta()} function. A text document has a
-few predefined attributes like \code{Author}, but can be extended with an
-arbitrary number of local meta data tags. Alternatively to \code{meta()}
-the function \code{DublinCore()} provides a full mapping
-between Simple Dublin Core meta data and \pkg{tm} meta data structures
-and can be similarly used to get and set meta data information for
-text documents, e.g.:
+few predefined attributes like \code{Author}, but can be extended with
+an arbitrary number of additional user-defined meta data tags. These
+additional meta data tags are individually attached to a single text
+document. From a corpus perspective these meta data attachments are
+locally stored together with each individual text
+document. Alternatively to \code{meta()} the function
+\code{DublinCore()} provides a full mapping between Simple Dublin Core
+meta data and \pkg{tm} meta data structures and can be similarly used
+to get and set meta data information for text documents, e.g.:
 <<DublinCore>>=
 DublinCore(crude[[1]], "Creator") <- "Ano Nymous"
 meta(crude[[1]])
@@ -248,7 +257,7 @@ A common approach in text mining is to create a term-document matrix
 from a corpus. In the \pkg{tm} package the classes
 \class{TermDocumentMatrix} and \class{DocumentTermMatrix} (depending
 on whether you want terms as rows and documents as columns, or vice
-versa) handle sparse matrices for corpora.
+versa) employ sparse matrices for corpora.
 <<>>=
 dtm <- DocumentTermMatrix(reuters)
 inspect(dtm[1:5,150:155])

@@ -20,6 +20,6 @@ stopwords(language = "eng")
 }
 \value{A character vector containing the requested stopwords.}
 \examples{
-stopwords("english")
+stopwords("eng")
 }
 \keyword{file}
