@@ -1,11 +1,8 @@
 \documentclass[a4paper]{article}
 
-\usepackage[utf8]{inputenc}
 \usepackage[margin=2cm]{geometry}
 \usepackage[round]{natbib}
 \usepackage{url}
-\DeclareUnicodeCharacter{201C}{"}
-\DeclareUnicodeCharacter{201D}{"}
 
 \newcommand{\acronym}[1]{\textsc{#1}}
 \newcommand{\class}[1]{\mbox{\textsf{#1}}}
@@ -260,7 +257,7 @@ on whether you want terms as rows and documents as columns, or vice
 versa) employ sparse matrices for corpora.
 <<>>=
 dtm <- DocumentTermMatrix(reuters)
-inspect(dtm[1:5,150:155])
+inspect(dtm[1:5,100:105])
 @
 
 \section*{Operations on Term-Document Matrices}
