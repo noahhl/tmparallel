@@ -1,3 +1,7 @@
+2009-09-15  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/preprocess.R (preprocessReut21578XML): Fix generated file names.
+
 2009-09-06  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/: Use S3 instead of S4 class system.
