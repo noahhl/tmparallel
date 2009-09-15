@@ -100,7 +100,7 @@ as.PlainTextDocument.Reuters21578Document <- function(x) {
     x
 }
 
-convert_UTF_8 <- function(x, from = "", sub = NA, ...)
+convert_UTF_8 <- function(x, from = "", sub = NA)
     iconv(x, from = from, to = "UTF-8", sub = sub)
 
 removeNumbers <- function(x) UseMethod("removeNumbers", x)
