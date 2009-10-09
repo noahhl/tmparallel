@@ -110,6 +110,7 @@ removePunctuation <- function(x) UseMethod("removePunctuation", x)
 removePunctuation.PlainTextDocument <- function(x)  gsub("[[:punct:]]+", "", x)
 
 removeWords <- function(x, words) UseMethod("removeWords", x)
+# TODO: Fix regular expressions (VERY slow on latest R-devel)
 removeWords.PlainTextDocument <- function(x, words) {
     x <- gsub(paste("([[:blank:]]|^)",
                     paste(words, collapse = "([[:blank:]]|$)|([[:blank:]]|^)"),

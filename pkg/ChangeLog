@@ -1,3 +1,8 @@
+2009-10-09  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/source.R (GmaneSource, ReutersSource): Use xmlChildren(x)
+	instead of x$children.
+
 2009-09-15  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/preprocess.R (preprocessReut21578XML): Fix generated file names.

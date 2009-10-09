@@ -175,13 +175,13 @@ of text manipulation tasks.
 
 \subsection*{Remove Stopwords}
 Removal of stopwords by:
-<<>>=
+<<Stopwords>>=
 reuters <- tm_map(reuters, removeWords, stopwords("english"))
 @
 
 \subsection*{Stemming}
 Stemming is done by:
-<<>>=
+<<Stemming>>=
 tm_map(reuters, stemDocument)
 @
 
