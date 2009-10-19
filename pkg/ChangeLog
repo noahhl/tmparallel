@@ -1,3 +1,7 @@
+2009-10-19  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/meta.R (DublinCore): Allow lower case tags.
+
 2009-10-09  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/source.R (GmaneSource, ReutersSource): Use xmlChildren(x)
