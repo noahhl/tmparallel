@@ -1,3 +1,7 @@
+2009-10-21  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/transform.R (removeWords): Improve regular expressions.
+
 2009-10-19  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/meta.R (DublinCore): Allow lower case tags.
