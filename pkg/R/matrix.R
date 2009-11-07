@@ -14,6 +14,8 @@ TermDocumentMatrix.PCorpus <- TermDocumentMatrix.VCorpus <- function(x, control 
     if (!is.null(lazyTmMap))
         .Call("copyCorpus", x, materialize(x))
 
+    names(x) <- NULL
+
     tflist <- if (clusterAvailable())
         snow::parLapply(snow::getMPIcluster(), x, termFreq, control)
     else

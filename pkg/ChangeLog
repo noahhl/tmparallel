@@ -1,3 +1,8 @@
+2009-11-07  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/matrix.R (TermDocumentMatrix): Avoid prefixes originating from
+	named documents.
+
 2009-10-21  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/transform.R (removeWords): Improve regular expressions.
