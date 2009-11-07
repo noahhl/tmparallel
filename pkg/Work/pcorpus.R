@@ -1,8 +1,7 @@
 library("tm")
-data(crude)
-reut21578 <- system.file("texts", "reut21578", package = "tm")
+acq <- system.file("texts", "acq", package = "tm")
 tmpfile <- tempfile()
-r <- PCorpus(DirSource(reut21578),
+r <- PCorpus(DirSource(acq),
              readerControl = list(reader = readReut21578XML),
              dbControl = list(dbName = tmpfile, dbType = "DB1"))
 print(r)
@@ -15,7 +14,7 @@ r <- tm_map(r, removeWords, stopwords("english"))
 r <- tm_map(r, stemDocument)
 query <- "id == '10' & heading == 'COMPUTER TERMINAL SYSTEMS <CPML> COMPLETES SALE'"
 tm_filter(r, FUN = sFilter, query)
-tm_index(r, pattern = "partnership")
+tm_index(r, pattern = "partner")
 meta(r, tag = "test", "corpus") <- 1:3
 meta(r, tag = "cl1", "indexed") <- 1:10
 summary(r)
