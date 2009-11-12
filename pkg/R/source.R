@@ -34,8 +34,12 @@ DataframeSource <- function(x, encoding = "UTF-8") {
 }
 
 # A directory with files
-DirSource <- function(directory, encoding = "UTF-8", pattern = NULL, recursive = FALSE, ignore.case = FALSE) {
+DirSource <- function(directory = ".", encoding = "UTF-8", pattern = NULL, recursive = FALSE, ignore.case = FALSE) {
     d <- dir(directory, full.names = TRUE, pattern = pattern, recursive = recursive, ignore.case = ignore.case)
+
+    if (length(d) == 0)
+        stop("Empty directory")
+
     isdir <- sapply(d, file.info)["isdir",]
     files <- d[isdir == FALSE]
 

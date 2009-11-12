@@ -1,3 +1,12 @@
+2009-11-12  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/source.R (DirSource): Default to working directory if no path
+	is specified.
+
+2009-11-11  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/source.R (DirSource): Stop on empty directories.
+
 2009-11-07  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/matrix.R (TermDocumentMatrix): Avoid prefixes originating from
