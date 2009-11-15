@@ -1,7 +1,12 @@
 # Author: Ingo Feinerer
 
-TermDocMatrix <- function(x, control = list()) {
-    .Defunct("DocumentTermMatrix", package = "tm")
+.TermDocumentMatrix <-
+function(i = integer(0), j = integer(0), v = numeric(0),
+         nrow = 0, ncol = 0, dimnames = list(Terms = character(0), Docs = character(0)))
+{
+    structure(list(i = i, j = j, v = v, nrow = nrow, ncol = ncol, dimnames = dimnames,
+                   Weighting = c("term frequency", "tf")),
+              class = c("TermDocumentMatrix", "simple_triplet_matrix"))
 }
 
 TermDocumentMatrix <- function(x, control = list()) UseMethod("TermDocumentMatrix", x)
@@ -24,15 +29,13 @@ TermDocumentMatrix.PCorpus <- TermDocumentMatrix.VCorpus <- function(x, control 
 
     v <- unlist(tflist)
     i <- names(v)
-    v <- as.numeric(v)
     allTerms <- sort(unique(i))
     i <- match(i, allTerms)
     j <- rep(seq_along(x), sapply(tflist, length))
 
-    tdm <- structure(list(i = i, j = j, v = v, nrow = length(allTerms), ncol = length(x),
-                          dimnames = list(Terms = allTerms, Docs = unlist(lapply(x, ID))),
-                          Weighting = c(attr(weight, "Name"), attr(weight, "Acronym"))),
-                     class = c("TermDocumentMatrix", "simple_triplet_matrix"))
+    tdm <- .TermDocumentMatrix(i = i, j = j, v = as.numeric(v), nrow = length(allTerms), ncol = length(x),
+                               dimnames = list(Terms = allTerms, Docs = unlist(lapply(x, ID))))
+
     weight(tdm)
 }
 

@@ -21,10 +21,6 @@ VectorSource <- function(x, encoding = "UTF-8") {
     s
 }
 
-CSVSource <- function(x, encoding = "UTF-8")
-    .Defunct("DataframeSource", package = "tm",
-             msg = "'CSVSource' is defunct.\nUse 'DataframeSource(read.csv(..., stringsAsFactors = FALSE))' instead.\nSee help(\"Defunct\")")
-
 # A data frame where each row is interpreted as document
 DataframeSource <- function(x, encoding = "UTF-8") {
     s <- .Source(readPlain, encoding, nrow(x), FALSE, 0, TRUE)

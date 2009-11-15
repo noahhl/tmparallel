@@ -1,3 +1,9 @@
+2009-11-14  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/transform.R (removeWords.PlainTextDocument): Fix bug which
+	caused words at the beginning or the end of a line not to be removed. Do
+	not delete whitespace anymore.
+
 2009-11-12  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/source.R (DirSource): Default to working directory if no path
