@@ -2,6 +2,12 @@
 
                 CHANGES IN tm VERSION 0.5-2
 
+SIGNIFICANT USER-VISIBLE CHANGES
+
+    o   The function termFreq() which is used for building a
+        term-document matrix now uses a whitespace oriented tokenizer
+        as default.
+
 DEPRECATED & DEFUNCT
 
     o   Following functions have been removed:

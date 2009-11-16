@@ -63,7 +63,12 @@ termFreq <- function(doc, control = list()) {
     # Tokenize the corpus
     tokenize <- control$tokenize
     if (is.null(tokenize))
-        tokenize <- RWeka::AlphabeticTokenizer
+        tokenize <- function(x) {
+            con <- textConnection(x)
+            tokens <- scan(con, what = "character", quiet = TRUE)
+            close(con)
+            tokens
+        }
     txt <- tokenize(txt)
 
     # Number removal

@@ -1,3 +1,8 @@
+2009-11-15  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/matrix.R (tokenize): Use scan(..., what = "character") instead
+	of RWeka:AlphabeticTokenizer() as default.
+
 2009-11-14  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/transform.R (removeWords.PlainTextDocument): Fix bug which
