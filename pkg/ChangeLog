@@ -1,5 +1,8 @@
 2009-11-17  Ingo Feinerer  <feinerer@logic.at>
 
+	* R/corpus.R (setOldClass): Register S3 corpus classes to be
+	recognized by S4 methods.
+
 	* man/plot.Rd: Use \dontrun{} in \examples{} section in the hope
 	that CRAN Mac OS X builds do not fail any longer.
 
