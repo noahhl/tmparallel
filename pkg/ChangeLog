@@ -1,3 +1,8 @@
+2009-11-17  Ingo Feinerer  <feinerer@logic.at>
+
+	* man/plot.Rd: Use \dontrun{} in \examples{} section in the hope
+	that CRAN Mac OS X builds do not fail any longer.
+
 2009-11-15  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/matrix.R (tokenize): Use scan(..., what = "character") instead
