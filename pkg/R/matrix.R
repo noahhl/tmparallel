@@ -149,6 +149,33 @@ nTerms <- function(x) if (inherits(x, "DocumentTermMatrix")) x$ncol else x$nrow
 Docs <- function(x) if (inherits(x, "DocumentTermMatrix")) x$dimnames[[1]] else x$dimnames[[2]]
 Terms <- function(x) if (inherits(x, "DocumentTermMatrix")) x$dimnames[[2]] else x$dimnames[[1]]
 
+c.TermDocumentMatrix <- function(x, ..., recursive = FALSE) {
+    args <- list(...)
+
+    if (identical(length(args), 0))
+        return(x)
+
+    if (!all(unlist(lapply(args, inherits, "TermDocumentMatrix"))))
+        stop("not all arguments are term-document matrices")
+
+    Reduce(function(m, n) {
+        m_nDocs <- nDocs(m)
+
+        terms <- union(Terms(m), Terms(n))
+        docs <- c(Docs(m), Docs(n))
+
+        m$dimnames <- list(Terms = terms, Docs = docs)
+        m$nrow <- length(terms)
+        m$ncol <- length(docs)
+
+        m$i <- c(m$i, match(Terms(n)[n$i], terms))
+        m$j <- c(m$j, n$j + m_nDocs)
+        m$v <- c(m$v, n$v)
+
+        m
+    }, base::c(list(x), args))
+}
+
 findFreqTerms <- function(x, lowfreq = 0, highfreq = Inf) {
     if (inherits(x, "DocumentTermMatrix")) x <- t(x)
     Terms(x)[unique(x$i[x$v >= lowfreq & x$v <= highfreq])]

@@ -1,3 +1,8 @@
+2009-11-19  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/matrix.R (c.TermDocumentMatrix): Added combine method for
+	merging multiple term-document matrices.
+
 2009-11-17  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/corpus.R (setOldClass): Register S3 corpus classes to be

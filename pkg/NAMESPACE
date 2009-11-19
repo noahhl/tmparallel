@@ -152,6 +152,7 @@ S3method("as.PlainTextDocument", "Reuters21578Document")
 
 S3method("stepNext", "Source")
 
+S3method("c", "TermDocumentMatrix")
 S3method("[", "TermDocumentMatrix")
 S3method("Dictionary", "TermDocumentMatrix")
 S3method("dissimilarity", "TermDocumentMatrix")

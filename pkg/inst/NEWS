@@ -8,6 +8,11 @@ SIGNIFICANT USER-VISIBLE CHANGES
         term-document matrix now uses a whitespace oriented tokenizer
         as default.
 
+NEW FEATURES
+
+    o   A combine method for merging multiple term-document matrices
+        was added (c.TermDocumentMatrix()).
+
 DEPRECATED & DEFUNCT
 
     o   Following functions have been removed:
