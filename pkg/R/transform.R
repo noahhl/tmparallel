@@ -107,7 +107,7 @@ removeNumbers <- function(x) UseMethod("removeNumbers", x)
 removeNumbers.PlainTextDocument <- function(x) gsub("[[:digit:]]+", "", x)
 
 removePunctuation <- function(x) UseMethod("removePunctuation", x)
-removePunctuation.PlainTextDocument <- function(x)  gsub("[[:punct:]]+", "", x)
+removePunctuation.PlainTextDocument <- function(x) gsub("[[:punct:]]+", "", x)
 
 removeWords <- function(x, words) UseMethod("removeWords", x)
 # Improvements by Kurt Hornik

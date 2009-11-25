@@ -1,3 +1,8 @@
+2009-11-25  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/matrix.R (termFreq): Add option to remove punctuation
+	characters.
+
 2009-11-19  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/matrix.R (c.TermDocumentMatrix): Added combine method for

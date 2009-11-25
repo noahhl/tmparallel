@@ -13,6 +13,9 @@ termFreq(doc, control = list())
     \describe{
       \item{\code{tolower}}{A function converting characters to lower
 	case. Defaults to \code{\link{tolower}}.}
+      \item{\code{removePunctuation}}{A logical value indicating whether
+	punctuation characters should be removed from
+	\code{doc}. Defaults to \code{FALSE}.}
       \item{\code{tokenize}}{A function tokenizing documents into single
 	tokens. Defaults to \code{scan(\dots, what = "character")}.}
       \item{\code{removeNumbers}}{A logical value indicating whether
@@ -43,6 +46,6 @@ termFreq(doc, control = list())
 \examples{
 data("crude")
 termFreq(crude[[1]])
-termFreq(crude[[1]], control = list(stemming = TRUE, minWordLength = 4))
+termFreq(crude[[1]], control = list(removePunctuation = TRUE, stemming = TRUE, minWordLength = 4))
 }
 \keyword{math}

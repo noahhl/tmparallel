@@ -60,6 +60,10 @@ termFreq <- function(doc, control = list()) {
     if (is.null(tolower) || tolower)
         txt <- tolower(txt)
 
+    # Punctuation removal
+    if (isTRUE(control$removePunctuation))
+        txt <- gsub("[[:punct:]]+", "", txt)
+
     # Tokenize the corpus
     tokenize <- control$tokenize
     if (is.null(tokenize))

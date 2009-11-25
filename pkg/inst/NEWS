@@ -13,6 +13,9 @@ NEW FEATURES
     o   A combine method for merging multiple term-document matrices
         was added (c.TermDocumentMatrix()).
 
+    o   The function termFreq() has now an option to remove
+        punctuation characters.
+
 DEPRECATED & DEFUNCT
 
     o   Following functions have been removed:
