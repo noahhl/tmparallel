@@ -1,3 +1,8 @@
+2009-12-11  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/doc.R (setOldClass): Register S3 document classes to be
+	recognized by S4 methods.
+
 2009-11-25  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/matrix.R (termFreq): Add option to remove punctuation

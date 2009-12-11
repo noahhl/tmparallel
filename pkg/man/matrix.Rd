@@ -1,5 +1,4 @@
 \name{TermDocumentMatrix}
-\alias{TermDocMatrix}
 \alias{TermDocumentMatrix}
 \alias{DocumentTermMatrix}
 \title{Term-Document Matrix}

@@ -108,7 +108,7 @@ VCorpus <- Corpus <- function(x,
     db <- filehash::dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
     counter <- 1
     for (id in unclass(x)[i]) {
-        if (identical(length(value), 1)) db[[id]] <- value
+        if (identical(length(value), 1L)) db[[id]] <- value
         else db[[id]] <- value[[counter]]
         counter <- counter + 1
     }
@@ -224,7 +224,7 @@ function(x, ..., recursive = FALSE)
 {
     args <- list(...)
 
-    if (identical(length(args), 0))
+    if (identical(length(args), 0L))
         return(x)
 
     if (!all(unlist(lapply(args, inherits, class(x)))))
@@ -239,7 +239,7 @@ function(x, ..., recursive = FALSE)
 c.TextDocument <- function(x, ..., recursive = FALSE) {
     args <- list(...)
 
-    if (identical(length(args), 0))
+    if (identical(length(args), 0L))
         return(x)
 
     if (!all(unlist(lapply(args, inherits, class(x)))))
