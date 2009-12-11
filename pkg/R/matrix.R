@@ -178,6 +178,33 @@ c.TermDocumentMatrix <- function(x, ..., recursive = FALSE) {
                         dimnames = list(Terms = allTerms, Docs = allDocs))
 }
 
+c.TermDocumentMatrix1 <- function(x, ..., recursive = FALSE) {
+    args <- list(...)
+
+    if (identical(length(args), 0))
+        return(x)
+
+    if (!all(unlist(lapply(args, inherits, "TermDocumentMatrix"))))
+        stop("not all arguments are term-document matrices")
+
+    m <- base::c(list(x), args)
+    allTermsNonUnique <- unlist(lapply(m, Terms))
+    allTerms <- unique(allTermsNonUnique)
+    allDocs <- unlist(lapply(m, Docs))
+
+    cs <- cumsum(lapply(m, nDocs))
+    cs <- c(0, cs[-length(cs)])
+    j <- lapply(m, "[[", "j")
+    j <- unlist(j) + rep.int(cs, sapply(j, length))
+
+    .TermDocumentMatrix(i = match(allTermsNonUnique, allTerms),
+                        j = j,
+                        v = unlist(lapply(m, "[[", "v")),
+                        nrow = length(allTerms),
+                        ncol = length(allDocs),
+                        dimnames = list(Terms = allTerms, Docs = allDocs))
+}
+
 c.TermDocumentMatrix2 <- function(x, ..., recursive = FALSE) {
     args <- list(...)
 
