@@ -39,34 +39,6 @@ TermDocumentMatrix.PCorpus <- TermDocumentMatrix.VCorpus <- function(x, control 
     weight(tdm)
 }
 
-c.TermDocumentMatrix <- function(x, ..., recursive = FALSE) {
-    args <- list(...)
-
-    if (identical(length(args), 0L))
-        return(x)
-
-    if (!all(unlist(lapply(args, inherits, "TermDocumentMatrix"))))
-        stop("not all arguments are term-document matrices")
-
-    m <- base::c(list(x), args)
-    allTermsNonUnique <- unlist(lapply(m, Terms))
-    allTerms <- unique(allTermsNonUnique)
-    allDocs <- unlist(lapply(m, Docs))
-    tflist <- lapply(m, "[[", "v")
-
-    cs <- cumsum(lapply(m, nDocs))
-    cs <- c(0, cs[-length(cs)])
-    j <- unlist(mapply(function(j, offset) j + offset, lapply(m, "[[", "j"),
-                  cs, SIMPLIFY = FALSE))
-
-    .TermDocumentMatrix(i = match(allTermsNonUnique, allTerms),
-                        j = j,
-                        v = unlist(tflist),
-                        nrow = length(allTerms),
-                        ncol = length(allDocs),
-                        dimnames = list(Terms = allTerms, Docs = allDocs))
-}
-
 DocumentTermMatrix <- function(x, control = list())
     t(TermDocumentMatrix(x, control))
 
@@ -181,7 +153,60 @@ nTerms <- function(x) if (inherits(x, "DocumentTermMatrix")) x$ncol else x$nrow
 Docs <- function(x) if (inherits(x, "DocumentTermMatrix")) x$dimnames[[1]] else x$dimnames[[2]]
 Terms <- function(x) if (inherits(x, "DocumentTermMatrix")) x$dimnames[[2]] else x$dimnames[[1]]
 
+c.TermDocumentMatrix <- function(x, ..., recursive = FALSE) {
+    args <- list(...)
+
+    if (identical(length(args), 0L))
+        return(x)
+
+    if (!all(unlist(lapply(args, inherits, "TermDocumentMatrix"))))
+        stop("not all arguments are term-document matrices")
+
+    m <- base::c(list(x), args)
+    allTerms <- unique(unlist(lapply(m, Terms)))
+    allDocs <- unlist(lapply(m, Docs))
+
+    cs <- cumsum(lapply(m, nDocs))
+    cs <- c(0, cs[-length(cs)])
+    j <- lapply(m, "[[", "j")
+
+    .TermDocumentMatrix(i = match(unlist(lapply(m, function(x) Terms(x)[x$i])), allTerms),
+                        j = unlist(j) + rep.int(cs, sapply(j, length)),
+                        v = unlist(lapply(m, "[[", "v")),
+                        nrow = length(allTerms),
+                        ncol = length(allDocs),
+                        dimnames = list(Terms = allTerms, Docs = allDocs))
+}
+
 c.TermDocumentMatrix2 <- function(x, ..., recursive = FALSE) {
+    args <- list(...)
+
+    if (identical(length(args), 0L))
+        return(x)
+
+    if (!all(unlist(lapply(args, inherits, "TermDocumentMatrix"))))
+        stop("not all arguments are term-document matrices")
+
+    m <- base::c(list(x), args)
+    allTermsNonUnique <- unlist(lapply(m, Terms))
+    allTerms <- unique(allTermsNonUnique)
+    allDocs <- unlist(lapply(m, Docs))
+    tflist <- lapply(m, "[[", "v")
+
+    cs <- cumsum(lapply(m, nDocs))
+    cs <- c(0, cs[-length(cs)])
+    j <- unlist(mapply(function(j, offset) j + offset, lapply(m, "[[", "j"),
+                  cs, SIMPLIFY = FALSE))
+
+    .TermDocumentMatrix(i = match(allTermsNonUnique, allTerms),
+                        j = j,
+                        v = unlist(tflist),
+                        nrow = length(allTerms),
+                        ncol = length(allDocs),
+                        dimnames = list(Terms = allTerms, Docs = allDocs))
+}
+
+c.TermDocumentMatrix3 <- function(x, ..., recursive = FALSE) {
     args <- list(...)
 
     if (identical(length(args), 0L))
