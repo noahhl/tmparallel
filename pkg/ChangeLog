@@ -1,3 +1,7 @@
+2009-12-22  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/source.R (getElem.URISource): Use encoding argument.
+
 2009-12-11  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/doc.R (setOldClass): Register S3 document classes to be

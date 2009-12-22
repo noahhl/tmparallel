@@ -85,7 +85,7 @@ getElem.DirSource <- function(x) {
     encoding <- x$Encoding
     list(content = readLines(filename, encoding = encoding), uri = filename)
 }
-getElem.URISource <- function(x) list(content = readLines(eval(x$URI)), uri = x$URI)
+getElem.URISource <- function(x) list(content = readLines(eval(x$URI), encoding = x$Encoding), uri = x$URI)
 getElem.VectorSource <- function(x) list(content = x$Content[x$Position], uri = match.call()$x)
 getElem.XMLSource <- function(x) {
     # Construct a character representation from the XMLNode
