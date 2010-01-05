@@ -15,7 +15,7 @@ weightTfIdf <-
         isDTM <- inherits(m, "DocumentTermMatrix")
         m$Weighting <- c("term frequency - inverse document frequency", "tf-idf")
         if (isDTM) m <- t(m)
-        m <- m * log2(nDocs(m) / rowSums(m > 0))
+        m <- m * log2(nDocs(m) / row_sums(m > 0))
         if (isDTM) t(m) else m
     }, "term frequency - inverse document frequency", "tf-idf")
 
