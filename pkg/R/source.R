@@ -36,11 +36,12 @@ DirSource <- function(directory = ".", encoding = "UTF-8", pattern = NULL, recur
     if (length(d) == 0)
         stop("Empty directory")
 
-    isdir <- sapply(d, file.info)["isdir",]
-    files <- d[isdir == FALSE]
+    isfile <- logical(length(d))
+    for(i in seq_along(d))
+      isfile[i] <- !file.info(d[i])["isdir"]
 
-    s <- .Source(readPlain, encoding, length(files), TRUE, 0, TRUE)
-    s$FileList <- files
+    s <- .Source(readPlain, encoding, sum(isfile), TRUE, 0, TRUE)
+    s$FileList <- d[isfile]
     class(s) = c("DirSource", "Source")
     s
 }
