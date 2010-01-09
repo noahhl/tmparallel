@@ -37,7 +37,7 @@ DirSource <- function(directory = ".", encoding = "UTF-8", pattern = NULL, recur
         stop("Empty directory")
 
     isfile <- logical(length(d))
-    for(i in seq_along(d))
+    for (i in seq_along(d))
       isfile[i] <- !file.info(d[i])["isdir"]
 
     s <- .Source(readPlain, encoding, sum(isfile), TRUE, 0, TRUE)
