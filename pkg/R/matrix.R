@@ -163,14 +163,15 @@ c.TermDocumentMatrix <- function(x, ..., recursive = FALSE) {
         stop("not all arguments are term-document matrices")
 
     m <- base::c(list(x), args)
-    allTerms <- unique(unlist(lapply(m, Terms)))
+    allTermsNonUnique <- unlist(lapply(m, function(x) Terms(x)[x$i]))
+    allTerms <- unique(allTermsNonUnique)
     allDocs <- unlist(lapply(m, Docs))
 
     cs <- cumsum(lapply(m, nDocs))
     cs <- c(0, cs[-length(cs)])
     j <- lapply(m, "[[", "j")
 
-    .TermDocumentMatrix(i = match(unlist(lapply(m, function(x) Terms(x)[x$i])), allTerms),
+    .TermDocumentMatrix(i = match(allTermsNonUnique, allTerms),
                         j = unlist(j) + rep.int(cs, sapply(j, length)),
                         v = unlist(lapply(m, "[[", "v")),
                         nrow = length(allTerms),
