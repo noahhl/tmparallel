@@ -56,7 +56,11 @@ readReut21578XML <- readXML(spec = list(Author = list("node", "/REUTERS/TEXT/AUT
                             Heading = list("node", "/REUTERS/TEXT/TITLE"),
                             ID = list("attribute", "/REUTERS/@NEWID"),
                             Origin = list("unevaluated", "Reuters-21578 XML"),
-                            Topics = list("node", "/REUTERS/TOPICS/D")),
+                            Topics = list("node", "/REUTERS/TOPICS/D"),
+                            Places = list("node", "/REUTERS/PLACES/D"),
+                            People = list("node", "/REUTERS/PEOPLE/D"),
+                            Orgs = list("node", "/REUTERS/ORGS/D"),
+                            Exchanges = list("node", "/REUTERS/EXCHANGES/D")),
                             doc = Reuters21578Document())
 
 readReut21578XMLasPlain <- readXML(spec = list(Author = list("node", "/REUTERS/TEXT/AUTHOR"),
@@ -69,7 +73,11 @@ readReut21578XMLasPlain <- readXML(spec = list(Author = list("node", "/REUTERS/T
                                    Heading = list("node", "/REUTERS/TEXT/TITLE"),
                                    ID = list("attribute", "/REUTERS/@NEWID"),
                                    Origin = list("unevaluated", "Reuters-21578 XML"),
-                                   Topics = list("node", "/REUTERS/TOPICS/D")),
+                                   Topics = list("node", "/REUTERS/TOPICS/D"),
+                                   Places = list("node", "/REUTERS/PLACES/D"),
+                                   People = list("node", "/REUTERS/PEOPLE/D"),
+                                   Orgs = list("node", "/REUTERS/ORGS/D"),
+                                   Exchanges = list("node", "/REUTERS/EXCHANGES/D")),
                                    doc = PlainTextDocument())
 
 readRCV1 <- readXML(spec = list(Author = list("unevaluated", ""),
