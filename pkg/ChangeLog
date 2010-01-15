@@ -1,3 +1,8 @@
+2010-01-15  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/reader.R (readReut21578XML, readRCV1): Extract more meta
+	data.
+
 2010-01-12  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/doc.R (`Content<-`): Be careful with names attribute.

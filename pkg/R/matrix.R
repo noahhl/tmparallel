@@ -124,7 +124,7 @@ print.TermDocumentMatrix <- print.DocumentTermMatrix <- function(x, ...) {
     if (inherits(x, "DocumentTermMatrix")) format <- rev(format)
     cat(sprintf("A %s-%s matrix (%d %ss, %d %ss)\n",
                 format[1], format[2], nrow(x), format[1], ncol(x), format[2]))
-    cat(sprintf("\nNon-/sparse entries: %d/%d\n", length(x$v), prod(dim(x)) - length(x$v)))
+    cat(sprintf("\nNon-/sparse entries: %d/%.0f\n", length(x$v), prod(dim(x)) - length(x$v)))
     sparsity <- if (identical(prod(dim(x)), 0L)) 100 else round((1 - length(x$v)/prod(dim(x))) * 100)
     cat(sprintf("Sparsity           : %s%%\n", sparsity))
     cat("Maximal term length:", max(nchar(Terms(x), type = "chars"), 0), "\n")

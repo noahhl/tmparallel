@@ -86,9 +86,11 @@ readRCV1 <- readXML(spec = list(Author = list("unevaluated", ""),
                     Description = list("unevaluated", ""),
                     Heading = list("node", "/newsitem/title"),
                     ID = list("attribute", "/newsitem/@itemid"),
-                    Origin = list("unevaluated", "Reuters Corpus Volume 1 XML"),
+                    Origin = list("unevaluated", "Reuters Corpus Volume 1"),
                     Publisher = list("attribute", "/newsitem/metadata/dc[@element='dc.publisher']/@value"),
-                    Topics = list("attribute", "/newsitem/metadata/codes[@class='bip:topics:1.0']/code/@code")),
+                    Topics = list("attribute", "/newsitem/metadata/codes[@class='bip:topics:1.0']/code/@code"),
+                    Industries = list("attribute", "/newsitem/metadata/codes[@class='bip:industries:1.0']/code/@code"),
+                    Countries = list("attribute", "/newsitem/metadata/codes[@class='bip:countries:1.0']/code/@code")),
                     doc = RCV1Document())
 
 readRCV1asPlain <- readXML(spec = list(Author = list("unevaluated", ""),
@@ -98,9 +100,11 @@ readRCV1asPlain <- readXML(spec = list(Author = list("unevaluated", ""),
                            Description = list("unevaluated", ""),
                            Heading = list("node", "/newsitem/title"),
                            ID = list("attribute", "/newsitem/@itemid"),
-                           Origin = list("unevaluated", "Reuters Corpus Volume 1 XML"),
+                           Origin = list("unevaluated", "Reuters Corpus Volume 1"),
                            Publisher = list("attribute", "/newsitem/metadata/dc[@element='dc.publisher']/@value"),
-                           Topics = list("attribute", "/newsitem/metadata/codes[@class='bip:topics:1.0']/code/@code")),
+                           Topics = list("attribute", "/newsitem/metadata/codes[@class='bip:topics:1.0']/code/@code"),
+                           Industries = list("attribute", "/newsitem/metadata/codes[@class='bip:industries:1.0']/code/@code"),
+                           Countries = list("attribute", "/newsitem/metadata/codes[@class='bip:countries:1.0']/code/@code")),
                            doc = PlainTextDocument())
 
 # # readDOC needs antiword installed to be able to extract the text
