@@ -94,6 +94,7 @@ export("as.PlainTextDocument",
        "XMLSource")
 
 S3method("Dictionary", "character")
+S3method("stemDocument", "character")
 
 S3method("c", "Corpus")
 S3method("CMetaData", "Corpus")

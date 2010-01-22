@@ -82,7 +82,7 @@ termFreq <- function(doc, control = list()) {
     # Stemming
     stemming <- control$stemming
     if (isTRUE(stemming))
-        stemming <- function(x) Snowball::SnowballStemmer(x, RWeka::Weka_control(S = map_ISO_639_2(Language(doc))))
+        stemming <- function(x) stemDocument(x, language = map_ISO_639_2(Language(doc)))
     if (is.function(stemming))
         txt <- stemming(txt)
 
