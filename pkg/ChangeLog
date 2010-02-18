@@ -1,3 +1,11 @@
+2010-02-18  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/complete.R (stemCompletion): New completion heuristics.
+
+2010-02-17  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/plot.R (plot.TermDocumentMatrix): Memory improvements.
+
 2010-02-06  Ingo Feinerer  <feinerer@logic.at>
 
 	* DESCRIPTION (Depends): Depend on R (>= 2.10.0) to ensure that
