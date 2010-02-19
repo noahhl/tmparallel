@@ -28,7 +28,7 @@
 2010-01-07  Stefan Theussl  <stefan.theussl@wu.ac.at>
 
 	* R/source.R (DirSource): Improved implementation especially when
-	handling many (>1M) files.
+	handling many (> 1M) files.
 
 2009-12-22  Ingo Feinerer  <feinerer@logic.at>
 

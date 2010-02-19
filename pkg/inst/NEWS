@@ -7,6 +7,8 @@ NEW FEATURES
     o The reader function readRCV1asPlain() was added and combines the
       functionality of readRCV1() and as.PlainTextDocument().
 
+    o The function stemCompletion() has a set of new heuristics.
+
                 CHANGES IN tm VERSION 0.5-2
 
 SIGNIFICANT USER-VISIBLE CHANGES
