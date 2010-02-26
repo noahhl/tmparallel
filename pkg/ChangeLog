@@ -1,3 +1,8 @@
+2010-02-25  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/score.R (tm_tag_score): Compute a score from the number of
+	tags matching in a document.
+
 2010-02-18  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/complete.R (stemCompletion): New completion heuristics.

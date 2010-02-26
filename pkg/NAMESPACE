@@ -83,6 +83,7 @@ export("as.PlainTextDocument",
        "tm_reduce",
        "tm_startCluster",
        "tm_stopCluster",
+       "tm_tag_score",
        "URISource",
        "VCorpus",
        "VectorSource",
@@ -124,6 +125,8 @@ S3method("t", "DocumentTermMatrix")
 
 S3method("findAssocs", "matrix")
 
+S3method("tm_tag_score", "numeric")
+
 S3method("print", "MetaDataNode")
 
 S3method("[", "PCorpus")
@@ -147,6 +150,7 @@ S3method("searchFullText", "PlainTextDocument")
 S3method("stemDocument", "PlainTextDocument")
 S3method("stripWhitespace", "PlainTextDocument")
 S3method("tm_intersect", "PlainTextDocument")
+S3method("tm_tag_score", "PlainTextDocument")
 
 S3method("as.PlainTextDocument", "RCV1Document")
 
