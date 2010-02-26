@@ -60,8 +60,7 @@ readXML(spec, doc, \dots)
   \code{\link{getReaders}} to list available reader functions.
 }
 \examples{
-\dontrun{
-readReut21578XML <- readXML(
+\dontrun{readReut21578XML <- readXML(
   spec = list(Author = list("node", "/REUTERS/TEXT/AUTHOR"),
               DateTimeStamp = list("function", function(node)
                 strptime(sapply(XML::getNodeSet(node, "/REUTERS/DATE"), XML::xmlValue),
@@ -72,7 +71,6 @@ readReut21578XML <- readXML(
               ID = list("attribute", "/REUTERS/@NEWID"),
               Origin = list("unevaluated", "Reuters-21578 XML"),
               Topics = list("node", "/REUTERS/TOPICS/D")),
-  doc = Reuters21578Document())
-}
+  doc = Reuters21578Document())}
 }
 \author{Ingo Feinerer}

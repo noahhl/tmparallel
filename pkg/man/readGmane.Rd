@@ -23,9 +23,9 @@ readGmane(elem, language, id)
   \code{\link{getReaders}} to list available reader functions.
 }
 \examples{
-gs <- GmaneSource(url("http://rss.gmane.org/gmane.comp.lang.r.general"))
+\dontrun{gs <- GmaneSource(url("http://rss.gmane.org/gmane.comp.lang.r.general"))
 elem <- getElem(stepNext(gs))
 (gmane <- readGmane(elem, language = "eng", id = "id1"))
-meta(gmane)
+meta(gmane)}
 }
 \author{Ingo Feinerer}
