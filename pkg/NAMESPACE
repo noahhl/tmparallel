@@ -167,6 +167,7 @@ S3method("inspect", "TermDocumentMatrix")
 S3method("plot", "TermDocumentMatrix")
 S3method("print", "TermDocumentMatrix")
 S3method("t", "TermDocumentMatrix")
+S3method("tm_tag_score", "TermDocumentMatrix")
 
 S3method("c", "TextDocument")
 S3method("meta", "TextDocument")
