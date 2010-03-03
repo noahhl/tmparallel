@@ -13,8 +13,9 @@
 \method{tm_tag_score}{TermDocumentMatrix}(x, tags, FUN = slam::col_sums)
 }
 \arguments{
-  \item{x}{Either a plain text document, a named numeric as returned
-    by \code{\link{termFreq}}, or a term-document matrix.}
+  \item{x}{Either a \code{\link{PlainTextDocument}}, a named numeric as
+    returned by \code{\link{termFreq}}, or a
+    \code{\link{TermDocumentMatrix}}.}
   \item{tags}{A character vector of tags to be matched.}
   \item{FUN}{A function computing a score from the number of tags
     matching in \code{x}.}

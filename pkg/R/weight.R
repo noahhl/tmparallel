@@ -11,11 +11,24 @@ WeightFunction <- function(x, name, acronym) {
 weightTf <- WeightFunction(identity, "term frequency", "tf")
 
 weightTfIdf <-
-    WeightFunction(function(m) {
+    WeightFunction(function(m, normalize = TRUE) {
         isDTM <- inherits(m, "DocumentTermMatrix")
-        m$Weighting <- c("term frequency - inverse document frequency", "tf-idf")
         if (isDTM) m <- t(m)
-        m <- m * log2(nDocs(m) / row_sums(m > 0))
+        if (normalize) {
+            cs <- col_sums(m)
+            if (any(cs == 0))
+                warning("empty document")
+            names(cs) <- seq_len(nDocs(m))
+            m$v <- m$v / cs[m$j]
+        }
+        rs <- row_sums(m > 0)
+        if (any(rs == 0))
+            warning("term does not occur in the corpus")
+        m <- m * log2(nDocs(m) / rs)
+        m$Weighting <- c(sprintf("%s%s",
+                                 "term frequency - inverse document frequency",
+                                 if (normalize) " (normalized)" else ""),
+                         "tf-idf")
         if (isDTM) t(m) else m
     }, "term frequency - inverse document frequency", "tf-idf")
 

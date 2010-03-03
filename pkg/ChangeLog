@@ -1,5 +1,7 @@
 2010-03-03  Ingo Feinerer  <feinerer@logic.at>
 
+	* R/weight.R (weightTfIdf): Added normalization option.
+
 	* man/tm_tag_score.Rd: Add General Inquirer example for sentiment
 	analysis.
 

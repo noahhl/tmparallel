@@ -1,5 +1,17 @@
                         Dear Emacs, please make this -*-Text-*- mode!
 
+                CHANGES IN tm VERSION 0.5-4
+
+NEW FEATURES
+
+    o The function tm_tag_score() provides functionality to score
+      documents based on the number of tags found. This is useful for
+      sentiment analysis.
+
+    o The weighting function for term frequency-inverse document
+      frequency weightTfIdf() has now an option for term
+      normalization.
+
                 CHANGES IN tm VERSION 0.5-3
 
 NEW FEATURES
