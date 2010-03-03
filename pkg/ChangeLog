@@ -1,3 +1,8 @@
+2010-03-03  Ingo Feinerer  <feinerer@logic.at>
+
+	* man/tm_tag_score.Rd: Add General Inquirer example for sentiment
+	analysis.
+
 2010-02-25  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/score.R (tm_tag_score): Compute a score from the number of
