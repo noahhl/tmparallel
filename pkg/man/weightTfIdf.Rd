@@ -35,7 +35,7 @@ weightTfIdf(m, normalize = TRUE)
   The weighted matrix.
 }
 \references{
-  Gerhard Salton and Christopher Buckley (1988).
+  Gerard Salton and Christopher Buckley (1988).
   Term-weighting approaches in automatic text retrieval.
   \emph{Information Processing and Management}, \bold{24}/5, 513--523.
 }
