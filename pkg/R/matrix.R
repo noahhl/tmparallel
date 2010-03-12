@@ -139,6 +139,7 @@ inspect.TermDocumentMatrix <- inspect.DocumentTermMatrix <- function(x) {
 
 `[.TermDocumentMatrix` <- `[.DocumentTermMatrix` <- function(x, i, j, ..., drop) {
     m <- slam:::`[.simple_triplet_matrix`(x, i, j, ...)
+    names(m$dimnames) <- names(x$dimnames)
     m$Weighting <- x$Weighting
     class(m) <- if (inherits(x, "DocumentTermMatrix"))
         c("DocumentTermMatrix", "simple_triplet_matrix")
