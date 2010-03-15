@@ -91,6 +91,7 @@ export("as.PlainTextDocument",
        "weightTf",
        "weightTfIdf",
        "weightBin",
+       "weightSMART",
        "writeCorpus",
        "XMLSource")
 
