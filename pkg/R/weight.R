@@ -63,7 +63,7 @@ weightSMART <-
         rs <- row_sums(m > 0)
         if (any(rs == 0))
             warning("term does not occur in the corpus")
-        df <- switch(term_frequency,
+        df <- switch(document_frequency,
                      # natural
                      n = 1,
                      # idf
