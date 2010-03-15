@@ -51,6 +51,7 @@ weightSMART <-
                      # logarithm
                      l = {
                          m$v <- 1 + log2(m$v)
+                         m
                      },
                      # boolean
                      b = {
@@ -73,14 +74,14 @@ weightSMART <-
         # Normalization
         norm <- switch(normalization,
                        # none
-                       n = 1,
+                       n = rep(1, nDocs(m)),
                        # byte size
                        b = control$charlength^control$alpha)
 
         m <- tf * df
         names(norm) <- seq_len(nDocs(m))
         m$v <- m$v / norm[m$j]
-        m$Weighting <- paste("SMART:", spec)
+        m$Weighting <- c(paste("SMART", spec), "SMART")
 
         if (isDTM) t(m) else m
     }, "SMART", "SMART")
