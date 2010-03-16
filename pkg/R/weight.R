@@ -37,27 +37,26 @@ weightSMART <-
         if (nchar(spec) != 3)
             stop("invalid spec")
 
+        term_frequency <- match.arg(substr(spec, 1, 1), c("n", "l", "a", "b", "L"))
+        document_frequency <- match.arg(substr(spec, 2, 2), c("n", "t", "p"))
+        normalization <- match.arg(substr(spec, 3, 3), c("n", "b"))
+
         isDTM <- inherits(m, "DocumentTermMatrix")
         if (isDTM) m <- t(m)
 
-        term_frequency <- substr(spec, 1, 1)
-        document_frequency <- substr(spec, 2, 2)
-        normalization <- substr(spec, 3, 3)
-
         # Term frequency
-        tf <- switch(term_frequency,
-                     # natural
-                     n = m,
-                     # logarithm
-                     l = {
-                         m$v <- 1 + log2(m$v)
-                         m
-                     },
-                     # boolean
-                     b = {
-                         m$v <- rep(1, length(m$v))
-                         m
-                     })
+        m$v <- switch(term_frequency,
+                      # natural
+                      n = m$v,
+                      # logarithm
+                      l = 1 + log2(m$v),
+                      # augmented
+                      a = 0.5 + (0.5 * m$v) / tapply(m$v, m$j, max),
+                      # boolean
+                      b = rep(1, length(m$v)),
+                      # log ave
+                      # TODO: What does avg_{t \in d} in Manning et al. mean?
+                      L = (1 + log2(m$v)) / (1 + log2(tapply(m$v, m$j, mean))))
 
         # Document frequency
         rs <- row_sums(m > 0)
@@ -75,10 +74,20 @@ weightSMART <-
         norm <- switch(normalization,
                        # none
                        n = rep(1, nDocs(m)),
+                       # cosine
+                       # Not implemented yet.
+                       # pivoted unique
+                       # Not implemented yet.
                        # byte size
-                       b = control$charlength^control$alpha)
+                       b = {
+                           if (is.null(control$charlength))
+                               stop("invalid control argument charlength")
+                           if (is.null(control$charlength))
+                               stop("invalid control argument alpha")
+                           control$charlength^control$alpha
+                       })
 
-        m <- tf * df
+        m <- m * df
         names(norm) <- seq_len(nDocs(m))
         m$v <- m$v / norm[m$j]
         m$Weighting <- c(paste("SMART", spec), "SMART")
