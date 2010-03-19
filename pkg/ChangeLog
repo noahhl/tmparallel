@@ -1,3 +1,8 @@
+2010-03-19  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/reader.R (readReut21578XML, readReut21578XMLasPlain): Extract
+	TOPICS, LEWISSPLIT, CGISPLIT, and OLDID meta tags.
+
 2010-03-03  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/weight.R (weightTfIdf): Added normalization option.
