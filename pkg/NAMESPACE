@@ -6,6 +6,7 @@ export("as.PlainTextDocument",
        "convert_UTF_8",
        "Content",
        "Content<-",
+       "content_or_meta<-",
        "Corpus", # alias to VCorpus
        "DataframeSource",
        "DateTimeStamp",

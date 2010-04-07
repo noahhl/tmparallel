@@ -1,3 +1,7 @@
+2010-04-07  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/meta.R (`content_or_meta`): Utility function.
+
 2010-03-19  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/reader.R (readReut21578XML, readReut21578XMLasPlain): Extract

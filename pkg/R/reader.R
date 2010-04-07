@@ -148,10 +148,8 @@ readTabular <- FunctionGenerator(function(mapping, ...) {
     mapping <- mapping
     function(elem, language, id) {
         doc <- PlainTextDocument(id = id, language = language)
-        for (n in setdiff(names(mapping), "Content"))
-            meta(doc, n) <- elem$content[, mapping[[n]]]
-        if ("Content" %in% names(mapping))
-            Content(doc) <- elem$content[, mapping[["Content"]]]
+        for (n in names(mapping))
+            tm:::content_or_meta(doc, n) <- elem$content[, mapping[[n]]]
         doc
     }
 })
