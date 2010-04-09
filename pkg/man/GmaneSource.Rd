@@ -16,4 +16,7 @@ GmaneSource(x, encoding = "UTF-8")
   An object of class \code{GmaneSource} which extends the class
   \code{Source} representing a Gmane mailing list \acronym{RSS} feed.
 }
+\examples{
+\dontrun{GmaneSource(url("http://rss.gmane.org/gmane.comp.lang.r.general"))}
+}
 \author{Ingo Feinerer}

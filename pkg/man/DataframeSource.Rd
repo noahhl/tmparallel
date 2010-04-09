@@ -18,7 +18,7 @@ DataframeSource(x, encoding = "UTF-8")
 }
 \author{Ingo Feinerer}
 \examples{
-docs <- data.frame(docs = c("This is a text.", "This another one."))
+docs <- data.frame(docs = c("This is a text.", "This another one."), row.names = c("Text 1", "Text 2"))
 (ds <- DataframeSource(docs))
 inspect(Corpus(ds))
 }

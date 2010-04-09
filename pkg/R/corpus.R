@@ -58,8 +58,8 @@ setOldClass(c("VCorpus", "Corpus", "list"))
 
 # The "..." are additional arguments for the FunctionGenerator reader
 VCorpus <- Corpus <- function(x,
-                    readerControl = list(reader = x$DefaultReader, language = "eng"),
-                    ...) {
+                              readerControl = list(reader = x$DefaultReader, language = "eng"),
+                              ...) {
     readerControl <- prepareReader(readerControl, x$DefaultReader, ...)
 
     # Allocate memory in advance if length is known
@@ -86,7 +86,7 @@ VCorpus <- Corpus <- function(x,
             counter <- counter + 1
         }
     }
-
+    names(tdl) <- x$Names
     df <- data.frame(MetaID = rep(0, length(tdl)), stringsAsFactors = FALSE)
     .VCorpus(tdl, .MetaDataNode(), df)
 }

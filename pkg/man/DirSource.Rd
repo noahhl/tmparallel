@@ -19,4 +19,7 @@ DirSource(directory = ".", encoding = "UTF-8", pattern = NULL, recursive = FALSE
   \code{Source} representing a directory. Each file in this directory is
   considered to be a document.
 }
+\examples{
+DirSource(system.file("texts", "txt", package = "tm"))
+}
 \author{Ingo Feinerer}
