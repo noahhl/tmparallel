@@ -29,7 +29,7 @@ DublinCore(x, tag = NULL)
 }
 \details{
   In general this function can be used to display meta information but
-  also to modifiy individual meta data:
+  also to modify individual meta data:
   \describe{
     \item{x = "TextDocument", tag = NULL}{If no \code{tag} is given, this
       method pretty prints all \code{x}'s meta data. If \code{tag}
