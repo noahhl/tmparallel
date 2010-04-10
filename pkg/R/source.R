@@ -23,7 +23,7 @@ VectorSource <- function(x, encoding = "UTF-8") {
 
 # A data frame where each row is interpreted as document
 DataframeSource <- function(x, encoding = "UTF-8") {
-    s <- .Source(readPlain, encoding, nrow(x), FALSE, rownames(x), 0, TRUE)
+    s <- .Source(readPlain, encoding, nrow(x), FALSE, row.names(x), 0, TRUE)
     s$Content <- x
     class(s) = c("DataframeSource", "Source")
     s
