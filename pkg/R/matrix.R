@@ -89,9 +89,9 @@ termFreq <- function(doc, control = list()) {
     # Stopword filtering
     stopwords <- control$stopwords
     if (isTRUE(stopwords))
-        txt <- txt[!txt %in% stopwords(Language(doc))]
+        txt <- txt[is.na(match(txt, stopwords(Language(doc))))]
     else if (is.character(stopwords))
-        txt <- txt[!txt %in% stopwords]
+        txt <- txt[is.na(match(txt, stopwords))]
 
     # Check if the document content is NULL
     if (is.null(txt))
