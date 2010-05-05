@@ -97,6 +97,7 @@ export("as.PlainTextDocument",
        "XMLSource")
 
 S3method("Dictionary", "character")
+S3method("stemCompletion", "character")
 S3method("stemDocument", "character")
 
 S3method("c", "Corpus")
@@ -149,6 +150,7 @@ S3method("removeNumbers", "PlainTextDocument")
 S3method("removePunctuation", "PlainTextDocument")
 S3method("removeWords", "PlainTextDocument")
 S3method("searchFullText", "PlainTextDocument")
+S3method("stemCompletion", "PlainTextDocument")
 S3method("stemDocument", "PlainTextDocument")
 S3method("stripWhitespace", "PlainTextDocument")
 S3method("tm_intersect", "PlainTextDocument")

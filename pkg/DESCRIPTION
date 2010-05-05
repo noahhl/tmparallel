@@ -1,7 +1,7 @@
 Package: tm
 Title: Text Mining Package
-Version: 0.5-3.6
-Date: 2010-04-11
+Version: 0.5-3.7
+Date: 2010-05-05
 Author: Ingo Feinerer
 Maintainer: Ingo Feinerer <feinerer@logic.at>
 Depends: R (>= 2.10.0), methods
