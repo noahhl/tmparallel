@@ -96,7 +96,7 @@ meta.TextRepository <- function(x, tag, type = NULL) {
     x
 }
 
-`content_or_meta<-` <- function(x, tag, value) {
+`content_meta<-` <- function(x, tag, value) {
     if (identical(tag, "Content"))
         Content(x) <- value
     else
