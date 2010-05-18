@@ -6,7 +6,10 @@ getSources <- function()
 
 .Source <- function(defaultreader, encoding, length, lodsupport, names, position, vectorized) {
     if (vectorized && (length <= 0))
-        stop("Vectorized sources must have positive length")
+        stop("vectorized sources must have positive length")
+
+    if (!is.null(names) && (length != length(names)))
+        stop("incorrect number of element names")
 
     structure(list(DefaultReader = defaultreader, Encoding = encoding, Length = length,
                    LoDSupport = lodsupport, Names = names, Position = position, Vectorized = vectorized),
@@ -34,7 +37,7 @@ DirSource <- function(directory = ".", encoding = "UTF-8", pattern = NULL, recur
     d <- dir(directory, full.names = TRUE, pattern = pattern, recursive = recursive, ignore.case = ignore.case)
 
     if (length(d) == 0)
-        stop("Empty directory")
+        stop("empty directory")
 
     isfile <- logical(length(d))
     for (i in seq_along(d))

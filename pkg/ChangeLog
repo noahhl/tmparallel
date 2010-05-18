@@ -1,3 +1,8 @@
+2010-05-18  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/corpus.R (Corpus, PCorpus): Use element names as IDs if
+	provided by a source.
+
 2010-04-09  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/source.R (.Source): Provide document names.
