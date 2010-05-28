@@ -20,7 +20,7 @@ PCorpus <- function(x,
     db <- filehash::dbInit(dbControl$dbName, dbControl$dbType)
 
     # Allocate memory in advance if length is known
-    tdl <- if (x$Length > 0)x
+    tdl <- if (x$Length > 0)
         vector("list", as.integer(x$Length))
     else
         list()
