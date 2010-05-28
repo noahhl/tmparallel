@@ -10,7 +10,7 @@
 DBControl <- function(x) attr(x, "DBControl")
 
 PCorpus <- function(x,
-                    readerControl = list(reader = x$DefaultReader, language = "eng"),
+                    readerControl = list(reader = x$DefaultReader, language = "en"),
                     dbControl = list(dbName = "", dbType = "DB1"),
                     ...) {
     readerControl <- prepareReader(readerControl, x$DefaultReader, ...)
@@ -20,7 +20,7 @@ PCorpus <- function(x,
     db <- filehash::dbInit(dbControl$dbName, dbControl$dbType)
 
     # Allocate memory in advance if length is known
-    tdl <- if (x$Length > 0)
+    tdl <- if (x$Length > 0)x
         vector("list", as.integer(x$Length))
     else
         list()
@@ -59,7 +59,7 @@ setOldClass(c("VCorpus", "Corpus", "list"))
 
 # The "..." are additional arguments for the FunctionGenerator reader
 VCorpus <- Corpus <- function(x,
-                              readerControl = list(reader = x$DefaultReader, language = "eng"),
+                              readerControl = list(reader = x$DefaultReader, language = "en"),
                               ...) {
     readerControl <- prepareReader(readerControl, x$DefaultReader, ...)
 

@@ -23,8 +23,8 @@ Reuters21578Document(x, author = character(0), datetimestamp = as.POSIXlt(Sys.ti
   \item{origin}{Object of class \code{character} containing
     information on the source and origin of the text.}
   \item{language}{Object of class \code{character} containing
-    the language of the text (preferably in \acronym{ISO} 639-2
-    format).}
+    the language of the text (preferably as \acronym{IETF} language
+    tags).}
   \item{localmetadata}{Object of class \code{list} containing
     local meta data in form of tag-value pairs.}
 }

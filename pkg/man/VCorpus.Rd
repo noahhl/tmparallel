@@ -12,8 +12,8 @@
   Data structures and operators for volatile corpora.
 }
 \usage{
-Corpus(x, readerControl = list(reader = x$DefaultReader, language = "eng"), \dots)
-VCorpus(x, readerControl = list(reader = x$DefaultReader, language = "eng"), \dots)
+Corpus(x, readerControl = list(reader = x$DefaultReader, language = "en"), \dots)
+VCorpus(x, readerControl = list(reader = x$DefaultReader, language = "en"), \dots)
 \method{DMetaData}{VCorpus}(x)
 \method{CMetaData}{Corpus}(x)
 }
@@ -23,7 +23,7 @@ VCorpus(x, readerControl = list(reader = x$DefaultReader, language = "eng"), \do
   \item{readerControl}{A list with the named components \code{reader}
     representing a reading function capable of handling the file format
     found in \code{x}, and \code{language} giving the text's language
-    (preferably in \acronym{ISO} 639-2 format).}
+    (preferably as \acronym{IETF} language tags).}
   \item{\dots}{Optional arguments for the \code{reader}.}
 }
 \value{

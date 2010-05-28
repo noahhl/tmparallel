@@ -77,7 +77,7 @@ termFreq <- function(doc, control = list()) {
     # Stemming
     stemming <- control$stemming
     if (isTRUE(stemming))
-        stemming <- function(x) stemDocument(x, language = map_ISO_639_2(Language(doc)))
+        stemming <- function(x) stemDocument(x, language = tm:::map_IETF(Language(doc)))
     if (is.function(stemming))
         txt <- stemming(txt)
 

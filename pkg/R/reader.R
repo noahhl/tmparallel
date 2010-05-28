@@ -10,7 +10,7 @@ prepareReader <- function(readerControl, defaultReader = NULL, ...) {
     if (inherits(readerControl$reader, "FunctionGenerator"))
         readerControl$reader <- readerControl$reader(...)
     if (is.null(readerControl$language))
-        readerControl$language <- "eng"
+        readerControl$language <- "en"
     readerControl
 }
 
