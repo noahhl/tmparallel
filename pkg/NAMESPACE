@@ -26,6 +26,7 @@ export("as.PlainTextDocument",
        "getElem",
        "GmaneSource",
        "Heading",
+       "Heaps_plot",
        "findAssocs",
        "findFreqTerms",
        "getFilters",
@@ -94,7 +95,8 @@ export("as.PlainTextDocument",
        "weightBin",
 #       "weightSMART",
        "writeCorpus",
-       "XMLSource")
+       "XMLSource",
+       "Zipf_plot")
 
 S3method("Dictionary", "character")
 S3method("stemCompletion", "character")
