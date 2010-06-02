@@ -16,6 +16,10 @@ NEW FEATURES
         frequency weightTfIdf() has now an option for term
         normalization.
 
+    o   Plotting functions to test for Zipf's and Heaps' law on a
+        term-document matrix were added: Zipf_plot() and
+        Heaps_plot(). Contributed by Kurt Hornik.
+
                 CHANGES IN tm VERSION 0.5-3
 
 NEW FEATURES
