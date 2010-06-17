@@ -29,7 +29,7 @@ TermDocumentMatrix.PCorpus <- TermDocumentMatrix.VCorpus <- function(x, control 
 
     v <- unlist(tflist)
     i <- names(v)
-    allTerms <- sort(unique(i))
+    allTerms <- sort(unique(if (is.null(control$dictionary)) i else control$dictionary))
     i <- match(i, allTerms)
     j <- rep(seq_along(x), sapply(tflist, length))
 

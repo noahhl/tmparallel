@@ -1,3 +1,8 @@
+2010-06-17  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/matrix.R (TermDocumentMatrix): If a dictionary is given do not
+	remove terms not occurring in the corpus anymore.
+
 2010-06-02  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/plot.R (Zipf_plot, Heaps_plot): Plotting functions for Zipf's
