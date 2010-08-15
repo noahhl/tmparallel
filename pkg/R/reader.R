@@ -2,7 +2,7 @@
 ## Reader
 
 getReaders <- function()
-    c("readDOC", "readGmane", "readPDF", "readReut21578XML", "readReut21578XMLasPlain", "readPlain", "readRCV1", "readRCV1asPlain", "readTabular")
+    c("readDOC", "readGmane", "readPDF", "readReut21578XML", "readReut21578XMLasPlain", "readPlain", "readRCV1", "readRCV1asPlain", "readTabular", "readXML")
 
 prepareReader <- function(readerControl, defaultReader = NULL, ...) {
     if (is.null(readerControl$reader))
