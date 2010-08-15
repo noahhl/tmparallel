@@ -31,7 +31,11 @@
   Visualization requires that package \pkg{Rgraphviz} is available.
 }
 \examples{
-\dontrun{data(crude)
-tdm <- TermDocumentMatrix(crude, control = list(removePunctuation = TRUE, removeNumbers = TRUE, stopwords = TRUE))
+\dontrun{
+data(crude)
+tdm <- TermDocumentMatrix(crude,
+                          control = list(removePunctuation = TRUE,
+                                         removeNumbers = TRUE,
+                                         stopwords = TRUE))
 plot(tdm, corThreshold = 0.2, weighting = TRUE)}
 }

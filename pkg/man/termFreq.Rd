@@ -45,6 +45,8 @@ termFreq(doc, control = list())
 \examples{
 data("crude")
 termFreq(crude[[1]])
-termFreq(crude[[1]], control = list(removePunctuation = TRUE, stemming = TRUE, minWordLength = 4))
+termFreq(crude[[1]],
+         control = list(removePunctuation = TRUE, stemming = TRUE,
+                        minWordLength = 4))
 }
 \keyword{math}

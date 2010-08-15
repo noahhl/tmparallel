@@ -6,7 +6,11 @@
   with meta information.
 }
 \usage{
-Reuters21578Document(x, author = character(0), datetimestamp = as.POSIXlt(Sys.time(), tz = "GMT"), description = character(0), heading = character(0), id = character(0), origin = character(0), language = character(0), localmetadata = list())
+Reuters21578Document(x, author = character(0),
+                     datetimestamp = as.POSIXlt(Sys.time(), tz = "GMT"),
+                     description = character(0), heading = character(0),
+                     id = character(0), origin = character(0),
+                     language = character(0), localmetadata = list())
 }
 \arguments{
   \item{x}{Object of class \code{list} containing the content.}

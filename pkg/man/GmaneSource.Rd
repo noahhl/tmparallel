@@ -21,5 +21,7 @@ GmaneSource(x, encoding = "UTF-8")
   \code{\link{getSources}} to list available sources.
 }
 \examples{
-\dontrun{GmaneSource(url("http://rss.gmane.org/gmane.comp.lang.r.general"))}
+\dontrun{
+GmaneSource(url("http://rss.gmane.org/gmane.comp.lang.r.general"))
+}
 }

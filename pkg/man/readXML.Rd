@@ -63,7 +63,8 @@ readXML(spec, doc, \dots)
 \dontrun{readReut21578XML <- readXML(
   spec = list(Author = list("node", "/REUTERS/TEXT/AUTHOR"),
               DateTimeStamp = list("function", function(node)
-                strptime(sapply(XML::getNodeSet(node, "/REUTERS/DATE"), XML::xmlValue),
+                strptime(sapply(XML::getNodeSet(node, "/REUTERS/DATE"),
+                                XML::xmlValue),
                          format = "%d-%B-%Y %H:%M:%S",
                          tz = "GMT")),
               Description = list("unevaluated", ""),

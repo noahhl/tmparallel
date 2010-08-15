@@ -9,7 +9,10 @@
   Construct a permanent corpus.
 }
 \usage{
-PCorpus(x, readerControl = list(reader = x$DefaultReader, language = "en"), dbControl = list(dbName = "", dbType = "DB1"), \dots)
+PCorpus(x,
+        readerControl = list(reader = x$DefaultReader, language = "en"),
+        dbControl = list(dbName = "", dbType = "DB1"),
+        \dots)
 DBControl(x)
 \method{DMetaData}{PCorpus}(x)
 }
@@ -60,6 +63,9 @@ DBControl(x)
 }
 \examples{
 txt <- system.file("texts", "txt", package = "tm")
-\dontrun{PCorpus(DirSource(txt), dbControl = list(dbName = "myDB.db", dbType = "DB1"))}
+\dontrun{
+PCorpus(DirSource(txt),
+        dbControl = list(dbName = "myDB.db", dbType = "DB1"))
+}
 }
 \author{Ingo Feinerer}

@@ -7,8 +7,12 @@
   Heuristically complete stemmed words.
 }
 \usage{
-\method{stemCompletion}{character}(x, dictionary, type = c("prevalent", "first", "longest", "none", "random", "shortest"))
-\method{stemCompletion}{PlainTextDocument}(x, dictionary, type = c("prevalent", "first", "longest", "none", "random", "shortest"))
+\method{stemCompletion}{character}(x, dictionary,
+               type = c("prevalent", "first", "longest",
+                        "none", "random", "shortest"))
+\method{stemCompletion}{PlainTextDocument}(x, dictionary,
+               type = c("prevalent", "first", "longest",
+                        "none", "random", "shortest"))
 }
 \arguments{
   \item{x}{A \code{\link{PlainTextDocument}} or \code{character} vector of stems to be completed.}

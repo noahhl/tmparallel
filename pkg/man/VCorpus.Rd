@@ -12,8 +12,12 @@
   Data structures and operators for volatile corpora.
 }
 \usage{
-Corpus(x, readerControl = list(reader = x$DefaultReader, language = "en"), \dots)
-VCorpus(x, readerControl = list(reader = x$DefaultReader, language = "en"), \dots)
+Corpus(x,
+       readerControl = list(reader = x$DefaultReader, language = "en"),
+       \dots)
+VCorpus(x,
+        readerControl = list(reader = x$DefaultReader, language = "en"),
+        \dots)
 \method{DMetaData}{VCorpus}(x)
 \method{CMetaData}{Corpus}(x)
 }
@@ -54,6 +58,7 @@ VCorpus(x, readerControl = list(reader = x$DefaultReader, language = "en"), \dot
 }
 \examples{
 reut21578 <- system.file("texts", "crude", package = "tm")
-(r <- Corpus(DirSource(reut21578), readerControl = list(reader = readReut21578XMLasPlain)))
+(r <- Corpus(DirSource(reut21578),
+             readerControl = list(reader = readReut21578XMLasPlain)))
 }
 \author{Ingo Feinerer}
