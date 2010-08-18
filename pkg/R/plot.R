@@ -37,9 +37,16 @@ function(m, type = "l", ...)
     y <- log(sort(slam::col_sums(m), decreasing = TRUE))
     x <- log(seq_along(y))
     m <- lm(y ~ x)
-    plot(x, y, xlab = "log(rank)", ylab = "log(frequency)", type = type, ...)
+    dots <- list(...)
+    if(is.null(dots$xlab)) dots$xlab <- "log(rank)"
+    if(is.null(dots$ylab)) dots$ylab <- "log(frequency)"
+    do.call(plot, c(list(x, y, type = type), dots))
     abline(m)
+    ## <NOTE>
+    ## Perhaps this should (invisibly) return the fitted linear model
+    ## instead of just the coefficients?
     coef(m)
+    ## </NOTE>
 }
 ## http://en.wikipedia.org/wiki/Heaps%27_law
 ## http://en.wikipedia.org/wiki/Text_corpus
@@ -73,7 +80,14 @@ function(m, type = "l", ...)
     x <- log(cumsum(slam::row_sums(m)))
     y <- log(cum_vocabulary_size(m))
     m <- lm(y ~ x)
-    plot(x, y, xlab = "log(T)", ylab = "log(V)", type = type, ...)
+    dots <- list(...)
+    if(is.null(dots$xlab)) dots$xlab <- "log(T)"
+    if(is.null(dots$ylab)) dots$ylab <- "log(V)"
+    do.call(plot, c(list(x, y, type = type), dots))
     abline(m)
+    ## <NOTE>
+    ## Perhaps this should (invisibly) return the fitted linear model
+    ## instead of just the coefficients?
     coef(m)
+    ## </NOTE>
 }
