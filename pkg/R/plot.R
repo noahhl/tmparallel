@@ -32,9 +32,11 @@ function(x,
 
 ## See http://en.wikipedia.org/wiki/Zipf%27s_law
 Zipf_plot <-
-function(m, type = "l", ...)
+function(x, type = "l", ...)
 {
-    y <- log(sort(slam::col_sums(m), decreasing = TRUE))
+    if(inherits(m, "TermDocumentMatrix"))
+        x <- t(x)
+    y <- log(sort(slam::col_sums(x), decreasing = TRUE))
     x <- log(seq_along(y))
     m <- lm(y ~ x)
     dots <- list(...)
@@ -75,10 +77,12 @@ function(m)
 }
 
 Heaps_plot <-
-function(m, type = "l", ...)
+function(x, type = "l", ...)
 {
-    x <- log(cumsum(slam::row_sums(m)))
-    y <- log(cum_vocabulary_size(m))
+    if(inherits(m, "TermDocumentMatrix"))
+        x <- t(x)
+    y <- log(cum_vocabulary_size(x))
+    x <- log(cumsum(slam::row_sums(x)))
     m <- lm(y ~ x)
     dots <- list(...)
     if(is.null(dots$xlab)) dots$xlab <- "log(T)"
