@@ -61,8 +61,13 @@ termFreq <- function(doc, control = list()) {
         txt <- tolower(txt)
 
     # Punctuation removal
-    if (isTRUE(control$removePunctuation))
+    removePunctuation <- control$removePunctuation
+    if (isTRUE(removePunctuation))
         txt <- gsub("[[:punct:]]+", "", txt)
+    else if (is.function(removePunctuation))
+        txt <- removePunctuation(txt)
+    else if (is.list(removePunctuation))
+        txt <- do.call("removePunctuation", c(list(txt), removePunctuation))
 
     # Tokenize the corpus
     tokenize <- control$tokenize
@@ -78,7 +83,7 @@ termFreq <- function(doc, control = list()) {
     stemming <- control$stemming
     if (isTRUE(stemming))
         stemming <- function(x) stemDocument(x, language = tm:::map_IETF(Language(doc)))
-    if (is.function(stemming))
+    else if (is.function(stemming))
         txt <- stemming(txt)
 
     # Stopword filtering
