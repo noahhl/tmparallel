@@ -1,3 +1,9 @@
+2010-08-25  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/corpus.R (c.Corpus): When concatenating corpora, the argument
+	\code{recursive} now determines whether existing corpus meta data
+	is used.
+
 2010-08-06  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/transform.R: Removed convert_UTF_8(). Use enc2utf8() instead.
