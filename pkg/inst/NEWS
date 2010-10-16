@@ -2,6 +2,11 @@
 
                 CHANGES IN tm VERSION 0.5-5
 
+NEW FEATURES
+
+    o   Access a document in a corpus via its document ID, i.e.,
+        allow a character for the corpus operator `[[`.
+
 BUG FIXES
 
     o   The function findFreqTerms() now checks bounds on a global level

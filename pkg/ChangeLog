@@ -1,3 +1,8 @@
+2010-10-16  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/corpus.R (`[[.VCorpus`, `[[.PCorpus'): Access individual
+	documents by document ID.
+
 2010-08-25  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/corpus.R (c.Corpus): When concatenating corpora, the argument

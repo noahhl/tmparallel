@@ -117,10 +117,14 @@ VCorpus <- Corpus <- function(x,
 }
 
 `[[.PCorpus` <-  function(x, i) {
+    if (is.character(i))
+        i <- match(i, meta(x, "ID", type = "local"))
     db <- filehash::dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
     filehash::dbFetch(db, NextMethod("[["))
 }
 `[[.VCorpus` <-  function(x, i) {
+    if (is.character(i))
+        i <- match(i, meta(x, "ID", type = "local"))
     lazyTmMap <- meta(x, tag = "lazyTmMap", type = "corpus")
     if (!is.null(lazyTmMap))
         .Call("copyCorpus", x, materialize(x, i))
