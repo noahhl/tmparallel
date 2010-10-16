@@ -182,7 +182,7 @@ c.TermDocumentMatrix <- function(x, ..., recursive = FALSE) {
 findFreqTerms <- function(x, lowfreq = 0, highfreq = Inf) {
     if (inherits(x, "DocumentTermMatrix")) x <- t(x)
     rs <- slam::row_sums(x)
-    names(rs[rs >= lowfreq & rs <= hifreq])
+    names(rs[rs >= lowfreq & rs <= highfreq])
 }
 
 findAssocs <- function(x, term, corlimit) UseMethod("findAssocs", x)
