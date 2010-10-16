@@ -5,7 +5,7 @@
 NEW FEATURES
 
     o   Access a document in a corpus via its document ID, i.e.,
-        allow a character for the corpus operator `[[`.
+        allow a string for the corpus operator `[[`.
 
 BUG FIXES
 
