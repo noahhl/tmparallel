@@ -9,18 +9,20 @@
 readPDF(PdfinfoOptions = "", PdftotextOptions = "", \dots)
 }
 \arguments{
-  \item{PdfinfoOptions}{Options passed over to \code{pdfinfo}.}
-  \item{PdftotextOptions}{Options passed over to \code{pdftotext}.}
+  \item{PdfinfoOptions}{Options passed over to \command{pdfinfo}.}
+  \item{PdftotextOptions}{Options passed over to \command{pdftotext}.}
   \item{\dots}{Arguments for the generator function.}
 }
 \details{
   Formally this function is a function generator, i.e., it returns a
   function (which reads in a text document) with a well-defined
   signature, but can access passed over arguments (e.g., options to
-  \code{pdfinfo} or \code{pdftotext}) via lexical scoping.
+  \command{pdfinfo} or \command{pdftotext}) via lexical scoping.
 
-  Note that this PDF reader needs both the tools \code{pdftotext} and
-  \code{pdfinfo} installed and accessible on your system.
+  Note that this PDF reader needs both the tools \command{pdftotext} and
+  \command{pdfinfo} installed and accessible on your system, available
+  as command line utilities in the Poppler PDF rendering library (see
+  \url{http://poppler.freedesktop.org/}).
 }
 \value{
   A \code{function} with the signature \code{elem, language, id}:
@@ -38,10 +40,12 @@ readPDF(PdfinfoOptions = "", PdftotextOptions = "", \dots)
   \code{\link{getReaders}} to list available reader functions.
 }
 \examples{
-f <- system.file("doc", "tm.pdf", package = "tm")
-pdf <- readPDF(PdftotextOptions = "-layout")(elem = list(uri = f),
-                                             language = "en",
-                                             id = "id1")
-pdf[1:13]
+if(all(file.exists(Sys.which(c("pdfinfo", "pdftotext"))))) {
+    f <- system.file("doc", "tm.pdf", package = "tm")
+    pdf <- readPDF(PdftotextOptions = "-layout")(elem = list(uri = f),
+                                                 language = "en",
+                                                 id = "id1")
+    pdf[1:13]
+}
 }
 \author{Ingo Feinerer}

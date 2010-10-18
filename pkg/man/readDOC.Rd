@@ -2,24 +2,26 @@
 \alias{readDOC}
 \title{Read In a MS Word Document}
 \description{
-  Return a function which reads in a Microsoft Word
-  document extracting its text.
+  Return a function which reads in a Microsoft Word document extracting
+  its text.
 }
 \usage{
 readDOC(AntiwordOptions = "", \dots)
 }
 \arguments{
-  \item{AntiwordOptions}{Options passed over to \code{antiword}.}
+  \item{AntiwordOptions}{Options passed over to \command{antiword}.}
   \item{\dots}{Arguments for the generator function.}
 }
 \details{
   Formally this function is a function generator, i.e., it returns a
   function (which reads in a text document) with a well-defined
   signature, but can access passed over arguments (e.g., options to
-  \code{antiword}) via lexical scoping.
+  \command{antiword}) via lexical scoping.
 
-  Note that this MS Word reader needs the tool \code{antiword} installed
-  and accessible on your system.
+  Note that this MS Word reader needs the tool \command{antiword}
+  installed and accessible on your system.  This can convert documents
+  from Microsoft Word version 2, 6, 7, 97, 2000, 2002 and 2003 to plain
+  text, and is available from \url{http://www.winfield.demon.nl/}.
 }
 \value{
   A \code{function} with the signature \code{elem, language, id}:
