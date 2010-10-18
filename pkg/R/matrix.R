@@ -71,8 +71,10 @@ termFreq <- function(doc, control = list()) {
 
     # Tokenize the corpus
     tokenize <- control$tokenize
-    if (is.null(tokenize))
+    if(is.null(tokenize))
         tokenize <- scan_tokenizer
+    else if(identical(tokenize, "MC"))
+        tokenize <- MC_tokenizer
     txt <- tokenize(txt)
 
     # Number removal
