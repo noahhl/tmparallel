@@ -132,11 +132,9 @@ of text documents is displayed with \code{inspect()}.
 inspect(ovid[1:2])
 @
 Individual documents can be accessed via \code{[[}, either via the
-position in the corpus, or via its document ID, or via \code{\$} with
-their name.
+position in the corpus, or via their name.
 <<keep.source=TRUE>>=
-identical(ovid[[2]], ovid[["ovid_2.txt"]]) &&
-identical(ovid[[2]], ovid$`ovid_2.txt`)
+identical(ovid[[2]], ovid[["ovid_2.txt"]])
 @
 
 \section*{Transformations}

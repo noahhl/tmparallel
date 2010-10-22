@@ -116,15 +116,23 @@ VCorpus <- Corpus <- function(x,
     x
 }
 
+.map_name_index <- function(x, i) {
+    if (is.character(i)) {
+        if (is.null(names(x)))
+            match(i, meta(x, "ID", type = "local"))
+        else
+            match(i, names(x))
+    }
+    i
+}
+
 `[[.PCorpus` <-  function(x, i) {
-    if (is.character(i))
-        i <- match(i, meta(x, "ID", type = "local"))
+    i <- .map_name_index(x, i)
     db <- filehash::dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
     filehash::dbFetch(db, NextMethod("[["))
 }
 `[[.VCorpus` <-  function(x, i) {
-    if (is.character(i))
-        i <- match(i, meta(x, "ID", type = "local"))
+    i <- .map_name_index(x, i)
     lazyTmMap <- meta(x, tag = "lazyTmMap", type = "corpus")
     if (!is.null(lazyTmMap))
         .Call("copyCorpus", x, materialize(x, i))
@@ -132,12 +140,14 @@ VCorpus <- Corpus <- function(x,
 }
 
 `[[<-.PCorpus` <-  function(x, i, value) {
+    i <- .map_name_index(x, i)
     db <- filehash::dbInit(DBControl(x)[["dbName"]], DBControl(x)[["dbType"]])
     index <- unclass(x)[[i]]
     db[[index]] <- value
     x
 }
 `[[<-.VCorpus` <-  function(x, i, value) {
+    i <- .map_name_index(x, i)
     # Mark new objects as not active for lazy mapping
     lazyTmMap <- meta(x, tag = "lazyTmMap", type = "corpus")
     if (!is.null(lazyTmMap)) {

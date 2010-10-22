@@ -1,7 +1,12 @@
+2010-10-22  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/matrix.R (.TermDocumentMatrix): Make Weighting an attribute
+	(instead of a list element).
+
 2010-10-16  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/corpus.R (`[[.VCorpus`, `[[.PCorpus'): Access individual
-	documents by document ID.
+	documents by names (fallback to IDs if names are not set).
 
 2010-08-25  Ingo Feinerer  <feinerer@logic.at>
 
