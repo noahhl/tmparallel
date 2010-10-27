@@ -17,7 +17,8 @@
 	<li><a href="#Citation">How should I cite tm?</a></li>
 	<li><a href="#PDF">Where can I find the tools to read in a PDF file?</a></li>
 	<li><a href="#Custom">What is the easiest way to handle custom file formats?</a></li>
-	<li><a href="#Unsorted">Error: Row indices are not sorted within columns</a></li>
+	<li><a href="#Encoding">What about error messages indicating
+	    invalid multibyte strings?</a></li>
 	<li><a href="#Bigrams">Can I use bigrams instead of single tokens in a term-document matrix?</a></li>
       </ol>
       <hr/>
@@ -54,7 +55,7 @@
 	    variable.
 	  </p>
 	  <p>Windows users might find a
-	  recent <a href="https://stat.ethz.ch/pipermail/r-help/2008-November/179785.html">R-help
+	  <a href="https://stat.ethz.ch/pipermail/r-help/2008-November/179785.html">R-help
 	  thread</a> on this topic useful.
 	  </p>
 	</li>
@@ -70,19 +71,17 @@
 	  </p>
 	</li>
 	<li>
-	  <a name="Unsorted"></a>
-	  <cite>When I create a term-document matrix
-	  (<kbd>TermDocMatrix</kbd>) the message <kbd>invalid class
-	  "dgCMatrix" object: row indices are not sorted within
-	  columns</kbd> is displayed.</cite>
+	  <a name="Encoding"></a>
+	  <cite>What about error messages indicating invalid multibyte
+	    strings?</cite>
 	  <p>
-	    This was a problem in the term-document matrix
-	    construction code which was triggered by a change in the
-	    Matrix package. Please update
-	    the <a href="http://cran.r-project.org/package=tm">tm</a>
-	    package to the latest version available
-	    from <a href="http://cran.r-project.org/">CRAN</a> in
-	    order to fix this issue.
+	    Ensure that all your datasets and documents are encoded
+	    in <a href="http://en.wikipedia.org/wiki/UTF-8">UTF-8</a>. If
+	    you still have problems
+	    <code>tm_map(yourCorpus, function(x) iconv(enc2utf8(x),
+            sub = "byte"))</code> will replace non-convertible bytes
+            in <code>yourCorpus</code> with strings showing their hex
+            codes.
 	  </p>
 	</li>
 	<li>
