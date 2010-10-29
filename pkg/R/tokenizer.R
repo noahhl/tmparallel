@@ -1,3 +1,6 @@
+getTokenizers <- function()
+    c("MC_tokenizer", "scan_tokenizer")
+
 scan_tokenizer <- function(x) {
     con <- textConnection(x)
     tokens <- scan(con, what = "character", quiet = TRUE)

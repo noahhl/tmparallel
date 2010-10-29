@@ -115,7 +115,16 @@ readRCV1asPlain <- readXML(spec = list(Author = list("unevaluated", ""),
                            Countries = list("attribute", "/newsitem/metadata/codes[@class='bip:countries:1.0']/code/@code")),
                            doc = PlainTextDocument())
 
-# # readDOC needs antiword installed to be able to extract the text
+# readOOO needs unoconv (which in turn needs OpenOffice) installed
+readOOO <- FunctionGenerator(function(unoconvOptions = "", ...) {
+    unoconvOptions <- unoconvOptions
+    function(elem, language, id) {
+        content <-  system(paste("unoconv -f txt --stdout", shQuote(eval(elem$uri))), intern = TRUE)
+        PlainTextDocument(content, id = id, language = language)
+    }
+})
+
+# readDOC needs antiword installed to be able to extract the text
 readDOC <- FunctionGenerator(function(AntiwordOptions = "", ...) {
     AntiwordOptions <- AntiwordOptions
     function(elem, language, id) {
