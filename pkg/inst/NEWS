@@ -4,8 +4,8 @@
 
 NEW FEATURES
 
-    o   Access a document in a corpus via its document ID, i.e.,
-        allow a string for the corpus operator `[[`.
+    o   Access documents in a corpus by names (fallback to IDs if names are
+        not set), i.e., allow a string for the corpus operator `[[`.
 
 BUG FIXES
 
