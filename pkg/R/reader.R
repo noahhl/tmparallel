@@ -119,8 +119,20 @@ readRCV1asPlain <- readXML(spec = list(Author = list("unevaluated", ""),
 readOOO <- FunctionGenerator(function(unoconvOptions = "", ...) {
     unoconvOptions <- unoconvOptions
     function(elem, language, id) {
-        content <-  system(paste("unoconv -f txt --stdout", shQuote(eval(elem$uri))), intern = TRUE)
-        PlainTextDocument(content, id = id, language = language)
+        # TODO: Avoid temporary file
+        odt <- tempfile()
+        writeLines(system(paste("unoconv -f odt --stdout", shQuote(eval(elem$uri))), intern = TRUE), odt)
+        meta.xml <- zip.file.extract("meta.xml", odt) # zip.file.extract does not acception connections
+
+        on.exit(file.remove(odt, meta.xml))
+
+        root <- XML::xmlRoot(XML::xmlParse(meta.xml))
+
+        content <- system(paste("unoconv -f txt --stdout", shQuote(eval(elem$uri))), intern = TRUE)
+        author <- xpathSApply(root, "/office:document-meta/office:meta/dc:creator", xmlValue)
+        datetimestamp <- as.POSIXlt(xpathSApply(root, "/office:document-meta/office:meta/dc:date", xmlValue))
+
+        PlainTextDocument(content, author, datetimestamp, id = id, language = language)
     }
 })
 
