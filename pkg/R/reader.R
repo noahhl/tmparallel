@@ -119,18 +119,21 @@ readRCV1asPlain <- readXML(spec = list(Author = list("unevaluated", ""),
 readOOO <- FunctionGenerator(function(unoconvOptions = "", ...) {
     unoconvOptions <- unoconvOptions
     function(elem, language, id) {
-        # TODO: Avoid temporary file
-        odt <- tempfile()
-        writeLines(system(paste("unoconv -f odt --stdout", shQuote(eval(elem$uri))), intern = TRUE), odt)
-        meta.xml <- zip.file.extract("meta.xml", odt) # zip.file.extract does not acception connections
+        tmp <- tempfile()
+        # Unfortunately unoconv does not have an output file option and writes the output to the same directory as the input
+        # In addition conversion to stdout may corrupt the zip file (odt) if writing it out via writeLines()
+        if (!all(file.copy(eval(elem$uri), sprintf("%s.oo", tmp))))
+            stop(sprintf("cannot copy %s", eval(elem$uri)))
+        system(paste("unoconv -f odt", sprintf("%s.oo", tmp)))
+        meta.xml <- unzip(sprintf("%s.odt", tmp), "meta.xml", exdir = dirname(tmp))[1]
 
-        on.exit(file.remove(odt, meta.xml))
+        on.exit(file.remove(sprintf("%s.oo", tmp), sprintf("%s.odt", tmp), meta.xml))
 
         root <- XML::xmlRoot(XML::xmlParse(meta.xml))
 
         content <- system(paste("unoconv -f txt --stdout", shQuote(eval(elem$uri))), intern = TRUE)
-        author <- xpathSApply(root, "/office:document-meta/office:meta/dc:creator", xmlValue)
-        datetimestamp <- as.POSIXlt(xpathSApply(root, "/office:document-meta/office:meta/dc:date", xmlValue))
+        author <- XML::xpathSApply(root, "/office:document-meta/office:meta/dc:creator", XML::xmlValue)
+        datetimestamp <- as.POSIXlt(XML::xpathSApply(root, "/office:document-meta/office:meta/dc:date", XML::xmlValue))
 
         PlainTextDocument(content, author, datetimestamp, id = id, language = language)
     }

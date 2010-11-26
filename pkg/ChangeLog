@@ -1,3 +1,7 @@
+2010-11-26  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/corpus.R (Corpus): Allow init and exit hooks for readers.
+
 2010-10-22  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/matrix.R (.TermDocumentMatrix): Make Weighting an attribute

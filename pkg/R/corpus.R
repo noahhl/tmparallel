@@ -15,6 +15,12 @@ PCorpus <- function(x,
                     ...) {
     readerControl <- prepareReader(readerControl, x$DefaultReader, ...)
 
+    if (is.function(readerControl$init))
+        readerControl$init()
+
+    if (is.function(readerControl$exit))
+        on.exit(readerControl$exit())
+
     if (!filehash::dbCreate(dbControl$dbName, dbControl$dbType))
         stop("error in creating database")
     db <- filehash::dbInit(dbControl$dbName, dbControl$dbType)
@@ -62,6 +68,12 @@ VCorpus <- Corpus <- function(x,
                               readerControl = list(reader = x$DefaultReader, language = "en"),
                               ...) {
     readerControl <- prepareReader(readerControl, x$DefaultReader, ...)
+
+    if (is.function(readerControl$init))
+        readerControl$init()
+
+    if (is.function(readerControl$exit))
+        on.exit(readerControl$exit())
 
     # Allocate memory in advance if length is known
     tdl <- if (x$Length > 0)
