@@ -81,19 +81,19 @@ termFreq <- function(doc, control = list()) {
     if (isTRUE(control$removeNumbers))
         txt <- gsub("[[:digit:]]+", "", txt)
 
-    # Stemming
-    stemming <- control$stemming
-    if (isTRUE(stemming))
-        txt <- stemDocument(txt, language = tm:::map_IETF(Language(doc)))
-    else if (is.function(stemming))
-        txt <- stemming(txt)
-
     # Stopword filtering
     stopwords <- control$stopwords
     if (isTRUE(stopwords))
         txt <- txt[is.na(match(txt, stopwords(Language(doc))))]
     else if (is.character(stopwords))
         txt <- txt[is.na(match(txt, stopwords))]
+
+    # Stemming
+    stemming <- control$stemming
+    if (isTRUE(stemming))
+        txt <- stemDocument(txt, language = tm:::map_IETF(Language(doc)))
+    else if (is.function(stemming))
+        txt <- stemming(txt)
 
     # Check if the document content is NULL
     if (is.null(txt))
