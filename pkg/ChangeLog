@@ -1,3 +1,8 @@
+2011-02-04  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/source.R: Store strings and connections instead of unevaluated
+	calls.
+
 2010-11-26  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/corpus.R (Corpus): Allow init and exit hooks for readers.
