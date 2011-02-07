@@ -93,7 +93,7 @@ export("as.PlainTextDocument",
        "weightTfIdf",
        "weightBin",
 #       "weightSMART",
-       "words",
+#       "words",
        "writeCorpus",
        "XMLSource",
        "Zipf_plot")
