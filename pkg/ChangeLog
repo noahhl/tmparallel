@@ -1,3 +1,8 @@
+2011-02-17  Ingo Feinerer  <feinerer@logic.at>
+
+	* R/transform.R (stemDocument.PlainTextDocument): Use language
+	argument.
+
 2011-02-04  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/source.R: Store strings and connections instead of unevaluated
