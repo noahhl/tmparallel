@@ -17,9 +17,9 @@
 	<li><a href="#Citation">How should I cite tm?</a></li>
 	<li><a href="#PDF">Where can I find the tools to read in a PDF file?</a></li>
 	<li><a href="#Custom">What is the easiest way to handle custom file formats?</a></li>
-	<li><a href="#Encoding">What about error messages indicating
-	    invalid multibyte strings?</a></li>
+	<li><a href="#Encoding">What about error messages indicating invalid multibyte strings?</a></li>
 	<li><a href="#Bigrams">Can I use bigrams instead of single tokens in a term-document matrix?</a></li>
+	<li><a href="#TermDocumentMatrixPlot">How can I plot a term-document matrix?</a></li>
       </ol>
       <hr/>
       <ol>
@@ -104,6 +104,25 @@
   tdm &lt;- TermDocumentMatrix(crude, control = list(tokenize = BigramTokenizer))
 
   inspect(tdm[340:345,1:10])</code></pre>
+	</li>
+	<li>
+	  <a name="TermDocumentMatrixPlot"></a>
+	  <cite>How can I plot a term-document matrix like Figure 6 in
+	  the <a href="http://www.jstatsoft.org/v25/i05/">JSS
+	  article</a> on tm?</cite>
+	  <p>Please check the manual accessible
+	  via <kbd>?plot.TermDocumentMatrix</kbd> for available
+	  arguments to the plot function. A plot similar to Figure 6
+	  can be produced e.g. with:</p>
+<pre><code>  library("tm")
+
+  data("crude")
+
+  tdm &lt;- TermDocumentMatrix(crude, control = list(removePunctuation = TRUE,
+                                                  removeNumbers = TRUE,
+                                                  stopwords = TRUE))
+
+  plot(tdm, terms = findFreqTerms(tdm, lowfreq = 6)[1:25], corThreshold = 0.5)</code></pre>
 	</li>
       </ol>
     </div>
