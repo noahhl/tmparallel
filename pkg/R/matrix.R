@@ -13,9 +13,10 @@ function(x, weighting)
     names(dimnames(x)) <- c("Terms", "Docs")
     ## Hmm ... what if we have no dimnames?
     class(x) <- TermDocumentMatrix_classes
+    ## <NOTE>
     ## Note that if weighting is a weight function, it already needs to
     ## know whether we have a term-document or document-term matrix.
-    ## <FIXME>
+    ##
     ## Ideally we would require weighting to be a WeightFunction object
     ## or a character string of length 2.  But then
     ##   dtm <- DocumentTermMatrix(crude,
@@ -33,7 +34,7 @@ function(x, weighting)
     if(is.function(weighting))
         x <- weighting(x)
     ## and hope for the best ...
-    ## <FIXME>
+    ## </NOTE>
     else if(is.character(weighting) && (length(weighting) == 2L))
         attr(x, "Weighting") <- weighting
     else
@@ -77,7 +78,7 @@ function(x, control = list())
                                dimnames =
                                list(Terms = allTerms,
                                     Docs = unlist(lapply(x, ID))))
-    
+
     .TermDocumentMatrix(m, weighting)
 }
 
@@ -264,15 +265,7 @@ function(x, ..., recursive = FALSE)
     if(!length(args))
         return(x)
 
-    ## <FIXME>
-    ## Convert DocumentTermMatrix args to TermDocumentMatrix ones.
-    ## Should be able to simply use 
-    ##   args <- lapply(args, as.TermDocumentMatrix)
-    ## these days ...
-    if (!all(unlist(lapply(args, inherits, "TermDocumentMatrix"))))
-        stop("not all arguments are term-document matrices")
-    ## See below for possibly different weightings ...
-    ## </FIXME>
+    args <- lapply(args, as.TermDocumentMatrix)
 
     m <- base::c(list(x), args)
     allTermsNonUnique <- unlist(lapply(m, function(x) Terms(x)[x$i]))
@@ -308,7 +301,7 @@ function(x, ..., recursive = FALSE)
     t(do.call("c",
               lapply(base::c(list(x), args),
                      as.TermDocumentMatrix)))
-}    
+}
 
 findFreqTerms <-
 function(x, lowfreq = 0, highfreq = Inf)
