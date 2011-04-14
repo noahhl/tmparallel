@@ -9,8 +9,8 @@ DocumentTermMatrix_classes <-
 function(x, weighting)
 {
     x <- as.simple_triplet_matrix(x)
-    names(dimnames(x)) <- c("Terms", "Docs")
-    ## Hmm ... what if we have no dimnames?
+    if(!is.null(dimnames(x)))
+        names(dimnames(x)) <- c("Terms", "Docs")
     class(x) <- TermDocumentMatrix_classes
     ## <NOTE>
     ## Note that if weighting is a weight function, it already needs to
