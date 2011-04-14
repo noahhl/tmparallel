@@ -1,5 +1,4 @@
-## Author: Ingo Feinerer
-## and now some by KH ...
+## Authors: Ingo Feinerer, Kurt Hornik
 
 TermDocumentMatrix_classes <-
     c("TermDocumentMatrix", "simple_triplet_matrix")
@@ -85,8 +84,6 @@ function(x, control = list())
 DocumentTermMatrix <-
 function(x, control = list())
     t(TermDocumentMatrix(x, control))
-
-## Should we also add testing functions?
 
 as.TermDocumentMatrix <-
 function(x, ...)
@@ -276,8 +273,6 @@ function(x, ..., recursive = FALSE)
     cs <- c(0, cs[-length(cs)])
     j <- lapply(m, "[[", "j")
 
-    ## <FIXME>
-    ## How can this work if the weightings are different?
     m <- simple_triplet_matrix(i = match(allTermsNonUnique, allTerms),
                                j = unlist(j) + rep.int(cs, sapply(j, length)),
                                v = unlist(lapply(m, "[[", "v")),
@@ -286,8 +281,13 @@ function(x, ..., recursive = FALSE)
                                dimnames =
                                list(Terms = allTerms,
                                     Docs = allDocs))
-    .TermDocumentMatrix(m, weightTf)
-    ## </FIXME>
+    ## <NOTE>
+    ## - We assume that all arguments have the same weighting
+    ## - Even if all matrices have the same input weighting it might be necessary
+    ##   to take additional steps (e.g., normalization for tf-idf or check for
+    ##   (0,1)-range for binary tf)
+    ## </NOTE>
+    .TermDocumentMatrix(m, attr(x, "Weighting"))
 }
 
 c.DocumentTermMatrix <-
