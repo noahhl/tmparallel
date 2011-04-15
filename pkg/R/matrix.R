@@ -240,6 +240,28 @@ function(x, i, j, ..., drop)
     m
 }
 
+`dimnames<-.DocumentTermMatrix` <-
+function(x, value)
+{
+    x <- NextMethod("dimnames<-")
+    dnx <- x$dimnames
+    if(!is.null(dnx))
+        names(dnx) <- c("Docs", "Terms")
+    x$dimnames <- dnx
+    x
+}
+
+`dimnames<-.TermDocumentMatrix` <-
+function(x, value)
+{
+    x <- NextMethod("dimnames<-")
+    dnx <- x$dimnames
+    if(!is.null(dnx))
+        names(dnx) <- c("Terms", "Docs")
+    x$dimnames <- dnx
+    x
+}
+
 nDocs <-
 function(x)
     if (inherits(x, "DocumentTermMatrix")) x$nrow else x$ncol
