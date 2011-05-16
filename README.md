@@ -1,6 +1,33 @@
+This fork provides some additional multicore support by favoring <code>plyr::llply</code> over <code>base::lapply</code> for <code>tm_map.VCorpus</code>. Passing <code>tm_map</code> any of plyr's options for <code>llply</code> is supported.
 
+Benchmark for <code>removeWords</code> on a 10,000 document corpus with and without parallelization (2011 iMac 2.8 GHz Intel Core i5, 8 GB RAM, OS X 10.6.7, R version 2.13.0 Patched (2011-04-23 r55622), with 4 parallel workers). (Not necessarily representative of anything.)
 
+Non-parallel:
 
+<pre>
+system.time(tm::tm_map(inboundCorpus[1:10000], removeWords, myStopWords))
+elapsed = 100.681  
+</pre>
+
+With <code>llply</code>:
+
+<pre>
+library(doMC)
+registerDoMC(cores=4)
+system.time(tmparallel::tm_map(inboundCorpus[1:10000], removeWords, myStopWords, .parallel=T, .progress='text'))  
+elapsed = 53.809  
+</pre>
+
+With equivalent size <code>snow</code> MPI cluster:
+
+<pre>
+library(snow)
+makeCluster(4, type="MPI")  
+system.time(tm::tm_map(inboundCorpus[1:10000], removeWords, myStopWords))
+elapsed = 117.673
+</pre>
+
+<hr/>
 R-Forge SVN README
 
 
