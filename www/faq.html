@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>tm - Frequently Asked Questions</title>
-    <link rel="stylesheet" type="text/css" href="css/tm.css"/>
+    <title>tmparallel - Frequently Asked Questions</title>
+    <link rel="stylesheet" type="text/css" href="css/tmparallel.css"/>
   </head>
   <body>
     <!--#include virtual="navigation.html" -->
@@ -10,11 +10,11 @@
       <h2>Frequently Asked Questions</h2>
       <p>
 	This document contains answers to some of the most frequently
-	asked questions about tm.
+	asked questions about tmparallel.
       </p>
       <hr/>
       <ol>
-	<li><a href="#Citation">How should I cite tm?</a></li>
+	<li><a href="#Citation">How should I cite tmparallel?</a></li>
 	<li><a href="#PDF">Where can I find the tools to read in a PDF file?</a></li>
 	<li><a href="#Custom">What is the easiest way to handle custom file formats?</a></li>
 	<li><a href="#Encoding">What about error messages indicating invalid multibyte strings?</a></li>
@@ -25,12 +25,12 @@
       <ol>
 	<li>
 	  <a name="Citation"></a>
-	  <cite>How should I cite tm?</cite>
+	  <cite>How should I cite tmparallel?</cite>
 	  <p>Please have a look at the output
-	  of <kbd>citation("tm")</kbd> in R. A BibTeX representation
-	  can be obtained via <kbd>toBibtex(citation("tm"))</kbd>. The
+	  of <kbd>citation("tmparallel")</kbd> in R. A BibTeX representation
+	  can be obtained via <kbd>toBibtex(citation("tmparallel"))</kbd>. The
 	  output is also available via
-	  the <a href="http://cran.r-project.org/web/packages/tm/citation.html">CRAN
+	  the <a href="http://cran.r-project.org/web/packages/tmparallel/citation.html">CRAN
 	  package citation info</a>.
 	  </p>
 	  <p>The preferred way for journal and conference papers is to
@@ -62,11 +62,11 @@
 	<li>
 	  <a name="Custom"></a>
 	  <cite>My documents are stored in file format XYZ. How do I
-	    get the material into tm and construct a corpus from
+	    get the material into tmparallel and construct a corpus from
 	    it?</cite>
 	  <p>
 	    Please have a look at the
-	    vignette <a href="http://cran.r-project.org/web/packages/tm/vignettes/extensions.pdf">Extensions:
+	    vignette <a href="http://cran.r-project.org/web/packages/tmparallel/vignettes/extensions.pdf">Extensions:
 	    How to Handle Custom File Formats</a>.
 	  </p>
 	</li>
@@ -96,7 +96,7 @@
 	    matrix constructor. E.g.:
 	  </p>
 <pre><code>  library("RWeka")
-  library("tm")
+  library("tmparallel")
 
   data("crude")
 
@@ -109,12 +109,12 @@
 	  <a name="TermDocumentMatrixPlot"></a>
 	  <cite>How can I plot a term-document matrix like Figure 6 in
 	  the <a href="http://www.jstatsoft.org/v25/i05/">JSS
-	  article</a> on tm?</cite>
+	  article</a> on tmparallel?</cite>
 	  <p>Please check the manual accessible
 	  via <kbd>?plot.TermDocumentMatrix</kbd> for available
 	  arguments to the plot function. A plot similar to Figure 6
 	  can be produced e.g. with:</p>
-<pre><code>  library("tm")
+<pre><code>  library("tmparallel")
 
   data("crude")
 

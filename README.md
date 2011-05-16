@@ -1,3 +1,4 @@
+<h2>Parallelization w/ plyr</h2>
 This fork provides some additional multicore support by favoring <code>plyr::llply</code> over <code>base::lapply</code> for <code>tm_map.VCorpus</code>. Passing <code>tm_map</code> any of plyr's options for <code>llply</code> is supported.
 
 Benchmark for <code>removeWords</code> on a 10,000 document corpus with and without parallelization (2011 iMac 2.8 GHz Intel Core i5, 8 GB RAM, OS X 10.6.7, R version 2.13.0 Patched (2011-04-23 r55622), with 4 parallel workers). (Not necessarily representative of anything.)
@@ -27,8 +28,39 @@ system.time(tm::tm_map(inboundCorpus[1:10000], removeWords, myStopWords))
 elapsed = 117.673
 </pre>
 
+
+<h2>Option to use Rstem instead of SnowballStemmer</h2>
+This adds an option to <code>stemDocument</code> to specify <code>stemmer="Rstem"</code> to use the implementation from Omegahat.org's Rstem package. This eliminates nasty dependencies on Rjava, etc. and has some performance advantages.
+
+Benchmark for <code>stemDocument</code> on a 48,415 document corpus with Rstem vs. Snowball stemmer and with Rstem and parallelization (2011 iMac 2.8 GHz Intel Core i5, 8 GB RAM, OS X 10.6.7, R version 2.13.0 Patched (2011-04-23 r55622), with 4 parallel workers). (Not necessarily representative of anything.)
+
+
+With SnowballStemmer, non parallel:
+<pre>
+system.time(tm_map(inboundCorpus, stemDocument, .progress='text'))
+   user  system elapsed 
+731.575   4.220 730.456
+</pre>
+
+With Rstem, non parallel:
+
+<pre>
+system.time(tm_map(inboundCorpus, stemDocument, "english", stemmer="Rstem", .progress='text'))
+    user  system elapsed 
+ 180.282   0.626 181.013 
+</pre>
+
+
+With Rstem, parallel:
+<pre>
+system.time(tm_map(inboundCorpus, stemDocument, "english", stemmer="Rstem", .progress='text', .parallel=T))
+   user  system elapsed 
+240.981   3.216 152.029 
+
+</pre>
+
 <hr/>
-R-Forge SVN README
+<h2>R-Forge SVN README</h2>
 
 
 (See "http://download.r-forge.r-project.org/manuals/R-Forge_Manual.pdf"
