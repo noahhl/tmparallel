@@ -33,9 +33,9 @@ tm_map.VCorpus <- function(x, FUN, ..., useMeta = FALSE, lazy = FALSE) {
                 snow::parLapply(snow::getMPIcluster(), x, FUN, ...)
         } else {
             if (useMeta)
-                lapply(x, FUN, ..., DMetaData = DMetaData(x))
+                laply(.data=x, .fun=FUN, ..., DMetaData = DMetaData(x))
             else
-                lapply(x, FUN, ...)
+                laply(.data=x, .fun=FUN, ...)
         }
     }
     result
