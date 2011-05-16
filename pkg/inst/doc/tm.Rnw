@@ -10,31 +10,31 @@
 \newcommand{\pkg}[1]{{\normalfont\fontseries{b}\selectfont #1}}
 \newcommand{\proglang}[1]{\textsf{#1}}
 
-%% \VignetteIndexEntry{Introduction to the tm Package}
+%% \VignetteIndexEntry{Introduction to the tmparallel Package}
 
 \begin{document}
 <<Init,echo=FALSE,results=hide>>=
-library("tm")
+library("tmparallel")
 data("crude")
 @
-\title{Introduction to the \pkg{tm} Package\\Text Mining in \proglang{R}}
+\title{Introduction to the \pkg{tmparallel} Package\\Text Mining in \proglang{R}}
 \author{Ingo Feinerer}
 \maketitle
 
 \section*{Introduction}
 This vignette gives a short introduction to text mining in
 \proglang{R} utilizing the text mining framework provided by the
-\pkg{tm} package. We present methods for data import, corpus handling,
+\pkg{tmparallel} package. We present methods for data import, corpus handling,
 preprocessing, meta data management, and creation of term-document
 matrices. Our focus is on the main aspects of getting started with
 text mining in \proglang{R}---an in-depth description of the text
-mining infrastructure offered by \pkg{tm} was published in the
+mining infrastructure offered by \pkg{tmparallel} was published in the
 \emph{Journal of Statistical Software}~\citep{Feinerer_etal_2008}. An
 introductory article on text mining in \proglang{R} was published in
 \emph{R News}~\citep{Rnews:Feinerer:2008}.
 
 \section*{Data Import}
-The main structure for managing documents in \pkg{tm} is a so-called
+The main structure for managing documents in \pkg{tmparallel} is a so-called
 \class{Corpus}, representing a collection of text documents. A corpus
 is an abstract concept, and there can exist several implementations in
 parallel. The default implementation is the so-called \class{VCorpus}
@@ -54,7 +54,7 @@ object is not destroyed if the corresponding \proglang{R} object is
 released.
 
 Within the corpus constructor, \code{x} must be a \class{Source}
-object which abstracts the input location. \pkg{tm} provides a set of
+object which abstracts the input location. \pkg{tmparallel} provides a set of
 predefined sources, e.g., \class{DirSource}, \class{VectorSource}, or
 \class{DataframeSource}, which handle a directory, a vector
 interpreting each component as document, data frame like structures
@@ -68,7 +68,7 @@ available sources, and users can create their own sources.
 The second argument \code{readerControl} of the corpus constructor has
 to be a list with the named components \code{reader} and
 \code{language}. The first component \code{reader} constructs a text
-document from elements delivered by a source. The \pkg{tm} package
+document from elements delivered by a source. The \pkg{tmparallel} package
 ships with several readers (e.g., \code{readPlain()},
 \code{readGmane()}, \code{readRCV1()},
 \code{readReut21578XMLasPlain()}, \code{readPDF()}, \code{readDOC()},
@@ -91,7 +91,7 @@ So e.g., plain text files in the directory \code{txt} containing Latin
 (\code{lat}) texts by the Roman poet \emph{Ovid} can be read in with
 following code:
 <<Ovid,keep.source=TRUE>>=
-txt <- system.file("texts", "txt", package = "tm")
+txt <- system.file("texts", "txt", package = "tmparallel")
 (ovid <- Corpus(DirSource(txt),
                 readerControl = list(language = "lat")))
 @
@@ -106,7 +106,7 @@ Corpus(VectorSource(docs))
 Finally we create a corpus for some Reuters documents as example for
 later use:
 <<Reuters,keep.source=TRUE>>=
-reut21578 <- system.file("texts", "crude", package = "tm")
+reut21578 <- system.file("texts", "crude", package = "tmparallel")
 reuters <- Corpus(DirSource(reut21578),
                   readerControl = list(reader = readReut21578XML))
 @
@@ -139,12 +139,12 @@ identical(ovid[[2]], ovid[["ovid_2.txt"]])
 
 \section*{Transformations}
 Once we have a corpus we typically want to modify the documents in it,
-e.g., stemming, stopword removal, et cetera. In \pkg{tm}, all this
+e.g., stemming, stopword removal, et cetera. In \pkg{tmparallel}, all this
 functionality is subsumed into the concept of a
-\emph{transformation}. Transformations are done via the \code{tm\_map()}
+\emph{transformation}. Transformations are done via the \code{tmparallel\_map()}
 function which applies (maps) a function to all elements of the
 corpus. Basically, all transformations work on single text documents
-and \code{tm\_map()} just applies them to all documents in a corpus.
+and \code{tmparallel\_map()} just applies them to all documents in a corpus.
 
 \subsection*{Converting to Plain Text Documents}
 The corpus \code{reuters} contains documents
@@ -192,7 +192,7 @@ tm_map(reuters, stemDocument)
 
 \section*{Filters}
 Often it is of special interest to filter out documents satisfying
-given properties. For this purpose the function \code{tm\_filter} is
+given properties. For this purpose the function \code{tmparallel\_filter} is
 designed. It is possible to write custom filter functions, but for
 most cases \code{sFilter} does its job: it integrates a minimal query
 language to filter meta data. Statements in this query language are
@@ -214,7 +214,7 @@ tm_filter(reuters, pattern = "company")
 \section*{Meta Data Management}
 Meta data is used to annotate text documents or whole corpora with
 additional information. The easiest way to accomplish this with
-\pkg{tm} is to use the \code{meta()} function. A text document has a
+\pkg{tmparallel} is to use the \code{meta()} function. A text document has a
 few predefined attributes like \code{Author}, but can be extended with
 an arbitrary number of additional user-defined meta data tags. These
 additional meta data tags are individually attached to a single text
@@ -222,14 +222,14 @@ document. From a corpus perspective these meta data attachments are
 locally stored together with each individual text
 document. Alternatively to \code{meta()} the function
 \code{DublinCore()} provides a full mapping between Simple Dublin Core
-meta data and \pkg{tm} meta data structures and can be similarly used
+meta data and \pkg{tmparallel} meta data structures and can be similarly used
 to get and set meta data information for text documents, e.g.:
 <<DublinCore>>=
 DublinCore(crude[[1]], "Creator") <- "Ano Nymous"
 meta(crude[[1]])
 @
 
-For corpora the story is a bit more difficult. Corpora in \pkg{tm}
+For corpora the story is a bit more difficult. Corpora in \pkg{tmparallel}
 have two types of meta data: one is the meta data on the corpus level
 (\code{corpus}), the other is the meta data related to the individual
 documents (\code{indexed}) in form of a data frame. The latter is
@@ -256,7 +256,7 @@ automatically updated, if corpora are concatenated (i.e., merged).
 
 \section*{Creating Term-Document Matrices}
 A common approach in text mining is to create a term-document matrix
-from a corpus. In the \pkg{tm} package the classes
+from a corpus. In the \pkg{tmparallel} package the classes
 \class{TermDocumentMatrix} and \class{DocumentTermMatrix} (depending
 on whether you want terms as rows and documents as columns, or vice
 versa) employ sparse matrices for corpora.

@@ -1,7 +1,7 @@
 ## Author: Ingo Feinerer
 ## Regression tests
 
-library("tm")
+library("tmparallel")
 data("acq")
 
 # Lazy transformations

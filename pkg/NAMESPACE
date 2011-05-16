@@ -222,4 +222,4 @@ S3method("as.TermDocumentMatrix", "default")
 
 export("read_dtm_Blei_et_al")
 
-useDynLib("tm")
+useDynLib("tmparallel")

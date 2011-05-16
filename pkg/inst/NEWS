@@ -1,6 +1,6 @@
                         Dear Emacs, please make this -*-Text-*- mode!
 
-                CHANGES IN tm VERSION 0.5-5
+                CHANGES IN tmparallel VERSION 0.5-5
 
 NEW FEATURES
 
@@ -13,7 +13,7 @@ BUG FIXES
         (to comply with the manual page) instead per document. Reported
         and fixed by Thomas Zapf-Schramm.
 
-                CHANGES IN tm VERSION 0.5-4
+                CHANGES IN tmparallel VERSION 0.5-4
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
@@ -33,7 +33,7 @@ NEW FEATURES
         term-document matrix were added: Zipf_plot() and
         Heaps_plot(). Contributed by Kurt Hornik.
 
-                CHANGES IN tm VERSION 0.5-3
+                CHANGES IN tmparallel VERSION 0.5-3
 
 NEW FEATURES
 
@@ -42,7 +42,7 @@ NEW FEATURES
 
     o   The function stemCompletion() has a set of new heuristics.
 
-                CHANGES IN tm VERSION 0.5-2
+                CHANGES IN tmparallel VERSION 0.5-2
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
@@ -70,13 +70,13 @@ BUG FIXES
     o   removeWords() no longer skips words at the beginning or the end
         of a line. Reported by Mark Kimpel.
 
-                CHANGES IN tm VERSION 0.5-1
+                CHANGES IN tmparallel VERSION 0.5-1
 
 BUG FIXES
 
     o   preprocessReut21578XML() no longer generates invalid file names.
 
-                CHANGES IN tm VERSION 0.5
+                CHANGES IN tmparallel VERSION 0.5
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
@@ -94,7 +94,7 @@ SIGNIFICANT USER-VISIBLE CHANGES
           tmMap()             to tm_map()              .
 
     o   Mail handling functionality is factored out to the
-        tm.plugin.mail package.
+        tmparallel.plugin.mail package.
 
 DEPRECATED & DEFUNCT
 
@@ -103,7 +103,7 @@ DEPRECATED & DEFUNCT
           tmTolower()         (use tolower() instead), and
           replacePatterns()   (use gsub()    instead).
 
-                CHANGES IN tm VERSION 0.4
+                CHANGES IN tmparallel VERSION 0.4
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
@@ -137,7 +137,7 @@ BUG FIXES
     o   weightTfIdf() no longer applies a binary weighting to an input
         matrix in term frequency format (which happened only in 0.3-4).
 
-                CHANGES IN tm VERSION 0.3-4
+                CHANGES IN tmparallel VERSION 0.3-4
 
 SIGNIFICANT USER-VISIBLE CHANGES
 
@@ -189,7 +189,7 @@ DEPRECATED & DEFUNCT
     o   TermDocMatrix is defunct (use DocumentTermMatrix or
         TermDocumentMatrix instead).
 
-                CHANGES IN tm VERSION 0.3-3
+                CHANGES IN tmparallel VERSION 0.3-3
 
 NEW FEATURES
 
@@ -216,7 +216,7 @@ BUG FIXES
     o   Sources and readers no longer evaluate calls in a non-standard
         way.
 
-                CHANGES IN tm VERSION 0.3-2
+                CHANGES IN tmparallel VERSION 0.3-2
 
 NEW FEATURES
 

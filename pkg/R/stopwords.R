@@ -10,11 +10,11 @@ map_IETF <- function(code) {
 
 stopwords <- {
     function(language = "en") {
-        resolved <- tm:::map_IETF(language)
+        resolved <- tmparallel:::map_IETF(language)
         lang <- if (is.na(resolved))
             language
         else
             resolved
-        readLines(system.file("stopwords", paste(lang, ".dat", sep = ""), package = "tm"), encoding = "UTF-8")
+        readLines(system.file("stopwords", paste(lang, ".dat", sep = ""), package = "tmparallel"), encoding = "UTF-8")
     }
 }

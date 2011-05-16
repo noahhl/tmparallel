@@ -9,11 +9,11 @@ tm_reduce(x, tmFuns, \dots)
 }
 \arguments{
   \item{x}{A corpus.}
-  \item{tmFuns}{A \code{list} of \pkg{tm} transformations.}
+  \item{tmFuns}{A \code{list} of \pkg{tmparallel} transformations.}
   \item{\dots}{Arguments to the individual transformations.}
 }
 \value{
-  A single \pkg{tm} transformation function.
+  A single \pkg{tmparallel} transformation function.
 }
 \author{Ingo Feinerer}
 \seealso{

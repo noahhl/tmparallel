@@ -13,7 +13,7 @@
 \title{Meta Data Management}
 \description{
   Methods to access and modify meta data of documents, corpora, and
-  repositories. In addition to \pkg{tm}'s internal meta data structures,
+  repositories. In addition to \pkg{tmparallel}'s internal meta data structures,
   Simple Dublin Core meta data mappings are available.
 }
 \usage{

@@ -179,7 +179,7 @@
 
 2009-08-11  Ingo Feinerer  <feinerer@logic.at>
 
-	* R/reader.R (readMail): Moved to tm.plugin.mail package.
+	* R/reader.R (readMail): Moved to tmparallel.plugin.mail package.
 
 2009-07-04  Ingo Feinerer  <feinerer@logic.at>
 
@@ -189,7 +189,7 @@
 2009-07-03  Ingo Feinerer  <feinerer@logic.at>
 
 	* R/transform.R: Move convertMboxEml, removeCitation,
-	removeMultipart, and removeSignature to the tm.plugin.mail package
+	removeMultipart, and removeSignature to the tmparallel.plugin.mail package
 	since they are mainly utility functions (for handling e-mails) and
 	not very framework specific.
 
@@ -248,7 +248,7 @@
 
 2009-04-11  Ingo Feinerer  <feinerer@logic.at>
 
-	* inst/doc/tm.Rnw: Fix code/documentation mismatch.
+	* inst/doc/tmparallel.Rnw: Fix code/documentation mismatch.
 
 2009-04-04  Ingo Feinerer  <feinerer@logic.at>
 
@@ -305,7 +305,7 @@
 
 2009-03-02  Ingo Feinerer  <feinerer@logic.at>
 
-	* inst/doc/tm.Rnw: Suppress pointless loading message.
+	* inst/doc/tmparallel.Rnw: Suppress pointless loading message.
 
 2009-01-29  Ingo Feinerer  <feinerer@logic.at>
 
@@ -488,7 +488,7 @@
 
 	* man/: Documentation for showMeta, added an example for tmMap.
 
-	* inst/doc/tm.Rnw: Updated vignette, comments on MS word reader,
+	* inst/doc/tmparallel.Rnw: Updated vignette, comments on MS word reader,
 	some minor typos fixed.
 
 2007-12-01  Ingo Feinerer  <h0125130@wu-wien.ac.at>
@@ -567,7 +567,7 @@
 	* R/termdocmatrix.R: Added convenience methods ("[", nrow, ncol)
 	for accessing term-document matrices.
 
-	* inst/doc/tm.Rnw: readPDF is only called if pdftotext and pdfinfo
+	* inst/doc/tmparallel.Rnw: readPDF is only called if pdftotext and pdfinfo
 	are installed.
 
 2007-07-17  Ingo Feinerer  <h0125130@wu-wien.ac.at>
@@ -577,7 +577,7 @@
 
 2007-07-15  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
-	* inst/doc/tm.Rnw: Update vignette (readPDF, readHTML, preprocessReut21578XML).
+	* inst/doc/tmparallel.Rnw: Update vignette (readPDF, readHTML, preprocessReut21578XML).
 
 2007-07-14  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
@@ -602,7 +602,7 @@
 
 2007-07-10  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
-	* inst/doc/tm.Rnw: Described removeSparseTerms and Dictionary.
+	* inst/doc/tmparallel.Rnw: Described removeSparseTerms and Dictionary.
 
 2007-06-21  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
@@ -620,7 +620,7 @@
 
 2007-06-06  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
-	* inst/doc/tm.Rnw: Fixed some typos in vignette.
+	* inst/doc/tmparallel.Rnw: Fixed some typos in vignette.
 
 2007-06-03  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
@@ -689,7 +689,7 @@
 
 2007-04-14  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
-	* inst/doc/tm.Rnw: Minor corrections in the vignette.
+	* inst/doc/tmparallel.Rnw: Minor corrections in the vignette.
 
 2007-04-11  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
@@ -784,7 +784,7 @@
 
 2007-01-22  Ingo Feinerer  <h0125130@wu-wien.ac.at>
 
-	* inst/doc/tm.Rnw: Fixed quotes-appearing-as-boxes-bug according
+	* inst/doc/tmparallel.Rnw: Fixed quotes-appearing-as-boxes-bug according
 	to Kurt's latex suggestion. Removed points and underscores in
 	variable names for consistent naming.
 
@@ -820,7 +820,7 @@
 
 	* man/: Updated documentation.
 
-	* DESCRIPTION: Changed package name to "tm". Updated version to
+	* DESCRIPTION: Changed package name to "tmparallel". Updated version to
 	0.1 for first CRAN release.
 
 	* inst/texts/gmane.comp.lang.r.general.mbox: mbox Gmane R mailing

@@ -36,7 +36,7 @@ as.DocumentTermMatrix(x, \dots)
   The documentation of \code{\link{termFreq}} gives an extensive list of
   possible options.
 
-  Available weighting functions shipped with the \pkg{tm}
+  Available weighting functions shipped with the \pkg{tmparallel}
   package are \code{\link{weightTf}}, \code{\link{weightTfIdf}}, and
   \code{\link{weightBin}}.
 }

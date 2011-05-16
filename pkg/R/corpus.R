@@ -59,8 +59,8 @@ PCorpus <- function(x,
 
 # Register S3 corpus classes to be recognized by S4 methods. This is
 # mainly a fix to be compatible with packages which were originally
-# developed to cooperate with corresponding S4 tm classes. Necessary
-# since tm's class architecture was changed to S3 since tm version 0.5.
+# developed to cooperate with corresponding S4 tmparallel classes. Necessary
+# since tmparallel's class architecture was changed to S3 since tmparallel version 0.5.
 setOldClass(c("VCorpus", "Corpus", "list"))
 
 # The "..." are additional arguments for the FunctionGenerator reader

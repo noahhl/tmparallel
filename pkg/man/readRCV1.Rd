@@ -30,7 +30,7 @@ readRCV1asPlain(elem, language, id)
   \url{http://www.jmlr.org/papers/volume5/lewis04a/lewis04a.pdf}
 }
 \examples{
-f <- system.file("texts", "rcv1_2330.xml", package = "tm")
+f <- system.file("texts", "rcv1_2330.xml", package = "tmparallel")
 rcv1 <- readRCV1(elem = list(content = readLines(f)),
                  language = "en", id = "id1")
 meta(rcv1)

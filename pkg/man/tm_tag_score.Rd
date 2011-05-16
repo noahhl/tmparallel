@@ -29,7 +29,7 @@ data("acq")
 tm_tag_score(acq[[1]], c("company", "change"))
 \dontrun{
 ## Test for positive and negative sentiments
-require("tm.plugin.tags")
+require("tmparallel.plugin.tags")
 sapply(acq[1:10], tm_tag_score, tm_get_tags("Positiv"))
 sapply(acq[1:10], tm_tag_score, tm_get_tags("Negativ"))
 tm_tag_score(TermDocumentMatrix(acq[1:10],

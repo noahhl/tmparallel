@@ -28,7 +28,7 @@ ReutersSource(x, encoding = "UTF-8")
   \code{\link{getSources}} to list available sources.
 }
 \examples{
-reuters21578 <- system.file("texts", "reuters-21578.xml", package = "tm")
+reuters21578 <- system.file("texts", "reuters-21578.xml", package = "tmparallel")
 rs <- ReutersSource(reuters21578)
 inspect(Corpus(rs)[1:2])
 }

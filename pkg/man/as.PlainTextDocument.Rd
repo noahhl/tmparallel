@@ -19,7 +19,7 @@
   \code{\link{getTransformations}} to list available transformation (mapping) functions.
 }
 \examples{
-reut21578 <- system.file("texts", "crude", package = "tm")
+reut21578 <- system.file("texts", "crude", package = "tmparallel")
 r <- Corpus(DirSource(reut21578),
                       readerControl = list(reader = readReut21578XML))
 r[[1]]

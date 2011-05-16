@@ -1,5 +1,5 @@
-library("tm")
-acq <- system.file("texts", "acq", package = "tm")
+library("tmparallel")
+acq <- system.file("texts", "acq", package = "tmparallel")
 tmpfile <- tempfile()
 r <- PCorpus(DirSource(acq),
              readerControl = list(reader = readReut21578XML),

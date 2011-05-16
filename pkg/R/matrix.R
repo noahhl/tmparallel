@@ -168,7 +168,7 @@ function(doc, control = list())
     ## Stemming
     stemming <- control$stemming
     if (isTRUE(stemming))
-        txt <- stemDocument(txt, language = tm:::map_IETF(Language(doc)))
+        txt <- stemDocument(txt, language = tmparallel:::map_IETF(Language(doc)))
     else if (is.function(stemming))
         txt <- stemming(txt)
 

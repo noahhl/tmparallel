@@ -104,7 +104,7 @@ meta.TextRepository <- function(x, tag, type = NULL) {
     x
 }
 
-# Simple Dublin Core to tm meta data mappings
+# Simple Dublin Core to tmparallel meta data mappings
 # http://en.wikipedia.org/wiki/Dublin_core#Simple_Dublin_Core
 Dublin_Core_tm <-
 function(DCElem = c("title", "creator", "description", "date", "identifier", "language", "subject",

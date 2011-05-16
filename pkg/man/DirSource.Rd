@@ -25,5 +25,5 @@ DirSource(directory = ".", encoding = "UTF-8", pattern = NULL,
   \code{\link{getSources}} to list available sources.
 }
 \examples{
-DirSource(system.file("texts", "txt", package = "tm"))
+DirSource(system.file("texts", "txt", package = "tmparallel"))
 }

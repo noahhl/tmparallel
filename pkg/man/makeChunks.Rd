@@ -18,7 +18,7 @@ makeChunks(corpus, chunksize)
 }
 \author{Ingo Feinerer}
 \examples{
-txt <- system.file("texts", "txt", package = "tm")
+txt <- system.file("texts", "txt", package = "tmparallel")
 ovid <- Corpus(DirSource(txt))
 sapply(ovid, length)
 ovidChunks <- makeChunks(ovid, 5)

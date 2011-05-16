@@ -39,7 +39,7 @@ readPDF(PdfinfoOptions = "", PdftotextOptions = "", \dots)
 }
 \examples{
 if(all(file.exists(Sys.which(c("pdfinfo", "pdftotext"))))) {
-    f <- system.file("doc", "tm.pdf", package = "tm")
+    f <- system.file("doc", "tmparallel.pdf", package = "tmparallel")
     pdf <- readPDF(PdftotextOptions = "-layout")(elem = list(uri = f),
                                                  language = "en",
                                                  id = "id1")

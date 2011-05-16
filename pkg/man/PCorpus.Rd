@@ -27,7 +27,7 @@ DBControl(x)
     giving the filename holding the sourced out documents (i.e., the
     database), and \code{dbType} holding a valid database type as
     supported by package \pkg{filehash}. Under activated database
-    support the \code{tm} package tries to keep as few as possible
+    support the \code{tmparallel} package tries to keep as few as possible
     resources in memory under usage of the database.}
   \item{\dots}{Optional arguments for the \code{reader}.}
 }
@@ -62,7 +62,7 @@ DBControl(x)
   }
 }
 \examples{
-txt <- system.file("texts", "txt", package = "tm")
+txt <- system.file("texts", "txt", package = "tmparallel")
 \dontrun{
 PCorpus(DirSource(txt),
         dbControl = list(dbName = "myDB.db", dbType = "DB1"))

@@ -1,15 +1,15 @@
-Package: tm_parallel
+Package: tmparallel
 Title: Text Mining Package w/ parallel support
 Version: 0.5-6
 Date: 2011-04-15
 Author: Ingo Feinerer
-Maintainer: Ingo Feinerer <feinerer@logic.at> (parallel branch maintained by Noah Lorang, noah@noahhl.com)
+Maintainer: Ingo Feinerer <feinerer@logic.at> 
 Depends: R (>= 2.11.0), methods, plyr
 Imports: slam (>= 0.1-22)
 Suggests: filehash, proxy, Rgraphviz, Rmpi, RWeka, snow, Snowball, XML, Rstem
 SystemRequirements: Antiword (http://www.winfield.demon.nl/) for reading MS Word files,
   pdfinfo and pdftotext from Poppler (http://poppler.freedesktop.org/)
   for reading PDF
-Description: A framework for text mining applications within R.
+Description: A framework for text mining applications within R. (parallel branch maintained by Noah Lorang, noah@noahhl.com)
 License: GPL (>= 2)
-URL: http://tm.r-forge.r-project.org/
+URL: http://tmparallel.r-forge.r-project.org/

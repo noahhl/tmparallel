@@ -13,7 +13,7 @@
 
 \begin{document}
 <<Init,echo=FALSE,results=hide>>=
-library("tm")
+library("tmparallel")
 library("XML")
 @
 \title{Extensions\\How to Handle Custom File Formats}
@@ -22,17 +22,17 @@ library("XML")
 
 \section*{Introduction}
 The possibility to handle custom file formats is a substantial feature
-in any modern text mining infrastructure. \pkg{tm} has been designed
+in any modern text mining infrastructure. \pkg{tmparallel} has been designed
 aware of this aspect from the beginning on, and has modular components
-which allow extensions. A general explanation of \pkg{tm}'s extension
+which allow extensions. A general explanation of \pkg{tmparallel}'s extension
 mechanism is described
 by~\citet[Sec.~3.3]{Feinerer_etal_2008}. However, for many cases, it
 is not necessary to define each detailed aspect of how to extend
-\pkg{tm}. Typical examples are \acronym{XML} files which are very
+\pkg{tmparallel}. Typical examples are \acronym{XML} files which are very
 common but can be rather easily handled via standard conforming
 \acronym{XML} parsers. The aim of this document is to give an overview
 on how simpler, more user-friendly, forms of extension mechanisms can
-be applied in \pkg{tm}.
+be applied in \pkg{tmparallel}.
 
 \section*{Custom General Purpose Readers}
 A general situation is that you have gathered together some
@@ -40,13 +40,13 @@ information into a tabular data structure (like a data frame or a list
 matrix) that suffices to describe documents in a corpus. However, you
 do not have a distinct file format because you extracted the
 information out of various resources. Now you want to use your
-information to build a corpus which is recognized by \pkg{tm}.
+information to build a corpus which is recognized by \pkg{tmparallel}.
 
-This can be done in \pkg{tm} by generating a custom reader function
+This can be done in \pkg{tmparallel} by generating a custom reader function
 for tabular data structures via \code{readTabular()} that can be
 configured via a so-called \emph{mapping}. A mapping describes how
 your information in the tabular data structure is mapped to the
-individual attributes of text documents in \pkg{tm}.
+individual attributes of text documents in \pkg{tmparallel}.
 
 We assume that your information is put together in a data frame. E.g.,
 consider the following example:
@@ -82,7 +82,7 @@ previously defined mapping:
 myReader <- readTabular(mapping = m)
 @
 
-Finally we can apply our reader function at any place where \pkg{tm}
+Finally we can apply our reader function at any place where \pkg{tmparallel}
 expects a reader. E.g., we can construct a corpus out of the data
 frame:
 <<>>=
@@ -103,18 +103,18 @@ parser, e.g., as implemented in \proglang{R} by the \pkg{XML}
 package.
 
 Now assume we have some custom \acronym{XML} format which we want to
-access with \pkg{tm}. Then a viable way is to create a custom
+access with \pkg{tmparallel}. Then a viable way is to create a custom
 \acronym{XML} source which can be configured with only a few
 commands. E.g., have a look at the following example:
 <<CustomXMLFile>>=
-custom.xml <- system.file("texts", "custom.xml", package = "tm")
+custom.xml <- system.file("texts", "custom.xml", package = "tmparallel")
 print(readLines(custom.xml), quote = FALSE)
 @
 As you see there is a top-level tag stating that there is a corpus,
 and several document tags below. In fact, this structure is very
 common in \acronym{XML} files found in text mining applications (e.g.,
 both the Reuters-21578 and the Reuter Corpus Volume 1 data sets follow
-this general scheme). In \pkg{tm} we expect a source to deliver
+this general scheme). In \pkg{tmparallel} we expect a source to deliver
 self-contained blocks of information to a reader function, each block
 containing all information necessary such that the reader can
 construct a (subclass of a) \code{TextDocument} from it.
@@ -144,7 +144,7 @@ As you notice in this example we also provide a custom reader function
 \section*{Custom XML Readers}
 As we saw in the previous section we often need a custom reader
 function to extract information out of \acronym{XML} chunks (typically
-as delivered by some source). Fortunately, \pkg{tm} provides an easy
+as delivered by some source). Fortunately, \pkg{tmparallel} provides an easy
 way to define custom \acronym{XML} reader functions. All you need to
 do is to provide a so-called \emph{specification}.
 
@@ -204,7 +204,7 @@ specification entry. Valid combinations are:
 \end{description}
 
 Now that we have all we need to cope with our custom file format, we
-can apply the source and reader function at any place in \pkg{tm}
+can apply the source and reader function at any place in \pkg{tmparallel}
 where a source or reader is expected, respectively. E.g.,
 <<>>=
 corpus <- Corpus(mySource(custom.xml))
